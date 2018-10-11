@@ -1,0 +1,949 @@
+---
+title: "Basis functions approximations for reduced-rank Gaussian process regression in high-dimensinal space"
+output: html_document
+---
+
+```{r message=FALSE, warning=FALSE}
+library(viridis)
+library(rstan)
+library(rgl)
+library(RColorBrewer)
+library(brms)
+library(rstanarm)
+library(geoR)
+library(lattice)
+library(aqfig)
+library(fields)
+library(colorRamps)
+```
+
+<!-- Gaussian Processes are flexible non-parametric stochastic models for $D$-dimensional functions. However, a Gaussian process model suffer from observational dimensionality $(N)$, where the inversion of the covariance matrix requires of $O(N^3)$ computational expenses.  -->
+
+<!-- This notebook deals with the implementation of an approximate eigendecomposition of the covariance function of a D-dimensional Gaussian process. The method is based on interpreting the covariance function as the kernel of a pseudo-differential operator and approximating it using Hilbert space methods. This results in a reduced-rank approximation for the covariance function (Solin and Särkkä, 2018). Comparison of this approximated framework with the full Gaussian process and a splines-based model is carried out.  -->
+
+
+### D-dimensional Gaussian process model
+
+(Formulation of the D-dimensional GP model is missing)
+
+### Approximate eigendecomposition of the covariance function of a D-dimensional Gaussian process
+
+(Formulation of the D-dimensional Basis function aproximation model is missing)
+
+### Application to simulated data
+
+Simulating data from the following 2D function $f(x_1,x_2)$ and contaminate it with Gaussian noise $e \sim N(0,\sigma^2)$.
+
+$$
+f(x_1,x_2) = \frac{1}{100} \cdot (x_1^3 - x_2^3) + \frac{1}{10} \cdot x_1 \cdot x_2
+$$
+$$
+y(x_1,x_2) = f(x_1,x_2) + e
+$$
+
+
+```{r echo=TRUE, fig.height=4, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+# color palettes
+col1 <- brewer.pal(11,"BrBG")[11:1] 
+col2 <- cm.colors(11, alpha = 0.5)
+col3 <- c(colorRampPalette(c("blue", "white"), bias=10)(15), colorRampPalette(c("white", "red"), bias=10)(15)[2:15])
+
+# number of simulated observations and true function
+nobs <- 120  
+f <- function(x1,x2) 1/100*(x1^3 - x2^3) + 1/10*x1*x2
+
+# grid input values
+x_grid <- pred_grid(coords= c(-5,5), y.coords= c(-5,5), by= 0.3)
+
+# breaks for colors
+par(mfrow=c(1,2))
+brk <- seq(min(f(x_grid[,1],x_grid[,2])),max(f(x_grid[,1],x_grid[,2])), length.out= 12)
+
+# true function surface evaluated in the grid input values
+xx <- unique(x_grid[,1])
+image(xx, xx, matrix(f(x_grid[,1],x_grid[,2]),length(xx),length(xx)), col=col1, breaks= brk, main="true function surface f and simulated locations", xlab="x1", ylab="x2", cex.main=0.7)
+
+# training input values
+set.seed(10)
+x1 <- runif(nobs,-5,5)  
+x2 <- runif(nobs,-5,5)
+
+# simulated training observations
+y <-  f(x1,x2) + rnorm(length(x1), 0, 0.3)
+
+points(x1, x2, pch=1, cex=0.7)
+plot(f(x1, x2), y, col=4, cex=0.6, main="true function values f vs noisy simulations y", xlab="f", ylab="y", cex.main=0.7); abline(a=0, b=1, col="gray") 
+
+# noisy observations in the grid input locations
+y_grid <- f(x_grid[,1],x_grid[,2]) + rnorm(length(dim(x_grid)[1]), 0, 0.2)
+
+# total (training and grid) input values
+x <- rbind(cbind(x1,x2),as.matrix(x_grid))
+
+# number of training, grid and total observations
+N1 <- length(x1)
+N_grid <- dim(x_grid)[1]
+N <- N1 + N_grid
+```
+
+
+### 2D Gaussian process model
+
+Standata.
+
+```{r}
+D <- 2  # number of dimensions
+
+standata_gp12<- list(D= D, x= cbind(x1,x2), y= y, N1= N1, N_grid= N_grid, x_grid= x_grid, y_grid= y_grid)
+```
+
+Stancode.
+
+(The code of the D-dimensional GP model is missing)
+
+Load and store the outcomes of the GP model.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Simulated_data_project/function2/aj_gp12.rData")
+
+gp12_f <- summary(aj_gp12, pars = c("f"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_y <- summary(aj_gp12, pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_f_grid <- summary(aj_gp12, pars = c("f_grid"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_y_grid <- summary(aj_gp12, pars = c("y_grid_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_elpd_grid <- summary(aj_gp12, pars= c("log_y_grid_predict"), probs = c(0.025, 0.5, 0.975), digits_summary= 4)$summary
+gp12_time <- sum(get_elapsed_time(aj_gp12)[2])/(aj_gp12@sim$iter - aj_gp12@sim$warmup)
+```
+
+Posteriors plots.
+
+```{r echo=TRUE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Plots
+par(mfcol=c(3,3), mai=c(0.4, 0.5, 0.25, 0.1), omi=c(0,0,0,0.2), oma=c(0, 0, 2, 1.5))
+
+# training
+plot(f(x1,x2), gp12_f[,1], col=4, cex=0.6, xlab="f", ylab="gp_f", main="true values f vs posterior means gp_f", mgp= c(1.7, 0.5, 0), cex.main=0.9); abline(a=0, b=1, col="gray")
+plot(f(x1,x2), f(x1,x2) - gp12_f[,1], xlab="f", ylab="f - gp_f", main="posterior residuals (f - gp_f)", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), cex.main=0.9); abline(h=0, col="gray")
+
+title(main= "GP model", outer= TRUE)
+
+# predicting
+plot(f(x_grid[,1],x_grid[,2]), gp12_f_grid[,1], col=4, cex=0.6, xlab="f", ylab="gp_f", main="true values f vs posterior means gp_f", mgp= c(1.7, 0.5, 0), cex.main=0.9); abline(a=0, b=1, col="gray")
+plot(f(x_grid[,1],x_grid[,2]), f(x_grid[,1],x_grid[,2]) - gp12_f_grid[,1], xlab="f", ylab="f - gp12_f", main="posterior residuals (f - gp_f)", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), cex.main=0.9); abline(h=0, col="gray")
+plot(f(x_grid[,1],x_grid[,2]), gp12_elpd_grid[,1], col=2, cex=0.8, xlab="f", ylab="ELPD", mgp= c(1.7, 0.5, 0), cex.main=0.9); abline(h=mean(gp12_elpd_grid[,1]), col="red", lty=2)
+
+# histogram residuals
+gp12_error_grid <- matrix(f(x_grid[,1],x_grid[,2]),length(xx),length(xx)) - gp12_f_grid[,1]
+
+hist(gp12_error_grid, mgp= c(1.7, 0.5, 0), xlab="f - gp_f", ylab="", main="posterior residuals (f - gp_f)", cex.main=0.9)
+
+#images
+image(xx, xx, matrix(f(x_grid[,1],x_grid[,2]),length(xx),length(xx)), col=col1, breaks= brk, main="true surface f", xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), cex.main=0.9)
+
+image(xx, xx, matrix(gp12_f_grid[,1],length(xx),length(xx)), col= col1, breaks= brk , main="posterior mean surface gp_f", xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), cex.main=0.9)
+
+brk1 <- seq(-max(abs(gp12_error_grid)),max(abs(gp12_error_grid)), length.out= 30)
+
+image.plot(unique(x_grid[,1]), unique(x_grid[,1]), gp12_error_grid, col= col3, breaks= brk1, main="posterior residuals surface", xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), legend.width=1.2, cex.main=0.9)
+points(x1, x2, pch=1, cex=0.6)
+```
+
+### 2D Basis functions model
+
+Standata.
+
+```{r}
+M <- c(2,4,6,10,15,20,30)  #number of basis functions
+D <- 2  #number of dimensions
+
+indices <- list()
+for(j in 1:length(M)){
+	indices[[j]] <- matrix(NA, M[j]^D, D)
+	mm=0;
+	for (m1 in 1:M[j]){
+		for (m2 in 1:M[j]){
+				mm = mm+1
+				indices[[j]][mm,] = c(m1, m2)
+		}
+	}
+}
+
+standat_bf12 <- list()
+for(j in 1:length(M)){  #number of basis functions
+  	standat_bf12[[j]] <- list(D= D, M= M[j], M_nD= M[j]^D, L= c(5/2*max(x1),5/2*max(x2)), x= rbind(cbind(x1,x2),as.matrix(x_grid)), y= c(y,y_grid), N1= N1, indices= indices[[j]], N_grid= N_grid)
+}
+```
+
+Stancode.
+
+(The code of the D-dimensional Basis function aproximation model is missing)
+
+Load and store the outcomes of the different Basis functions models as function of the number of basis functions.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Simulated_data_project/function2/aj_bf12.rData")
+
+bf12_f <- list()
+bf12_y <- list()
+bf12_elpd <- list()
+bf12_time <- list()
+for(j in 1:length(M)){  #number of basis functions
+	bf12_f[[j]] <- summary(aj_bf12[[j]], pars = c("f"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf12_y[[j]] <- summary(aj_bf12[[j]], pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf12_elpd[[j]] <- summary(aj_bf12[[j]], pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf12_time[[j]] <- sum(get_elapsed_time(aj_bf12[[j]])[2])/(aj_bf12[[j]]@sim$iter - aj_bf12[[j]]@sim$warmup)
+}
+```
+
+Posteriors plots as function of the number of basis functions.
+
+```{r echo=TRUE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+for(j in 1:length(M)){
+  par(mfcol=c(3,3), mai=c(0.4, 0.5, 0.25, 0.1), omi=c(0,0,0,0.2), oma=c(1, 0, 1.5, 1.5))
+
+	# training
+	plot(gp12_f[,1], bf12_f[[j]][1:N1,1], col=4, cex=0.6, xlab="gp_f ", ylab="bf_f", mgp= c(1.7, 0.5, 0), main="GP posterior means gp_f vs BF posterior means bf_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+	plot(gp12_f[,1], gp12_f[,1] - bf12_f[[j]][1:N1,1], xlab="gp_f ", ylab="gp_f - bf_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (gp_f - bf_f)", cex.main=0.8); abline(h=0, col="gray")
+
+	title(main= paste("BF model with M =",M[j]), outer= TRUE)
+
+	# predicting
+	plot(gp12_f_grid[,1], bf12_f[[j]][-(1:N1),1], col=4, cex=0.6, xlab="gp_f ", ylab="bf_f", mgp= c(1.7, 0.5, 0), main="GP posterior means gp_f vs BF posterior means bf_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+	plot(gp12_f_grid[,1], gp12_f_grid[,1] - bf12_f[[j]][-(1:N1),1], xlab="gp_f ", ylab="gp_f - bf_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (gp_f - bf_f)", cex.main=0.8); abline(h=0, col="gray")
+	plot(gp12_f_grid[,1], bf12_elpd[[j]][-(1:N1),1], col=2, cex=0.8, xlab="gp_f", ylab="ELPD", mgp= c(1.7, 0.5, 0)); abline(h=mean(bf12_elpd[[j]][-(1:N1),1]), col="red", lty=2)
+
+	# histogram residuals
+	bf12_error <- matrix(gp12_f_grid[,1],length(xx),length(xx)) - bf12_f[[j]][-(1:N1),1]
+
+	hist(bf12_error, mgp= c(1.7, 0.5, 0), xlab="gp_f - bf_f", ylab="", main="posterior residuals (gp_f - bf_f)", cex.main=0.8)
+
+	# images
+	image(xx, xx, matrix(gp12_f_grid[,1],length(xx),length(xx)), col=col1, breaks= brk, main="GP posterior means surface gp_f", xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), cex.main=0.8)
+
+	image(xx, xx, matrix(bf12_f[[j]][-(1:N1),1],length(xx),length(xx)), col= col1, breaks= brk, main="BF posterior means surface bf_f", xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), cex.main=0.8)
+
+	brk1 <- seq(-max(abs(bf12_error)),max(abs(bf12_error)), length.out= 30)
+
+	image.plot(xx, xx, bf12_error, col= col3, breaks= brk1, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="posterior residuals surface", cex.main=0.8)
+	points(x1, x2, pch=1, cex=0.5)
+}
+```
+
+### 2D Additive Gaussian process model
+
+Standata.
+
+```{r}
+standat_AGP <- list(D= 2, x= cbind(x1,x2), y= y, N1= N1, N_grid= N_grid, x_grid= x_grid, y_grid= y_grid)
+```
+
+Stancode.
+
+(The code of the D-dimensional additive GP model is missing)
+
+Load and store the outcomes of the additive GP model.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Simulated_data_project/function2/aj_gp1gp2.rData")
+
+gp1gp2_f <- summary(aj_gp1gp2, pars = c("f"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp1gp2_y <- summary(aj_gp1gp2, pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp1gp2_f_grid <- summary(aj_gp1gp2, pars = c("f_grid"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp1gp2_y_grid <- summary(aj_gp1gp2, pars = c("y_grid_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp1gp2_elpd_grid <- summary(aj_gp1gp2, pars= c("log_y_grid_predict"), probs = c(0.025, 0.5, 0.975), digits_summary= 4)$summary
+gp1gp2_time <- sum(get_elapsed_time(aj_gp1gp2)[2])/(aj_gp1gp2@sim$iter - aj_gp1gp2@sim$warmup)
+```
+
+Posterior plots.
+
+```{r echo=TRUE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+par(mfcol=c(3,3), mai=c(0.4, 0.5, 0.25, 0.1), omi=c(0,0,0,0.2), oma=c(0, 0, 1.5, 1.5))
+
+# training
+plot(gp12_f[,1], gp1gp2_f[1:N1,1], col=4, cex=0.6, xlab="gp_f ", ylab="agp_f", mgp= c(1.7, 0.5, 0), main="GP posterior means gp_f vs AGP posterior means agp_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+plot(gp12_f[,1], gp12_f[,1] - gp1gp2_f[1:N1,1], xlab="gp12_f ", ylab="gp12_f - agp_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (gp_f - agp_f)", cex.main=0.8); abline(h=0, col="gray")
+
+title(main= paste("Additive GP model"), outer= TRUE)
+
+# predicting
+plot(gp12_f_grid[,1], gp1gp2_f_grid[,1], col=4, cex=0.6, xlab="gp_f ", ylab="agp_f", mgp= c(1.7, 0.5, 0), main="GP posterior means gp_f vs AGP posterior means agp_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+plot(gp12_f_grid[,1], gp12_f_grid[,1] - gp1gp2_f_grid[,1], xlab="gp_f ", ylab="gp_f - agp_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (gp_f - agp_f)", cex.main=0.8); abline(h=0, col="gray")
+plot(gp12_f_grid[,1], gp1gp2_elpd_grid[,1], col=2, cex=0.8, xlab="gp_f ", ylab="ELPD", mgp= c(1.7, 0.5, 0)); abline(h=mean(gp1gp2_elpd_grid[,1]), col="red", lty=2)
+
+# histogram residuals
+gp1gp2_error <- matrix(gp12_f_grid[,1],length(xx),length(xx)) - gp1gp2_f_grid[,1]
+
+hist(gp1gp2_error, mgp= c(1.7, 0.5, 0), xlab="gp_f - agp_f", ylab="", main="posterior residuals (gp_f - agp_f)", cex.main=0.8)
+
+# images
+image(xx, xx, matrix(gp12_f_grid[,1],length(xx),length(xx)), col=col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="GP posterior means surface gp_f", cex.main=0.8)
+
+image(xx, xx, matrix(gp1gp2_f_grid[,1],length(xx),length(xx)), col= col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="AGP posterior means surface agp_f", cex.main=0.8)
+
+brk1 <- seq(-max(abs(gp1gp2_error)),max(abs(gp1gp2_error)), length.out= 30)
+
+image.plot(xx, xx, gp1gp2_error, col= col3, breaks= brk1, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="posterior residuals surface", cex.main=0.8)
+points(x1, x2, pch=1, cex=0.5)
+```
+
+### 2D Additive Basis functions model
+
+Standata.
+
+```{r}
+M <- c(2,4,6,10,15,20,30,40)  # number of basis functions
+D <- 2  # number of dimensions
+
+standat_bf1bf2 <- list()
+for(j in 1:length(M)){
+	standat_bf1bf2[[j]] <- list(D= D, M= M[j], L= c(5/2*max(x1), 5/2*max(x2)), x= rbind(cbind(x1,x2),as.matrix(x_grid)), y= c(y,y_grid), N1= N1, N_grid= N_grid)
+}
+```
+
+Stancode.
+
+(The code of the D-dimensional additive Basis function aproximation model is missing)
+
+Load and store the outcomes of the different additive BF models as function of the number of basis functions.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Simulated_data_project/function2/aj_bf1bf2.rData")
+
+bf1bf2_f <- list()
+bf1bf2_y <- list()
+bf1bf2_elpd <- list()
+bf1bf2_time <- list()
+for(j in 1:length(M)){  # number of Basis functions
+	bf1bf2_f[[j]] <- summary(aj_bf1bf2[[j]], pars = c("F"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf1bf2_y[[j]] <- summary(aj_bf1bf2[[j]], pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf1bf2_elpd[[j]] <- summary(aj_bf1bf2[[j]], pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf1bf2_time[[j]] <- sum(get_elapsed_time(aj_bf1bf2[[j]])[2])/(aj_bf1bf2[[j]]@sim$iter - aj_bf1bf2[[j]]@sim$warmup)
+}
+```
+
+Posterior plots as function of the number of basis functions.
+
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+for(j in 1:length(M)){
+  par(mfcol=c(3,3), mai=c(0.4, 0.5, 0.25, 0.1), omi=c(0,0,0,0.2), oma=c(1, 0, 1.5, 1.5))
+
+	# training
+	plot(gp1gp2_f[,1], bf1bf2_f[[j]][1:N1,1], col=4, cex=0.6, xlab="agp_f ", ylab="abf_f", mgp= c(1.7, 0.5, 0), main="AGP posterior means agp_f vs ABF posterior means abf_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+	plot(gp1gp2_f[,1], gp1gp2_f[,1] - bf1bf2_f[[j]][1:N1,1], xlab="agp_f ", ylab="agp_f - abf_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (agp_f - abf_f)", cex.main=0.8); abline(h=0, col="gray")
+
+	title(main= paste("Additive BF model with M =",M[j]), outer= TRUE)
+
+	# predicting
+	plot(gp1gp2_f_grid[,1], bf1bf2_f[[j]][-(1:N1),1], col=4, cex=0.6, xlab="agp_f ", ylab="abf_f", mgp= c(1.7, 0.5, 0), main="AGP posterior means agp_f vs ABF posterior means abf_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+	plot(gp1gp2_f_grid[,1], gp1gp2_f_grid[,1] - bf1bf2_f[[j]][-(1:N1),1], xlab="agp_f ", ylab="agp_f - abf_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (agp_f - abf_f)", cex.main=0.8); abline(h=0, col="gray")
+	plot(gp1gp2_f_grid[,1], bf1bf2_elpd[[j]][-(1:N1),1], col=2, cex=0.8, xlab="agp_f ", ylab="ELPD", mgp= c(1.7, 0.5, 0)); abline(h=mean(bf1bf2_elpd[[j]][,1]), col="red", lty=2)
+
+	# histogram residuals
+	bf12_error <- matrix(gp1gp2_f_grid[,1],length(xx),length(xx)) - bf1bf2_f[[j]][-(1:N1),1]
+
+	hist(bf12_error, mgp= c(1.7, 0.5, 0), xlab="agp_f - abf_f", ylab="", main="posterior residuals (agp_f - abf_f)", cex.main=0.8)
+
+	#images
+	image(xx, xx, matrix(gp1gp2_f_grid[,1],length(xx),length(xx)), col=col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="AGP posterior means surface agp_f", cex.main=0.8)
+
+	image(xx, xx, matrix(bf1bf2_f[[j]][-(1:N1),1],length(xx),length(xx)), col= col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="ABF posterior means surface abf_f", cex.main=0.8)
+
+	brk1 <- seq(-max(abs(bf12_error)),max(abs(bf12_error)), length.out= 30)
+
+	image.plot(xx, xx, bf12_error, col= col3, breaks= brk1, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="posterior residuals surface", cex.main=0.8)
+	points(x1, x2, pch=1, cex=0.6)
+}
+```
+
+### 2D Splines-based model
+
+Stancode and standata as a function of the number of knots.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+kn <- c(4,5,6,7,10)  # number of knots
+
+stancode_sp12 <- list()
+standata_sp12 <- list()
+for(j in 1:length(kn)){  # number of knots
+  
+  # Stancode
+	stancode_sp12[[j]] <- make_stancode(y ~ t2(x1, x2, k= kn[j]), data = data.frame(x1= c(x1,x_grid[,1]), x2= c(x2,x_grid[,2]), y= c(y, y_grid)))
+	
+	# Standata
+	standata_sp12[[j]] <- make_standata(y ~ t2(x1, x2, k= kn[j]), data.frame(x1= c(x1,x_grid[,1]), x2= c(x2,x_grid[,2]), y= c(y, y_grid)))
+
+	standata_sp12[[j]]$N1 <- N1
+	standata_sp12[[j]]$N_grid <- N_grid
+}
+```
+
+Load and store the outcomes of the splines-based model as a function of the number of knots.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Simulated_data_project/function2/aj_sp12.rData")
+
+sp12_f <- list()
+sp12_y <- list()
+sp12_elpd <- list()
+sp12_time <- list()
+for(j in 1:length(kn)){ # number of knots
+	sp12_f[[j]] <- summary(aj_sp12[[j]], pars = c("mu"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	sp12_y[[j]] <- summary(aj_sp12[[j]], pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	sp12_elpd[[j]] <- summary(aj_sp12[[j]], pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	sp12_time[[j]] <- sum(get_elapsed_time(aj_sp12[[j]])[2])/(aj_sp12[[j]]@sim$iter - aj_sp12[[j]]@sim$warmup)
+}
+```
+
+Posterior plots of the Splines-based model versus the True function.
+
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Plots  True function vs SP
+for(j in 1:length(kn)){
+  par(mfcol=c(3,3), mai=c(0.4, 0.5, 0.25, 0.1), omi=c(0,0,0,0.2), oma=c(1, 0, 1.5, 1.5))
+
+	# training
+	plot(f(x1,x2), sp12_f[[j]][1:N1,1], col=4, cex=0.6, xlab="f", ylab="sp_f", mgp= c(1.7, 0.5, 0), main="true function f vs SP posterior means sp_f", cex.main=0.9); abline(a=0, b=1, col="gray")
+	plot(f(x1,x2), f(x1,x2) - sp12_f[[j]][1:N1,1], xlab="f", ylab="f - sp_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (f - sp_f)", cex.main=0.9); abline(h=0, col="gray")
+
+	title(main= paste("True function f vs SP model with knots =",standata_sp12[[j]]$knots_1[1],standata_sp12[[j]]$knots_1[2],standata_sp12[[j]]$knots_1[3]), outer= TRUE)
+
+	# predicting
+	plot(f(x_grid[,1],x_grid[,2]), sp12_f[[j]][(N1+1):N,1], col=4, cex=0.6, xlab="f", ylab="sp_f", mgp= c(1.7, 0.5, 0), main="true function f vs SP posterior means sp_f", cex.main=0.9); abline(a=0, b=1, col="gray")
+	plot(f(x_grid[,1],x_grid[,2]), f(x_grid[,1],x_grid[,2]) - sp12_f[[j]][(N1+1):N,1], xlab="f", ylab="f - sp_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (f - sp_f)", cex.main=0.9); abline(h=0, col="gray")
+	plot(f(x_grid[,1],x_grid[,2]), sp12_elpd[[j]][(N1+1):N,1], col=2, cex=0.8, xlab="f", ylab="ELPD", mgp= c(1.7, 0.5, 0)); abline(h=mean(sp12_elpd[[j]][(N1+1):N,1]), col="red", lty=2)
+
+	# histogram residuals
+	sp12_error <- matrix(f(x_grid[,1],x_grid[,2]),length(xx),length(xx)) - sp12_f[[j]][(N1+1):N,1]
+
+	hist(sp12_error, mgp= c(1.7, 0.5, 0), xlab="f - sp_f", ylab="", main="posterior residuals (f - sp_f)", cex.main=0.9)
+
+	# images
+	image(xx, xx, matrix(f(x_grid[,1],x_grid[,2]),length(xx),length(xx)), col=col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="True function surface f", cex.main=0.9)
+
+	image(xx, xx, matrix(sp12_f[[j]][(N1+1):N,1],length(xx),length(xx)), col= col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="SP posterior means surface sp_f", cex.main=0.9)
+
+	brk1 <- seq(-max(abs(sp12_error)),max(abs(sp12_error)), length.out= 30)
+
+	image.plot(xx, xx, sp12_error, col= col3, breaks= brk1, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), legend.width=1.2, main="posterior residuals surface", cex.main=0.9)
+	points(x1, x2, pch=1, cex=0.5)
+}
+```
+
+Posterior plots of the Splines-based model versus the Gaussian process model.
+
+```{r fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Plots GP vs SP
+for(j in 1:length(kn)){
+	par(mfcol=c(3,3), mai=c(0.4, 0.5, 0.25, 0.1), omi=c(0,0,0,0.2), oma=c(1, 0, 1.5, 1.5))
+
+	# training
+	plot(gp12_f[,1], sp12_f[[j]][1:N1,1], col=4, cex=0.6, xlab="gp_f", ylab="sp_f", mgp= c(1.7, 0.5, 0), main="GP posterior means gp_f vs SP posterior means sp_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+	plot(gp12_f[,1], gp12_f[,1] - sp12_f[[j]][1:N1,1], xlab="gp_f", ylab="gp_f - sp_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (gp_f - sp_f)", cex.main=0.8); abline(h=0, col="gray")
+
+	title(main= paste("GP vs SP model with knots =",standata_sp12[[j]]$knots_1[1],standata_sp12[[j]]$knots_1[2],standata_sp12[[j]]$knots_1[3]), outer= TRUE)
+
+	# predicting
+	plot(gp12_f_grid[,1], sp12_f[[j]][(N1+1):N,1], col=4, cex=0.6, xlab="gp_f", ylab="sp_f", mgp= c(1.7, 0.5, 0), main="GP posterior means gp_f vs SP posterior means sp_f", cex.main=0.8); abline(a=0, b=1, col="gray")
+	plot(gp12_f_grid[,1], gp12_f_grid[,1] - sp12_f[[j]][(N1+1):N,1], xlab="gp_f", ylab="gp_f - sp_f", col=4, cex=0.6, mgp= c(1.7, 0.5, 0), main="posterior residuals (gp_f - sp_f)", cex.main=0.8); abline(h=0, col="gray")
+	plot(gp12_f_grid[,1], sp12_elpd[[j]][(N1+1):N,1], col=2, cex=0.8, xlab="gp_f", ylab="ELPD", mgp= c(1.7, 0.5, 0)); abline(h=mean(sp12_elpd[[j]][(N1+1):N,1]), col="red", lty=2)
+
+	# histogram residuals
+	sp12_error <- matrix(gp12_f_grid[,1],table(x_grid[,2])[1],table(x_grid[,2])[1]) - sp12_f[[j]][(N1+1):N,1]
+
+	hist(sp12_error, mgp= c(1.7, 0.5, 0), xlab="gp_f - sp_f", ylab="", main="posterior residuals (gp_f - sp_f)", cex.main=0.8)
+
+	# images
+	image(xx, xx, matrix(gp12_f_grid[,1],length(xx),length(xx)), col=col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="GP posterior means surface gp_f", cex.main=0.8)
+
+	image(xx, xx, matrix(sp12_f[[j]][(N1+1):N,1],length(xx),length(xx)), col= col1, breaks= brk, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), main="SP posterior means surface sp_f", cex.main=0.8)
+
+	brk1 <- seq(-max(abs(sp12_error)),max(abs(sp12_error)), length.out= 30)
+
+	image.plot(xx, xx, sp12_error, col= col3, breaks= brk1, xlab="x1", ylab="x2", mgp= c(1.7, 0.5, 0), legend.width=1.2, main="posterior residuals surface", cex.main=0.8)
+	points(x1, x2, pch=1, cex=0.5)
+}
+```
+
+
+### Computation time
+
+```{r echo=TRUE, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+plot(M[1:8], c(unlist(bf1bf2_time)[1:8],NA,NA,NA)[1:8], type="b", col=5, ylim=c(0,1.5), xlab="M ; Knots", ylab="seconds per iteration")
+lines(M[1:8], c(unlist(bf12_time)[1:7],NA), type="b", col=4)
+lines(c(4,6,8,10,16), unlist(sp12_time)[1:5], type="b", col=6)
+abline(h= c(gp1gp2_time+0.01, gp12_time), col=3:2)
+legend("topright", legend=c("GP  2D","AGP  2D","BF  2D","ABF  2D","SP  2D"), col=2:6, lty=1, cex=0.7)
+```
+
+
+### Application to the Diabetes dataset
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+# reference Notebook
+# https://rawgit.com/avehtari/modelselection_tutorial/master/diabetes.html
+
+diabetes <- read.csv("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Diabetes/diabetes.csv", header = TRUE)
+summary(diabetes)
+```
+
+```{r fig.height=3, fig.width=4, message=FALSE, warning=FALSE, paged.print=FALSE}
+# removing those observation rows with 0 in any of the variables
+for (i in 2:6) {
+      diabetes <- diabetes[-which(diabetes[, i] == 0), ]
+}
+# scale the covariates for easier comparison of coefficient posteriors
+for (i in 1:8) {
+      diabetes[i] <- as.vector(scale(diabetes[i]))
+}
+
+# modify the data column names slightly for easier typing
+names(diabetes)[7] <- "dpf"
+names(diabetes) <- tolower(names(diabetes))
+
+# bi-plots
+p <- ggplot(diabetes, aes(age, glucose))
+p + geom_point(aes(colour = outcome), size = 2)
+
+p <- ggplot(diabetes, aes(pregnancies, glucose))
+p + geom_point(aes(colour = outcome), size = 2)
+```
+
+#### Preparing data for 2-Dimensions
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+### data 2D
+set.seed(115)
+
+# indices of test data
+ind2 <- sample(1:dim(diabetes)[1], 15)
+N2 <- length(ind2)
+
+# indices of training data
+ind1 <- setdiff(1:dim(diabetes)[1], ind2)
+N1 <- length(ind1)
+
+# grid of predicting data
+pred <- pred_grid(coords= c(min(diabetes$pregnancies),max(diabetes$pregnancies)+0.5), y.coords = c(min(diabetes$glucose),max(diabetes$glucose)+0.5), by= 0.5)
+
+# total, training, test and predicting input variables
+x1 <- c(diabetes$pregnancies, pred[,1])
+x2 <- c(diabetes$glucose, pred[,2])
+
+# response variable
+y <- c(diabetes$outcome, rep(0,dim(pred)[1]))
+
+# indices predicting grid
+ind_grid <-  setdiff(1:length(x1), 1:(N1+N2))
+N_grid <- length(ind_grid)
+
+length(x1)==N1+N2+N_grid
+```
+
+### 2D Gaussian process model
+
+Standata y stancode.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+# Standata
+standata_gp12 <- make_standata(y ~ gp(x1,x2, scale= FALSE) - 1 , data = data.frame(x1, x2, y), family= binomial(link = "logit"))
+
+# Stancode
+# stancode <- make_stancode(y ~ gp(x1,x2, scale= FALSE) - 1 , data = data.frame(x1, x2, y), family= binomial(link = "logit")) #, save_model= "C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/stancode_gp12")
+
+standata_gp12$N1 <- N1
+standata_gp12$N2 <- N2
+standata_gp12$ind1 <- ind1
+standata_gp12$ind2 <- ind2
+```
+
+Load and store the outcomes of the GP model.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/aj_gp12.rData")
+
+gp12_f <- summary(aj_gp12, pars = c("mu"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_y <- summary(aj_gp12, pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_finv <- summary(aj_gp12, pars = c("f_invlogit"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_elpd <- summary(aj_gp12, pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp12_time <- sum(get_elapsed_time(aj_gp12)[2])/(aj_gp12@sim$iter - aj_gp12@sim$warmup)
+```
+
+Confusion matrix on training data.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+print(table(as.factor(as.numeric(gp12_finv[ind1,1]>0.5)), y[ind1]))
+```
+
+Confusion matrix on test data.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+print(table(as.factor(as.numeric(gp12_finv[ind2,1]>0.5)), y[ind2]))
+```
+
+```{r echo=TRUE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+par(mfrow=c(2,2))
+
+hist(as.numeric(gp12_finv[ind1,1]>0.5), main="GP posterior means", xlab="gp_f", cex.main=0.7)
+hist(y[ind1], main="observed data", xlab="y", cex.main=0.7)
+
+plot(gp12_finv[ind2,1], gp12_elpd[,1], col=4, cex=0.6, xlab="gp_f", ylab="ELPD"); abline(a=0, b=1, col="gray")
+
+n_x <- length(unique(pred[,1]))
+n_y <- length(unique(pred[,2]))
+z <- matrix(as.vector(gp12_finv[ind_grid,1]), n_x, n_y)
+filled.contour(x = unique(pred[,1]), y = unique(pred[,2]), z= z, asp= 1, zlim= range(z, finite= TRUE), levels= pretty(range(z, finite = TRUE), n = 10), col= cm.colors(length(pretty(range(z, finite = TRUE), n = 10)) - 1, alpha=0.5), xlab="x1",
+plot.axes = {axis(1, round(pred[,1],2)); axis(2, round(pred[,2],2)); points(x=diabetes$pregnancies, y=diabetes$glucose, pch=16, cex=0.7, col=cm.colors(2)[cut(y, breaks=2)])},
+plot.title=title(main= "GP posterior mean", xlab="x1", ylab="x2")
+)
+```
+
+### 2D Basis function model
+
+Preparing data for 2D Basis function approach.
+
+```{r}
+D <- 2  # number of dimensions
+M <- c(2,4,6,10,20,30,40,60)  # number of basis functions
+
+indices <- list()
+for(j in 1:length(M)){
+	indices[[j]] <- matrix(NA, M[j]^D, D)
+	mm=0;
+	for (m1 in 1:M[j]){
+		for (m2 in 1:M[j]){
+			# for (m3 in 1:M[j]){
+				mm = mm+1
+				indices[[j]][mm,] = c(m1, m2) #, m3)
+			# }
+		}
+	}
+}
+
+# Standata
+standata_bf12 <- list()
+for(j in 1:length(M)){  # number of basis functions
+  standata_bf12[[j]] <- standata_gp12
+	standata_bf12[[j]]$D <- 2
+	standata_bf12[[j]]$M <- M[j]
+	standata_bf12[[j]]$M_nD <- M[j]^D
+	standata_bf12[[j]]$indices <- indices[[j]]
+	standata_bf12[[j]]$L <- c(5/2*max(x1),5/2*max(x2))
+}
+```
+
+Stancode.
+
+(The code of the D-dimensional Basis function aproximation model is missing)
+
+Load and store the outcomes of the different Basis function models as function of the number of basis functions.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/aj_bf12.rData")
+
+bf12_f <- list()
+bf12_finv <- list()
+bf12_y <- list()
+bf12_elpd <- list()
+bf12_time <- list()
+for(j in 1:length(aj_bf12)){
+	bf12_f[[j]] <- summary(aj_bf12[[j]], pars = c("f"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf12_finv[[j]] <- summary(aj_bf12[[j]], pars = c("f_invlogit"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf12_y[[j]] <- summary(aj_bf12[[j]], pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf12_elpd[[j]] <- summary(aj_bf12[[j]], pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf12_time[[j]] <- sum(get_elapsed_time(aj_bf12[[j]])[2])/(aj_bf12[[j]]@sim$iter - aj_bf12[[j]]@sim$warmup)
+}
+```
+
+```{r echo=TRUE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Plots
+col3 <- c(colorRampPalette(c("blue", "white"), bias=10)(10), colorRampPalette(c("white", "red"), bias=10)(10)[2:10])
+
+for(j in 1:length(aj_bf12)){
+	par(mfrow=c(2,2), oma=c(1, 0, 1.5, 1.5))
+
+  # scatter  plots of training data
+	plot(gp12_finv[ind1,1], bf12_finv[[j]][ind1,1], col=4, cex=0.6, xlab="gp_f", ylab="bf_f", main="GP posterior means gp_f vs BF posterior means bf_f", cex.main=0.7); abline(a=0, b=1, col="gray")
+
+	plot(gp12_finv[ind1,1], gp12_finv[ind1,1] - bf12_finv[[j]][ind1,1], col=4, cex=0.6, xlab="gp_f", ylab="gp_f - bf_f", main="posterior residuals (gp_f - bf_f)", cex.main=0.7); abline(h=0, col="gray")
+
+	# histograms
+	hist(as.numeric(bf12_finv[[j]][ind1,1]>0.5), main="BF posterior means", xlab="bf_f", cex.main=0.7)
+	hist(y[ind1], main="observed data", xlab="y", cex.main=0.7)
+
+	title(main= paste("GP vs BF model with M =",M[j]), outer= TRUE)
+
+	# Confussion matrices
+	# print(paste("Confussion matrix of BF model with M =",M[j]))
+	# print("training data")
+	# print(table(as.factor(as.numeric(bf12_finv[[j]][ind1,1]>0.5)), y[ind1]))
+	# print("test data")
+	# print(table(as.factor(as.numeric(bf12_finv[[j]][ind2,1]>0.5)), y[ind2]))
+
+	# Posterior means
+	n_x <- length(unique(pred[,1]))
+	n_y <- length(unique(pred[,2]))
+	z <- matrix(as.vector(bf12_finv[[j]][ind_grid,1]), n_x, n_y)
+	filled.contour(x = unique(pred[,1]), y = unique(pred[,2]), z= z, asp= 1, zlim= range(z, finite= TRUE), levels= pretty(range(z, finite = TRUE), n = 10), col= cm.colors(length(pretty(range(z, finite = TRUE), n = 10)) - 1, alpha=0.5), plot.axes = {axis(1, round(pred[,1],2))
+	axis(2, round(pred[,2],2))
+	points(x=diabetes$pregnancies, y=diabetes$glucose, pch=16, cex=0.7, col=cm.colors(2)[cut(y, breaks=2)] )},	plot.title=title(main = paste("bf(x1;x2;M=",M[[j]],sep="",")")) )
+
+	# GP vs BF posterior means
+	n_x <- length(unique(pred[,1]))
+	n_y <- length(unique(pred[,2]))
+	z <- matrix(as.vector(gp12_finv[ind_grid,1]) - as.vector(bf12_finv[[j]][ind_grid,1]), n_x, n_y)
+	filled.contour(x = unique(pred[,1]), y = unique(pred[,2]), z= z, asp= 1, levels= seq(-max(abs(z)),max(abs(z)), length.out= 20), col= col3, plot.axes = {axis(1, round(pred[,1],2))
+	axis(2, round(pred[,2],2))},
+	plot.title=title(main= paste("gp(x1,x2) - bf(x1;x2;M=",M[[j]],sep="",")")) )
+}
+```
+
+## 2D Splines-based model
+
+Standata and stancode as a function of the number of knots.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+kn <- c(2,3,4,5,8)  # number of knots
+
+stancode <- list()
+standata_sp12 <- list()
+for(j in 1:length(kn)){
+
+  # Stancode
+	stancode[[j]] <- make_stancode(y | trials(n) ~ t2(x1, x2, k= 2 + kn[j]), data = data.frame(x1= x1, x2= x2, y= y, n= rep(1,N1+N2+N_grid)), family = binomial("logit")) #, save_model= "C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/stancode_gp12")
+
+	# Standata
+	standata_sp12[[j]] <- make_standata(y | trials(n) ~ t2(x1, x2, k= 2 + kn[j]), data = data.frame(x1= x1, x2= x2, y= y, n= rep(1,N1+N2+N_grid)), family= binomial("logit"))
+
+	standata_sp12[[j]]$N1 <- N1
+	standata_sp12[[j]]$N2 <- N2
+	standata_sp12[[j]]$ind1 <- ind1
+	standata_sp12[[j]]$ind2 <- ind2
+}
+
+N <- standata_sp12[[1]]$N
+```
+
+Load and store de outcomes of the different Splines models as function of the number of knots.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/aj_sp12.rData")
+
+sp12_f <- list()
+sp12_finv <- list()
+sp12_y <- list()
+sp12_elpd <- list()
+sp12_time <- list()
+for(j in 1:length(kn)){ # number of knots
+	sp12_f[[j]] <- summary(aj_sp12[[j]], pars = c("mu"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	sp12_finv[[j]] <- summary(aj_sp12[[j]], pars = c("f_invlogit"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	sp12_y[[j]] <- summary(aj_sp12[[j]], pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	sp12_elpd[[j]] <- summary(aj_sp12[[j]], pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	sp12_time[[j]] <- sum(get_elapsed_time(aj_sp12[[j]])[2])/(aj_sp12[[j]]@sim$iter - aj_sp12[[j]]@sim$warmup)
+}
+```
+
+```{r fig.height=6, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Plots
+col3 <- c(colorRampPalette(c("blue", "white"), bias=10)(10), colorRampPalette(c("white", "red"), bias=10)(10)[2:10])
+
+for(j in 1:length(kn)){  # number of knots
+	par(mfrow=c(2,2), oma=c(1, 0, 1.5, 1.5))
+
+	plot(gp12_finv[ind1,1], sp12_finv[[j]][ind1,1], col=4, cex=0.6, xlab="gp_f", ylab="sp_f", main="GP posterior means gp_f vs SP posterior means sp_f", cex.main= 0.7); abline(a=0, b=1, col="gray")
+
+	plot(gp12_finv[ind1,1], gp12_finv[ind1,1] - sp12_finv[[j]][ind1,1], col=4, cex=0.6, xlab="gp_f", ylab="gp_f - sp_f", main="posterior residuals (gp_f - sp_f)", cex.main= 0.7); abline(h=0, col="gray")
+
+	hist(as.numeric(sp12_finv[[j]][ind1,1]>0.5), main="SP posterior means", xlab="sp_f", cex.main=0.7)
+	hist(y[ind1], main="observed data", xlab="y", cex.main=0.7)
+	
+	title(main= paste("GP vs SP model with knots =",standata_sp12[[j]]$knots_1[1],standata_sp12[[j]]$knots_1[2],standata_sp12[[j]]$knots_1[3]), outer= TRUE)
+
+	# print(paste("Confussion matrix of the Splines model with Knots =",kn[j]))
+	# print("training data")
+	# print(table(as.factor(as.numeric(sp12_y[[j]][ind1,1]>0.5)), y[ind1]))
+	# print("test data")
+	# print(table(as.factor(as.numeric(sp12_y[[j]][ind2,1]>0.5)), y[ind2]))
+
+	n_x <- length(unique(pred[,1]))
+	n_y <- length(unique(pred[,2]))
+	z <- matrix(as.vector(sp12_finv[[j]][ind_grid,1]), n_x, n_y)
+	filled.contour(x = unique(pred[,1]), y = unique(pred[,2]), z= z, asp= 1, zlim= range(z, finite= TRUE), levels= pretty(range(z, finite = TRUE), n = 10), col= cm.colors(length(pretty(range(z, finite = TRUE), n = 10)) - 1, alpha=0.5), plot.axes = {axis(1, round(pred[,1],2))
+	axis(2, round(pred[,2],2))
+	points(x=diabetes$pregnancies, y=diabetes$glucose, pch=16, cex=0.7, col=cm.colors(2)[cut(y, breaks=2)] )},	plot.title=title(main = paste("sp(x1;x2;Knots =",standata_sp12[[j]]$knots_1[1],standata_sp12[[j]]$knots_1[2],standata_sp12[[j]]$knots_1[3],")")) )
+
+	n_x <- length(unique(pred[,1]))
+	n_y <- length(unique(pred[,2]))
+	z <- matrix(as.vector(gp12_finv[ind_grid,1]) - as.vector(sp12_finv[[j]][ind_grid,1]), n_x, n_y)
+	filled.contour(x = unique(pred[,1]), y = unique(pred[,2]), z= z, asp= 1, levels= seq(-max(abs(z)),max(abs(z)), length.out= 20), col= col3, plot.axes = {axis(1, round(pred[,1],2))
+	axis(2, round(pred[,2],2))},
+	plot.title=title(main= paste("gp(x1,x2) - sp(x1;x2;Knots =",standata_sp12[[j]]$knots_1[1],standata_sp12[[j]]$knots_1[2],standata_sp12[[j]]$knots_1[3],")")) )
+}
+```
+
+### Computation time
+
+```{r echo=TRUE, fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+plot(M[1:8], c(unlist(bf12_time)[1:5],NA,NA,NA)[1:8], type="b", col=4, ylim=c(0,gp12_time+1), xlab="M ; Knots", ylab="seconds per iteration")
+lines(kn[1:5], unlist(sp12_time)[1:5], type="b", col=6)
+abline(h= gp12_time, col=2)
+legend("bottomright", legend=c("GP  2D","BF  2D","SP  2D"), col=c(2,4,6), lty=1, cex=0.7)
+```
+
+#### Preparing data for 3-Dimensions
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+### data 3D
+set.seed(115)
+ind2 <- sample(1:dim(diabetes)[1], 15)
+N2 <- length(ind2)
+
+ind1 <- setdiff(1:dim(diabetes)[1], ind2)
+N1 <- length(ind1)
+
+x1 <- diabetes$pregnancies
+x2 <- diabetes$glucose
+x3 <- diabetes$age
+y <- diabetes$outcome
+
+length(x1)==N1+N2
+```
+
+
+### 3D Gaussian process model
+
+Standata y stancode.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+# Standata
+standata_gp123 <- make_standata(y ~ gp(x1,x2,x3, scale= FALSE) - 1 , data = data.frame(x1, x2, x3, y), family= binomial(link = "logit"))
+
+# Stan code
+# stancode <- make_stancode(y ~ gp(x1,x2,x3, scale= FALSE) - 1 , data = data.frame(x1, x2, x3, y), family= binomial(link = "logit")) #, save_model= "C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/stancode_gp123")
+
+standata_gp123$N1 <- N1
+standata_gp123$N2 <- N2
+standata_gp123$ind1 <- ind1
+standata_gp123$ind2 <- ind2
+```
+
+Load and store the outcomes of the GP model.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/aj_gp123.rData")
+
+gp123_f <- summary(aj_gp123, pars = c("mu"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp123_y <- summary(aj_gp123, pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp123_finv <- summary(aj_gp123, pars = c("f_invlogit"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp123_elpd <- summary(aj_gp123, pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+gp123_time <- sum(get_elapsed_time(aj_gp123)[2])/(aj_gp123@sim$iter - aj_gp123@sim$warmup)
+```
+
+Confussion matrix of the GP model for training data.
+
+```{r echo=TRUE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+table(as.factor(as.numeric(gp123_y[,1]>0.5)), y)
+```
+
+Confussion matrix of the GP model for test data.
+
+```{r echo=TRUE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+table(as.factor(as.numeric(gp123_y[ind2,1]>0.5)), y[ind2])
+```
+
+```{r echo=TRUE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Plots
+par(mfrow=c(2,2))
+
+hist(as.numeric(gp123_y[,1]>0.5), main="GP posterior means", xlab="gp_y", cex.main=0.7)
+hist(y, main="observed data", xlab="y", cex.main=0.7)
+
+plot(gp123_y[ind2,1], gp123_elpd[,1], col=4, cex=0.6, xlab="gp_y", ylab="ELPD"); abline(a=0, b=1, col="gray")
+```
+
+### 3D Basis function model
+
+Standata.
+
+```{r}
+D <- 3  # number of dimensions
+M <- c(2,4,6,10,20,30,40,60)  # number of basis functions
+
+indices <- list()
+for(j in 1:length(M)){
+	indices[[j]] <- matrix(NA, M[j]^D, D)
+	mm=0;
+	for (m1 in 1:M[j]){
+		for (m2 in 1:M[j]){
+			for (m3 in 1:M[j]){
+				mm = mm+1
+				indices[[j]][mm,] = c(m1, m2, m3)
+			}
+		}
+	}
+}
+
+standata_bf123 <- list()
+for(j in 1:length(M)){
+  standata_bf123[[j]] <- standata_gp123
+	standata_bf123[[j]]$D <- D
+	standata_bf123[[j]]$M <- M[j]
+	standata_bf123[[j]]$M_nD <- M[j]^D
+	standata_bf123[[j]]$indices <- indices[[j]]
+	standata_bf123[[j]]$L <- c(5/2*max(x1),5/2*max(x2),5/2*max(x3))
+}
+```
+
+Stancode.
+
+(The code of the D-dimensional Basis fucntion aproximation model is missing2)
+
+Load and store the outcomes of the Splines-based model model as function of the number of knots.
+
+```{r}
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-2D/Diabetes_project/aj_bf123.rData")
+
+bf123_f <- list()
+bf123_finv <- list()
+bf123_y <- list()
+bf123_elpd <- list()
+bf123_time <- list()
+for(j in 1:length(aj_bf123)){
+	bf123_f[[j]] <- summary(aj_bf123[[j]], pars = c("f"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf123_finv[[j]] <- summary(aj_bf123[[j]], pars = c("f_invlogit"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf123_y[[j]] <- summary(aj_bf123[[j]], pars = c("y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf123_elpd[[j]] <- summary(aj_bf123[[j]], pars = c("log_y_predict"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary
+	bf123_time[[j]] <- sum(get_elapsed_time(aj_bf123[[j]])[2])/(aj_bf123[[j]]@sim$iter - aj_bf123[[j]]@sim$warmup)
+}
+```
+
+```{r echo=TRUE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Plots
+for(j in 1:length(aj_bf123)){
+	par(mfrow=c(2,2), oma=c(1, 0, 1.5, 1.5))
+
+	plot(gp123_finv[,1], bf123_finv[[j]][,1], col=4, cex=0.6, xlab="gp_f", ylab="bf_f", main="GP posterior means gp_f vs BF posterior means bf_f", cex.main=0.7); abline(a=0, b=1, col="gray")
+
+	plot(gp123_finv[,1], gp123_finv[,1] - bf123_finv[[j]][,1], col=4, cex=0.6, xlab="gp_f", ylab="gp_f - bf_f", main="posterior residuals (gp_f - bf_f)", cex.main=0.7); abline(h=0, col="gray")
+
+	hist(as.numeric(bf123_y[[j]][,1]>0.5), main="BF posterior means", xlab="bf_y", cex.main=0.7)
+	hist(y, main="observed data", xlab="y", cex.main=0.7)
+	
+	title(main= paste("GP vs BF model with M =",M[j]), outer= TRUE)
+
+	print(paste("Confussion matrix of the Basis function model with M =",M[j]))
+	print("training data")
+	print(table(as.factor(as.numeric(bf123_y[[j]][,1]>0.5)), y))
+  print("test data")
+	print(table(as.factor(as.numeric(bf123_y[[j]][ind2,1]>0.5)), y[ind2]))
+}
+```
+
+### Computational time
+
+```{r fig.height=4, fig.width=6, message=FALSE, warning=FALSE, paged.print=FALSE}
+plot(M[1:6], c(unlist(bf123_time)[1:5],NA,NA,NA,NA)[1:6], type="b", col=4, ylim=c(0,gp123_time+0.5), ylab="seconds per iteration", xlab="M")
+abline(h= c(gp123_time+0.01), col=5)
+legend("topright", legend=c("GP  3D","BF  3D"), col=5:4, lty=1, cex=0.7)
+```
+
