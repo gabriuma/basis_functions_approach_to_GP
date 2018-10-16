@@ -28,7 +28,7 @@ data {
 	vector[N] x;				#matrix of total (training and test) observations
 	vector[N] y;
 	# int n[N];
-	# int y_int[N];
+	# int y[N];
 }
 
 transformed data {
@@ -80,7 +80,7 @@ model{
 	c1 ~ normal(0,1);
 	
 	y[ind1] ~ normal(f[ind1], sigma); 
-	# y_int[ind1] ~ binomial_logit(n[ind1], f[ind1]); 
+	# y[ind1] ~ binomial_logit(n[ind1], f[ind1]); 
 }
 
 generated quantities{
@@ -92,7 +92,7 @@ generated quantities{
 		# y_predict[i] = binomial_rng(n[i], inv_logit(f[i]));
 
 		log_y_predict[i] = normal_lpdf(y[i] | f[i], sigma);
-		# log_y_predict[i] = binomial_logit_lpmf(y_int[i] | n[i], f[i]);
+		# log_y_predict[i] = binomial_logit_lpmf(y[i] | n[i], f[i]);
 	}
 }
 
