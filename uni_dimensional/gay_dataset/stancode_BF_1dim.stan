@@ -40,7 +40,6 @@ transformed data {
 parameters {
 	vector[M] beta;
 	real<lower=0> rho;
-	real<lower=0> sigma;
 	real<lower=0> alpha;
 	real c0;
 	real c1;
@@ -62,8 +61,8 @@ transformed parameters{
 
 model{
 	beta ~ normal(0,1);
-	rho ~ normal(1,2);
-	alpha ~ normal(0,2);
+	rho ~ normal(0,2);
+	alpha ~ normal(0,5);
 	c0 ~ normal(0,1);
 	c1 ~ normal(0,1);
 	 

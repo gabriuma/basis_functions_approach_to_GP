@@ -63,7 +63,7 @@ transformed parameters{
 
 model{
 	eta ~ normal(0, 1);
-	rho ~ normal(2, 3);
+	rho ~ normal(0, 5);
 	sigma ~ normal(0, 1);
 	alpha ~ normal(0, 3);
 	
