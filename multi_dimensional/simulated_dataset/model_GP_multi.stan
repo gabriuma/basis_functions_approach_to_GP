@@ -110,10 +110,10 @@ transformed parameters{
 	vector[N1] f;
 	
 	#GP 2D
-	# f= gp12(x[,1], x[,2], alpha[1], rho[1], rho[2], eta[,1]);
+	f= gp12(x[,1], x[,2], alpha[1], rho[1], rho[2], eta[,1]);
 	
 	#Additive-2D GPs
-	f= gp1gp2(x[,1], x[,2], alpha[1], alpha[2], rho[1], rho[2], eta[,1]);
+	# f= gp1gp2(x[,1], x[,2], alpha[1], alpha[2], rho[1], rho[2], eta[,1]);
 }
 
 model{
@@ -137,10 +137,10 @@ generated quantities{
 	vector[N1] log_y_predict;	
 
 	#GP 2D (Analytical prediction)
-	# f_grid = gp12_pred_rng(x_grid[,1], x_grid[,2], y, x[,1], x[,2], alpha[1], rho[1], rho[2], sigma, 1e-10);
+	f_grid = gp12_pred_rng(x_grid[,1], x_grid[,2], y, x[,1], x[,2], alpha[1], rho[1], rho[2], sigma, 1e-10);
 	
 	#Additive-2D GPs (Analytical prediction)
-	f_grid = gp1gp2_pred_rng(x_grid[,1], x_grid[,2], y, x[,1], x[,2], alpha[1], alpha[2], rho[1], rho[2], sigma, 1e-10);
+	# f_grid = gp1gp2_pred_rng(x_grid[,1], x_grid[,2], y, x[,1], x[,2], alpha[1], alpha[2], rho[1], rho[2], sigma, 1e-10);
 	
 	
 	for (i in 1:Npred){
