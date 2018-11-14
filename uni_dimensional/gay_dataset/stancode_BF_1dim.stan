@@ -61,7 +61,7 @@ transformed parameters{
 
 model{
 	beta ~ normal(0,1);
-	rho ~ normal(0,2);
+	rho ~ normal(0,3);
 	alpha ~ normal(0,5);
 	c0 ~ normal(0,1);
 	c1 ~ normal(0,1);

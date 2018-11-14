@@ -66,7 +66,7 @@ data {
 	int<lower=1> D;				# nº dimensions
 	real L[D];					# boundary condition' factor
 	int<lower=1> M;				# nº basis functions
-	int<lower=1> M_nD;			# nº basis functions * nº dimensions (M*D)
+	int<lower=1> M_nD;			# nº basis functions ^ nº dimensions (M^D)
 	int<lower=1> N1;			# nº training observations
 	int Npred;					# nº predicting/test grid points
 	matrix[N1+Npred,D] x;		# matrix of total (training and predicting/test) inputs
