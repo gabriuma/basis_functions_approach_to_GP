@@ -36,7 +36,7 @@ stanout <- stan(file = "C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/B
 
 
 # Load the output
-load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-1D/Birthday_project/output.rData")
+load("C:/GABRIEL_20180206/GIFLE/Proyecto-GAMs/Basisfunctions/BF-1D/Birthday_project/stanout.rData")
 ls()
 
 
