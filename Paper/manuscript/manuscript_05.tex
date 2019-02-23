@@ -157,15 +157,19 @@ k(x,x') \approx \sum_{j}S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
 \noindent where $S_{\theta}$ is the spectral density of the stationary covariance function $k$ and $\theta$ the set of hyperparameters of $k$; a stationary covariance function can be equivalently represented in terms of the spectral density \citep{rasmussen2006gaussian}, then the spectral density is a function of the hyperparameters $\theta$. $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the set of eigenvalues and eigenvectors, respectively, of the Laplacian operator. Namely, they satisfy the following eigenvalue problem in the compact subset $x \in \{-L,L\}$ and with the Dirichlet boundary condition (another boundary condition could be used as well):
 %
 \begin{eqnarray}\label{eigenproblem}
--\nabla^2 \phi_j(x)&=&\lambda \phi_j(x), \hspace{1cm}  x\in \{-L,L\} \nonumber \\ 
+\begin{split}
+-\nabla^2 \phi_j(x)&=&\lambda \phi_j(x), \hspace{1cm}  x\in \{-L,L\} \\ 
 \phi_j(x)&=&0, \hspace{2cm} x\notin \{-L,L\}.
+\end{split}
 \end{eqnarray} 
 
 \noindent The eigenvalues $\lambda_j>0$ are real and positive, because the Laplacian is a positive definite Hermitian operator, and the eigenfunctions $\phi_j$ for the eigenvalues problem in eq. (\ref{eigenproblem}) are sinusoidal functions,
 %
-\begin{eqnarray}
-\lambda_j&=&\left(\frac{j\pi}{2L}\right)^2, \\
-\phi_j(x)&=&\sqrt{\frac{1}{L}} \text{sin}\left(\sqrt{\lambda_j}(x+L)\right).
+\begin{eqnarray}\label{bf&lambda}
+\begin{split}
+\lambda_j&=\left(\frac{j\pi}{2L}\right)^2, \\
+\phi_j(x)&=\sqrt{\frac{1}{L}} \text{sin}\left(\sqrt{\lambda_j}(x+L)\right).
+\end{split}
 \end{eqnarray}
 
 If we truncate the sum in (\ref{approxcov}) up to $J$ ($j=1,\cdots,J$), the approximate covariance function can be represented as
@@ -220,18 +224,20 @@ The computational cost of this approximate model scales $O(n\cdot J+J)$, where $
 
 \subsection{Generalization to multidimensional input space}
 
-We are going to generalize the results from the previous section to a multidimensional input space with compact regular domain $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions. We assume the same number $J$ of basis functions terms in the series expansion for every input dimension, however it is straight forward to generalize this to different number of term series $J_d$ for every dimension. 
+We are going to generalize the results from the previous section to a multidimensional input space with compact regular domain $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions.  
 
 \vspace{0.2cm}
-In a $D$-dimensional input space the total number of eigenfunctions and eigenvalues in the approximation corresponds to the total number of $D$-tuples over $J$, which is $J^D$. Let $\mathbb{S}\in {\rm I\!R}^{J^D \times D}$ be the set of $D$-tuples elements. Each new eigenfunction $\phi^{\ast}_j$ correspond to the product of the univariate eigenfunctions whose indices corresponds to the the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. And each new eigenvalue $\lambda^{\ast}_j$ is a $D$-vector whose elements are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. Let $j=\{1,\cdots,J^D\}$,
+In a $D$-dimensional input space the total number of eigenfunctions and eigenvalues in the approximation corresponds to the total number of $D$-tuples over $J$, which is $\prod_{d=1}^{D} J_d$, where $J_d$ is the number of basis function for the dimension $d$. Let $\mathbb{S}\in {\rm I\!R}^{\prod_{d=1}^{D} J_d \times D}$ be the set of $D$-tuples elements. Each new eigenfunction $\phi^{\ast}_j$ correspond to the product of the univariate eigenfunctions whose indices corresponds to the the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. And each new eigenvalue $\lambda^{\ast}_j$ is a $D$-vector whose elements are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. Let $j=\{1,\cdots,J^D\}$,
 %
-\begin{eqnarray}
-\phi^{\ast}_j(\mathbf{x}) &=& \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}}(\mathbf{x}_d) = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(\mathbf{x}_d+L_d)\right)  \nonumber \\
+\begin{eqnarray} \label{bf&lambda_multi}
+\begin{split}
+\phi^{\ast}_j(\mathbf{x}) &=& \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}}(\mathbf{x}_d) = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(\mathbf{x}_d+L_d)\right) \\
 %
-\lambda^{\ast}_j &=& \{\lambda_{\mathbb{S}_{jd}} \}_{d=1}^D =  \{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \}_{d=1}^D  \nonumber
+\lambda^{\ast}_j &=& \{\lambda_{\mathbb{S}_{jd}} \}_{d=1}^D =  \{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \}_{d=1}^D  
+\end{split}
 \end{eqnarray}
 
-As an example we show the matrix $\mathbb{S}$ for a $three$-dimensional input vector $\mathbf{x}=\{\mathbf{x}_1,\mathbf{x}_2,\mathbf{x}_3\}$ ($D=3$) and $J_{1}=2$, $J_{2}=2$ and $J_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimensions, respectively. The number of new multidimensional eigenfunctions $\phi^{\ast}$ and eigenvalues $\lambda^{\ast}$ is $J_{1}\cdot J_{2}\cdot J_{3}=2\cdot 2\cdot 3=12$. The matrix $\mathbb{S}\in {\rm I\!R}^{12 \times 3}$ is
+As an example we show the matrix $\mathbb{S}$ for a $three$-dimensional input vector $\mathbf{x}=\{\mathbf{x}_1,\mathbf{x}_2,\mathbf{x}_3\}$ ($D=3$) and $J_{1}=2$, $J_{2}=2$ and $J_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimension, respectively. The number of new multidimensional eigenfunctions $\phi^{\ast}$ and eigenvalues $\lambda^{\ast}$ is $J_{1}\cdot J_{2}\cdot J_{3}=2\cdot 2\cdot 3=12$. The matrix $\mathbb{S}\in {\rm I\!R}^{12 \times 3}$ is
 %
 \begin{eqnarray}
 \mathbb{S}=
@@ -346,24 +352,19 @@ The approximation of the covariance function is a series expansion of eigenfunct
 k(\tau) \approx \sum_{j}S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0),  \nonumber
 \end{equation} 
 
-\noindent where $j$ is the index for the eigenfunctions and eigenvalues, and $\tau=x-x'$. The eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ are 
-%
-\begin{eqnarray}
-\lambda_j&=&\left(\frac{j\pi}{2L}\right)^2, \nonumber \\
-\phi_j(x)&=&\sqrt{\frac{1}{L}} \text{sin}\left(\sqrt{\lambda_j}(x+L)\right). \nonumber
-\end{eqnarray} 
+\noindent where $j$ is the index for the eigenfunctions and eigenvalues, and $\tau=x-x'$. The eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ are those in equation (\ref{bf&lambda}) in a unidimensional case and those in equation (\ref{bf&lambda_multi}) in a multidimensional case.
 
-The approximation to the covariance function will become exact in the limit when the number of basis functions approach infinity $J=1,\dots,j,\dots,\infty$. The number of basis functions can be truncated that the difference between the covariance function and the approximation be less than a threshold $\epsilon$,
+The approximation to the covariance function will become exact in the limit when the number of basis functions approach infinity $J=1,\dots,j,\dots,\infty$. The number of basis functions can be truncated that the difference between the densities of the exact and approximate covariance functions be less than a threshold $\epsilon$,
 %
 \begin{eqnarray}\label{diff_covs}
 \int k(\tau)d(\tau) - \int \sum_{j}S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0) d(\tau) < \epsilon.
 \end{eqnarray}
 
-The finite number of basis functions in the approximation to satisfy eq. (\ref{diff_covs}) will depend on the smoothness or roughness of the function, that is, on the lengthscale $\ell$. The approximation will also depends on the box size $L$ which will affect the performance specially near the boundaries. 
+The finite number of basis functions in the approximation to satisfy eq. (\ref{diff_covs}) will depend on the smoothness or roughness of the function, that is, on the lengthscale $\ell$ of the GP process. The approximation will also depends on the box size $L$ which will affect the performance specially near the boundaries. 
 
 To illustrate the effects of these two factors, number of basis functions $J$ and box size $L$, on the performance of the approximation, let's consider a simulated dataset of 75 noisy observations from a GP prior with lengthscale $\ell=0.3$ and magnitud $\alpha=1$. The additive noise added to the GP prior simulations is $\sigma=0.2$. A regular GP model and different approximate GP models with different choices for the number of basis function $J$ and box size $L$ are fitted on this dataset. 
 
-For a fixed $L$, let's suppose it is set to a right choice, Figure \ref{image2_J} shows the effect of the number of basis functions in approaching the posterior mean and the covariance function. The number of basis functions affects the non-linearity or roughness (or smoothness) of the posteriors. Fewer basis functions implies smoother covariance functions and consequently smoother posteriors. The more roughness the process is, the more basis functions are needed. 
+For a fixed $L$, let's suppose it is set to a right choice, Figure \ref{fig1_Post_J} shows the effect of the number of basis functions in approaching the posterior mean and the covariance function. The number of basis functions affects the non-linearity or roughness (or smoothness) of the posteriors. Fewer basis functions implies smoother covariance functions and consequently smoother posteriors. The more roughness the process is, the more basis functions are needed. 
 
 \begin{figure}[H]
 \centering
@@ -383,7 +384,7 @@ Similarly, for a fixed number of basis functions $J$, let's suppose it is set to
   \label{fig2_Post_L}
 \end{figure}
 
-Therefore, the approximation to the covariance function depends on the number of basis functions $J$ used in the series expansion and the value for boundary condition or box size $L$. Additionally, there exit a relation among the number of basis functions, the box size and the lengthscale or roughness of the process on the performance of the approximation. Figure \ref{fig3_lscale_vs_J_vs_c_part1} collects how these three factors relate each other in order to achieve a good approximation to the covariance function of the regular GP using eq. (\ref{diff_covs}). On the X-axis of this plot is placed the lengthscale of the process normalized by the half-range of the data. The countour lines gather the box size which is also normalized by the half-range of the data, to which we refer as the boundary factor $c$, where $L=c \cdot \text{range}(x)/2$. And the Y-axis gathers the number of basis functions. Thus, this figure give us the minimum number of basis functions needed to achieve a good approximation in terms of satisfying eq. (\ref{diff_covs}), for a certain GP process with lengthscale $\ell$ and given a fixed boundary factor $c$. Alternatively, this figure could also be read as the maximum boundary factor $c$ that we should use given a number of basis functions, for certain GP process with certain lengthscale. And also this figure could also be read as the maximum roughness in a process that can be fitted properly given a number of basis functions and a box size. Finally, this figure also gives us the minimum value for the boundary factor $c$ which is suitable for certain roughness or number of basis functions. This figure basically collects the behaviour of the approximate GP model in function of the lengthscale, number of basis functions and boundary condition:
+Therefore, the approximation to the covariance function depends on the number of basis functions $J$ used in the series expansion and the value for boundary condition or box size $L$. Additionally, there exit a relation among the number of basis functions, the box size and the lengthscale or roughness of the process on the performance of the approximation. Figure \ref{fig3_lscale_vs_J_vs_c_part1} collects how these three factors relate each other in order to achieve a good approximation to the covariance function of the regular GP using eq. (\ref{diff_covs}). On the X-axis of this plot is placed the lengthscale of the process normalized by the half-range of the data. The countour lines gather the box size which is also normalized by the half-range of the data, to which we refer as the boundary factor $c$, where $L=c \cdot \text{range}(x)/2$. And the Y-axis gathers the number of basis functions. Thus, this figure give us the minimum number of basis functions needed to achieve a good approximation in terms of satisfying eq. (\ref{diff_covs}), for a certain GP process with lengthscale $\ell$ and given a fixed boundary factor $c$. Alternatively, this figure could also be read as the minimum boundary factor $c$ that we should use given a number of basis functions, for certain GP process with certain lengthscale. And also this figure could also be read as the maximum roughness in a process that can be fitted properly given a number of basis functions and a box size. This figure basically collects the behaviour of the approximate GP model in function of the lengthscale, number of basis functions and boundary condition:
 
 $\bullet$ As the lengthscale or smoothness of the process increase, the boundary factor and the number of basis functions needed for the approach decrease.
 
@@ -405,7 +406,7 @@ Figure \ref{fig3_lscale_vs_J_vs_c_part1} is useful for the user to know the suit
   \label{fig3_lscale_vs_J_vs_c_part1}
 \end{figure}
 
-The right-side plots in Figures \ref{fig1_Post_J} and \ref{fig2_Post_L} are computed using the lengthscale and magnitud values of the true GP prior. Now, we focus on the estimated lengthscale and magnitud parameters after fitting the model, either the regular GP model fit and the approximate GP model fit. Figure \ref{fig4_Post_&_Cov_part1} shows the posteriors distributions and the covariance functions of the approximate GP model and the regular GP model, obtained after fitting the data. Figure \ref{fig5_MSE_vs_J} shows the standarized root mean square error both models in function of the number of basis functions and the boundary factor. Figure \ref{fig6_lscale_vs_J} shows the evolution of the GP hyperparameters, lengthscale and magnitud, in function of the number of basis functions and boundary factor. Following Figure \ref{fig5_MSE_vs_J} it can be drawn that the optimal choice in terms of precision and computations would be 15 basis functions and a boundary factor between 1.5 and 2.5. The choice of 10 basis functions and a boundary factor of 1.5 could be accurate enough. This same conclusion can be roughly seen in the right-side plots in Figure \ref{image11_Posteriors_example-I}. This conclusions also agree with Figure \ref{fig3_lscale_vs_J_vs_c_part1} from which we can deduce that for a process with a normalized lengthscale of 0.3, 10 basis functions and a normalized box size (boundary factor) of 1.5 would be enough to get a good approximation following eq. (\ref{diff_covs}). 
+The right-side plots in Figures \ref{fig1_Post_J} and \ref{fig2_Post_L} are computed using the lengthscale and magnitud values of the true GP prior. Now, we focus on the estimated lengthscale and magnitud parameters after fitting the model, either of the regular GP model fit and approximate GP model fit. Figure \ref{fig4_Post_&_Cov_part1} shows the posteriors distributions and the covariance functions of the approximate GP model and the regular GP model, obtained after fitting the data. Figure \ref{fig5_MSE_vs_J} shows the standarized root mean square error of both models in function of the number of basis functions and the boundary factor. Figure \ref{fig6_lscale_vs_J} shows the evolution of the GP hyperparameters, lengthscale and magnitud, in function of the number of basis functions and boundary factor. Following Figure \ref{fig5_MSE_vs_J} it can be drawn that the optimal choice in terms of precision and computations would be 15 basis functions and a boundary factor between 1.5 and 2.5. The choice of 10 basis functions and a boundary factor of 1.5 could be accurate enough. This same conclusion can be roughly seen in the right-side plots in Figure \ref{fig9_Posteriors_exI}. This conclusions also agree with Figure \ref{fig3_lscale_vs_J_vs_c_part1} from which we can deduce that for a process with a normalized lengthscale of 0.3, 10 basis functions and a normalized box size (boundary factor) of 1.5 would be enough to get a good approximation following eq. (\ref{diff_covs}). 
 
 From Figure \ref{fig5_MSE_vs_J} it can also be drawn the behaviour in terms of performance of the approximate GP model in function of the number of basis functions and the boundary factor. Two main behaviours can be deduced from Figure \ref{fig5_MSE_vs_J}, which can also be easily seen from Figure \ref{fig3_lscale_vs_J_vs_c_part1}:
 \\ 
@@ -413,7 +414,7 @@ $\bullet$ as the boundary factor increases, more basis functions are needed,
 \\
 $\bullet$ as fewer basis functions are used, the boundary factor must decrease.  
 
-Figure \ref{fig6_lscale_vs_J} shows the estimated lengthscale and magnitud parameter as function of the number of basis functions and the boundary factor. The same conclusion drawn before can be drawn form this figure where with 15 basis functions and a boundary factor of 1.5 the estimated lengthscale of the approximate GP model approach the estimeted lengthscale of the regular GP model. From this figure it can be drawn that exists a minumum value for the boundary factor under this never a good approach will be achieved. This conclusion also appears in Figure \ref{fig3_lscale_vs_J_vs_c_part1} the contour lines of the boundary factor have an end at certain lengthscales, which means that exist a minimum boundary factor depending on the lengthscale of the process. 
+Figure \ref{fig6_lscale_vs_J} shows the estimated lengthscale and magnitud parameter as function of the number of basis functions and the boundary factor. The same conclusion drawn before can be drawn form this figure where with 15 basis functions and a boundary factor of 1.5 the estimated lengthscale of the approximate GP model approach the estimated lengthscale of the regular GP model. From this figure, it can be drawn that exists a minumum value for the boundary factor under this a good approach will never be achieved. This conclusion also appears in Figure \ref{fig3_lscale_vs_J_vs_c_part1} the contour lines of the boundary factor have an end at certain lengthscales, which means that exist a minimum boundary factor depending on the lengthscale of the process. 
 
 \begin{figure}[H]
 \centering
@@ -441,7 +442,7 @@ Figure \ref{fig6_lscale_vs_J} shows the estimated lengthscale and magnitud param
 
 \subsection{Comparative between true lengthscales and estimated lengthscales}
 
-In this section we fit the regular GP model and the approximate GP model on different datasets drawn from GP prior models with a squared exponential covariance function with different lengthscales. The approximate GP model is fitted using different number of basis functions.
+In this section we fit the regular GP model and the approximate GP model on different datasets drawn from a GP prior model with a squared exponential covariance function with different lengthscales for every dataset. The approximate GP model is fitted using different number of basis functions. Figure \ref{fig7_varing_lscale} shows the posterior means of the exact GP model and the approximate GP model with different number of basis functions for every dataset with different wiggly effects (lengthscale).
 
 \begin{figure}[H]
 \centering
@@ -450,7 +451,12 @@ In this section we fit the regular GP model and the approximate GP model on diff
   \label{fig7_varing_lscale}
 \end{figure}
 
-Figure \ref{fig8_Tlscale_vs_Elscale} compares the true lengthscales to the estimated lengthscales for the exact GP and the approximate GP. The black line defines the minimun lengthscale that the approximate GP model can fit for each case.
+Figure \ref{fig8_Tlscale_vs_Elscale} compares the lengthscales of the true generating process to the estimated lengthscales for the different datasets. Different comparison are shown using different number of basis functions in the approximate GP model. Let's assume that the box size parameter was properly set in every case. The dashed black line represents the minimum lengthscales that can be properly fitted by the approximate GP model according to Figure \ref{fig3_lscale_vs_J_vs_c_part1}. Figure \ref{fig9_MSE_varing_lscale} shows the SMSE of the approximate GP model for the different datasets with different wiggly effects and the number of basis functions used in the approximation.
+
+From Figure \ref{fig8_Tlscale_vs_Elscale} we can recognize when the lengthscales between the regular GP model and the approximate GP model match each other, which should be an indicator of a good approximation. Figure \ref{fig9_MSE_varing_lscale} indicates when the MSE is near to zero which also indicates a good approximation. We can appreciate an agreement between Figures \ref{fig8_Tlscale_vs_Elscale} and \ref{fig9_MSE_varing_lscale} except for very low lengthscales and very long lengthscales. Figure \ref{fig8_Tlscale_vs_Elscale} shows a correpondence between very low lengthscales when the SMSE is large, conversly there is no correspondence between very large lengthscale and the SMSE is close to zero. These effects can make sense because, in the case of long lengthscales these have larger variabilities obtaining  similar posteriors, and in the case of low lengthscale these have lower variabilities obtaining diferent posteriors.
+
+The dashed black line represents the minimum lengthscales that can be properly fitted by the approximate GP model according to Figure \ref{fig3_lscale_vs_J_vs_c_part1}.
+
 
 \begin{figure}[H]
 \centering
@@ -459,39 +465,46 @@ Figure \ref{fig8_Tlscale_vs_Elscale} compares the true lengthscales to the estim
   \label{fig8_Tlscale_vs_Elscale}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{fig9_MSE_varing_lscale.pdf}
+\caption{SMSE of the approximate GP model for the different datasets with different wiggly effects and the number of basis functions.}
+  \label{fig9_MSE_varing_lscale}
+\end{figure}
+
 
 \vspace{3mm}
-\section{Univariate illustrative examples}\label{sec:gp_examples1D}
+\section{Univariate examples}\label{sec:gp_examples1D}
 
 
 \subsection{Simulated data}
 
-A simulated one-dimensional dataset, with 250 data points drawn from a Gaussian process prior with a Matern covariance function with 3/2 degrees of freedom. The hyperparameters of this GP prior with a Matern kernel, marginal variance and lengthscale are set to 1 and 0.15, respectively. The additive Gaussian noise to the GP model is set to 0.2. We compare the modelling performance over this simulated process of our proposed approach with the performance of a regular GP and a Splines-based model. For our basis function approach we use $J=80$ basis functions and a boundary factor $c=1.2$. For the Splines-based model we use 80 knots or basis in the model.
+A simulated one-dimensional dataset, with 250 data points drawn from a Gaussian process prior with a Matern covariance function with 3/2 degrees of freedom. The hyperparameters of this GP prior with a Matern kernel, marginal variance and lengthscale, are set to 1 and 0.15, respectively. The additive Gaussian noise to these drawn points is set to 0.2. We compare the modelling performance over this simulated process of our proposed approach with the performance of a regular GP and a Splines-based model. For our basis function approach we use $J=80$ basis functions and a boundary factor $c=1.2$. For the Splines-based model we use 80 knots or basis in the model.
 
-Figure \ref{fig9_Posteriors_exI} shows the posteriors distributions of the proposed model and the regular GP model, fitted over the simulated dataset. Posteriors distributions of the proposed approximation GP model, of the exact GP model, and the Splines model are plotted jointly with the true GP prior from the data were drawn. The right and left extremes of the simulated data correspond to out-of-sample data or test data which have not been taking part of training the models. Over this test data we can evaluate the predictive performance of every method.  
+Figure \ref{fig9_Posteriors_exI} shows the posteriors distributions of the proposed model and the regular GP model, fitted over the data. Posteriors distributions of the proposed approximate GP model, of the exact GP model, and the Splines model are plotted jointly with the true GP prior from the data were drawn. The right and left extremes of the data, as well as three small regions around the middle of the data, correspond to out-of-sample or test data which have not been taking part of training the models. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.35]{fig9_Posteriors_exI.pdf}
+\includegraphics[scale=0.35]{fig10_Posteriors_exI.pdf}
 \caption{Posterior distributions of the proposed approximated GP model, the exact GP model, and the Splines model.}
-  \label{fig9_Posteriors_exI}
+  \label{fig10_Posteriors_exI}
 \end{figure}
 
-For assessing the performance of different methods we use the standardized mean squared error (SMSE) over the true function for interpolation and extrapolation data. 
+Figure \ref{fig11_MSE_exI_inter} shows the  standardized mean squared error (SMSE) over the true function for interpolation and extrapolation data. As it can be seen the splines model does not extrapolate data properly. For interpolation both models show similar performance although the approximate GP model seems to be a bit better.
 
 \begin{figure}[H]
 \centering
-\subfigure{\includegraphics[scale=0.350]{fig10_MSE_exI_inter.pdf}}
-\subfigure{\includegraphics[scale=0.350]{fig10_MSE_exI_extra.pdf}}
+\subfigure{\includegraphics[scale=0.350]{fig11_MSE_exI_inter.pdf}}
+\subfigure{\includegraphics[scale=0.350]{fig11_MSE_exI_extra.pdf}}
 \caption{Standarized mean square error (SMSE) of the different methods againts the true function. (left) SMSE for interpolation. (right) SMSE for extrapolation}
-  \label{fig10_MSE_exI_inter}
+  \label{fig11_MSE_exI_inter}
 \end{figure}
 
 \subsection{Case I: Gay data}\label{sec:bf_caseII}
 \subsection{Case II: Birthday data}\label{sec:bf_caseIII}
 
 \vspace{3mm}
-\section{Multivariate illustrative examples}\label{sec:gp_examplesMulti}
+\section{Multivariate examples}\label{sec:gp_examplesMulti}
 \subsection{Simulated data}\label{sec:bf_toyexampleMulti}
 \subsection{Case III: Diabetes data}\label{sec:bf_caseIV}
 \subsection{Case IV: Leukemia data}\label{sec:bf_caseV}
