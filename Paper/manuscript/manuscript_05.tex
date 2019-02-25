@@ -19,7 +19,7 @@
 \usepackage{multirow}
 \usepackage{float}
 \usepackage{soul}
-
+\usepackage{xcolor}
 \graphicspath{{./images/}}
 
 
@@ -98,7 +98,38 @@ The rest of the paper is structered as follows. Section 2 describe  the proposed
 \vspace{3mm}
 \section{Method}\label{sec:bf_method}
 
-\subsection{Gaussian process model}
+\subsection{Gaussian process regression}
+
+A Gaussian process (GP) is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, i.e. $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. Gaussian processes have the defining property that the marginal distribution of every finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_K) \right\rbrace$, is a multivariate Gaussian distribution.
+\\
+\\
+In this work, Gaussian processes will take the role of prior distributions over function spaces for non-parametric regression in a Bayesian setting. 
+Consider a data set $\mathcal{D} = \left\lbrace \mathbf{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is a noisy observation of an unknown function $f$ at $\mathbf{x}_n \in \mathbb{R}^D$ , i.e. $y_n = f(\mathbf{x}_n) + \epsilon_n$. Our goal is to predict the value of the function $f^*=f(\mathbf{x}^*)$ evaluated at a new input point $\mathbf{x}^* \in \mathbb{R}^D$. That is, we want to obtain the predictive distribution $p(f^*|\mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.
+\\
+\\
+We assume a Gaussian process prior for $f \sim \mathcal{GP}(\mu(\mathbf{x}), k(\mathbf{x}, \mathbf{x}'))$, where $\mu: \mathbb{R} \rightarrow \mathbb{R}$ and $k: \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$ are the mean and covariance functions, respectively,
+\begin{align}
+ 	\mu(\mathbf{x}) &= \mathbb{E}\!\left[f(\mathbf{x})\right],\\ 
+ 	k(\mathbf{x}, \mathbf{x}') &= \mathbb{E}\!\left[\left( f(\mathbf{x}) - \mu(\mathbf{x}) \right)\left( f(\mathbf{x}') - \mu(\mathbf{x}') \right)\right].
+ \end{align} 
+The mean and covariance functions completely characterize the distribution of $f$. 
+\\
+\\
+{\color{red} $\bullet$ Introduce the joint model}
+\begin{align}
+	p(\mathbf{y}, \mathbf{f}, f^*) = p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)
+\end{align}
+{\color{red} $\bullet$  argue that marginalizing and conditioning yields the predictive distribution of interest}
+\begin{align}
+	p(f^*|\mathbf{y}) = \frac{\int p(\mathbf{y}, \mathbf{f}, f^*)\text{d}\mathbf{f}}{p(\mathbf{y})}
+\end{align}
+{\color{red} $\bullet$ Give equations for predictive mean and variance for $f^*$ assuming Gaussian likelihood}
+\\
+\\
+{\color{red} $\bullet$ Briefly standard computational challenges with GPs: cubic scaling and only closed form solution for Gaussian likelihoods. This should motivate the use of basis function expansions in a probabilistic programming setting such that with get both speed and modelling flexibility}
+\\
+\\
+
 
 A GP model can be seen as a probability model over an infinite collection of random varibales. However, formally, the defining feature of a GP model is that the joint distribution of function values at any finite number of input values $\mathbf{x}$ is a multivariate normal distribution, 
 %
