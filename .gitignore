@@ -6,3 +6,6 @@
 *.log
 *.synctex.gz
 *.toc
+.Rproj.user
+.Rhistory
+basis_functions_approach_to_GP.Rproj
