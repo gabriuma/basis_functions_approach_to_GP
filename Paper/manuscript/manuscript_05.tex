@@ -73,7 +73,7 @@ Gaussian processes (GPs) are natural (Paul: what does "natural" imply and as com
 
 One of the main limitations of exact GPs is that computational demands and memory requirements scale as $O(n^3)$ and $O(n^2)$, respectively, with the number $n$ of observations in the data used to fit the model. This effectively limits their application to rather small data sets of a few thousand observations at most. This problem becomes especially severe when performing full Bayesian inference via sampling methods, where in each sampling step we need to invert the Gram matrix of the covariance function, usually through Cholesky factorization. To alleviate these computational demands, several approximate methods have been proposed, which we will briefly review in the following. 
 
-Sparse GPs are based on building low-rank approximations of the covariance matrix of the complete data by means of selecting a subset $m$ of training points on which to base computation. They reduce the dimension of the posterior distribution thereby reducing the memory requirements to $O(nm)$ and computational complexity to $O(nm^2)$ for some $m < n$. This approach still requires Cholesky factorization although now based on a smaller covariance matrix. While computational complexity is reduced considerably, ensuring convergence to the exact GP model is not necessarily straightforward (Paul: this may need a citation). As such, reducing the amount of data while maintaining the correct posterior distribution is not a simple procedure. A unifying view on sparse GPs based on approximate generative methods is provided in \cite{quinonero2005unifying}, while a general review can be found in \cite{rasmussen2006gaussian}. (Gabi: Could you choose between one of these two set of sentences in different colors?) \textcolor{blue}{More recent developments in the context of sparse GPs include points-based sparse approximation methods \citep{wilson2015kernel}, which have been further developed by \citep{bui2017unifying} to perform approximations at inference time rather than at modeling time.} \textcolor{red} {New developments in the context of sparse GPs include a structured kernel interpolation (SKI) method \citep{wilson2015kernel}. More recently \citep{bui2017unifying} revisit the inducing points-based sparse approximation methods to perform approximations at inference time rather than at modeling time.}
+Sparse GPs are based on building low-rank approximations of the covariance matrix of the complete data by means of selecting a subset $m$ of training points on which to base computation. They reduce the dimension of the posterior distribution thereby reducing the memory requirements to $O(nm)$ and computational complexity to $O(nm^2)$ for some $m < n$. This approach still requires Cholesky factorization although now based on a smaller covariance matrix. While computational complexity is reduced considerably, ensuring convergence to the exact GP model is not necessarily straightforward (Paul: this may need a citation). As such, reducing the amount of data while maintaining the correct posterior distribution is not a simple procedure. A unifying view on sparse GPs based on approximate generative methods is provided in \cite{quinonero2005unifying}, while a general review can be found in \cite{rasmussen2006gaussian}. New developments in the context of sparse GPs include a structured kernel interpolation method \citep{wilson2015kernel}. More recently, \citep{bui2017unifying} proposed to use inducing points-based sparse approximation methods to perform GP approximations at inference time rather than at modeling time.}
 
 (Paul: This whole paragraph is unclear to me. Are all of these approaches approximations via splines, or are the splines just special cases of a more general method? In any case, I think the paragraph needs substantial revision). Other global approach make use of the spectral analysis and series expansions of Gaussian processes \citep{loeve1977probability,trees1968detection,adler1981geometry,cramer2013stationary}. It is well-known (see, e.g., \cite{wahba1990spline}) that spline smoothing can be seen as Gaussian process regression with a specific choice of covariance function, but they do not generally have correspondence with GP models, and they do not have the flexibility of choosing different covariance functions as model structure. The Sparse Spectrum GP is based on a sparse approximation to the frequency domain representation of a GP \citep{lazaro2010sparse,quia2010sparse,gal2015improving,gal2015improving}. Recently \citep{hensman2017variational} presented a variational Fourier feature approximation for Gaussian processes that was derived for the Mat´ern class of kernels. Random Fourier Features \citep{rahimi2008random,rahimi2009weighted} is a method for approximating kernels.
 
@@ -170,29 +170,28 @@ S_{\nu=\frac{5}{2}}(\mathbf{w})&=& \frac{16}{3}\sigma^2 \frac{\sqrt{3}}{\ell}^{5
 \noindent where variable $\mathbf{w}$ is in the frequency domain.
 
 
-\subsection{Hilbert space-based approximate Gaussian process model}
+\subsection{Hilbert space approximate Gaussian process model}
 
-The approximate Gaussian process method, developed by \cite{solin2018hilbert} and implemented in this paper, lay on the basis of considering the covariance operator of a homogeneous (stationary) covariance function as a pseudo-differential operator constructed as a series of Laplace operators. Then, the pseudo-differential operator is approximated with Hilbert space methods on compact subsets $\Omega \subset {\rm I\!R}^D$, and with some boundary condition. 
+The approximate Gaussian process method, developed by \cite{solin2018hilbert} and implemented in this paper, is based on considering the covariance operator of a homogeneous (stationary) covariance function as a pseudo-differential operator constructed as a series of Laplace operators. Then, the pseudo-differential operator is approximated with Hilbert space methods on a compact subset $\Omega \subset {\rm I\!R}^D$ subject to some boundary condition. For brevity, we will refer to these approximate Gaussian processes as HSGPs (Paul: introducing such an abbreviation perhaps shortens what we are going to write in the next sections). Below, we will present the main results around HSGPs relevant for practical application. More details and mathematical proofs are provided in \cite{solin2018hilbert}.
 
-First, we focus on the unidimensional case of the input space, such as $\Omega \in \{-L,L\} \subset {\rm I\!R}$, where $L$ is some positive real value. 
+We begin by focusing on the case of a unidimensional input space (i.e., on GPs with just a single covariate) such that $\Omega \in \{-L,L\} \subset {\rm I\!R}$, where $L$ is some positive real value to which we also refer as boundary condition. As $\Omega$ describes the interval in which the approximations are valid, $L$ plays a critical role in the accuarcy of HSGPs. We will come back to this issue in Section 3.
 
-\vspace{0.2cm}
-The approximate method leads to the approximation of the covariance function between two input values $\{x,x'\} \in \{-L,L\}$ as 
+Within $\Omega$, we can write any stationary covariance function with input values $\{x,x'\} \in \Omega$ as 
 %
 \begin{equation}\label{approxcov}
-k(x,x') \approx \sum_{j}S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
+k(x,x') = \sum_{j=1}^\infty S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
 \end{equation} 
 
-\noindent where $S_{\theta}$ is the spectral density of the stationary covariance function $k$ and $\theta$ the set of hyperparameters of $k$; a stationary covariance function can be equivalently represented in terms of the spectral density \citep{rasmussen2006gaussian}, then the spectral density is a function of the hyperparameters $\theta$. $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the set of eigenvalues and eigenvectors, respectively, of the Laplacian operator. Namely, they satisfy the following eigenvalue problem in the compact subset $x \in \{-L,L\}$ and with the Dirichlet boundary condition (another boundary condition could be used as well):
+\noindent where $S_{\theta}$ is the spectral density of the stationary covariance function $k$ (see Section 2.1) and $\theta$ the set of hyperparameters of $k$ \citep{rasmussen2006gaussian}. The terms $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the sets of eigenvalues and eigenvectors, respectively, of the Laplacian operator. Namely, they satisfy the following eigenvalue problem in $\Omega$ when applying the Dirichlet boundary condition (other boundary conditions could be used as well):
 %
 \begin{eqnarray}\label{eigenproblem}
 \begin{split}
--\nabla^2 \phi_j(x)&=&\lambda \phi_j(x), \hspace{1cm}  x\in \{-L,L\} \\ 
-\phi_j(x)&=&0, \hspace{2cm} x\notin \{-L,L\}.
+-\nabla^2 \phi_j(x)&=&\lambda \phi_j(x), \hspace{1cm}  x \in \Omega \\ 
+\phi_j(x)&=&0, \hspace{2cm} x \notin \Omega.
 \end{split}
 \end{eqnarray} 
 
-\noindent The eigenvalues $\lambda_j>0$ are real and positive, because the Laplacian is a positive definite Hermitian operator, and the eigenfunctions $\phi_j$ for the eigenvalues problem in eq. (\ref{eigenproblem}) are sinusoidal functions,
+\noindent The eigenvalues $\lambda_j>0$ are real and positive because the Laplacian is a positive definite Hermitian operator, and the eigenfunctions $\phi_j$ for the eigenvalues problem in Equation (\ref{eigenproblem}) are sinusoidal functions. Independently of the covariance function, they can be computed as
 %
 \begin{eqnarray}\label{bf&lambda}
 \begin{split}
@@ -201,73 +200,57 @@ k(x,x') \approx \sum_{j}S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
 \end{split}
 \end{eqnarray}
 
-If we truncate the sum in (\ref{approxcov}) up to $J$ ($j=1,\cdots,J$), the approximate covariance function can be represented as
+If we truncate the sum in (\ref{approxcov}) to the first $m$ terms, the approximate covariance function becomes
 %
 \begin{equation}
-k(x,x') \approx \boldsymbol{\phi}(x)^\intercal \Delta \boldsymbol{\phi}(x'), \nonumber
+k(x,x') \approx \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x') = \boldsymbol{\phi}(x)^\intercal \Delta \boldsymbol{\phi}(x'), \nonumber
 \end{equation}
 
-\noindent where $\boldsymbol{\phi}(x)=\{\phi_j(x)\}_{j=1}^{J} \in {\rm I\!R}^{J}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{J\times J}$ the diagonal matrix of espectral densities $S_{\theta}(\sqrt{\lambda_j})$, 
+\noindent where $\boldsymbol{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{m\times m}$ is the diagonal matrix of the spectral densities $S_{\theta}(\sqrt{\lambda_j})$: 
 %
 \begin{eqnarray}
 \Delta &=&  \begin{bmatrix}
     S_{\theta}(\sqrt{\lambda_1}) & & \\
     & \ddots & \nonumber \\
-    & & S_{\theta}(\sqrt{\lambda_J}) \\
+    & & S_{\theta}(\sqrt{\lambda_m}) \\
   \end{bmatrix}.
 \end{eqnarray}
 
-Thus, the Gram matrix $\text{K}$ of the covariance function $k$ for a collection of observations $i=1,\cdots,N$ and collection of input values $\{x^i\}_{i=1}^{N} \in {\rm I\!R}^{N}$ can be represented as follows
+Thus, the Gram matrix $\text{K}$ of the covariance function $k$ for a set of observations $i=1,\ldots,n$ and corresponding input values $\{x_i\}_{i=1}^{n} \in \Omega^{n}$ can be represented as
 %
 \begin{equation}
 \text{K}= \Phi \Delta \Phi^\intercal, \nonumber
 \end{equation}
 
-\noindent where $\Phi \in {\rm I\!R}^{N\times J}$ is the matrix of eigenfunctions $\phi_j(x^i)$,
+\noindent where $\Phi \in {\rm I\!R}^{n\times m}$ is the matrix of eigenfunctions $\phi_j(x^i)$:
 %
 \begin{eqnarray}
 \Phi &=&  \left[ {\begin{array}{ccc}
-   \phi_1(x^1) & \cdots & \phi_J(x^1)  \\
+   \phi_1(x_1) & \cdots & \phi_m(x_1)  \\
     \vdots &\ddots & \vdots  \nonumber \\ 
-    \phi_1(x^N) & \cdots & \phi_J(x^N) \\
+    \phi_1(x_n) & \cdots & \phi_m(x_n) \\
   \end{array} } \right].
 \end{eqnarray}
  
-\noindent Now, the Gaussian process prior for the function $f$ can be re-defined as
+\noindent As a result, the GP model for the function $f$ can be re-defined as
 %
 \begin{equation}
 \mathbf{f} \sim \text{GP}(0,\Phi \Delta \Phi^\intercal). \nonumber
 \end{equation}
 
-\noindent This equivalently leads to a linear representation of the function $f$,
+\noindent This equivalently leads to a linear representation of $f$ via
 %
 \begin{equation}\label{approxf}
-f(x) \approx \sum_{j} \left( S_{\theta}(\sqrt{\lambda_j})\right)^{1/2} \phi_j(x) \beta_j, \nonumber
+f(x) \approx \sum_{j}^m \left( S_{\theta}(\sqrt{\lambda_j})\right)^{1/2} \phi_j(x) \beta_j, \nonumber
 \end{equation}
 
-\noindent where $\beta_j \sim \text{N}(0,1)$ is a random variable with zero mean and unitary variance. That is, the function $f$ can be approximated with a finite basis function expansion (eigenfunctions $\phi_j$ of the Laplace operator), scaled by the squared root of the spectral density as a function of the eigenvalues $\lambda_j$. The eigenfunctions $\phi_j$ do not depend on the kernel hyperparameters $\theta$, the only dependence on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and the spectral density goes rapidly to zero for bounded covariance functions. Therefore, it is expected a good approximation in eq. (\ref{approxf}) for a finite number, $J$, of terms in the series as long as the inputs values $x^i$ are not near the boundaries of the domain $[-L,L]$, where the Laplacian was taken to be zero.
+\noindent where $\beta_j \sim \text{Normal}(0,1)$ are normal random variables with zero mean and unitary variance. That is, the function $f$ can be approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the covariance hyperparameters $\theta$. Instead, the only dependence on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, Equation (\ref{approxf}) can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
 
-The computational cost of this approximate model scales $O(n\cdot J+J)$, where $n$ is the number of observations and $J$ the number of basis functions.
+\subsection{Generalization to multidimensional GPs}
 
+We will now show how to generalize the results from the previous section to a multidimensional input space with compact regular domain $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions. 
+In a $D$-dimensional input space, the total number of eigenfunctions and eigenvalues in the approximation is equal to the number of $D$-tuples, that is possible combinations of univariate eigenfunctions over all dimensions. The number $D$-tuples is given by $m^{\ast} = \prod_{d=1}^{D} m_d$, where $m_d$ is the number of basis function for the dimension $d$. Let $\mathbb{S}\in {\rm I\!N}^{m^{\ast} \times D}$ be the matrix of all those $D$-tuples. For example, suppose we have $D=3$ covariates and use $m_{1}=2$, $m_{2}=2$ and $m_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimension, respectively. Then, the number of multivariate eigenfunctions and eigenvalues is $m^{\ast} = m_{1} \cdot m_{2} \cdot m_{3} = 12$ and the matrix $\mathbb{S}\in {\rm I\!N}^{12 \times 3}$ is given by
 
-
-\subsection{Generalization to multidimensional input space}
-
-We are going to generalize the results from the previous section to a multidimensional input space with compact regular domain $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions.  
-
-\vspace{0.2cm}
-In a $D$-dimensional input space the total number of eigenfunctions and eigenvalues in the approximation corresponds to the total number of $D$-tuples over $J$, which is $\prod_{d=1}^{D} J_d$, where $J_d$ is the number of basis function for the dimension $d$. Let $\mathbb{S}\in {\rm I\!R}^{\prod_{d=1}^{D} J_d \times D}$ be the set of $D$-tuples elements. Each new eigenfunction $\phi^{\ast}_j$ correspond to the product of the univariate eigenfunctions whose indices corresponds to the the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. And each new eigenvalue $\lambda^{\ast}_j$ is a $D$-vector whose elements are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. Let $j=\{1,\cdots,J^D\}$,
-%
-\begin{align} \label{bf&lambda_multi}
-\begin{split}
-\phi^{\ast}_j(\mathbf{x}) &= \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}}(\mathbf{x}_d) = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(\mathbf{x}_d+L_d)\right) \\
-%
-\lambda^{\ast}_j &= \{\lambda_{\mathbb{S}_{jd}} \}_{d=1}^D =  \{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \}_{d=1}^D  
-\end{split}
-\end{align}
-
-As an example we show the matrix $\mathbb{S}$ for a $three$-dimensional input vector $\mathbf{x}=\{\mathbf{x}_1,\mathbf{x}_2,\mathbf{x}_3\}$ ($D=3$) and $J_{1}=2$, $J_{2}=2$ and $J_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimension, respectively. The number of new multidimensional eigenfunctions $\phi^{\ast}$ and eigenvalues $\lambda^{\ast}$ is $J_{1}\cdot J_{2}\cdot J_{3}=2\cdot 2\cdot 3=12$. The matrix $\mathbb{S}\in {\rm I\!R}^{12 \times 3}$ is
-%
 \begin{eqnarray}
 \mathbb{S}=
 \left[ {\begin{array}{ccc}
@@ -286,14 +269,25 @@ As an example we show the matrix $\mathbb{S}$ for a $three$-dimensional input ve
 \end{array} } \right]
 \end{eqnarray} 
 
+Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. And each multivariate eigenvalue $\lambda^{\ast}_j$ is a $D$-vector whose elements are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. Thus, for $\mathbf{x}^D \in \Omega$ and $j=1,\ldots,m$, we have 
+%
+\begin{align} \label{bf&lambda_multi}
+\begin{split}
+\phi^{\ast}_j(\mathbf{x}) &= \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}}(x_d) = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(x_d+L_d)\right) \\
+%
+\lambda^{\ast}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^D =  \left\{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \right\}_{d=1}^D. 
+\end{split}
+\end{align}
 
-The approximate covariance function is represented as
+\noindent The approximate covariance function is then represented as
 %
 \begin{equation}\label{approxcov_multi}
-k(\mathbf{x},\mathbf{x}') \approx \sum_{j=1}^{J^D} S^{\ast}_{\theta}\left(\sqrt{\lambda^{\ast}_j}\right) \phi^{\ast}_j(\mathbf{x}) \phi^{\ast}_j(\mathbf{x}'),
+k(\mathbf{x},\mathbf{x}') \approx \sum_{j=1}^{m^{\ast}} 
+S^{\ast}_{\theta}\left(\sqrt{\lambda^{\ast}_j}\right)
+\phi^{\ast}_j(\mathbf{x}) \phi^{\ast}_j(\mathbf{x}'),
 \end{equation}
 
-\noindent where $S^{\ast}_{\theta}$ is the spectral density of the $D$-dimensional covariance function. The $D$-dimensional spectral density functions associated with the Mat\'ern covariance functions considered in the previous section are
+\noindent where $S^{\ast}_{\theta}$ is the spectral density of the $D$-dimensional covariance function. For example, the $D$-dimensional spectral density functions associated with the Mat\'ern covariance functions considered in the previous section are
 %
 \begin{eqnarray}
 S^{\ast}_{\nu=\infty}(\mathbf{w})&=& \sigma^2 \sqrt{2\pi}^D \prod_{d=1}^D l_d \cdot \text{exp}\left(-0.5 \sum_{d=1}^D l_d^2 \mathbf{w}_d^2\right), \nonumber \\
@@ -301,13 +295,15 @@ S^{\ast}_{\nu=\infty}(\mathbf{w})&=& \sigma^2 \sqrt{2\pi}^D \prod_{d=1}^D l_d \c
 S^{\ast}_{\nu}(\mathbf{w})&=& \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)l^{2\nu}}\left(\frac{2\nu}{l^2}+4\pi^2\mathbf{w}^2 \right)^{(\nu+D/2)}, \nonumber
 \end{eqnarray}
 
-\noindent where the $D$-vector $\mathbf{w}$ is in the frequency domain. We can represent the approximate series expansion of the function $f$ in the multidimensional input space as,
+\noindent where the $D$-vector $\mathbf{w}$ is in the frequency domain (Paul: Could it make sense to move these specific spectral density functions to Section 2.1?). We can now write the approximate series expansion of the multivariate function $f$ as,
 %
 \begin{equation}\label{approxf}
-f(\mathbf{x}) \approx \sum_{j} \left( S^{\ast}_{\theta}(\sqrt{\boldsymbol{\lambda^{\ast}_j}})\right)^{1/2} \phi^{\ast}_j(\mathbf{x}) \beta_j, 
+f(\mathbf{x}) \approx \sum_{j=1}^{m^{\ast}} 
+\left( S^{\ast}_{\theta} \left(\sqrt{\lambda^{\ast}_j} \right)\right)^{1/2}
+\phi^{\ast}_j(\mathbf{x}) \beta_j, 
 \end{equation}
 
-\noindent where $\beta_j \sim \text{N}(0,1)$ is a random variable with zero mean and unitary variance. The computational cost in a multidimensional setting scales $O((n+1)\cdot \prod_{d=1}^D J_d )$, where $n$ is the number of observations and $J_d$ is the number of basis functions considered in the dimension $d$.
+\noindent where, again, $\beta_j \sim \text{Normal}(0,1)$ are normal random variables with zero mean and unitary variance. The computational cost of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation becomes inefficient more quickly than in the univariate case. This is because $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and so increases rapidly with increased dimensionality.
 
 \subsection{Learning hyperparameters and model inference}
 
