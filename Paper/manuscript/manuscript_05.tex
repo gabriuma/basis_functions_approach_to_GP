@@ -77,13 +77,13 @@ Sparse GPs are based on building low-rank approximations of the covariance matri
 
 (Paul: This whole paragraph is unclear to me. Are all of these approaches approximations via splines, or are the splines just special cases of a more general method? In any case, I think the paragraph needs substantial revision). Other global approach make use of the spectral analysis and series expansions of Gaussian processes \citep{loeve1977probability,trees1968detection,adler1981geometry,cramer2013stationary}. It is well-known (see, e.g., \cite{wahba1990spline}) that spline smoothing can be seen as Gaussian process regression with a specific choice of covariance function, but they do not generally have correspondence with GP models, and they do not have the flexibility of choosing different covariance functions as model structure. The Sparse Spectrum GP is based on a sparse approximation to the frequency domain representation of a GP \citep{lazaro2010sparse,quia2010sparse,gal2015improving,gal2015improving}. Recently \citep{hensman2017variational} presented a variational Fourier feature approximation for Gaussian processes that was derived for the Mat´ern class of kernels. Random Fourier Features \citep{rahimi2008random,rahimi2009weighted} is a method for approximating kernels.
 
-Yet another approach to approximate GPs -- on which we will focus in the present paper -- was proposed by \cite{solin2018hilbert} who suggested to use reduced-rank approximations of the covariance kernel. This method decomposes the kernel into basis functions which represent the GP as a linear model and thus makes its estimation considerably faster. In principal, we are free in the choice of basis functions, but the Laplace eigenfunctions were found to be particularily appealing \citep{solin2018hilbert}. Not only can they be computed analytically, but they are also independent of the particular choice of the covariance kernel including the hyperparameters. The latter comes with several advantages when performing inference via algorithms that require differentiation of the posterior density (Paul: cite something here). In a fully Bayesian framework based on sampling methods, the proposed approximate GP model has a computational complexity of just $O(nm+m)$, with $m<<n$ in every sampling step. The posterior distribution of the reduced-rank GP approximation is of dimension $m$ and thus considerably smaller than in the case of exact GPs. This not only lowers the memory requirements and computational complexity but also reduces the correlations between latent values and the corresponding hyperparameters of the GP, which can help to further improve sampling efficiency.
+Yet another approach to approximate GPs -- on which we will focus in the present paper -- was proposed by \cite{solin2018hilbert} who suggested to use reduced-rank approximations of the covariance kernel. This method decomposes the kernel into basis functions which represent the GP as a linear model and thus makes its estimation considerably faster. In principal, we are free in the choice of basis functions, but the Laplace eigenfunctions were found to be particularly appealing \citep{solin2018hilbert}. Not only can they be computed analytically, but they are also independent of the particular choice of the covariance kernel including the hyperparameters. The latter comes with several advantages when performing inference via algorithms that require differentiation of the posterior density (Paul: cite something here). In a fully Bayesian framework based on sampling methods, the proposed approximate GP model has a computational complexity of just $O(nm+m)$, with $m<<n$ in every sampling step. The posterior distribution of the reduced-rank GP approximation is of dimension $m$ and thus considerably smaller than in the case of exact GPs. This not only lowers the memory requirements and computational complexity but also reduces the correlations between latent values and the corresponding hyperparameters of the GP, which can help to further improve sampling efficiency.
 
 While \cite{solin2018hilbert} fully developed the mathematical theory behind reduced-rank approximations of GPs, they did not put much effort in analyzing the performance and accuracy of the method in relation to key factors such as the number of basis functions, desired prediction space, or properties of the true functional relationship between covariates and response variable. However, for practical implementations of approximate GPs, the latter factors are critical and thus require further investigation. In the present paper, we will fill this gap by providing practical recommendations for the choice of these factors based on the recognized relations among them. What is more, we provide intuitive visualizations of these relations that will help users to improve performance and save computation time, while at the same time maintaining close approximations of exact GPs. 
 
 Although there are several GP specific software packages available to date (Paul: cite those. Gabi: This full paragraph comes from Aki. I think he refers to some Splines methods and maybe others approaches as well), each provide efficient implementations only for a restricted range of GP based models. In this paper we do not focus on the fastest possible inference for a specific GP models, but instead are interested in how GPs can be easily used as modular components in probabilistic programming frameworks such as Stan \citep{carpenter2017stan}. To this end, we want to make full Bayesian inference over Gaussian process models accessible to a broader audience by making them easy, fast and save to apply. 
 
-The remainder of the paper is structered as follows. In Section 2, we introduce GPs and their reduced rank approximations proposed by \cite{solin2018hilbert}. In Section 3, we analyze the accuracy of these approximations under several conditions using analytical and numerical methods. Several case studies in which we fit
+The remainder of the paper is structured as follows. In Section 2, we introduce GPs and their reduced rank approximations proposed by \cite{solin2018hilbert}. In Section 3, we analyze the accuracy of these approximations under several conditions using analytical and numerical methods. Several case studies in which we fit
 exact and approximate GPs to real and simulated data are provided in Section 4. We end with a discussion in Section 5.
 
 (Paul: The content and the purpose of the following sentences is not fully clear to me. Do we need them in the Introduction or can they be removed, or put into the next section? Gabi: In this paragraph I tried to state two differences I found in the literature between our method and the Sparse Spectrum GP and the Splines method. But I not know where locate them.) While Sparse Spectrum GP is based on a sparse spectrum, the reduced-rank method proposed in this paper aims to make the spectrum as ‘full’ as possible at a given rank. Recent Splines models can reproduce the Matern family of covariance functions (see, e.g., \cite{wood2003thin}), however our approach can reproduce basically all of the stationary covariance functions.
@@ -110,7 +110,7 @@ The mean and covariance functions completely characterize the Gaussian process p
 \mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu},K),
 \end{align*}
 
-\noindent where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the multivariate mean and $K$ the covariance matrix, where the element $K_{i,j}$ are formed by evalating the covariance function $k(\mathbf{x}_i,\mathbf{x}_j)$ at input values $\mathbf{x}_i$ and $\mathbf{x}_j$. The joint distribution of $\mathbf{f}$ and $f^*$ is also a multivariate Gaussian as,
+\noindent where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the multivariate mean and $K$ the covariance matrix, where the element $K_{i,j}$ are formed by evaluating the covariance function $k(\mathbf{x}_i,\mathbf{x}_j)$ at input values $\mathbf{x}_i$ and $\mathbf{x}_j$. The joint distribution of $\mathbf{f}$ and $f^*$ is also a multivariate Gaussian as,
 %
 \begin{eqnarray*}
 p(\mathbf{f},\mathbf{f}')=\mathcal{N} \left( \left[ \begin{array}{cc}
@@ -143,11 +143,11 @@ If the observational model $p(\mathbf{y}|\mathbf{f})$ is Gaussian, the integrals
 	p(f^*| \mathbf{y}) = \mathcal{N}(f^*| K_{f^*,\mathbf{f}} (K_{\mathbf{f},\mathbf{f}} + \sigma^2I)^{-1} \mathbf{f},  K_{f^*,f^*}-K_{f^*,\mathbf{f}} (K_{\mathbf{f},\mathbf{f}} + \sigma^2I)^{-1} K_{\mathbf{f},f^*}  )
 \end{align*}
 
-In most modelling problems, however, the observational model is not Gaussian (e.g. binomial or multinomial classification, Poisson  regression, and many other modelling problems) and the posterior predictive distribution $p(f^*| \mathbf{y})$ is analytically untractable and can not be obtained in a closed-form expression. Approximate inference have to be used to tackle the intractable inference, tipically based on sampling methods such as MCMC \citep{brooks_2011} or analytical Gaussian approximations such as Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational methods \citep{gibbs2000variational,csato2000efficient}. Furthermore, Gaussian processes in a direct implementation scales cubically in the number of sample points, $N$, which effectively limits the modelling inference for medium and large datasets. In the introduction section in this paper several methods tipically used for dealing with the computational complexity has been commented. \\
+In most modelling problems, however, the observational model is not Gaussian (e.g. binomial or multinomial classification, Poisson  regression, and many other modelling problems) and the posterior predictive distribution $p(f^*| \mathbf{y})$ is analytically untractable and can not be obtained in a closed-form expression. Approximate inference have to be used to tackle the intractable inference, typically based on sampling methods such as MCMC \citep{brooks_2011} or analytical Gaussian approximations such as Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational methods \citep{gibbs2000variational,csato2000efficient}. Furthermore, Gaussian processes in a direct implementation scales cubically in the number of sample points, $N$, which effectively limits the modelling inference for medium and large datasets. In the introduction section in this paper several methods typically used for dealing with the computational complexity has been commented. \\
 
 In this paper we proposed an approximate model for Gaussian processes based on basis functions expansion which basically turns the GP prior model into a linear model. This linear GP model representation makes inference considerably faster and can be used as latent function in non-Gaussian observational models allowing modelling flexibility.\\
 
-The covariance function is the crucial ingredient in a Gaussian process as it encodes our prior assumptions about the function, and defines a correlation structure which characterize the correlations between function values at different inputs. A stationary covariance function is a function of $\mathbf{x}-\mathbf{x}'$, such that it can be written $k(\mathbf{x},\mathbf{x}') = k(|\mathbf{x}-\mathbf{x}'|)$, which means that the covariance is invariant to translations. Isotropic covariance functions are those that are function of the distance between observations, $k(\mathbf{x},\mathbf{x}') = k(||\mathbf{x}-\mathbf{x}'||) = k(\mathbf{r})$, which means that the covariacne is both translation and rotation invariant. The Mat\'ern family with half-integers is the class of isotropic covariance functions probably most commonly used, which, in the unidimensional case (i.e. $\mathbf{x}=x\in \mathbb{R}$, so $\mathbf{r}=r\in \mathbb{R}$), are
+The covariance function is the crucial ingredient in a Gaussian process as it encodes our prior assumptions about the function, and defines a correlation structure which characterize the correlations between function values at different inputs. A stationary covariance function is a function of $\mathbf{x}-\mathbf{x}'$, such that it can be written $k(\mathbf{x},\mathbf{x}') = k(|\mathbf{x}-\mathbf{x}'|)$, which means that the covariance is invariant to translations. Isotropic covariance functions are those that are function of the distance between observations, $k(\mathbf{x},\mathbf{x}') = k(||\mathbf{x}-\mathbf{x}'||) = k(\mathbf{r})$, which means that the covariance is both translation and rotation invariant. The Mat\'ern family with half-integers is the class of isotropic covariance functions probably most commonly used, which, in the unidimensional case (i.e. $\mathbf{x}=x\in \mathbb{R}$, so $\mathbf{r}=r\in \mathbb{R}$), are
 %
 \begin{eqnarray}
 k_{\nu=\infty}(r)&=&\sigma^2 \text{exp}(-\frac{1}{2} r^2/\ell^2), \nonumber \\
@@ -156,7 +156,7 @@ k_{\nu=\frac{3}{2}}(r)&=&\sigma^2(1+\sqrt{3}r/\ell \text{exp}(-\sqrt{3}r/\ell), 
 k_{\nu=\frac{5}{2}}(r)&=&\sigma^2(1+\sqrt{5}r/\ell+\frac{5}{3}r^2/\ell^2) \text{exp}(-\sqrt{5}r/\ell), \nonumber 
 \end{eqnarray}
 
-\noindent where $\nu$ is the order the kernel, and the $\ell$ and $\sigma$ are the lengt-scale and magnitud, respectively, of the kernel. The particular case where $\nu=\infty$ is commonly known as squared exponential (exponentiated quadratic) covariance function, and that with $\nu=1/2$ as exponential covariance function. These covariance functions can be easily generalized to the multidimensional case, with multidimensional inputs $\mathbf{x}\in \mathbb{R}^D$ and multidimensional length-scale $\boldsymbol{\ell}\in \mathbb{R}^D$ (Gabi: We should derive the multidimensional form of the previous kernels, but I have now doubts how is the multidimensional form for the Matern kernels with $\nu$=1/2, $\nu$=3/2 and $\nu$=5/2). Using a multidimensional length-scale basically turns the isotropic covariance function into non-isotropic. 
+\noindent where $\nu$ is the order the kernel, and the $\ell$ and $\sigma$ are the length-scale and magnitude, respectively, of the kernel. The particular case where $\nu=\infty$ is commonly known as squared exponential (exponentiated quadratic) covariance function, and that with $\nu=1/2$ as exponential covariance function. These covariance functions can be easily generalized to the multidimensional case, with multidimensional inputs $\mathbf{x}\in \mathbb{R}^D$ and multidimensional length-scale $\boldsymbol{\ell}\in \mathbb{R}^D$ (Gabi: We should derive the multidimensional form of the previous kernels, but I have now doubts how is the multidimensional form for the Matern kernels with $\nu$=1/2, $\nu$=3/2 and $\nu$=5/2). Using a multidimensional length-scale basically turns the isotropic covariance function into non-isotropic. 
 
 Stationary covariance functions can be represented in terms of their spectral densities \citep{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure (\textit{Bochner's theorem}, see, e.g. \cite{akhiezer1993theory}). If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern covariance functions written above are
 %
@@ -181,7 +181,7 @@ S^{\ast}_{\nu}(\mathbf{w})&=& \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Ga
 
 The approximate Gaussian process method, developed by \cite{solin2018hilbert} and implemented in this paper, is based on considering the covariance operator of a homogeneous (stationary) covariance function as a pseudo-differential operator constructed as a series of Laplace operators. Then, the pseudo-differential operator is approximated with Hilbert space methods on a compact subset $\Omega \subset {\rm I\!R}^D$ subject to some boundary condition. For brevity, we will refer to these approximate Gaussian processes as HSGPs (Paul: introducing such an abbreviation perhaps shortens what we are going to write in the next sections). Below, we will present the main results around HSGPs relevant for practical application. More details and mathematical proofs are provided in \cite{solin2018hilbert}.
 
-We begin by focusing on the case of a unidimensional input space (i.e., on GPs with just a single covariate) such that $\Omega \in \{-L,L\} \subset {\rm I\!R}$, where $L$ is some positive real value to which we also refer as boundary condition. As $\Omega$ describes the interval in which the approximations are valid, $L$ plays a critical role in the accuarcy of HSGPs. We will come back to this issue in Section 3.
+We begin by focusing on the case of a unidimensional input space (i.e., on GPs with just a single covariate) such that $\Omega \in \{-L,L\} \subset {\rm I\!R}$, where $L$ is some positive real value to which we also refer as boundary condition. As $\Omega$ describes the interval in which the approximations are valid, $L$ plays a critical role in the accuracy of HSGPs. We will come back to this issue in Section 3.
 
 Within $\Omega$, we can write any stationary covariance function with input values $\{x,x'\} \in \Omega$ as 
 %
@@ -319,7 +319,7 @@ $\bullet$ The weights associated to the basis functions in this linear model is 
 $\bullet$ The linear model is computed with complexity $O(nm)$, computed in every step of the HMC sampling method.
 
 \vspace{2mm}
-$\bullet$ In a fully Bayesian inference framework using sampling methods, the proposed approximate GP model has a computational complexity of $O(nm+m)$ in every step of the HMC method. In addition, the computation of the automatic differentation to compute the gradients in this linear model scales $O(n)$?, an operation that must be computed in every step of the HMC method.
+$\bullet$ In a fully Bayesian inference framework using sampling methods, the proposed approximate GP model has a computational complexity of $O(nm+m)$ in every step of the HMC method. In addition, the computation of the automatic differentiation to compute the gradients in this linear model scales $O(n)$?, an operation that must be computed in every step of the HMC method.
 
 \vspace{2mm}
 $\bullet$ Using maximizing marginal likelihood methods, the proposed model has a overall complexity of $O(nm^2)$. After this, evaluating the marginal likelihood and marginal likelihood gradients is an $O(m^3)$ operation in every step of the optimizer. (Arno's paper, pag. 7)
@@ -336,19 +336,19 @@ $\bullet$ In a regular GPs, the main computational complexity comes from the inv
 $\bullet$ In regular GPs, the parameter posterior distributions is $N$-dimensional. It is known that when $N$ is of medium or large size there is high correlation between the $N$-dimensional latent function and the hyperparameters of the GP prior.
 
 \vspace{2mm}
-$\bullet$ In conventional sparse GP approximations, although the rank of the GP is reduced considerably to the number of inducing points, this still needs to do the autodiff and covariane matrix inversion.
+$\bullet$ In conventional sparse GP approximations, although the rank of the GP is reduced considerably to the number of inducing points, this still needs to do the autodiff and covariance matrix inversion.
 
 \vspace{2mm}
-$\bullet$ The Splines models are also a sort of basis functions expansion model, then the computational demands are similar to that in this approach. However in Splines models the lengthscale hyperparameter tend to be fixed and then the fit is covered by the magnitud parameter. In that sense, Splines models tend to loose the useful interpretation of the lengthscale parameter.
+$\bullet$ The Splines models are also a sort of basis functions expansion model, then the computational demands are similar to that in this approach. However in Splines models the lengthscale hyperparameter tend to be fixed and then the fit is covered by the magnitude parameter. In that sense, Splines models tend to loose the useful interpretation of the lengthscale parameter.
 
 \vspace{2mm}
-$\bullet$ In addition, the computation of the automatic differentation to compute gradients in this linear model scales $O(n)$, which is an operation that must be computed in every step of the HMC method.
+$\bullet$ In addition, the computation of the automatic differentiation to compute gradients in this linear model scales $O(n)$, which is an operation that must be computed in every step of the HMC method.
 
 \vspace{2mm}
-$\bullet$ In a regular GP model the automatic differentation to compute the gradients of the covariance function scales $O(n^2)$, the dimension of the covariance matrix, and the full inversion of the covariance matrix scales $O(n^3)$. This operation has to be computed at every step of the HMC.
+$\bullet$ In a regular GP model the automatic differentiation to compute the gradients of the covariance function scales $O(n^2)$, the dimension of the covariance matrix, and the full inversion of the covariance matrix scales $O(n^3)$. This operation has to be computed at every step of the HMC.
 
 \vspace{2mm}
-$\bullet$ In a sparse GP approach based on inducing points, although the rank of the GP is reduced considerably to the number of inducing points, this still needs to do the autodiff and covariane matrix inversion.
+$\bullet$ In a sparse GP approach based on inducing points, although the rank of the GP is reduced considerably to the number of inducing points, this still needs to do the autodiff and covariance matrix inversion.
 
 \vspace{2mm}
 $\bullet$ The Splines models are also a sort of basis functions expansion model, then the computational demands are similar to that in this approach.
@@ -387,7 +387,7 @@ L=c \cdot S,
 
 \noindent where $S$ represents the half-range of the input space, and $c$ ($c \ge 1$) is the proportional extension factor. From now on we are going to refer to this proportional factor $c$ as the boundary factor of the approximation. The boundary factor can also be regarded as the boundary $L$ normalized by the half-range $S$ of the input space.
 
-For a naive illustration of the effects of these two factors, number of basis functions $m$ and boundary $L$, on the performance of the approximation, a set of noisy observations are drawn from a GP model with lengthscale $\ell=0.3$ and marginal variance $\alpha=1$, and input vales within the zero-mean input domain with half-range $S=1$. HSGP models with different number of basis functions and boundaries are fitted to this data. The lengthscale and marginal variance parameters are considered fixed to the true values of the data-generative GP model. Figures \ref{fig1_Post_J} and \ref{fig2_Post_L} ilustrate the individual effects of the number of basis functions and the boundary, respectively, on the approximation of the covariance function. On the one hand, for a fixed $L$, let's suppose it is set to a right choice, Figure \ref{fig1_Post_J} shows the effect of changing the number of basis functions in approaching the posterior mean and the covariance function. It can be seen how the number of basis functions affects the non-linear effects of the posteriors. Fewer basis functions implies smoother covariance functions and consequently smoother posteriors. The more "wigglyness" of the function, the more basis functions are needed. On the other hand, and similarly, for a fixed number of basis functions $m$, let's suppose it is set to a right choice, Figure \ref{fig2_Post_L} shows the effect of changing the boundary $L$ in approaching the posterior mean and the covariance function. It can be seen how the box size mainly affects the approximation near the boundaries of the function and affects the covariances at long distances. \\
+For a naive illustration of the effects of these two factors, number of basis functions $m$ and boundary $L$, on the performance of the approximation, a set of noisy observations are drawn from a GP model with lengthscale $\ell=0.3$ and marginal variance $\alpha=1$, and input vales within the zero-mean input domain with half-range $S=1$. HSGP models with different number of basis functions and boundaries are fitted to this data. The lengthscale and marginal variance parameters are considered fixed to the true values of the data-generative GP model. Figures \ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effects of the number of basis functions and the boundary, respectively, on the approximation of the covariance function. On the one hand, for a fixed $L$, let's suppose it is set to a right choice, Figure \ref{fig1_Post_J} shows the effect of changing the number of basis functions in approaching the posterior mean and the covariance function. It can be seen how the number of basis functions affects the non-linear effects of the posteriors. Fewer basis functions implies smoother covariance functions and consequently smoother posteriors. The more "wigglyness" of the function, the more basis functions are needed. On the other hand, and similarly, for a fixed number of basis functions $m$, let's suppose it is set to a right choice, Figure \ref{fig2_Post_L} shows the effect of changing the boundary $L$ in approaching the posterior mean and the covariance function. It can be seen how the box size mainly affects the approximation near the boundaries of the function and affects the covariances at long distances. \\
 
 \begin{figure}
 \centering
@@ -430,7 +430,7 @@ Similar conclusions can be stated from results of Figure \ref{fig6_lscale_vs_J}.
 \centering
 \subfigure{\includegraphics[scale=0.4]{fig5_MSE_vs_J.pdf}}
 \subfigure{\includegraphics[scale=0.4]{fig5_MSE_vs_c.pdf}}
-\caption{Standarized root mean square error (SRMSE) of the proposed HSGP models computed against the regular GP model. (left) SRMSE vs the number of basis functions $m$ and for different values of the boundary factor $c$. (right) SRMSE vs the boundary factor $c$ and for different values of the number of basis functions $m$. }
+\caption{Standardized root mean square error (SRMSE) of the proposed HSGP models computed against the regular GP model. (left) SRMSE vs the number of basis functions $m$ and for different values of the boundary factor $c$. (right) SRMSE vs the boundary factor $c$ and for different values of the number of basis functions $m$. }
   \label{fig5_MSE_vs_J}
 \end{figure}
 
@@ -451,7 +451,7 @@ $\bullet$ There is a minimum boundary factor under which a close approximation n
 
 $\bullet$ The lower the boundary factor, the fewer basis functions and the smaller lengthscales that are suitable to be fitted. 
 
-$\bullet$ This plot serves as a diagnosis tool in the sense that if a estimated lengthscale is lower than that minimun that the figure bring us, given certain number of basis functions and certain boundary factor, means that the number of basis functions should be increased or the boundary factor decreased. On the other hand, if the lengthscale is bigger than that generated by the figure means that the approximation should be close enough.
+$\bullet$ This plot serves as a diagnosis tool in the sense that if a estimated lengthscale is lower than that minimum that the figure bring us, given certain number of basis functions and certain boundary factor, means that the number of basis functions should be increased or the boundary factor decreased. On the other hand, if the lengthscale is bigger than that generated by the figure means that the approximation should be close enough.
 
 Figure \ref{fig3_lscale_vs_J_vs_c_part1} is useful for the user to know the suitable values for the number of basis functions $m$ and the boundary factor $c$ to approximate certain process characterized by its lengthscale. This Figure will allow us to optimize computations which depends on the number of basis functions. Starting from some guess of the lengthscale of the process and knowing the range of the input data which we are interested in, the user can do a few iterative adjustments to obtain an optimal fit. This figure also provides a diagnosis tool of the fit by comparing a actual estimated lengthscale to that the figure bring. 
 
@@ -459,7 +459,7 @@ Figure \ref{fig3_lscale_vs_J_vs_c_part1} is useful for the user to know the suit
 \centering
 \subfigure{\includegraphics[scale=0.4]{fig3_lscale_vs_J_vs_c_part1.pdf}}
 \subfigure{\includegraphics[scale=0.4]{fig3_lscale_vs_J_vs_c_part2.pdf}}
-\caption{Relation between the minumum number of basis functions $m$, the lengthscale normalized by the half-range of the data ($\frac{\ell}{S}$), and the boundary factor $c$ ($c = \frac{L}{S}$).}
+\caption{Relation between the minimum number of basis functions $m$, the lengthscale normalized by the half-range of the data ($\frac{\ell}{S}$), and the boundary factor $c$ ($c = \frac{L}{S}$).}
   \label{fig3_lscale_vs_J_vs_c_part1}
 \end{figure}
 
@@ -485,7 +485,7 @@ We can appreciate an agreement between Figures \ref{fig8_Tlscale_vs_Elscale} and
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{fig8_Tlscale_vs_Elscale.pdf}
-\caption{True lengthscales versus estimated lscales of the different realizations of datasets using different number of basis functions. }
+\caption{True lengthscales versus estimated lengthscales of the different realizations of datasets using different number of basis functions. }
   \label{fig8_Tlscale_vs_Elscale}
 \end{figure}
 
@@ -543,7 +543,7 @@ S(w)&=& 4\alpha^2 \frac{\sqrt{3}}{\ell}^{3}(\frac{3}{\ell^2} + \omega^2)^{-2},
 f(x) \approx \sum_{j}^m \left( S(\sqrt{\lambda_j})\right)^{1/2} \phi_j(x) \beta_j, \nonumber
 \end{equation*}
 
-In order to do model comparison, in addition to the regular GP model and HSGP model, an splines-based model is also fitted using the Thin Plate Regression Splinesn approach in \cite{wood2003thin} and implemented in the R-package \textit{mgcv}. A Bayesian approach is used to fit this splines model using the R-package \textit{brms}.
+In order to do model comparison, in addition to the regular GP model and HSGP model, an splines-based model is also fitted using the Thin Plate Regression Splines approach in \cite{wood2003thin} and implemented in the R-package \textit{mgcv}. A Bayesian approach is used to fit this splines model using the R-package \textit{brms}.
 
 For the HSGP model we use $m=80$ basis functions and a boundary factor $c=1.2$. For the splines model we use 80 knots or basis in the model.
 
@@ -562,7 +562,7 @@ Figure \ref{fig11_MSE_exI_inter} shows the  standardized root mean squared error
 \centering
 \subfigure{\includegraphics[scale=0.350]{fig11_MSE_exI_inter.pdf}}
 \subfigure{\includegraphics[scale=0.350]{fig11_MSE_exI_extra.pdf}}
-\caption{Standarized mean square error (SMSE) of the different methods againts the true function. (left) SMSE for interpolation. (right) SMSE for extrapolation}
+\caption{Standardized mean square error (SMSE) of the different methods against the true function. (left) SMSE for interpolation. (right) SMSE for extrapolation}
   \label{fig11_MSE_exI_inter}
 \end{figure}
 
@@ -582,7 +582,7 @@ p_i &=& \text{logit}(f(x_i)) \nonumber \\
 f(\mathbf{x}) &\sim& \mathcal{GP}(0, k(\mathbf{x},\mathbf{x}', \theta)
 \end{eqnarray*}
 
-\noindent with a squared exponetial covariance function $k$ (2). 
+\noindent with a squared exponential covariance function $k$ (2). 
 
 In the HSGP model the covariance function is approximated as in eq. (\ref{approxcov}) with the square exponential spectral density in eq. (6), and the latent function $f(\mathbf{x})$ as in eq. (\ref{approxf}). 
 
@@ -605,7 +605,7 @@ For the HSGP model, different models with different number of basis functions an
 \centering
 \subfigure{\includegraphics[scale=0.40]{fig13_MSE_train_BF_gaydata.pdf}}
 \subfigure{\includegraphics[scale=0.40]{fig13_MSE_pred_BF_gaydata.pdf}}
-\caption{Mean square error (MSE) of the different methods againts the true function. (left) MSE for training data. (right) MSE for test data.}
+\caption{Mean square error (MSE) of the different methods against the true function. (left) MSE for training data. (right) MSE for test data.}
   \label{fig13_MSE_train_BF_gaydata}
 \end{figure}
 
@@ -615,7 +615,7 @@ Figure \ref{fig14_MSE_train_gaydata} shows the RMSE of the different models, reg
 \centering
 \subfigure{\includegraphics[scale=0.40]{fig14_MSE_train_gaydata.pdf}}
 \subfigure{\includegraphics[scale=0.40]{fig14_MSE_pred_gaydata.pdf}}
-\caption{Mean square error (MSE) of the different methods againts the true function. (left) MSE for training data. (right) MSE for test data.}
+\caption{Mean square error (MSE) of the different methods against the true function. (left) MSE for training data. (right) MSE for test data.}
   \label{fig14_MSE_train_gaydata}
 \end{figure}
 
@@ -643,7 +643,7 @@ processes with Gaussian random fields.
 
 The approach based on inducing points employs a small set of pseudo data points to summarise the actual data. The storage requirements are reduced to $O(nm)$ and complexity to $O(nm^2)$, where $m < n$. Some of these methods have been reviewed in \cite{rasmussen2006gaussian}, and \cite{quinonero2005unifying} provide a unifying view of these methods based on approximate generative methods. From a spectral point of view, several of these methods (e.g., SOR, DTC, VAR, FIC) can be interpreted as modiﬁcations to the so-called Nystr\"om method (see \cite{arthur1979baker} and \cite{williams2001using}), a scheme for approximating the eigenspectrum. These methods are basically based on choosing a set of $m$ inducing inputs $x_u$ and scaling the corresponding eigendecomposition of their corresponding covariance matrix $K_{u,u}$ to match that of the actual covariance. 
 
-This scheme was originally introduced to the GP context by \cite{williams2001using}. As discussed by \cite{quinonero2005unifying}, the Nystr\"om method by \cite{williams2001using} does not correspond to a well-formed probabilistic model. However, several methods modifying the inducing point approach are widely used. The Subset of Regressors (SoR) \citep{smola2001sparse} method uses the Nystr\"om approximation scheme and a finite linear-in-the-parameters model for approximating the whole (training and test) covariance function, whereas the sparse Nystr\"om method \citep{williams2001using} only replaces the training data covariance matrix. The SoR method is based on a degenarete prior which produces unresoanble predictive uncertainties, which is a general problem of linear models (for more details see \cite{rasmussen2006gaussian}). 
+This scheme was originally introduced to the GP context by \cite{williams2001using}. As discussed by \cite{quinonero2005unifying}, the Nystr\"om method by \cite{williams2001using} does not correspond to a well-formed probabilistic model. However, several methods modifying the inducing point approach are widely used. The Subset of Regressors (SoR) \citep{smola2001sparse} method uses the Nystr\"om approximation scheme and a finite linear-in-the-parameters model for approximating the whole (training and test) covariance function, whereas the sparse Nystr\"om method \citep{williams2001using} only replaces the training data covariance matrix. The SoR method is based on a degenerate prior which produces unreasonable predictive uncertainties, which is a general problem of linear models (for more details see \cite{rasmussen2006gaussian}). 
 
 The Deterministic Training Conditional (DTC) method \citep{ro2001sparse,seeger2003fast}) retains the true covariance for the training data, but uses the approximate cross-covariances between training and test data, which reverse the problem of nonsensical predictive uncertainties. However, since the covariances for training and test cases are computed differently, this method results not to actually be a Gaussian process. This method was presented as Projected Latent Variables (PLV) in \cite{seeger2003fast} and Projected Process Approximation (PPA) in \cite{rasmussen2006gaussian}. 
 
@@ -691,7 +691,7 @@ This work is based on the novel method developed by \cite{solin2018hilbert} for 
 $\bullet$ It has an attractive computational cost as this basically turns the regular GP model into a lineal model.
 
 \vspace{2mm}
-$\bullet$ In a fully Bayesian inference framework using sampling methods, the proposed approximate GP model has a computational complexity of $O(nm+m)$ in every step of the HMC method. In addition, the computation of the automatic differentation to compute the gradients in this linear model scales $O(n)$?, an operation that must be computed in every step of the HMC method.
+$\bullet$ In a fully Bayesian inference framework using sampling methods, the proposed approximate GP model has a computational complexity of $O(nm+m)$ in every step of the HMC method. In addition, the computation of the automatic differentiation to compute the gradients in this linear model scales $O(n)$?, an operation that must be computed in every step of the HMC method.
 
 \vspace{2mm}
 $\bullet$ Using maximizing marginal likelihood methods, the proposed model has a overall complexity of $O(nm^2)$. After this, evaluating the marginal likelihood and marginal likelihood gradients is an $O(m^3)$ operation in every step of the optimizer. (Arno's paper, pag. 7)
@@ -708,10 +708,10 @@ $\bullet$ In a regular GPs, the main computational complexity comes from the inv
 $\bullet$ In regular GPs, the parameter posterior distributions is $N$-dimensional. It is known that when $N$ is of medium or large size there is high correlation between the $N$-dimensional latent function and the hyperparameters of the GP prior.
 
 \vspace{2mm}
-$\bullet$ In conventional sparse GP approximations, although the rank of the GP is reduced considerably to the number of inducing points, this still needs to do the autodiff and covariane matrix inversion.
+$\bullet$ In conventional sparse GP approximations, although the rank of the GP is reduced considerably to the number of inducing points, this still needs to do the autodiff and covariance matrix inversion.
 
 \vspace{2mm}
-$\bullet$ The Splines models are also a sort of basis functions expansion model, then the computational demands are similar to that in this approach. However in Splines models the lengthscale hyperparameter tend to be fixed and then the fit is covered by the magnitud parameter. In that sense, Splines models tend to loose the useful interpretation of the lengthscale parameter.
+$\bullet$ The Splines models are also a sort of basis functions expansion model, then the computational demands are similar to that in this approach. However in Splines models the lengthscale hyperparameter tend to be fixed and then the fit is covered by the magnitude parameter. In that sense, Splines models tend to loose the useful interpretation of the lengthscale parameter.
 
 
 
@@ -723,10 +723,10 @@ As said above the proposed method was already developed by \cite{solin2018hilber
 $\bullet$ Firstly, clear summarized formulae of the method for the univariate and multivariate cases is presented. 
 
 \vspace{2mm}
-$\bullet$ We investigate the relations going on among these factors, the number of basis functions, the box size, and the lengthsccale of the functions.
+$\bullet$ We investigate the relations going on among these factors, the number of basis functions, the box size, and the lengthscale of the functions.
 
 \vspace{2mm}
-$\bullet$ We make recomendations for the values of these factors based on the recognized relations among them. We provide useful graphs of these relations that will help the users to improve performance and save time of computation.
+$\bullet$ We make recommendations for the values of these factors based on the recognized relations among them. We provide useful graphs of these relations that will help the users to improve performance and save time of computation.
 
 \vspace{2mm}
 $\bullet$ We also diagnose if the chosen values for the number of basis functions and the box size are adequate to fit to the actual data.
@@ -774,7 +774,7 @@ Associated to each covariance function $k(\mathbf{x},\mathbf{x}')$ we can also d
 \mathcal{K} f(\mathbf{x}) = \int k(\mathbf{x},\mathbf{x}') f(\mathbf{x}') d\mathbf{x}'.
 \end{equation} 
 
-Assuming that the espectral density function $S(\cdot)$ is regular enough, then it can be represented as a polynomial expansion:
+Assuming that the spectral density function $S(\cdot)$ is regular enough, then it can be represented as a polynomial expansion:
 %
 \begin{equation}
 S(\mathbf{w})=a_0+a_1\mathbf{w}^2+a_2(\mathbf{w}^2)^2+a_1(\mathbf{w}^2)^3+\cdots
