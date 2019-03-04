@@ -1,7 +1,9 @@
 % interacttfssample.tex
 % v1.05 - August 2017
-
 \documentclass[]{interact}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{microtype}
 
 \usepackage{epstopdf}% To incorporate .eps illustrations using PDFLaTeX, etc.
 
@@ -84,7 +86,7 @@ can be found in \cite{rasmussen2006gaussian}.
 Alternative low-rank approximation is based on forming a basis function approximation with $m \ll$. The basis functions are presented explicitly, but could also be used to form a low rank covariance matrix approximation. Common basis function  approximations are based on the spectral analysis and series expansions of Gaussian processes \citep{loeve1977probability,trees1968detection,adler1981geometry,cramer2013stationary}.
 Certain spline smoothing basis functions are equivalent to GPs with certain covariance function \citep{wahba1990spline}, but not all spline models are GPs (sometimes splines are not marginalization consistent)-
 %
-The sparse spectrum GPs are based on a sparse approximation to the frequency domain representation of a GP \citep{lazaro2010sparse,quia2010sparse,gal2015improving,gal2015improving}. Recently \citep{hensman2017variational} presented a variational Fourier feature approximation for Gaussian processes that was derived for the Mat´ern class of kernels. Random fourier features \citep{rahimi2008random,rahimi2009weighted} is a method for approximating kernels.
+The sparse spectrum GPs are based on a sparse approximation to the frequency domain representation of a GP \citep{lazaro2010sparse,quia2010sparse,gal2015improving,gal2015improving}. Recently \citep{hensman2017variational} presented a variational Fourier feature approximation for Gaussian processes that was derived for the Mat{\'e}rn class of kernels. Random fourier features \citep{rahimi2008random,rahimi2009weighted} is a method for approximating kernels.
 
 In this paper we focus on Laplace eigenfunction basis function approximation for stationary covariance functions proposed by \citet{solin2018hilbert}. Basis function approaches are computationally as linear models, which is attractive property in modular probabilistic programming models where there is a big benefit id approximation specific computation is simple. The Laplace eigenfunctions can be computed analytically and they are independent of the particular choice of the covariance kernel including the hyperparameters. While the pre-computation cost of the basis functions is $O(m^2n)$ the computation cost when only the covariance function parameters change is $O(mn+m)$ (or $O(m^3)$ if marginalization can be used). This is a big advantage for iterative algorithms such as Markov chain Monte Carlo (MCMC). The further advantage is the reduced memory cost in automatic differentation used in modern probabilistic programming frameworks, as the automatic differentation memory cost scales as the computational cost and not as the usual memory cost for the posterior density computation. The basis function approach provides also easy way to use non-centered parameterization reducing posterior dependency between parameters presenting the function and the covariance function parameters, which helps to further improve MCMC efficiency.
 
@@ -650,7 +652,7 @@ processes with Gaussian random fields.
 
 \subsection{Inducing points methods}
 
-The approach based on inducing points employs a small set of pseudo data points to summarise the actual data. The storage requirements are reduced to $O(nm)$ and complexity to $O(nm^2)$, where $m < n$. Some of these methods have been reviewed in \cite{rasmussen2006gaussian}, and \cite{quinonero2005unifying} provide a unifying view of these methods based on approximate generative methods. From a spectral point of view, several of these methods (e.g., SOR, DTC, VAR, FIC) can be interpreted as modiﬁcations to the so-called Nystr\"om method (see \cite{arthur1979baker} and \cite{williams2001using}), a scheme for approximating the eigenspectrum. These methods are basically based on choosing a set of $m$ inducing inputs $x_u$ and scaling the corresponding eigendecomposition of their corresponding covariance matrix $K_{u,u}$ to match that of the actual covariance. 
+The approach based on inducing points employs a small set of pseudo data points to summarise the actual data. The storage requirements are reduced to $O(nm)$ and complexity to $O(nm^2)$, where $m < n$. Some of these methods have been reviewed in \cite{rasmussen2006gaussian}, and \cite{quinonero2005unifying} provide a unifying view of these methods based on approximate generative methods. From a spectral point of view, several of these methods (e.g., SOR, DTC, VAR, FIC) can be interpreted as modfications to the so-called Nystr{\"o}m method (see \cite{arthur1979baker} and \cite{williams2001using}), a scheme for approximating the eigenspectrum. These methods are basically based on choosing a set of $m$ inducing inputs $x_u$ and scaling the corresponding eigendecomposition of their corresponding covariance matrix $K_{u,u}$ to match that of the actual covariance. 
 
 This scheme was originally introduced to the GP context by \cite{williams2001using}. As discussed by \cite{quinonero2005unifying}, the Nystr\"om method by \cite{williams2001using} does not correspond to a well-formed probabilistic model. However, several methods modifying the inducing point approach are widely used. The Subset of Regressors (SoR) \citep{smola2001sparse} method uses the Nystr\"om approximation scheme and a finite linear-in-the-parameters model for approximating the whole (training and test) covariance function, whereas the sparse Nystr\"om method \citep{williams2001using} only replaces the training data covariance matrix. The SoR method is based on a degenerate prior which produces unreasonable predictive uncertainties, which is a general problem of linear models (for more details see \cite{rasmussen2006gaussian}). 
 
@@ -685,7 +687,7 @@ The Sparse Spectrum GP is based on a sparse approximation to the frequency domai
 
 While Sparse Spectrum GP is based on a sparse spectrum, the reduced-rank method proposed in this paper aims to make the spectrum as ‘full’ as possible at a given rank.
 
-Recently \citep{hensman2017variational} presented a variational Fourier feature approximation for Gaussian processes that was derived for the Mat´ern class of kernels, where the approximation structure is set up by a low-rank plus diagonal structure. They combine the variational methodology with Fourier based approximations.
+Recently \citep{hensman2017variational} presented a variational Fourier feature approximation for Gaussian processes that was derived for the Mat{\'e}rn class of kernels, where the approximation structure is set up by a low-rank plus diagonal structure. They combine the variational methodology with Fourier based approximations.
 
 In spatial statistics similar approaches are called low-rank models \citep{diggle2007springer}. The low rank models assume that the Gaussian field is a linear combination of $m$ basis functions. The type of an approximation depends on the basis functions used. Familiar examples include spectral representation \citep{diggle2007springer,paciorek2007computational,paciorek2007bayesian} and splines \citep{wood2003thin}. 
 
