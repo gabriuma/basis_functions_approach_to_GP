@@ -382,12 +382,14 @@ $\bullet$ The Splines models are also a sort of basis functions expansion model,
 
 \section{The accuracy of the approximation}
 
-Implementation and performance of the HSGP model depends on the number of basis functions and boundary settings, which are, at the same time, related  to each other. The time of computation in the approximation mainly depends on the number of basis functions. Furthermore, the appropriate values for the number of basis functions and boundary depend on the non-linear functional effects of the function to be learned. In GP functions these non-linear functional effects are characterized by the lengthscale of the covariance function.
+Implementation and performance of the HSGP model depends on the number of basis functions and boundary settings, which are, at the same time, related  to each other. The time of computation in the approximation mainly depends on the number of basis functions. Furthermore, the appropriate values for the number of basis functions and boundary depend on the non-linear functional effects of the function characterized by the lengthscale of the covariance function.
 
-In this section we analyze the rule and relationships of the number of basis functions and boundary on the approximation and their effects on the learned functions. 
-We also analyze these two factors in relation to the lengthscale of the functions to be learned. We provide a useful graph showing how these factors, number of basis functions, boundary and lengthscale, relate to each other in relation to the performance of the model. This graph basically provides the recommended values for these factors in order to get a close approximation. This graph also allows us to diagnose an actual fit by checking whether the value of the estimated lengthscale does not keep to those that the Figure brings as suitable ones.
+In this section we analyze the effects of the number of basis functions and boundary on the approximation accuracy. We present recommendations how they should be chosen and diagnostics to check the accuracy of the approximation after the inference.
+We illustrate graphically how the number of basis functions, boundary and lengthscale relate to each other and affect the accuracy of the approximation.
+% This graph basically provides the recommended values for these factors in order to get a close approximation. This graph also allows us to diagnose an actual fit by checking whether the value of the estimated lengthscale does not keep to those that the Figure brings as suitable ones.
 
-In this section we also make a comparison between regular GP and HSGP models, fitted for different dataset with different "wigglyness". The comparison is made through comparing their estimated lengthscales. 
+We compare regular GP and HSGP fitted for different dataset with different "wigglyness".
+%The comparison is made through comparing their estimated lengthscales. 
 
 \subsection{Dependency on the number of basis functions and the boundary condition}
 
@@ -399,13 +401,13 @@ k(\tau) = \sum_{j}^{\infty} S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0),
 
 \noindent where $L$ is the boundary, $j$ is the index for the eigenfunctions and eigenvalues, and $\tau=x-x'$. The eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ are those in equation (\ref{bf&lambda}) for the unidimensional case and those in equation (\ref{bf&lambda_multi}) for the multidimensional case.
 
-The approximation to the covariance function will become exact in the limit when the number of basis functions approach infinity, $j=1,\cdots,\infty$. The number of basis functions can be truncated at some finite positive value $m$ such that the difference between the densities of the exact and approximate covariance functions be less than a threshold $\epsilon$,
+The approximation to the covariance function becomes exact in the limit when the number of basis functions approach infinity, $j=1,\cdots,\infty$. The number of basis functions can be truncated at some finite positive value $m$ such that the difference between the densities of the exact and approximate covariance functions be less than a threshold $\epsilon$,
 %
 \begin{eqnarray}\label{diff_covs}
 \int k(\tau)d(\tau) - \int \sum_{j}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0) d(\tau) < \epsilon.
 \end{eqnarray}
 
-The finite number $m$ of basis functions in the approximation needed to satisfy eq. (\ref{diff_covs}) will depend on the non-linear effects of the function to be learned, that is, on its lengthscale $\ell$. The approximation will also depends on boundary $L$ (equations (\ref{bf&lambda}) and (\ref{bf&lambda_multi})) which will affect the performance specially near the boundaries. The boundary will also have an effect on the number of basis functions needed in the approximation. The boundary $L$ is set as an extension of the desired predicting input domain $\Psi$. Considering a zero-mean input domain $\Psi=[-S,S] \in \mathbb{R}$, the boundary is defined as
+The finite number $m$ of basis functions in the approximation needed to satisfy eq. (\ref{diff_covs}) depends on the non-linear effects of the function to be learned, that is, on its lengthscale $\ell$. The approximation also depends on boundary $L$ (equations (\ref{bf&lambda}) and (\ref{bf&lambda_multi})) which will affect the performance specially near the boundaries. The boundary will also have an effect on the number of basis functions needed in the approximation. The boundary $L$ is set as an extension of the desired predicting input domain $\Psi$. Considering a zero-mean input domain $\Psi=[-S,S] \in \mathbb{R}$, the boundary is defined as
 %
 \begin{equation}
 L=c \cdot S,
