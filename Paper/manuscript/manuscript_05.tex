@@ -106,7 +106,7 @@ exact and approximate GPs to real and simulated data are provided in Section 4. 
 
 A Gaussian process (GP) is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, i.e. $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. Gaussian processes have the defining property that the marginal distribution of every finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_K) \right\rbrace$, is a multivariate Gaussian distribution.\\
 
-In this work, Gaussian processes will take the role of prior distributions over function spaces for non-parametric regression in a Bayesian setting. 
+In this work, Gaussian processes will take the role of a prior distribution over function spaces for non-parametric regression in a Bayesian setting. 
 Consider a data set $\mathcal{D} = \left\lbrace \mathbf{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is a noisy observation of an unknown function $f$ at $\mathbf{x}_n \in \mathbb{R}^D$ , i.e. $y_n = f(\mathbf{x}_n) + \epsilon_n$. Our goal is to predict the value of the function $f^*=f(\mathbf{x}^*)$ evaluated at a new input point $\mathbf{x}^* \in \mathbb{R}^D$. That is, we want to obtain the predictive distribution $p(f^*|\mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.\\
 
 We assume a Gaussian process prior for $f \sim \mathcal{GP}(\mu(\mathbf{x}), k(\mathbf{x}, \mathbf{x}'))$, where $\mu: \mathbb{R}^D \rightarrow \mathbb{R}$ and $k: \mathbb{R}^D \times \mathbb{R}^D \rightarrow \mathbb{R}$ are the mean and covariance functions, respectively,
@@ -116,48 +116,57 @@ We assume a Gaussian process prior for $f \sim \mathcal{GP}(\mu(\mathbf{x}), k(\
  	k(\mathbf{x}, \mathbf{x}') &= \mathbb{E}\!\left[\left( f(\mathbf{x}) - \mu(\mathbf{x}) \right)\left( f(\mathbf{x}') - \mu(\mathbf{x}') \right)\right].
 \end{align*} 
 
-The mean and covariance functions completely characterize the Gaussian process prior, and represent how the random functions behave on average and how the different points in the input space co-vary with respect to each other, respectively. The Gaussian process prior can be interpreted such as any finite number of function values $\mathbf{f}=\left\lbrace f(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is multivariate Gaussian, 
+The mean and covariance functions completely characterize the Gaussian process prior, and control the a priori behavior of the function $f$. Let $\mathbf{f}=\left\lbrace f(\mathbf{x}_n) \right\rbrace_{n=1}^N$, then the resulting prior distribution for $\mathbf{f}$ is a multivariate Gaussian distribution
+%
 \begin{align*}
-\mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu},K),
+\mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{K}),
 \end{align*}
 
-\noindent where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the multivariate mean and $K$ the covariance matrix, where the element $K_{i,j}$ are formed by evaluating the covariance function $k(\mathbf{x}_i,\mathbf{x}_j)$ at input values $\mathbf{x}_i$ and $\mathbf{x}_j$. The joint distribution of $\mathbf{f}$ and $f^*$ is also a multivariate Gaussian as,
+\noindent where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\mathbf{K}$ the covariance matrix, where the element $K_{i,j}$ are formed by evaluating the covariance function $k(\mathbf{x}_i,\mathbf{x}_j)$ at input values $\mathbf{x}_i$ and $\mathbf{x}_j$. The covariance function $k(\textbf{x}, \textbf{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation.
+The joint distribution of $\mathbf{f}$ and $f^*$ is also a multivariate Gaussian as,
 %
 \begin{eqnarray*}
-p(\mathbf{f},\mathbf{f}')=\mathcal{N} \left( \left[ \begin{array}{cc}
+p(\mathbf{f}, f^*)=\mathcal{N} \left( \left[ \begin{array}{cc}
 \mathbf{f} \\ 
-\mathbf{f}'
+f^*
 \end{array} \right] | 0,\left[ \begin{array}{cc}
-K_{\mathbf{f},\mathbf{f}} & K_{\mathbf{f},f^*} \\ 
-K_{f^*,\mathbf{f}} & K_{f^*,f^*}
+\mathbf{K}_{\mathbf{f},\mathbf{f}} & \mathbf{k}_{\mathbf{f},f^*} \\ 
+\mathbf{k}_{f^*,\mathbf{f}} & k_{f^*,f^*}
 \end{array} \right] \right),
 \end{eqnarray*} 
 
-\noindent where $K_{\mathbf{f},f^*}$ defines the covariances between $\mathbf{f}$ and $f^*$, and $K_{f^*,f^*}$ defines the variance of $f^*$. By using the conditioning properties of a multivariate Gaussian, we can compute analytically the predictive distribution for $f^*$  given $\mathbf{f}$,
-\begin{align*}
-	p(f^*| \mathbf{f}) = \mathcal{N}(f^*| K_{f^*,\mathbf{f}} K_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{f},  K_{f^*,f^*}-K_{f^*,\mathbf{f}} K_{\mathbf{f},\mathbf{f}}^{-1} K_{\mathbf{f},f^*}  )
-\end{align*}
-
-The joint distribution of observations $\mathbf{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\mathbf{f}$ and $f^*$, $p(\mathbf{y}, \mathbf{f}, f^*)$, is the product of the conditional distribution for $\mathbf{y}$ given $\mathbf{f}$ and the joint distribution for $\mathbf{f}$ and $f^*$,
+\noindent where $\mathbf{k}_{\mathbf{f},f^*}$ is the covariance between $\mathbf{f}$ and $f^*$, and $k_{f^*,f^*}$ is the prior variance of $f^*$. %By using the conditioning properties of multivariate Gaussian distributions, we can derive the predictive distribution for $f^*$  given $\mathbf{f}$ analytically,
+% \begin{align*}
+	% p(f^*| \mathbf{f}) = \mathcal{N}(f^*| \mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{k}_{\mathbf{f},f^*}  )
+% \end{align*}
+The joint distribution of the observations $\mathbf{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\mathbf{f}$ and $f^*$, $p(\mathbf{y}, \mathbf{f}, f^*)$, is the product of the conditional distribution for $\mathbf{y}$ given $\mathbf{f}$ and the joint distribution for $\mathbf{f}$ and $f^*$,
 \begin{align*}
 	p(\mathbf{y}, \mathbf{f}, f^*) = p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)
 \end{align*}
-
-Integrating the joint distribution  $p(\mathbf{y}, \mathbf{f}, f^*)$ over the uncertainty of $\mathbf{f}$ and then conditioning on the observations $\mathbf{y}$ following the Bayes's rule yields the posterior predictive distribution for $f^*$ given the observations $\mathbf{y}$,
+ 
+By marginalizing over $\mathbf{f}$ and conditioning on vector of observations $\mathbf{y}$, we obtain the posterior distribution of interest
 %
+\begin{align}\label{eq:posterior}
+	p(f^*|\mathbf{y}) = \frac{\int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)\text{d}\mathbf{f}}{p(\mathbf{y})},
+\end{align}
+where $p(\mathbf{y})$ is the marginal likelihood and is given by
+\begin{align}\label{eq:evidence}
+	p(\textbf{y}) = \int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*) \text{d}\bm{f}\text{d}f^*.
+\end{align}
+%
+If the observation model $p(\mathbf{y}|\mathbf{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
 \begin{align*}
-	p(f^*|\mathbf{y}) = \frac{\int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)\text{d}\mathbf{f}}{p(\mathbf{y})}
+	p(f^*| \mathbf{y}) = \mathcal{N}(f^*| \textbf{k}_{f^*,\mathbf{f}} (\textbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} (\mathbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{k}_{\mathbf{f},f^*}  ),
 \end{align*}
+where $\sigma^2$ is the noise variance.
 
-If the observational model $p(\mathbf{y}|\mathbf{f})$ is Gaussian, the integrals over $\mathbf{f}$ can be computed analytically yielding,
-\begin{align*}
-	p(f^*| \mathbf{y}) = \mathcal{N}(f^*| K_{f^*,\mathbf{f}} (K_{\mathbf{f},\mathbf{f}} + \sigma^2I)^{-1} \mathbf{f},  K_{f^*,f^*}-K_{f^*,\mathbf{f}} (K_{\mathbf{f},\mathbf{f}} + \sigma^2I)^{-1} K_{\mathbf{f},f^*}  )
-\end{align*}
-
-In most modelling problems, however, the observational model is not Gaussian (e.g. binomial or multinomial classification, Poisson  regression, and many other modelling problems) and the posterior predictive distribution $p(f^*| \mathbf{y})$ is analytically untractable and can not be obtained in a closed-form expression. Approximate inference have to be used to tackle the intractable inference, typically based on sampling methods such as MCMC \citep{brooks_2011} or analytical Gaussian approximations such as Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational methods \citep{gibbs2000variational,csato2000efficient}. Furthermore, Gaussian processes in a direct implementation scales cubically in the number of sample points, $N$, which effectively limits the modelling inference for medium and large datasets. In the introduction section in this paper several methods typically used for dealing with the computational complexity has been commented. \\
-
-In this paper we proposed an approximate model for Gaussian processes based on basis functions expansion which basically turns the GP prior model into a linear model. This linear GP model representation makes inference considerably faster and can be used as latent function in non-Gaussian observational models allowing modelling flexibility.\\
-
+While Gaussian processes provide an elegant framework for Bayesian non-parametric regression, there are two problems that often arise in practice. 
+in many modelling problems, the observation model is non-Gaussian (e.g. Binomial or Poisson regression) and therefore, the posterior distribution $p(f^*| \mathbf{y})$ is analytically intractable and cannot be obtained in closed-form. Furthermore, it is often of interest to impose a prior distribution on one or more hyperparameters and then marginalize over the uncertainty. This renders the posterior distribution intractable even in the case of a Gaussian likelihood. Approximate inference have to be used to tackle the intractable inference problem, typically based on sampling methods such as Markov chain Monte Carlo (MCMC) \citep{brooks_2011} or distributional approximations such as Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational Bayes methods \citep{gibbs2000variational,csato2000efficient}. Secondly, due to the matrix inverse in eq.~\eqref{eq:posterior} a direct implementation of Gaussian processes scales cubicly in the number of data points, $\mathcal{O}\left(N^3\right)$,  which can be prohibitively slow for many problems of interest. 
+\\
+\\
+In the following section, we propose an approximate framework for fast and accurate inference for Gaussian processes. Using a basis function expansion, we approximate the Gaussian process with a linear model. This representation has three main advantages: 1) it makes inference considerably faster due to the linear structure, 2) it is simple to implement, which makes it easy to use Gaussian processes as building blocks in more complicated models and can be used as latent function in non-Gaussian observational models allowing modelling flexibility, 3) it can be made arbitrary accurate and the trade-off between computational complexity and approximation accuracy can easily be controlled.
+\\
+\\
 The covariance function is the crucial ingredient in a Gaussian process as it encodes our prior assumptions about the function, and defines a correlation structure which characterize the correlations between function values at different inputs. A stationary covariance function is a function of $\mathbf{x}-\mathbf{x}'$, such that it can be written $k(\mathbf{x},\mathbf{x}') = k(|\mathbf{x}-\mathbf{x}'|)$, which means that the covariance is invariant to translations. Isotropic covariance functions are those that are function of the distance between observations, $k(\mathbf{x},\mathbf{x}') = k(||\mathbf{x}-\mathbf{x}'||) = k(\mathbf{r})$, which means that the covariance is both translation and rotation invariant. The Mat\'ern family with half-integers is the class of isotropic covariance functions probably most commonly used, which, in the unidimensional case (i.e. $\mathbf{x}=x\in \mathbb{R}$, so $\mathbf{r}=r\in \mathbb{R}$), are
 %
 \begin{eqnarray}
