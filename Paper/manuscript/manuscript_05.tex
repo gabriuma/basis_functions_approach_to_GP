@@ -104,7 +104,7 @@ exact and approximate GPs to real and simulated data are provided in Section 4. 
 
 \subsection{Gaussian process regression}
 
-A Gaussian process (GP) is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, i.e. $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. Gaussian processes have the defining property that the marginal distribution of every finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_K) \right\rbrace$, is a multivariate Gaussian distribution.\\
+A Gaussian process (GP) is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, i.e. $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. Gaussian processes have the defining property that the marginal distribution of any finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_K) \right\rbrace$, is a multivariate Gaussian distribution.\\
 
 In this work, Gaussian processes will take the role of a prior distribution over function spaces for non-parametric regression in a Bayesian setting. 
 Consider a data set $\mathcal{D} = \left\lbrace \mathbf{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is a noisy observation of an unknown function $f$ at $\mathbf{x}_n \in \mathbb{R}^D$ , i.e. $y_n = f(\mathbf{x}_n) + \epsilon_n$. Our goal is to predict the value of the function $f^*=f(\mathbf{x}^*)$ evaluated at a new input point $\mathbf{x}^* \in \mathbb{R}^D$. That is, we want to obtain the predictive distribution $p(f^*|\mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.\\
@@ -122,23 +122,26 @@ The mean and covariance functions completely characterize the Gaussian process p
 \mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{K}),
 \end{align*}
 
-\noindent where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\mathbf{K}$ the covariance matrix, where the element $K_{i,j}$ are formed by evaluating the covariance function $k(\mathbf{x}_i,\mathbf{x}_j)$ at input values $\mathbf{x}_i$ and $\mathbf{x}_j$. The covariance function $k(\textbf{x}, \textbf{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation.
+\noindent where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\mathbf{K}$ the covariance matrix, where $K_{i,j}=k(\mathbf{x}_i,\mathbf{x}_j)$. The covariance function $k(\textbf{x}, \textbf{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation.
 The joint distribution of $\mathbf{f}$ and $f^*$ is also a multivariate Gaussian as,
 %
-\begin{eqnarray*}
+\begin{align*}
 p(\mathbf{f}, f^*)=\mathcal{N} \left( \left[ \begin{array}{cc}
 \mathbf{f} \\ 
 f^*
-\end{array} \right] | 0,\left[ \begin{array}{cc}
+\end{array} \right] \,\middle|\, \mathbf{0},\left[ \begin{array}{cc}
 \mathbf{K}_{\mathbf{f},\mathbf{f}} & \mathbf{k}_{\mathbf{f},f^*} \\ 
 \mathbf{k}_{f^*,\mathbf{f}} & k_{f^*,f^*}
 \end{array} \right] \right),
-\end{eqnarray*} 
+\end{align*} 
 
 \noindent where $\mathbf{k}_{\mathbf{f},f^*}$ is the covariance between $\mathbf{f}$ and $f^*$, and $k_{f^*,f^*}$ is the prior variance of $f^*$. %By using the conditioning properties of multivariate Gaussian distributions, we can derive the predictive distribution for $f^*$  given $\mathbf{f}$ analytically,
 % \begin{align*}
 	% p(f^*| \mathbf{f}) = \mathcal{N}(f^*| \mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{k}_{\mathbf{f},f^*}  )
 % \end{align*}
+
+{\color{red} Aki: the following until ``While Gaussian'' seems too basic to be in the paper:}
+
 The joint distribution of the observations $\mathbf{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\mathbf{f}$ and $f^*$, $p(\mathbf{y}, \mathbf{f}, f^*)$, is the product of the conditional distribution for $\mathbf{y}$ given $\mathbf{f}$ and the joint distribution for $\mathbf{f}$ and $f^*$,
 \begin{align*}
 	p(\mathbf{y}, \mathbf{f}, f^*) = p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)
@@ -169,31 +172,31 @@ In the following section, we propose an approximate framework for fast and accur
 \\
 The covariance function is the crucial ingredient in a Gaussian process as it encodes our prior assumptions about the function, and defines a correlation structure which characterize the correlations between function values at different inputs. A stationary covariance function is a function of $\mathbf{x}-\mathbf{x}'$, such that it can be written $k(\mathbf{x},\mathbf{x}') = k(|\mathbf{x}-\mathbf{x}'|)$, which means that the covariance is invariant to translations. Isotropic covariance functions are those that are function of the distance between observations, $k(\mathbf{x},\mathbf{x}') = k(||\mathbf{x}-\mathbf{x}'||) = k(\mathbf{r})$, which means that the covariance is both translation and rotation invariant. The Mat\'ern family with half-integers is the class of isotropic covariance functions probably most commonly used, which, in the unidimensional case (i.e. $\mathbf{x}=x\in \mathbb{R}$, so $\mathbf{r}=r\in \mathbb{R}$), are
 %
-\begin{eqnarray}
-k_{\nu=\infty}(r)&=&\sigma^2 \text{exp}(-\frac{1}{2} r^2/\ell^2), \nonumber \\
-k_{\nu=\frac{1}{2}}(r)&=&\sigma^2 exp(-r/\ell), \nonumber \\
-k_{\nu=\frac{3}{2}}(r)&=&\sigma^2(1+\sqrt{3}r/\ell \text{exp}(-\sqrt{3}r/\ell), \nonumber \\
-k_{\nu=\frac{5}{2}}(r)&=&\sigma^2(1+\sqrt{5}r/\ell+\frac{5}{3}r^2/\ell^2) \text{exp}(-\sqrt{5}r/\ell), \nonumber 
-\end{eqnarray}
+\begin{align}
+k_{\nu=\infty}(r)&=\sigma^2 \exp(-\frac{1}{2} r^2/\ell^2), \nonumber \\
+k_{\nu=\frac{1}{2}}(r)&=\sigma^2 \exp(-r/\ell), \nonumber \\
+k_{\nu=\frac{3}{2}}(r)&=\sigma^2(1+\sqrt{3}r/\ell) \exp(-\sqrt{3}r/\ell), \nonumber \\
+k_{\nu=\frac{5}{2}}(r)&=\sigma^2(1+\sqrt{5}r/\ell+\frac{5}{3}r^2/\ell^2) \exp(-\sqrt{5}r/\ell), \nonumber 
+\end{align}
 
 \noindent where $\nu$ is the order the kernel, and the $\ell$ and $\sigma$ are the length-scale and magnitude, respectively, of the kernel. The particular case where $\nu=\infty$ is commonly known as squared exponential (exponentiated quadratic) covariance function, and that with $\nu=1/2$ as exponential covariance function. These covariance functions can be easily generalized to the multidimensional case, with multidimensional inputs $\mathbf{x}\in \mathbb{R}^D$ and multidimensional length-scale $\boldsymbol{\ell}\in \mathbb{R}^D$ (Gabi: We should derive the multidimensional form of the previous kernels, but I have now doubts how is the multidimensional form for the Matern kernels with $\nu$=1/2, $\nu$=3/2 and $\nu$=5/2). Using a multidimensional length-scale basically turns the isotropic covariance function into non-isotropic. 
 
 Stationary covariance functions can be represented in terms of their spectral densities \citep{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure (\textit{Bochner's theorem}, see, e.g. \cite{akhiezer1993theory}). If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern covariance functions written above are
 %
-\begin{eqnarray}
-S_{\nu=\infty}(w)&=& \sigma^2 \sqrt{2\pi} \cdot \ell \cdot \text{exp}(-0.5 \ell^2 w^2), \\
-S_{\nu=\frac{1}{2}}(w)&=& 2\sigma^2 \frac{1}{\ell}(\frac{1}{\ell^2} + \omega^2)^{-1}, \\
-S_{\nu=\frac{3}{2}}(w)&=& 4\sigma^2 \frac{\sqrt{3}}{\ell}^{3}(\frac{3}{\ell^2} + \omega^2)^{-2}, \\
-S_{\nu=\frac{5}{2}}(w)&=& \frac{16}{3}\sigma^2 \frac{\sqrt{3}}{\ell}^{5}(\frac{5}{\ell^2} + \omega^2)^{-3},  
-\end{eqnarray}
+\begin{align}
+S_{\nu=\infty}(w)&= \sigma^2 \sqrt{2\pi} \cdot \ell \cdot \exp\left(-0.5 \ell^2 w^2\right), \\
+S_{\nu=\frac{1}{2}}(w)&= 2\sigma^2 \frac{1}{\ell}\left(\frac{1}{\ell^2} + \omega^2\right)^{-1}, \\
+S_{\nu=\frac{3}{2}}(w)&= 4\sigma^2 \frac{\sqrt{3}}{\ell}^{3}\left(\frac{3}{\ell^2} + \omega^2\right)^{-2}, \\
+S_{\nu=\frac{5}{2}}(w)&= \frac{16}{3}\sigma^2 \frac{\sqrt{3}}{\ell}^{5}\left(\frac{5}{\ell^2} + \omega^2\right)^{-3},  
+\end{align}
 
 \noindent where variable $w$ is in the frequency domain. The $D$-dimensional spectral density functions associated with the Mat\'ern covariance functions considered in the previous section are
 %
-\begin{eqnarray}
-S^{\ast}_{\nu=\infty}(\mathbf{w})&=& \sigma^2 \sqrt{2\pi}^D \prod_{d=1}^D l_d \cdot \text{exp}\left(-0.5 \sum_{d=1}^D l_d^2 \mathbf{w}_d^2\right), \nonumber \\
+\begin{align}
+S^{\ast}_{\nu=\infty}(\mathbf{w})&= \sigma^2 \sqrt{2\pi}^D \prod_{d=1}^D l_d \cdot \exp\left(-0.5 \sum_{d=1}^D l_d^2 \mathbf{w}_d^2\right), \nonumber \\
 %
-S^{\ast}_{\nu}(\mathbf{w})&=& \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)l^{2\nu}}\left(\frac{2\nu}{l^2}+4\pi^2\mathbf{w}^2 \right)^{(\nu+D/2)}, \nonumber
-\end{eqnarray}
+S^{\ast}_{\nu}(\mathbf{w})&= \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)l^{2\nu}}\left(\frac{2\nu}{l^2}+4\pi^2\mathbf{w}^2 \right)^{(\nu+D/2)}, \nonumber
+\end{align}
 
 \noindent where the $D$-vector $\mathbf{w}$ is in the frequency domain.
 
@@ -259,26 +262,29 @@ Thus, the Gram matrix $\text{K}$ of the covariance function $k$ for a set of obs
   \end{array} } \right].
 \end{eqnarray}
  
-\noindent As a result, the GP model for the function $f$ can be re-defined as
+\noindent As a result, the model for $f$ can be written as
 %
 \begin{equation}
-\mathbf{f} \sim \text{GP}(0,\Phi \Delta \Phi^\intercal). \nonumber
+\mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu},\Phi \Delta \Phi^\intercal). \nonumber
 \end{equation}
 
 \noindent This equivalently leads to a linear representation of $f$ via
 %
 \begin{equation}\label{approxf}
-f(x) \approx \sum_{j}^m \left( S_{\theta}(\sqrt{\lambda_j})\right)^{1/2} \phi_j(x) \beta_j, \nonumber
+f(x) \approx \sum_{j}^m \left( S_{\theta}(\sqrt{\lambda_j})\right)^{1/2} \phi_j(x) \beta_j,
 \end{equation}
 
-\noindent where $\beta_j \sim \text{Normal}(0,1)$ are normal random variables with zero mean and unitary variance. That is, the function $f$ can be approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the covariance hyperparameters $\theta$. Instead, the only dependence on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, Equation (\ref{approxf}) can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
+\noindent where $\beta_j \sim \text{Normal}(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the covariance hyperparameters $\theta$. Instead, the only dependence on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, Equation (\ref{approxf}) can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
+
+The parameterization in \ref{approxf} is naturally in the non-centered
+parameterization form with independent prior distribution on
+$\beta_j$, which makes the posterior inference easier.
 
 \subsection{Generalization to multidimensional GPs}
 
-We will now show how to generalize the results from the previous section to a multidimensional input space with compact regular domain $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions. 
-In a $D$-dimensional input space, the total number of eigenfunctions and eigenvalues in the approximation is equal to the number of $D$-tuples, that is possible combinations of univariate eigenfunctions over all dimensions. The number $D$-tuples is given by $m^{\ast} = \prod_{d=1}^{D} m_d$, where $m_d$ is the number of basis function for the dimension $d$. Let $\mathbb{S}\in {\rm I\!N}^{m^{\ast} \times D}$ be the matrix of all those $D$-tuples. For example, suppose we have $D=3$ covariates and use $m_{1}=2$, $m_{2}=2$ and $m_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimension, respectively. Then, the number of multivariate eigenfunctions and eigenvalues is $m^{\ast} = m_{1} \cdot m_{2} \cdot m_{3} = 12$ and the matrix $\mathbb{S}\in {\rm I\!N}^{12 \times 3}$ is given by
-
-\begin{eqnarray}
+The results from the previous section can be generalizes to a multidimensional input space with compact regular domain $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions. 
+In a $D$-dimensional input space, the total number of eigenfunctions and eigenvalues in the approximation is equal to the number of $D$-tuples, that is possible combinations of univariate eigenfunctions over all dimensions. The number $D$-tuples is given by $m^{\ast} = \prod_{d=1}^{D} m_d$, where $m_d$ is the number of basis function for the dimension $d$. Let $\mathbb{S}\in {\rm I\!N}^{m^{\ast} \times D}$ be the matrix of all those $D$-tuples. For example, suppose we have $D=3$ dimensions and use $m_{1}=2$, $m_{2}=2$ and $m_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimension, respectively. Then, the number of multivariate eigenfunctions and eigenvalues is $m^{\ast} = m_{1} \cdot m_{2} \cdot m_{3} = 12$ and the matrix $\mathbb{S}\in {\rm I\!N}^{12 \times 3}$ is given by
+\begin{align}\small
 \mathbb{S}=
 \left[ {\begin{array}{ccc}
 1 & 1 & 1 \nonumber \\
@@ -294,9 +300,9 @@ In a $D$-dimensional input space, the total number of eigenfunctions and eigenva
 2 & 2 & 2 \\
 2 & 2 & 3 
 \end{array} } \right]
-\end{eqnarray} 
+\end{align} 
 
-Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. And each multivariate eigenvalue $\lambda^{\ast}_j$ is a $D$-vector whose elements are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. Thus, for $\mathbf{x}^D \in \Omega$ and $j=1,\ldots,m$, we have 
+Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$, and each multivariate eigenvalue $\lambda^{\ast}_j$ is a $D$-vector with elements that are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$. Thus, for $\mathbf{x}^D \in \Omega$ and $j=1,\ldots,m$, we have 
 %
 \begin{align} \label{bf&lambda_multi}
 \begin{split}
@@ -322,12 +328,12 @@ f(\mathbf{x}) \approx \sum_{j=1}^{m^{\ast}}
 \phi^{\ast}_j(\mathbf{x}) \beta_j, 
 \end{equation}
 
-\noindent where, again, $\beta_j \sim \text{Normal}(0,1)$ are normal random variables with zero mean and unitary variance. The computational cost of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation becomes inefficient more quickly than in the univariate case. This is because $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and so increases rapidly with increased dimensionality.
+\noindent where, again, $\beta_j \sim \text{Normal}(0,1)$. The computational cost of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
 
 \subsection{Learning hyperparameters and model inference}
 
 \vspace{2mm}
-$\bullet$ It has an attractive computational cost as this basically turns the regular GP model into a lineal model.
+$\bullet$ It has an attractive computational cost as this basically turns the regular GP model into a linear model.
 
 \vspace{2mm}
 $\bullet$ The design matrix of the proposed linear model, which is composed of a basis of Laplace eigenfunctions, can be computed analytically and does not depend on the hyperparameters of the model, then it has to be computed only once with $O(n+m)$ computational demands.
