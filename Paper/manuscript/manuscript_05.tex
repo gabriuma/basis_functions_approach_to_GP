@@ -94,6 +94,19 @@ in: While Sparse Spectrum GP is based on a sparse spectrum, the reduced-rank met
 In this paper we focus on the basis function approximation via Laplace eigenfunctions for stationary covariance functions proposed by \citet{solin2018hilbert}. Basis function approaches behave computationally like linear models, which is an attractive property in modular probabilistic programming models where there is a big benefit if approximation specific computation is simple (Paul: What do you mean with the the last part of the sentence?). The Laplace eigenfunctions can be computed analytically and they are independent of the particular choice of the covariance kernel including the hyperparameters. While the pre-computation cost of the basis functions is $O(m^2n)$, the computational cost when only changing the covariance function parameters is $O(mn+m)$.% (or even $O(m^3)$ if marginalization can be used).
 This is a big advantage in terms of speed for iterative algorithms such as Markov chain Monte Carlo (MCMC). Another advantage is the reduced memory requirements of automatic differentation methods used in modern probabilistic programming frameworks (cite!). This is because the memory requirements of automatic differentation rather scale with the computational complexity instead of with the usual memory requirements for the posterior density computation. The basis function approach also provides an easy way to apply the non-centered parameterization of GPs, which reduces the posterior dependency between parameters representing the estimated function and the hyperparameters of the covariance function, which further improves MCMC efficiency.
 
+\textcolor{red}{Aki: I moved this from section 2, needs to be combined with other intro}
+We propose an approximate framework for fast and accurate inference
+for Gaussian processes. Using a basis function expansion, we
+approximate the Gaussian process with a linear model. This
+representation has three main advantages: 1) it makes inference
+considerably faster due to the linear structure, 2) it is simple to
+implement, which makes it easy to use Gaussian processes as building
+blocks in more complicated models and can be used as latent function
+in non-Gaussian observational models allowing modelling flexibility,
+3) it can be made arbitrary accurate and the trade-off between
+computational complexity and approximation accuracy can easily be
+controlled.
+
 While \citet{solin2018hilbert} have fully developed the mathematical theory behind this specific approximation of GPs, further work is needed for its practical implementation in probabilistic programming frameworks such as Stan \citep{carpenter2017stan}. In this paper, we analyze in detail the performance and accuracy of the method in relation to key factors such as the number of basis functions, desired prediction space, or properties of the true functional relationship between covariates and response variable. We provide intuitive visualizations and practical recommendations for the choice of these factors, which will help users to improve computational performance while maintaining close approximation to exact GPs. 
 
 Although there are several GP specific software packages available to date (GPML, GPstuff, GPy, GPflow, cite them!), each provide efficient implementations only for a restricted range of GP based models. In this paper, we do not focus on the fastest possible inference for some specific GP models, but instead are interested in how GPs can be easily used as modular components in probabilistic programming frameworks. 
@@ -105,12 +118,13 @@ exact and approximate GPs to real and simulated data are provided in Section 4. 
 \vspace{3mm}
 \section{Method}\label{sec:bf_method}
 
-\subsection{Gaussian process regression}
+\subsection{Gaussian process as a prior}
 
-A Gaussian process (GP) is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, i.e. $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. Gaussian processes have the defining property that the marginal distribution of any finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_K) \right\rbrace$, is a multivariate Gaussian distribution.\\
+A Gaussian process (GP) is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, i.e. $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. Gaussian processes have the defining property that the marginal distribution of any finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_K) \right\rbrace$, is a multivariate Gaussian distribution.
 
-In this work, Gaussian processes will take the role of a prior distribution over function spaces for non-parametric regression in a Bayesian setting. 
-Consider a data set $\mathcal{D} = \left\lbrace \mathbf{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is a noisy observation of an unknown function $f$ at $\mathbf{x}_n \in \mathbb{R}^D$ , i.e. $y_n = f(\mathbf{x}_n) + \epsilon_n$. Our goal is to predict the value of the function $f^*=f(\mathbf{x}^*)$ evaluated at a new input point $\mathbf{x}^* \in \mathbb{R}^D$. That is, we want to obtain the predictive distribution $p(f^*|\mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.\\
+In this work, Gaussian processes will take the role of a prior distribution over function spaces for non-parametric latent functions in a Bayesian setting. 
+Consider a data set $\mathcal{D} = \left\lbrace \mathbf{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is modelled conditionally as $p(y_n|f(\mathbf{x}_n),\phi)$, where $p$ is some parametric distribution with parameters $f$ and $\phi$, and $f$ is an unknown function with Gaussian process prior. This generalizes trivially to more complex models depending on several unknown functions, for example such as $p(y_n|f(\mathbf{x}_n),g(\mathbf{x}_n))$ or multilevel models. Our goal is to obtain posterior distribution for the value of the function $f^*=f(\mathbf{x}^*)$  evaluated at a new input point $\mathbf{x}^* \in \mathbb{R}^D$.
+% That is, we want to obtain the predictive distribution $p(f^*|\mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.\\
 
 We assume a Gaussian process prior for $f \sim \mathcal{GP}(\mu(\mathbf{x}), k(\mathbf{x}, \mathbf{x}'))$, where $\mu: \mathbb{R}^D \rightarrow \mathbb{R}$ and $k: \mathbb{R}^D \times \mathbb{R}^D \rightarrow \mathbb{R}$ are the mean and covariance functions, respectively,
 %
@@ -120,13 +134,9 @@ We assume a Gaussian process prior for $f \sim \mathcal{GP}(\mu(\mathbf{x}), k(\
 \end{align*} 
 
 The mean and covariance functions completely characterize the Gaussian process prior, and control the a priori behavior of the function $f$. Let $\mathbf{f}=\left\lbrace f(\mathbf{x}_n) \right\rbrace_{n=1}^N$, then the resulting prior distribution for $\mathbf{f}$ is a multivariate Gaussian distribution
-%
-\begin{align*}
-\mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{K}),
-\end{align*}
-
-\noindent where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\mathbf{K}$ the covariance matrix, where $K_{i,j}=k(\mathbf{x}_i,\mathbf{x}_j)$. The covariance function $k(\textbf{x}, \textbf{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation.
-The joint distribution of $\mathbf{f}$ and $f^*$ is also a multivariate Gaussian as,
+$\mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{K})$,
+ where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\mathbf{K}$ the covariance matrix, where $K_{i,j}=k(\mathbf{x}_i,\mathbf{x}_j)$. The covariance function $k(\textbf{x}, \textbf{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation.
+The joint distribution of $\mathbf{f}$ and a new $f^*$ is also a multivariate Gaussian as,
 %
 \begin{align*}
 p(\mathbf{f}, f^*)=\mathcal{N} \left( \left[ \begin{array}{cc}
@@ -143,37 +153,43 @@ f^*
 	% p(f^*| \mathbf{f}) = \mathcal{N}(f^*| \mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{k}_{\mathbf{f},f^*}  )
 % \end{align*}
 
-{\color{red} Aki: the following until ``While Gaussian'' seems too basic to be in the paper:}
+% {\color{red} Aki: the following until ``While Gaussian'' seems too basic to be in the paper:}
 
-The joint distribution of the observations $\mathbf{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\mathbf{f}$ and $f^*$, $p(\mathbf{y}, \mathbf{f}, f^*)$, is the product of the conditional distribution for $\mathbf{y}$ given $\mathbf{f}$ and the joint distribution for $\mathbf{f}$ and $f^*$,
-\begin{align*}
-	p(\mathbf{y}, \mathbf{f}, f^*) = p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)
-\end{align*}
+% The joint distribution of the observations $\mathbf{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\mathbf{f}$ and $f^*$, $p(\mathbf{y}, \mathbf{f}, f^*)$, is the product of the conditional distribution for $\mathbf{y}$ given $\mathbf{f}$ and the joint distribution for $\mathbf{f}$ and $f^*$,
+% \begin{align*}
+% 	p(\mathbf{y}, \mathbf{f}, f^*) = p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)
+% \end{align*}
  
-By marginalizing over $\mathbf{f}$ and conditioning on vector of observations $\mathbf{y}$, we obtain the posterior distribution of interest
-%
-\begin{align}\label{eq:posterior}
-	p(f^*|\mathbf{y}) = \frac{\int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)\text{d}\mathbf{f}}{p(\mathbf{y})},
-\end{align}
-where $p(\mathbf{y})$ is the marginal likelihood and is given by
-%
-\begin{align}\label{eq:evidence}
-	p(\textbf{y}) = \int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*) \text{d}\bm{f}\text{d}f^*.
-\end{align}
-%
-If the observation model $p(\mathbf{y}|\mathbf{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
-\begin{align*}
-	p(f^*| \mathbf{y}) = \mathcal{N}(f^*| \textbf{k}_{f^*,\mathbf{f}} (\textbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} (\mathbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{k}_{\mathbf{f},f^*}  ),
-\end{align*}
-where $\sigma^2$ is the noise variance.
+% By marginalizing over $\mathbf{f}$ and conditioning on vector of observations $\mathbf{y}$, we obtain the posterior distribution of interest
+% %
+% \begin{align}\label{eq:posterior}
+% 	p(f^*|\mathbf{y}) = \frac{\int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)\text{d}\mathbf{f}}{p(\mathbf{y})},
+% \end{align}
+% where $p(\mathbf{y})$ is the marginal likelihood and is given by
+% %
+% \begin{align}\label{eq:evidence}
+% 	p(\textbf{y}) = \int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*) \text{d}\bm{f}\text{d}f^*.
+% \end{align}
+% %
+% If the observation model $p(\mathbf{y}|\mathbf{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
+% \begin{align*}
+% 	p(f^*| \mathbf{y}) = \mathcal{N}(f^*| \textbf{k}_{f^*,\mathbf{f}} (\textbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} (\mathbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{k}_{\mathbf{f},f^*}  ),
+% \end{align*}
+% where $\sigma^2$ is the noise variance.
 
-While Gaussian processes provide an elegant framework for Bayesian non-parametric regression, there are two problems that often arise in practice. 
-in many modelling problems, the observation model is non-Gaussian (e.g. Binomial or Poisson regression) and therefore, the posterior distribution $p(f^*| \mathbf{y})$ is analytically intractable and cannot be obtained in closed-form. Furthermore, it is often of interest to impose a prior distribution on one or more hyperparameters and then marginalize over the uncertainty. This renders the posterior distribution intractable even in the case of a Gaussian likelihood. Approximate inference have to be used to tackle the intractable inference problem, typically based on sampling methods such as Markov chain Monte Carlo (MCMC) \citep{brooks_2011} or distributional approximations such as Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational Bayes methods \citep{gibbs2000variational,csato2000efficient}. Secondly, due to the matrix inverse in eq.~\eqref{eq:posterior} a direct implementation of Gaussian processes scales cubicly in the number of data points, $\mathcal{O}\left(N^3\right)$,  which can be prohibitively slow for many problems of interest. 
-\\
-\\
-In the following section, we propose an approximate framework for fast and accurate inference for Gaussian processes. Using a basis function expansion, we approximate the Gaussian process with a linear model. This representation has three main advantages: 1) it makes inference considerably faster due to the linear structure, 2) it is simple to implement, which makes it easy to use Gaussian processes as building blocks in more complicated models and can be used as latent function in non-Gaussian observational models allowing modelling flexibility, 3) it can be made arbitrary accurate and the trade-off between computational complexity and approximation accuracy can easily be controlled.
-\\
-\\
+If $p(y_n|f(\mathbf{x}_n),\phi)=N(y_n|f(\mathbf{x}_n),\sigma)$ then $\mathbf{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GP and $O(nm^2)$ for sparse GP). If $p(y_n|f(\mathbf{x}_n),\phi)=N(y_n|f(\mathbf{x}_n),g(\mathbf{x}_n))$ or $p(y_n|f(\mathbf{x}_n),\phi)$ is non-Gaussian, the marginalization does not have closed form solution.
+%
+Furthermore, if a prior distribution is imposed on $\phi$ and $\theta$ to form a joint posterior for $\phi$, $\theta$ and $\mathbf{f}$,
+approximate inference such as Markov chain Monte Carlo (MCMC) \citep{brooks_2011} Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational Bayes methods \citep{gibbs2000variational,csato2000efficient} need to be used.
+%
+In this paper we focus on use of MCMC for integrating over the joint
+posterior. MCMC is not usually the fastest approach, but allows
+accurate inference for general models in probabilistic programming
+setting. We consider the computational costs of GPs specifically from
+this point of view.
+
+\subsection{Covariance function}
+
 The covariance function is the crucial ingredient in a Gaussian process as it encodes our prior assumptions about the function, and defines a correlation structure which characterize the correlations between function values at different inputs. A stationary covariance function is a function of $\bm{\tau}=\mathbf{x}-\mathbf{x}' \in \mathbb{R}^D$, such that it can be written $k(\mathbf{x},\mathbf{x}') = k(\bm{\tau})$, which means that the covariance is invariant to translations. Isotropic covariance functions are those that are function of the distance between observations, $k(\mathbf{x},\mathbf{x}') = k(||\mathbf{x}-\mathbf{x}'||) = k(r), r\in \mathbb{R}$, which means that the covariance is both translation and rotation invariant. The Mat\'ern family with half-integers is the class of isotropic covariance functions probably most commonly used, which, in the unidimensional case (i.e. $\mathbf{x}=x\in \mathbb{R}$, so $\mathbf{r}=r\in \mathbb{R}$, and $\ell\in \mathbb{R}$ ), are
 %
 \begin{align*}
