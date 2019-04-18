@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{times}
 \usepackage{microtype}
+\usepackage{lscape}
 
 \usepackage{epstopdf}% To incorporate .eps illustrations using PDFLaTeX, etc.
 
@@ -41,6 +42,17 @@
 \theoremstyle{remark}
 \newtheorem{remark}{Remark}
 \newtheorem{notation}{Notation}
+
+\newenvironment{changemargin}[2]{%
+\begin{list}{}{%
+\setlength{\topsep}{0pt}%
+\setlength{\leftmargin}{#1}%
+\setlength{\rightmargin}{#2}%
+\setlength{\listparindent}{\parindent}%
+\setlength{\itemindent}{\parindent}%
+\setlength{\parsep}{\parskip}%
+}%
+\item[]}{\end{list}} 
 
 \begin{document}
 
@@ -123,63 +135,63 @@ exact and approximate GPs to real and simulated data are provided in Section 4. 
 A Gaussian process (GP) is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, i.e. $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. Gaussian processes have the defining property that the marginal distribution of any finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_K) \right\rbrace$, is a multivariate Gaussian distribution.
 
 In this work, Gaussian processes will take the role of a prior distribution over function spaces for non-parametric latent functions in a Bayesian setting. 
-Consider a data set $\mathcal{D} = \left\lbrace \mathbf{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is modelled conditionally as $p(y_n|f(\mathbf{x}_n),\phi)$, where $p$ is some parametric distribution with parameters $f$ and $\phi$, and $f$ is an unknown function with Gaussian process prior. This generalizes trivially to more complex models depending on several unknown functions, for example such as $p(y_n|f(\mathbf{x}_n),g(\mathbf{x}_n))$ or multilevel models. Our goal is to obtain posterior distribution for the value of the function $f^*=f(\mathbf{x}^*)$  evaluated at a new input point $\mathbf{x}^* \in \mathbb{R}^D$.
+Consider a data set $\mathcal{D} = \left\lbrace \bm{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is modelled conditionally as $p(y_n|f(\bm{x}_n),\phi)$, where $p$ is some parametric distribution with parameters $f$ and $\phi$, and $f$ is an unknown function with Gaussian process prior. This generalizes trivially to more complex models depending on several unknown functions, for example such as $p(y_n|f(\bm{x}_n),g(\bm{x}_n))$ or multilevel models. Our goal is to obtain posterior distribution for the value of the function $f^*=f(\bm{x}^*)$  evaluated at a new input point $\bm{x}^* \in \mathbb{R}^D$.
 % That is, we want to obtain the predictive distribution $p(f^*|\mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.\\
 
-We assume a Gaussian process prior for $f \sim \mathcal{GP}(\mu(\mathbf{x}), k(\mathbf{x}, \mathbf{x}'))$, where $\mu: \mathbb{R}^D \rightarrow \mathbb{R}$ and $k: \mathbb{R}^D \times \mathbb{R}^D \rightarrow \mathbb{R}$ are the mean and covariance functions, respectively,
+We assume a Gaussian process prior for $f \sim \mathcal{GP}(\mu(\bm{x}), k(\bm{x}, \bm{x}'))$, where $\mu: \mathbb{R}^D \rightarrow \mathbb{R}$ and $k: \mathbb{R}^D \times \mathbb{R}^D \rightarrow \mathbb{R}$ are the mean and covariance functions, respectively,
 %
 \begin{align*}
- 	\mu(\mathbf{x}) &= \mathbb{E}\!\left[f(\mathbf{x})\right],\\ 
- 	k(\mathbf{x}, \mathbf{x}') &= \mathbb{E}\!\left[\left( f(\mathbf{x}) - \mu(\mathbf{x}) \right)\left( f(\mathbf{x}') - \mu(\mathbf{x}') \right)\right].
+ 	\mu(\bm{x}) &= \mathbb{E}\!\left[f(\bm{x})\right],\\ 
+ 	k(\bm{x}, \bm{x}') &= \mathbb{E}\!\left[\left( f(\bm{x}) - \mu(\bm{x}) \right)\left( f(\bm{x}') - \mu(\bm{x}') \right)\right].
 \end{align*} 
 
-The mean and covariance functions completely characterize the Gaussian process prior, and control the a priori behavior of the function $f$. Let $\mathbf{f}=\left\lbrace f(\mathbf{x}_n) \right\rbrace_{n=1}^N$, then the resulting prior distribution for $\mathbf{f}$ is a multivariate Gaussian distribution
-$\mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{K})$,
- where $\boldsymbol{\mu} = \left\lbrace \mu(\mathbf{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\mathbf{K}$ the covariance matrix, where $K_{i,j}=k(\mathbf{x}_i,\mathbf{x}_j)$. The covariance function $k(\textbf{x}, \textbf{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation.
-The joint distribution of $\mathbf{f}$ and a new $f^*$ is also a multivariate Gaussian as,
+The mean and covariance functions completely characterize the Gaussian process prior, and control the a priori behavior of the function $f$. Let $\bm{f}=\left\lbrace f(\bm{x}_n) \right\rbrace_{n=1}^N$, then the resulting prior distribution for $\bm{f}$ is a multivariate Gaussian distribution
+$\bm{f} \sim \mathcal{N}(\bm{\mu}, \bm{K})$,
+ where $\bm{\mu} = \left\lbrace \mu(\bm{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\bm{K}$ the covariance matrix, where $K_{i,j}=k(\bm{x}_i,\bm{x}_j)$. The covariance function $k(\bm{x}, \bm{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation.
+The joint distribution of $\bm{f}$ and a new $f^*$ is also a multivariate Gaussian as,
 %
 \begin{align*}
-p(\mathbf{f}, f^*)=\mathcal{N} \left( \left[ \begin{array}{cc}
-\mathbf{f} \\ 
+p(\bm{f}, f^*)=\mathcal{N} \left( \left[ \begin{array}{cc}
+\bm{f} \\ 
 f^*
-\end{array} \right] \,\middle|\, \mathbf{0},\left[ \begin{array}{cc}
-\mathbf{K}_{\mathbf{f},\mathbf{f}} & \mathbf{k}_{\mathbf{f},f^*} \\ 
-\mathbf{k}_{f^*,\mathbf{f}} & k_{f^*,f^*}
+\end{array} \right] \,\middle|\, \bm{0},\left[ \begin{array}{cc}
+\bm{K}_{\bm{f},\bm{f}} & \bm{k}_{\bm{f},f^*} \\ 
+\bm{k}_{f^*,\bm{f}} & k_{f^*,f^*}
 \end{array} \right] \right),
 \end{align*} 
 
-\noindent where $\mathbf{k}_{\mathbf{f},f^*}$ is the covariance between $\mathbf{f}$ and $f^*$, and $k_{f^*,f^*}$ is the prior variance of $f^*$. %By using the conditioning properties of multivariate Gaussian distributions, we can derive the predictive distribution for $f^*$  given $\mathbf{f}$ analytically,
+\noindent where $\bm{k}_{\bm{f},f^*}$ is the covariance between $\bm{f}$ and $f^*$, and $k_{f^*,f^*}$ is the prior variance of $f^*$. %By using the conditioning properties of multivariate Gaussian distributions, we can derive the predictive distribution for $f^*$  given $\bm{f}$ analytically,
 % \begin{align*}
-	% p(f^*| \mathbf{f}) = \mathcal{N}(f^*| \mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} \mathbf{K}_{\mathbf{f},\mathbf{f}}^{-1} \mathbf{k}_{\mathbf{f},f^*}  )
+	% p(f^*| \bm{f}) = \mathcal{N}(f^*| \bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{k}_{\bm{f},f^*}  )
 % \end{align*}
 
 % {\color{red} Aki: the following until ``While Gaussian'' seems too basic to be in the paper:}
 
-% The joint distribution of the observations $\mathbf{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\mathbf{f}$ and $f^*$, $p(\mathbf{y}, \mathbf{f}, f^*)$, is the product of the conditional distribution for $\mathbf{y}$ given $\mathbf{f}$ and the joint distribution for $\mathbf{f}$ and $f^*$,
+% The joint distribution of the observations $\bm{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\bm{f}$ and $f^*$, $p(\bm{y}, \bm{f}, f^*)$, is the product of the conditional distribution for $\bm{y}$ given $\bm{f}$ and the joint distribution for $\bm{f}$ and $f^*$,
 % \begin{align*}
-% 	p(\mathbf{y}, \mathbf{f}, f^*) = p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)
+% 	p(\bm{y}, \bm{f}, f^*) = p(\bm{y}|\bm{f})p(\bm{f}, f^*)
 % \end{align*}
  
-% By marginalizing over $\mathbf{f}$ and conditioning on vector of observations $\mathbf{y}$, we obtain the posterior distribution of interest
+% By marginalizing over $\bm{f}$ and conditioning on vector of observations $\bm{y}$, we obtain the posterior distribution of interest
 % %
 % \begin{align}\label{eq:posterior}
-% 	p(f^*|\mathbf{y}) = \frac{\int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*)\text{d}\mathbf{f}}{p(\mathbf{y})},
+% 	p(f^*|\bm{y}) = \frac{\int p(\bm{y}|\bm{f})p(\bm{f}, f^*)\text{d}\bm{f}}{p(\bm{y})},
 % \end{align}
-% where $p(\mathbf{y})$ is the marginal likelihood and is given by
+% where $p(\bm{y})$ is the marginal likelihood and is given by
 % %
 % \begin{align}\label{eq:evidence}
-% 	p(\textbf{y}) = \int p(\mathbf{y}|\mathbf{f})p(\mathbf{f}, f^*) \text{d}\bm{f}\text{d}f^*.
+% 	p(\textbf{y}) = \int p(\bm{y}|\bm{f})p(\bm{f}, f^*) \text{d}\bm{f}\text{d}f^*.
 % \end{align}
 % %
-% If the observation model $p(\mathbf{y}|\mathbf{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
+% If the observation model $p(\bm{y}|\bm{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
 % \begin{align*}
-% 	p(f^*| \mathbf{y}) = \mathcal{N}(f^*| \textbf{k}_{f^*,\mathbf{f}} (\textbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{f},  k_{f^*,f^*}-\mathbf{k}_{f^*,\mathbf{f}} (\mathbf{K}_{\mathbf{f},\mathbf{f}} + \sigma^2 \mathbf{I})^{-1} \mathbf{k}_{\mathbf{f},f^*}  ),
+% 	p(f^*| \bm{y}) = \mathcal{N}(f^*| \textbf{k}_{f^*,\bm{f}} (\textbf{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} (\bm{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{k}_{\bm{f},f^*}  ),
 % \end{align*}
 % where $\sigma^2$ is the noise variance.
 
-If $p(y_n|f(\mathbf{x}_n),\phi)=N(y_n|f(\mathbf{x}_n),\sigma)$ then $\mathbf{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GP and $O(nm^2)$ for sparse GP). If $p(y_n|f(\mathbf{x}_n),\phi)=N(y_n|f(\mathbf{x}_n),g(\mathbf{x}_n))$ or $p(y_n|f(\mathbf{x}_n),\phi)$ is non-Gaussian, the marginalization does not have closed form solution.
+If $p(y_n|f(\bm{x}_n),\phi)=N(y_n|f(\bm{x}_n),\sigma)$ then $\bm{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GP and $O(nm^2)$ for sparse GP). If $p(y_n|f(\bm{x}_n),\phi)=N(y_n|f(\bm{x}_n),g(\bm{x}_n))$ or $p(y_n|f(\bm{x}_n),\phi)$ is non-Gaussian, the marginalization does not have closed form solution.
 %
-Furthermore, if a prior distribution is imposed on $\phi$ and $\theta$ to form a joint posterior for $\phi$, $\theta$ and $\mathbf{f}$,
+Furthermore, if a prior distribution is imposed on $\phi$ and $\theta$ to form a joint posterior for $\phi$, $\theta$ and $\bm{f}$,
 approximate inference such as Markov chain Monte Carlo (MCMC) \citep{brooks_2011} Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational Bayes methods \citep{gibbs2000variational,csato2000efficient} need to be used.
 %
 In this paper we focus on use of MCMC for integrating over the joint
@@ -188,51 +200,53 @@ accurate inference for general models in probabilistic programming
 setting. We consider the computational costs of GPs specifically from
 this point of view.
 
-\subsection{Covariance function}
+\subsection{Covariance function and spectral density}
 
-The covariance function is the crucial ingredient in a Gaussian process as it encodes our prior assumptions about the function, and defines a correlation structure which characterize the correlations between function values at different inputs. A stationary covariance function is a function of $\bm{\tau}=\mathbf{x}-\mathbf{x}' \in \mathbb{R}^D$, such that it can be written $k(\mathbf{x},\mathbf{x}') = k(\bm{\tau})$, which means that the covariance is invariant to translations. Isotropic covariance functions are those that are function of the distance between observations, $k(\mathbf{x},\mathbf{x}') = k(||\mathbf{x}-\mathbf{x}'||) = k(r), r\in \mathbb{R}$, which means that the covariance is both translation and rotation invariant. The Mat\'ern family with half-integers is the class of isotropic covariance functions probably most commonly used, which, in the unidimensional case (i.e. $\mathbf{x}=x\in \mathbb{R}$, so $\mathbf{r}=r\in \mathbb{R}$, and $\ell\in \mathbb{R}$ ), are
+The covariance function is the crucial ingredient in a Gaussian process as it encodes our prior assumptions about the function, and defines a correlation structure which characterize the correlations between function values at different inputs. A stationary covariance function is a function of $\bm{\tau}=\bm{x}-\bm{x}' \in {\rm I\!R}^D$, such that it can be written $k(\bm{x},\bm{x}') = k(\bm{\tau})$, which means that the covariance is invariant to translations. Isotropic covariance functions are those that are function of the distance between observations, $k(\bm{x},\bm{x}') = k(|\bm{x}-\bm{x}'|) = k(r), r\in {\rm I\!R}$, which means that the covariance is both translation and rotation invariant. The most commonly used distance between observations is the norm L2 $(|\bm{x}-\bm{x}'|_{L2})$, also known as Euclidean distance, although other types of distances can be considered. 
+
+The Mat\'ern class of isotropic covariance functions is given by, 
+%which, in the unidimensional case (i.e. $\bm{x}=x\in \mathbb{R}$, so $\bm{r}=r\in \mathbb{R}$, and $\ell\in \mathbb{R}$ ), are
 %
 \begin{align*}
-k_{\nu=\infty}(r)&=\sigma^2 \exp(-\frac{1}{2} r^2/\ell^2),  \\
-k_{\nu=\frac{1}{2}}(r)&=\sigma^2 \exp(-r/\ell),  \\
-k_{\nu=\frac{3}{2}}(r)&=\sigma^2(1+\sqrt{3}r/\ell) \exp(-\sqrt{3}r/\ell), 
-%k_{\nu=\frac{5}{2}}(r)&=\sigma^2(1+\sqrt{5}r/\ell+\frac{5}{3}r^2/\ell^2) \exp(-\sqrt{5}r/\ell), 
+k_{\nu}(r)&=\frac{2^{1-\nu}}{\Gamma(\nu)}\left(\frac{\sqrt{2\nu}r}{\ell}\right)^{\nu}K_{\nu}\left(\frac{\sqrt{2\nu}r}{\ell}\right),
 \end{align*}
 
-\noindent where $\nu$ is the order the kernel, and the $\ell$ and $\sigma$ are the length-scale and magnitude, respectively, of the kernel. The particular case where $\nu=\infty$ is commonly known as squared exponential (exponentiated quadratic) covariance function, and that with $\nu=1/2$ as exponential covariance function. These covariance functions can be easily generalized to a $D$-dimensional case, by using the property of separability of multidimensional kernels. Let $\mathbf{x}\in \mathbb{R}^D$, $\mathbf{\bm{\tau}}=\{\tau_1,\tau_2\}\in \mathbb{R}^D$ and $\boldsymbol{\ell}=\{\ell_1,\ell_2\}\in \mathbb{R}^D$,
+\noindent where $\nu$ is the order the kernel, $K_{\nu}$ the modified Bessel function, and the $\ell$ and $\sigma$ are the length-scale and magnitude, respectively, of the kernel. The particular case where $\nu=\infty$ and $\nu=3/2$ are probably the most commonly used kernels \citep{rasmussen2006gaussian}, 
 %
 \begin{align*}
-k_{\nu=\infty}(\bm{\tau})&=\exp(-\frac{1}{2} \tau_1^2/\ell_1^2) \cdot \exp(-\frac{1}{2} \tau_2^2/\ell_2^2), \\
-k_{\nu=\frac{1}{2}}(\bm{\tau})&=\exp(-\tau_1/\ell_1) \cdot \exp(-\tau_2/\ell_2), \\
-k_{\nu=\frac{3}{2}}(\bm{\tau})&=(1+\sqrt{3}\tau_1/\ell_1) \exp(-\sqrt{3}\tau_1/\ell_1) \cdot (1+\sqrt{3}\tau_2/\ell_2) \exp(-\sqrt{3}\tau_2/\ell_2) \\
+k_{\infty}(r)&=\sigma^2 \exp\bigg(-\frac{1}{2} \frac{r^2}{\ell^2}\bigg),  \\
+k_{\frac{3}{2}}(r)&=\sigma^2\bigg(1+\frac{\sqrt{3}r}{\ell}\bigg) \exp\bigg(-\frac{\sqrt{3}r}{\ell}\bigg). 
 \end{align*}
 
-\noindent Using a multidimensional length-scale basically turns the isotropic covariance function into non-isotropic. 
+\noindent The former is commonly known as squared exponential (exponentiated quadratic) covariance function. Assuming the Euclidean distance between observations, $r=|\bm{x}-\bm{x}'|_{L2}=\sqrt{\sum_{i=1}^{D}(x_i-x_i')^2}$, the kernels written above take the form
+%
+\begin{align*}
+k_{\infty}(|\bm{x}-\bm{x}'|_{L2})&=\exp\bigg(-\frac{1}{2} \sum_{i=1}^{D}\frac{(x_i-x_i')^2}{\ell_i^2}\bigg),\\
+k_{\frac{3}{2}}(|\bm{x}-\bm{x}'|_{L2})&=\Bigg(1+\sqrt{\sum_{i=1}^{D}\frac{3(x_i-x_i')^2}{\ell_i^2}}\Bigg)\exp\Bigg(- \sqrt{\sum_{i=1}^{D}\frac{3(x_i-x_i')^2}{\ell_i^2}}\Bigg). \\
+\end{align*}
 
-Stationary covariance functions can be represented in terms of their spectral densities \citep{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure (\textit{Bochner's theorem}, see, e.g. \cite{akhiezer1993theory}). If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. In the unidimensional case the spectral density functions associated with the Mat\'ern covariance functions written above are
+\noindent Notice that the previous expressions have been easily generalized to using a multidimensional length-scale $\bm{\ell}\in {\rm I\!R}^D$. The use of a multidimensional length-scale basically turns the isotropic covariance function into non-isotropic. 
+
+Stationary covariance functions can be represented in terms of their spectral densities \citep{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure (\textit{Bochner's theorem}, see, e.g. \cite{akhiezer1993theory}). If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern class of covariance functions is given by
+%
+\begin{align*}
+S_{\nu}(\omega)&= \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)l^{2\nu}}\left(\frac{2\nu}{l^2}+4\pi^2\omega^2 \right)^{(\nu+D/2)}
+\end{align*}
+
+\noindent in $D$ dimensions, where variable $\omega\in {\rm I\!R}$ is a distance in the frequency domain, and $\ell$ and $\sigma$ are the lengthscale and magnitud, respectively, of the kernel. The particular cases where $\nu=\infty$ and $\nu=3/2$ take the form
 %
 \begin{align}
-S_{\nu=\infty}(w)&= \sigma^2 \sqrt{2\pi} \cdot \ell \cdot \exp\left(-0.5 \ell^2 w^2\right), \label{eq:specdens_inf}  \\
-S_{\nu=\frac{1}{2}}(w)&= 2\sigma^2 \frac{1}{\ell}\left(\frac{1}{\ell^2} + \omega^2\right)^{-1}, \label{eq:specdens_12}  \\
-S_{\nu=\frac{3}{2}}(w)&= 4\sigma^2 \frac{\sqrt{3}}{\ell}^{3}\left(\frac{3}{\ell^2} + \omega^2\right)^{-2}, \label{eq:specdens_32} \\
-%S_{\nu=\frac{5}{2}}(w)&= \frac{16}{3}\sigma^2 \frac{\sqrt{3}}{\ell}^{5}\left(\frac{5}{\ell^2} + \omega^2\right)^{-3}, \label{eq:specdens_52} 
+S_{\infty}(\omega)&= \sigma^2 \sqrt{2\pi}^D  \ell^D  \exp\left(-0.5 \ell^2 \omega^2\right), \label{eq:specdens_inf}  \\
+S_{\frac{3}{2}}(\omega)&= \sigma^2 \frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2})\sqrt{3}^3}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\omega^2 \right)^{-\frac{D+3}{2}}. \label{eq:specdens_32} 
 \end{align}
 
-\noindent where variable $w\in \mathbb{R}$ is in the frequency domain, and $\ell\in \mathbb{R}$. By using the separability property of the spectral densities functions, the $D$-dimensional form of these spectral density functions, where $\mathbf{w}=\{w_1,w_2\}$ and $\mathbf{\ell}=\{\ell_1,\ell_2\}$ are
-%
-\begin{align}
-S_{\nu=\infty}(\bm{\omega})&= \sqrt{2\pi} \cdot \ell_1 \cdot \exp\left(-0.5 \ell_1^2 \omega_1^2\right) \cdot  \sqrt{2\pi} \cdot \ell_2 \cdot \exp\left(-0.5 \ell_2^2 \omega_2^2\right) \label{eq:specdens_multi_inf} \\
-S_{\nu=\frac{1}{2}}(\bm{\omega})&= 2 \frac{1}{\ell_1}\left(\frac{1}{\ell_1^2} + \omega_1^2\right)^{-1} \cdot 2 \frac{1}{\ell_2}\left(\frac{1}{\ell_2^2} + \omega_2^2\right)^{-1} \label{eq:specdens_multi_12} \\
-S_{\nu=\frac{3}{2}}(\bm{\omega})&= 4 \frac{\sqrt{3}}{\ell_1}^{3}\left(\frac{3}{\ell_1^2} + \omega_1^2\right)^{-2} \cdot 4 \frac{\sqrt{3}}{\ell_2}^{3}\left(\frac{3}{\ell_2^2} + \omega_2^2\right)^{-2}, \label{eq:specdens_multi_32}
-\end{align}
-
-\noindent which can also be derived from the following expressions \citep{rasmussen2006gaussian}
+\noindent Particularizing to an input dimension $D=3$ and Euclidean distance $\omega=\sqrt{\sum_{i=1}^{D=3}s_i^2}$, and considering a multidimensional lengthscale $\bm{\ell} \in {\rm I\!R}^{D=3}$, the spectral densities written above take the form
 %
 \begin{align*}
-S^{\ast}_{\nu=\infty}(\mathbf{\omega})&= \sigma^2 \sqrt{2\pi}^D \prod_{d=1}^D l_d \cdot \exp\left(-0.5 \sum_{d=1}^D l_d^2 \mathbf{\omega}_d^2\right), \\
-%
-S^{\ast}_{\nu}(\mathbf{\omega})&= \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)l^{2\nu}}\left(\frac{2\nu}{l^2}+4\pi^2\mathbf{\omega}^2 \right)^{(\nu+D/2)}.
+S_{\infty}(\omega)&= \sigma^2 \sqrt{2\pi}^{D=3}  \prod_{i=1}^{D=3} \ell_i  \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D=3} \ell_i^2 s_i^2 \right),   \\
+S_{\frac{3}{2}}(\omega)&= \sigma^2 32\pi\sqrt{3}^3\prod_{i=1}^{D=3}\ell_i\left(3+\sum_{i=1}^{D=3}\ell_i^2 s_i^2 \right)^{-3}.
 \end{align*}
+
 
 \subsection{Hilbert space approximate Gaussian process model}
 
@@ -265,10 +279,10 @@ k(x,x') = \sum_{j=1}^\infty S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
 If we truncate the sum in (\ref{approxcov}) to the first $m$ terms, the approximate covariance function becomes
 %
 \begin{equation}
-k(x,x') \approx \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x') = \boldsymbol{\phi}(x)^\intercal \Delta \boldsymbol{\phi}(x'), \nonumber
+k(x,x') \approx \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x') = \bm{\phi}(x)^\intercal \Delta \bm{\phi}(x'), \nonumber
 \end{equation}
 
-\noindent where $\boldsymbol{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{m\times m}$ is the diagonal matrix of the spectral densities $S_{\theta}(\sqrt{\lambda_j})$: 
+\noindent where $\bm{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{m\times m}$ is the diagonal matrix of the spectral densities $S_{\theta}(\sqrt{\lambda_j})$: 
 %
 \begin{eqnarray}
 \Delta &=&  \begin{bmatrix}
@@ -297,7 +311,7 @@ Thus, the Gram matrix $\text{K}$ of the covariance function $k$ for a set of obs
 \noindent As a result, the model for $f$ can be written as
 %
 \begin{equation}
-\mathbf{f} \sim \mathcal{N}(\boldsymbol{\mu},\Phi \Delta \Phi^\intercal). \nonumber
+\bm{f} \sim \mathcal{N}(\bm{\mu},\Phi \Delta \Phi^\intercal). \nonumber
 \end{equation}
 
 \noindent This equivalently leads to a linear representation of $f$ via
@@ -340,28 +354,28 @@ m^{\ast} = \prod_{d=1}^{D} m_d,
 \end{array} } \right]
 \end{align} 
 
-Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$, and each multivariate eigenvalue $\boldsymbol{\lambda}^{\ast}_j$ is a $D$-vector with elements that are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\boldsymbol{\cdotp}}$. Thus, for $\mathbf{x}=\{x_d\}_{d=1}^D \in \Omega$ and $j=1,\ldots,m^{\ast}$, we have 
+Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$, and each multivariate eigenvalue $\bm{\lambda}^{\ast}_j$ is a $D$-vector with elements that are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\bm{\cdotp}}$. Thus, for $\bm{x}=\{x_d\}_{d=1}^D \in \Omega$ and $j=1,\ldots,m^{\ast}$, we have 
 %
 \begin{align}
-\phi^{\ast}_j(\mathbf{x}) &= \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}}(x_d) = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(x_d+L_d)\right) \label{eigenvalue_multi} \\
+\phi^{\ast}_j(\bm{x}) &= \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}}(x_d) = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(x_d+L_d)\right) \label{eigenvalue_multi} \\
 %
-\boldsymbol{\lambda}^{\ast}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^D =  \left\{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \right\}_{d=1}^D. \label{eigenfunction_multi}
+\bm{\lambda}^{\ast}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^D =  \left\{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \right\}_{d=1}^D. \label{eigenfunction_multi}
 \end{align}
 
 \noindent The approximate covariance function is then represented as
 %
 \begin{equation}\label{approxcov_multi}
-k(\mathbf{x},\mathbf{x}') \approx \sum_{j=1}^{m^{\ast}} 
-S^{\ast}_{\theta}\left(\sqrt{\boldsymbol{\lambda}^{\ast}_j}\right)
-\phi^{\ast}_j(\mathbf{x}) \phi^{\ast}_j(\mathbf{x}'),
+k(\bm{x},\bm{x}') \approx \sum_{j=1}^{m^{\ast}} 
+S^{\ast}_{\theta}\left(\sqrt{\bm{\lambda}^{\ast}_j}\right)
+\phi^{\ast}_j(\bm{x}) \phi^{\ast}_j(\bm{x}'),
 \end{equation}
 
 \noindent where $S^{\ast}_{\theta}$ is the spectral density of the $D$-dimensional covariance function (see Section 2.1). We can now write the approximate series expansion of the multivariate function $f$ as,
 %
 \begin{equation}\label{approxf_multi}
-f(\mathbf{x}) \approx \sum_{j=1}^{m^{\ast}} 
-\left( S^{\ast}_{\theta} \left(\sqrt{\boldsymbol{\lambda}^{\ast}_j} \right)\right)^{1/2}
-\phi^{\ast}_j(\mathbf{x}) \beta_j, 
+f(\bm{x}) \approx \sum_{j=1}^{m^{\ast}} 
+\left( S^{\ast}_{\theta} \left(\sqrt{\bm{\lambda}^{\ast}_j} \right)\right)^{1/2}
+\phi^{\ast}_j(\bm{x}) \beta_j, 
 \end{equation}
 
 \noindent where, again, $\beta_j \sim \text{Normal}(0,1)$. The computational cost of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
@@ -549,8 +563,8 @@ Starting from some initial guess of $\ell$, we can choose initial values for $m$
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.44]{fig3_lscale_vs_J_vs_c.pdf}}
-\subfigure{\includegraphics[scale=0.44, trim = 0mm 0mm 0mm 0mm, clip]{fig3_lscale_vs_J_vs_c_zoomin.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig3_lscale_vs_J_vs_c.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig3_lscale_vs_J_vs_c_zoomin.pdf}}
 \caption{Relation among the minimum number of basis functions $m$, the boundary factor $c$ ($c = \frac{L}{S}$), and the lengthscale normalized by the half-range of the data ($\frac{\ell}{S}$). The right-side plot is a zoom in of the left-side plot.}
   \label{fig3_lscale_vs_J_vs_c}
 \end{figure}
@@ -578,17 +592,36 @@ Figure \ref{fig7_varing_lscale} shows the posterior predictions of the regular G
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{fig7_varing_lscale.pdf}
+\subfigure{\includegraphics[scale=0.4, trim = 10mm 95mm 5mm 30mm, clip]{fig7_legend.pdf}}\\
+\vspace{-3mm}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 31mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part1.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 31mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part2.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 31mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part3.pdf}}\\
+\vspace{-3mm}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 31mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part4.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 31mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part5.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 31mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part6.pdf}}\\
+\vspace{-3mm}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 10mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part7.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 10mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part8.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 10mm 10mm 19mm, clip]{fig7_posterior_varing_lscale_part9.pdf}}\\
+\vspace{-3mm}
 \caption{Posterior predictive means of both regular GP and HSGP models, fitted over different datasets simulated from square exponential GP models with different characteristic lengthscales ($lscale$) and same marginal variance ($\alpha$) as the data-generative function ($True function$).}
-  \label{fig7_varing_lscale}
+  \label{fig7_posterior_varing_lscale_part1}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{fig8_Tlscale_vs_Elscale.pdf}
+
+\begin{table}
+\begin{flushleft}
+\begin{tabular}{ c c c c}
+\includegraphics[scale=0.28, trim = 0mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part1.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part2.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part3.pdf} \vspace{0mm} & \hspace{-8mm} \multirow{3}{1em}{\vspace{-9mm} \includegraphics[scale=0.35, trim = 10mm 105mm 130mm 50mm, clip]{fig8_legend.pdf}}\\ 
+\includegraphics[scale=0.28, trim = 0mm 10mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part4.pdf} \vspace{0mm}  & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 10mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part5.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 10mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part6.pdf} \vspace{0mm}
+\end{tabular}
+\end{flushleft}
 \caption{The X-axes represent the true data-generative functional lengthscales of every dataset scenario. The Y-axes represent the lengthscales estimates of GP and HSGP models. The use of different $m$ in the HSGP models is represented in separated plots. The dashed black line represents the recommended minimum lengthscales that can be closely approximate by the HSGP model in every case according to Figure \ref{fig3_lscale_vs_J_vs_c}.}
   \label{fig8_Tlscale_vs_Elscale}
-\end{figure}
+\end{table}
+
 
 \begin{figure}
 \centering
@@ -607,38 +640,38 @@ The dashed black line in Figure \ref{fig8_Tlscale_vs_Elscale} represents the min
 
 \subsection{Simulated data}
 
-This example consists of a simulated dataset with 250 ($i=1,\dots,n=250$) single draws of a Gaussian process prior with a Mat{\'e}rn($\nu$=3/2) covariance function and hyperparameters marginal variance $\alpha=1$ and lengthscale $\ell=0.15$, with corresponding inputs values $\mathbf{x}=\{x_i\}_{i=1}^{250}$ with $x_i \in [-1,1] \subset {\rm I\!R}$. To form the final noisy dataset $\mathbf{y}$, Gaussian noise $\sigma=0.2$ was added to the GP draws.
+This example consists of a simulated dataset with 250 ($i=1,\dots,n=250$) single draws of a Gaussian process prior with a Mat{\'e}rn($\nu$=3/2) covariance function and hyperparameters marginal variance $\alpha=1$ and lengthscale $\ell=0.15$, with corresponding inputs values $\bm{x}=\{x_i\}_{i=1}^{250}$ with $x_i \in [-1,1] \subset {\rm I\!R}$. To form the final noisy dataset $\bm{y}$, Gaussian noise $\sigma=0.2$ was added to the GP draws.
 
-The regular GP model for fitting this simulated dataset $\mathbf{y}$ can be written as follows,
+The regular GP model for fitting this simulated dataset $\bm{y}$ can be written as follows,
 %
 \begin{eqnarray*}\label{eq:latentgp_simudata1}
 \begin{split}
-\mathbf{y} &= f(\mathbf{x}) + \boldsymbol{\epsilon} \\
-\boldsymbol{\epsilon} &\sim \mathcal{N}(0, \sigma^2  I) \\
-f(\mathbf{x}) &\sim \mathcal{GP}(0, k(\mathbf{x}, \mathbf{x}', \theta)),
+\bm{y} &= f(\bm{x}) + \bm{\epsilon} \\
+\bm{\epsilon} &\sim \mathcal{N}(0, \sigma^2  I) \\
+f(\bm{x}) &\sim \mathcal{GP}(0, k(\bm{x}, \bm{x}', \theta)),
 \end{split}
 \end{eqnarray*}
 
-\noindent where $I$ represents the identity matrix. The previous formulation corresponds to the latent form of a GP model, where $f(\mathbf{x})$ represents the underlying functional model to the noisy data, and it is modeled by a GP prior with a Mat{\'e}rn($\nu=3/2$) covariance function $k$. Saying that the function values $f(\mathbf{x})$ follows a GP model is equivalent to say that $f(\mathbf{x})$ are multivariate Gaussian distributed with covariance matrix $K$, where $K_{ij}=k(x_i,x_j,\theta)$.
+\noindent where $I$ represents the identity matrix. The previous formulation corresponds to the latent form of a GP model, where $f(\bm{x})$ represents the underlying functional model to the noisy data, and it is modeled by a GP prior with a Mat{\'e}rn($\nu=3/2$) covariance function $k$. Saying that the function values $f(\bm{x})$ follows a GP model is equivalent to say that $f(\bm{x})$ are multivariate Gaussian distributed with covariance matrix $K$, where $K_{ij}=k(x_i,x_j,\theta)$.
  
 A more computationally efficient formulation of a GP model with Gaussian likelihood, and for probabilistic inference using sampling methods such as HMC, would be its marginalized form,
 %
 \begin{equation*}\label{eq:marginalizedgp_simudata1}
-\mathbf{y} \sim \mathcal{N}(0, K + \sigma^2 I )
+\bm{y} \sim \mathcal{N}(0, K + \sigma^2 I )
 \end{equation*}
 
-\noindent where the function values $f(\mathbf{x})$ have been integrated out, yielding a lower-dimensional parameter space over which to do inference, reducing time of computation and improving the sampling and the effective number of samples.
+\noindent where the function values $f(\bm{x})$ have been integrated out, yielding a lower-dimensional parameter space over which to do inference, reducing time of computation and improving the sampling and the effective number of samples.
 
-In the HSGP model, the latent function values $f(\mathbf{x})$ are approximated as (\ref{approxf}),
+In the HSGP model, the latent function values $f(\bm{x})$ are approximated as (\ref{approxf}),
 %
 \begin{equation*}
-f(\mathbf{x}) \approx \sum_{j}^m \left( S(\sqrt{\lambda_j})\right)^{1/2} \phi_j(\mathbf{x}) \beta_j,
+f(\bm{x}) \approx \sum_{j}^m \left( S(\sqrt{\lambda_j})\right)^{1/2} \phi_j(\bm{x}) \beta_j,
 \end{equation*}
 
 \noindent with the spectral density $S$ (\ref{eq:specdens_32}) as a function of $\sqrt{\lambda_j}$,
 %
 \begin{eqnarray*}
-S(\sqrt{\lambda_j})&=& 4\alpha^2 \frac{\sqrt{3}}{\ell}^{3}(\frac{3}{\ell^2} + \lambda_j)^{-2}, 
+S(\sqrt{\lambda_j})&=& \alpha^2 \frac{4\sqrt{3}^{3}}{\ell^3}(\frac{3}{\ell^2} + \lambda_j)^{-2}, 
 \end{eqnarray*}
 
 \noindent and eigenvalues $\lambda_j$ (\ref{eigenvalue}) and eigenfunctions $\phi_j$ (\ref{eigenfunction})
@@ -646,7 +679,7 @@ S(\sqrt{\lambda_j})&=& 4\alpha^2 \frac{\sqrt{3}}{\ell}^{3}(\frac{3}{\ell^2} + \l
 \begin{eqnarray*}
 \begin{split}
 \lambda_j&=\left(\frac{j\pi}{2L}\right)^2, \\
-\phi_j(\mathbf{x})&=\sqrt{\frac{1}{L}} \text{sin}\left(\sqrt{\lambda_j}(\mathbf{x}+L)\right).
+\phi_j(\bm{x})&=\sqrt{\frac{1}{L}} \text{sin}\left(\sqrt{\lambda_j}(\bm{x}+L)\right).
 \end{split}
 \end{eqnarray*} 
 
@@ -680,14 +713,14 @@ This data set relates the proportion of support for same-sex marriage to the age
 y_i \sim \text{Binomial}(p_i, n_i).
 \end{equation*}
 
-\noindent The population per age group $n_i$ is a known quantity and the goal is to estimate the same-sex support probability $p_i$ or mean number of support people per age group. The probabilities $\mathbf{p}=\{p_i\}_{i=1}^{74}$ are modeled by a GP latent function $f(\mathbf{x})$ with a squared exponential covariance function $k$ (2) and age input values $\mathbf{x}=\{x_i\}_{i=1}^{74}$, with the {\it logit} function as a link function,
+\noindent The population per age group $n_i$ is a known quantity and the goal is to estimate the same-sex support probability $p_i$ or mean number of support people per age group. The probabilities $\bm{p}=\{p_i\}_{i=1}^{74}$ are modeled by a GP function $f(\bm{x})$ with a squared exponential covariance function $k$ and age input values $\bm{x}=\{x_i\}_{i=1}^{74}$, with the {\it logit} function as a link function,
 %
 \begin{eqnarray*} \label{eq:gpprior_gay}
 p_i &=& \text{logit}(f(x_i)) \nonumber \\
-f(\mathbf{x}) &\sim& \mathcal{GP}(0, k(\mathbf{x},\mathbf{x}', \theta).
+f(\bm{x}) &\sim& \mathcal{GP}(0, k(\bm{x},\bm{x}', \theta).
 \end{eqnarray*}
 
-In the HSGP model the latent function $f(\mathbf{x})$ is approximated as in eq. (\ref{approxf}), with the square exponential spectral density as in eq. (\ref{eq:specdens_inf}), and eigenvalues $\lambda_j$ (\ref{eigenvalue}) and eigenfunctions $\phi_j$ as in eq. (\ref{eigenfunction}). 
+In the HSGP model the function $f(\bm{x})$ is approximated as in equation (\ref{approxf}), with the square exponential spectral density as in equation (\ref{eq:specdens_inf}), and eigenvalues $\lambda_j$  and eigenfunctions $\phi_j$ as in equations (\ref{eigenvalue}) and (\ref{eigenfunction}). 
 
 In order to do model comparison, in addition to the regular GP model and HSGP model, an splines-based model is also fitted using the Thin Plate Regression Splines approach in \cite{wood2003thin} and implemented in the R-package \textit{mgcv}. A Bayesian approach is used to fit this splines model using the R-package \textit{brms}.
 
@@ -721,19 +754,19 @@ Figure \ref{fig14_MSE_train_gaydata} shows the RMSE of the different models, reg
 \end{figure}
 
 
-\subsection{Case II: Birthday data}
+\subsection{Birthday data}
 
 \section{Multivariate examples}
 \subsection{Simulated data}
 
-This example consists of a simulated dataset with 120 ($i=1,\dots,n=120$) single draws from a Gaussian process prior with two ($D=2$) input dimensions. A square exponential covariance function, with hyperparameters marginal variance $\alpha=1$ and lengthscales $\ell_1=0.10$ for dimension 1 and $\ell_2=0.35$ for dimension 2, is used. The corresponding matrix of input values is $X=\{\mathbf{x}_i\}_{i=1}^{n=120} \in {\rm I\!R}^{n\times 2}$ with $\mathbf{x}_i \in \{[-1,1],[-1,1]\} \subset {\rm I\!R}^2$. Gaussian noise $\sigma=0.2$ was added to the GP draws to form the final noisy set of observations $\mathbf{y} \in {\rm I\!R}^n$.
+This example consists of a simulated dataset with 120 ($i=1,\dots,n=120$) single draws from a Gaussian process prior with two ($D=2$) input dimensions. A square exponential covariance function, with hyperparameters marginal variance $\alpha=1$ and lengthscales $\ell_1=0.10$ for dimension 1 and $\ell_2=0.35$ for dimension 2, is used. The corresponding matrix of input values is $X=\{\bm{x}_i\}_{i=1}^{n=120} \in {\rm I\!R}^{n\times 2}$ with $\bm{x}_i \in \{[-1,1],[-1,1]\} \subset {\rm I\!R}^2$. Gaussian noise $\sigma=0.2$ was added to the GP draws to form the final noisy set of observations $\bm{y} \in {\rm I\!R}^n$.
 
-The regular GP model with 2 input dimensions, over the outcome variable $\mathbf{y}$ and $n \times 2$ matrix of inputs $X$, can be written as follows,
+The regular GP model with 2 input dimensions, over the outcome variable $\bm{y}$ and $n \times 2$ matrix of inputs $X$, can be written as follows,
 %
 \begin{eqnarray*}\label{eq:latentgp_simudata2}
 \begin{split}
-\mathbf{y} &= f(X) + \boldsymbol{\epsilon} \\
-\boldsymbol{\epsilon} &\sim \mathcal{N}(0, \sigma^2  I) \\
+\bm{y} &= f(X) + \bm{\epsilon} \\
+\bm{\epsilon} &\sim \mathcal{N}(0, \sigma^2  I) \\
 f(X) &\sim \mathcal{GP}(0, k(X, X', \theta)),
 \end{split}
 \end{eqnarray*}
@@ -741,36 +774,36 @@ f(X) &\sim \mathcal{GP}(0, k(X, X', \theta)),
 \noindent where $I$ represents the identity matrix and $k$ the square exponential covariance function with hyperarameters $\theta=\{\alpha,\ell_1,\ell_2\}$. The marginalized form, by integrating out the latent values $f(X)$, of the previous latent GP model results 
 %
 \begin{equation*}\label{eq:marginalizedgp_simudata2}
-\mathbf{y} \sim \mathcal{N}(0, K + \sigma^2 I ),
+\bm{y} \sim \mathcal{N}(0, K + \sigma^2 I ),
 \end{equation*}
 
-\noindent with covariance matrix $K$, and its element $K_{rs}=k(\mathbf{x}_r,\mathbf{x}_s,\theta)$ is the evaluation of the covariance function $k$ at points $r$ and $s$.
+\noindent with covariance matrix $K$, and its element $K_{rs}=k(\bm{x}_r,\bm{x}_s,\theta)$ is the evaluation of the covariance function $k$ at points $r$ and $s$.
 
-In the HSGP model with 2 input dimensions, the latent function $f$, evaluated at input vector $\mathbf{x} \in {\rm I\!R}^2$, is approximated as (\ref{approxf_multi}),
+In the HSGP model with 2 input dimensions, the latent function $f$, evaluated at input vector $\bm{x} \in {\rm I\!R}^2$, is approximated as (\ref{approxf_multi}),
 %
 \begin{equation*}
-f(\mathbf{x}) \approx \sum_{j}^m \left( S(\sqrt{\boldsymbol{\lambda}_j})\right)^{1/2} \phi_j(\mathbf{x}) \beta_j,
+f(\bm{x}) \approx \sum_{j}^m \left( S(\sqrt{\bm{\lambda}_j})\right)^{1/2} \phi_j(\bm{x}) \beta_j,
 \end{equation*}
 
-\noindent where $\boldsymbol{\lambda}_j$ is the 2-vector (\ref{eigenvalue_multi}) with elements that are univariate eigenvalues (\ref{eigenvalue}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
+\noindent where $\bm{\lambda}_j$ is the 2-vector (\ref{eigenvalue_multi}) with elements that are univariate eigenvalues (\ref{eigenvalue}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
 %
 \begin{align*}
-\boldsymbol{\lambda}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^{D=2} = \left\{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \right\}_{d=1}^{D=2},
+\bm{\lambda}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^{D=2} = \left\{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \right\}_{d=1}^{D=2},
 \end{align*}
 
 \noindent and $\phi_j$ is the multivariate eigenfunction (\ref{eigenfunction_multi}), as the product of univariate eigenfunctions (\ref{eigenfunction}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
 %
 \begin{align*}
-\phi_j(\mathbf{x}) &= \prod_{d=1}^{D=2} \phi_{\mathbb{S}_{jd}} = \prod_{d=1}^{D=2} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(x_d+L_d)\right),
+\phi_j(\bm{x}) &= \prod_{d=1}^{D=2} \phi_{\mathbb{S}_{jd}} = \prod_{d=1}^{D=2} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(x_d+L_d)\right),
 \end{align*}
 
-\noindent where $x_d$ is the input value corresponding to dimension $d$. $S$ is the spectral density (\ref{eq:specdens_multi_inf}), as a function of $\sqrt{\boldsymbol{\lambda}_j}= \left(\sqrt{\lambda_{\mathbb{S}_{j1}}},\sqrt{\lambda_{\mathbb{S}_{j2}}} \right)$, of the 2-dimensional square exponential covariance function,
+\noindent where $x_d$ is the input value corresponding to dimension $d$. $S$ is the spectral density (\ref{eq:specdens_inf}), as a function of $\sqrt{\bm{\lambda}_j}= \left(\sqrt{\lambda_{\mathbb{S}_{j1}}},\sqrt{\lambda_{\mathbb{S}_{j2}}} \right)$, of the 2-dimensional square exponential covariance function,
 %
 \begin{eqnarray*}
-S(\sqrt{\boldsymbol{\lambda}_j})&=& \sqrt{2\pi} \cdot \ell_1 \cdot \exp\left(-0.5 \ell_1^2 \sqrt{\lambda_{\mathbb{S}_{j1}}}^2\right) \cdot  \sqrt{2\pi} \cdot \ell_2 \cdot \exp\left(-0.5 \ell_2^2 \sqrt{\lambda_{\mathbb{S}_{j2}}}^2\right) , 
+S(\sqrt{\bm{\lambda}_j})= \sigma^2 2\pi \ell_1 \ell_2  \mathrm{exp}\Bigg(-\frac{1}{2} \bigg( \ell_1^2 \sqrt{\lambda_{\mathbb{S}_{j1}}}^2 + \ell_2^2 \sqrt{\lambda_{\mathbb{S}_{j2}}}^2 \bigg) \Bigg). 
 \end{eqnarray*}
 
-\noindent In the previous equations, $j$ denotes the index for the $m= m_1 \cdot m_2$ multivariate basis functions (\ref{m_multi}). $m_1$ and $m_2$ are the number of basis functions considered for dimension 1 and 2, respectively. $\mathbb{S}$ is the matrix of $2$-tuples, with rows being the indices of every possible combinations of univariate eigenvalues (\ref{eigenvalue}) over the two ($D$=2) dimensions. $L_d$ is the boundary for the dimension $d$. The parameters $\beta_j$ are $\mathcal{N}(0,1)$ distributed, and $\alpha$, $\ell_1$ and $\ell_2$ are the marginal variance and lengthscale parameters for dimensions 1 and 2, respectively, of the approximate covariance function.
+\noindent In the previous equations, $j$ denotes the index for the $m= m_1 \cdot m_2$ multivariate basis functions (\ref{m_multi}), where $m_1$ and $m_2$ are the number of basis functions considered for dimension 1 and 2, respectively. $\mathbb{S}$ is the matrix of $2$-tuples, with rows being the indices of every possible combinations of univariate eigenvalues (\ref{eigenvalue}) over the two ($D$=2) dimensions. $L_d$ is the boundary for the dimension $d$. The parameters $\beta_j$ are $\mathcal{N}(0,1)$ distributed, and $\alpha$, $\ell_1$ and $\ell_2$ are the marginal variance and lengthscale parameters for dimensions 1 and 2, respectively, of the approximate covariance function.
 
 In order to do model comparison, in addition to the regular GP and HSGP models, a two-dimensional splines-based model is also fitted using a cubic spline basis, penalized by the conventional intergrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms}.
 
@@ -933,13 +966,13 @@ $\bullet$ We show several illustrative examples, simulate and real datasets, of 
 
 \section{Spectral densities of stationary covariance functions}
 
-The covariance function of a stationary process, that is function of $\boldsymbol{\tau}=\mathbf{x-x'}$ can be represented as the Fourier transform of a positive finite measure ($Bochner's theorem$). 
+The covariance function of a stationary process, that is function of $\bm{\tau}=\bm{x-x'}$ can be represented as the Fourier transform of a positive finite measure ($Bochner's theorem$). 
 
 \vspace{0.2cm}
 \textit{(Bochner’s theorem) A complex-valued function $k$ on ${\rm I\!R}^D$ is the covariance function of a weakly stationary mean square continuous complex valued random process on ${\rm I\!R}^D$ if and only if it can be represented as}
 %
 \begin{equation}
-k(\boldsymbol{\tau})= \int_{{\rm I\!R}^D} e^{2\pi i \mathbf{s} \cdot \mathbf{\tau}} d\mu(\boldsymbol{\tau}), \nonumber 
+k(\bm{\tau})= \int_{{\rm I\!R}^D} e^{2\pi i \bm{s} \cdot \bm{\tau}} d\mu(\bm{\tau}), \nonumber 
 \end{equation}
 
 \textit{where $\mu$ is a positive finite measure.} 
@@ -948,36 +981,36 @@ k(\boldsymbol{\tau})= \int_{{\rm I\!R}^D} e^{2\pi i \mathbf{s} \cdot \mathbf{\ta
 If the measure $\mu$ has a density, it is known as the spectral density $S(\omega)$ of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the Wiener-Khintchine theorem. It gives the following relations:
 
 \begin{eqnarray}
-k(\boldsymbol{\tau})&=& \int S(\mathbf{s}) e^{2\pi i \mathbf{s} \cdot \boldsymbol{\tau}} d\mathbf{s}  \nonumber \\
+k(\bm{\tau})&=& \int S(\bm{s}) e^{2\pi i \bm{s} \cdot \bm{\tau}} d\bm{s}  \nonumber \\
 %
-S(\mathbf{s})&=& \int k(\boldsymbol{\tau}) e^{-2\pi i \mathbf{s} \cdot \boldsymbol{\tau}} d\mathbf{s}  \nonumber
+S(\bm{s})&=& \int k(\bm{\tau}) e^{-2\pi i \bm{s} \cdot \bm{\tau}} d\bm{s}  \nonumber
 \end{eqnarray}
 
 \section{Approximate the covariance function using Hilbert space methods}
 
-Associated to each covariance function $k(\mathbf{x},\mathbf{x}')$ we can also define a covariance operator $\mathcal{K}$ as follows:
+Associated to each covariance function $k(\bm{x},\bm{x}')$ we can also define a covariance operator $\mathcal{K}$ as follows:
 %
 \begin{equation}
-\mathcal{K} f(\mathbf{x}) = \int k(\mathbf{x},\mathbf{x}') f(\mathbf{x}') d\mathbf{x}'.
+\mathcal{K} f(\bm{x}) = \int k(\bm{x},\bm{x}') f(\bm{x}') d\bm{x}'.
 \end{equation} 
 
 Assuming that the spectral density function $S(\cdot)$ is regular enough, then it can be represented as a polynomial expansion:
 %
 \begin{equation}
-S(\mathbf{w})=a_0+a_1\mathbf{w}^2+a_2(\mathbf{w}^2)^2+a_1(\mathbf{w}^2)^3+\cdots
+S(\bm{w})=a_0+a_1\bm{w}^2+a_2(\bm{w}^2)^2+a_1(\bm{w}^2)^3+\cdots
 \end{equation}
 
 
 If the negative Laplace operator $-\nabla^2$ is defined as the covariance operator of the covariance function $k$,
 
 \begin{equation}
--\nabla^2 f(\mathbf{x}) = \int k(\mathbf{x},\mathbf{x}') f(\mathbf{x}') d\mathbf{x}',
+-\nabla^2 f(\bm{x}) = \int k(\bm{x},\bm{x}') f(\bm{x}') d\bm{x}',
 \end{equation} 
 
 \noindent then the covariance function can be represented as 
 
 \begin{equation}
-k(\mathbf{x},\mathbf{x}')= \sum_j \lambda_j \phi_j(\mathbf{x}) \phi_j(\mathbf{x}'),
+k(\bm{x},\bm{x}')= \sum_j \lambda_j \phi_j(\bm{x}) \phi_j(\bm{x}'),
 \end{equation}
 
 \noindent where $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the set of eigenvalues and eigenvectors, respectively, of the Laplacian operator. Namely, they satisfy the following eigenvalue problem in the compact subset $x \in \{-L,L\}$ and with the Dirichlet boundary condition (another boundary condition could be used as well):
@@ -992,7 +1025,7 @@ a series expansion of eigenvalues and eigenfunctions
 
 \section{Example of generalization to the multivariate case}
 
-Next, as an example we show the matrix $\mathbb{S}$ and eigenfunctions and eigenvalues for a $two$-dimensional input vector $\mathbf{x}=\{\mathbf{x}_1,\mathbf{x}_2\}$ ($D=2$) and three eigenfunctions and eigenvalues $(J=3)$ for every dimension. The number of new multidimensional eigenfunctions $\phi^{\ast}_j$ and eigenvalues $\lambda^{\ast}_j$ is $J^D=3^2=9$ ($j=\{1,\cdots,J^D\}$). The matrix $\mathbb{S}\in {\rm I\!R}^{9 \times 2}$ is
+Next, as an example we show the matrix $\mathbb{S}$ and eigenfunctions and eigenvalues for a $two$-dimensional input vector $\bm{x}=\{\bm{x}_1,\bm{x}_2\}$ ($D=2$) and three eigenfunctions and eigenvalues $(J=3)$ for every dimension. The number of new multidimensional eigenfunctions $\phi^{\ast}_j$ and eigenvalues $\lambda^{\ast}_j$ is $J^D=3^2=9$ ($j=\{1,\cdots,J^D\}$). The matrix $\mathbb{S}\in {\rm I\!R}^{9 \times 2}$ is
 %
 \begin{eqnarray}
 \mathbb{S}=
@@ -1012,41 +1045,41 @@ Next, as an example we show the matrix $\mathbb{S}$ and eigenfunctions and eigen
 \noindent and the multidimensional eigenfunctions and eigenvalues
 %
 \begin{eqnarray}
-\phi^{\ast}_1(\mathbf{x}) = \phi_{1}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_1(\bm{x}) = \phi_{1}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_1 = \{\lambda_{1}(\mathbf{x}_1), \lambda_{1}(\mathbf{x}_2)\}  \nonumber \\
+\bm{\lambda}^{\ast}_1 = \{\lambda_{1}(\bm{x}_1), \lambda_{1}(\bm{x}_2)\}  \nonumber \\
 %
-\phi^{\ast}_2(\mathbf{x}) = \phi_{1}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_2(\bm{x}) = \phi_{1}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_2 = \{\lambda_{1}(\mathbf{x}_1), \lambda_{2}(\mathbf{x}_2)\} \nonumber \\
+\bm{\lambda}^{\ast}_2 = \{\lambda_{1}(\bm{x}_1), \lambda_{2}(\bm{x}_2)\} \nonumber \\
 %
-\phi^{\ast}_3(\mathbf{x}) = \phi_{1}(\mathbf{x}_1) \cdot \phi_{3}(\mathbf{x}_2) \hspace{2cm}
+\phi^{\ast}_3(\bm{x}) = \phi_{1}(\bm{x}_1) \cdot \phi_{3}(\bm{x}_2) \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_3 = \{\lambda_{1}(\mathbf{x}_1), \lambda_{3}(\mathbf{x}_2)\}  \nonumber \\
+\bm{\lambda}^{\ast}_3 = \{\lambda_{1}(\bm{x}_1), \lambda_{3}(\bm{x}_2)\}  \nonumber \\
 %
-\phi^{\ast}_4(\mathbf{x}) = \phi_{2}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_4(\bm{x}) = \phi_{2}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_4 = \{\lambda_{2}(\mathbf{x}_1), \lambda_{1}(\mathbf{x}_2)\}  \nonumber \\
+\bm{\lambda}^{\ast}_4 = \{\lambda_{2}(\bm{x}_1), \lambda_{1}(\bm{x}_2)\}  \nonumber \\
 %
-\phi^{\ast}_5(\mathbf{x}) = \phi_{2}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_5(\bm{x}) = \phi_{2}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_5 = \{\lambda_{2}(\mathbf{x}_1), \lambda_{2}(\mathbf{x}_2)\}  \nonumber \\
+\bm{\lambda}^{\ast}_5 = \{\lambda_{2}(\bm{x}_1), \lambda_{2}(\bm{x}_2)\}  \nonumber \\
 %
-\phi^{\ast}_6(\mathbf{x}) = \phi_{2}(\mathbf{x}_1) \cdot \phi_{3}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_6(\bm{x}) = \phi_{2}(\bm{x}_1) \cdot \phi_{3}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_6 = \{\lambda_{2}(\mathbf{x}_1), \lambda_{3}(\mathbf{x}_2)\}  \nonumber \\
+\bm{\lambda}^{\ast}_6 = \{\lambda_{2}(\bm{x}_1), \lambda_{3}(\bm{x}_2)\}  \nonumber \\
 %
-\phi^{\ast}_7(\mathbf{x}) = \phi_{3}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_7(\bm{x}) = \phi_{3}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_7 = \{\lambda_{3}(\mathbf{x}_1), \lambda_{1}(\mathbf{x}_2)\}  \nonumber \\
+\bm{\lambda}^{\ast}_7 = \{\lambda_{3}(\bm{x}_1), \lambda_{1}(\bm{x}_2)\}  \nonumber \\
 %
-\phi^{\ast}_8(\mathbf{x}) = \phi_{3}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_8(\bm{x}) = \phi_{3}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_8 = \{\lambda_{3}(\mathbf{x}_1), \lambda_{2}(\mathbf{x}_2)\}  \nonumber \\
+\bm{\lambda}^{\ast}_8 = \{\lambda_{3}(\bm{x}_1), \lambda_{2}(\bm{x}_2)\}  \nonumber \\
 %
-\phi^{\ast}_9(\mathbf{x}) = \phi_{3}(\mathbf{x}_1) \cdot \phi_{3}(\mathbf{x}_2)  \hspace{2cm}
+\phi^{\ast}_9(\bm{x}) = \phi_{3}(\bm{x}_1) \cdot \phi_{3}(\bm{x}_2)  \hspace{2cm}
 %
-\boldsymbol{\lambda}^{\ast}_9 = \{\lambda_{3}(\mathbf{x}_1), \lambda_{3}(\mathbf{x}_2)\}  \nonumber
+\bm{\lambda}^{\ast}_9 = \{\lambda_{3}(\bm{x}_1), \lambda_{3}(\bm{x}_2)\}  \nonumber
 \end{eqnarray}
 
 Now, we show another example where different number of eigenfunctions and eigenvalues are used for every dimension. We consider a three-dimensional ($D=3$) input space, and sets of $J_{1}=2$, $J_{2}=2$ and $J_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimensions, respectively. The number of new multidimensional eigenfunctions $\phi^{\ast}$ and eigenvalues $\lambda^{\ast}$ is $J_{1}\cdot J_{2}\cdot J_{3}=2\cdot 2\cdot 3=12$. The matrix $\mathbb{S}\in {\rm I\!R}^{12 \times 3}$ is
@@ -1072,170 +1105,862 @@ Now, we show another example where different number of eigenfunctions and eigenv
 \noindent and the multidimensional eigenfunctions and eigenvalues
 %
 \begin{eqnarray}
-\phi^{\ast}_1= \phi_{1}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) \cdot \phi_{1}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_1= \{\lambda_1(\mathbf{x}_1), \lambda_1(\mathbf{x}_2), \lambda_1(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_1= \phi_{1}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) \cdot \phi_{1}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_1= \{\lambda_1(\bm{x}_1), \lambda_1(\bm{x}_2), \lambda_1(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_2= \phi_{1}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) \cdot \phi_{2}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_2= \{\lambda_1(\mathbf{x}_1), \lambda_1(\mathbf{x}_2), \lambda_2(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_2= \phi_{1}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) \cdot \phi_{2}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_2= \{\lambda_1(\bm{x}_1), \lambda_1(\bm{x}_2), \lambda_2(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_3= \phi_{1}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) \cdot \phi_{3}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_3= \{\lambda_1(\mathbf{x}_1), \lambda_1(\mathbf{x}_2), \lambda_3(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_3= \phi_{1}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) \cdot \phi_{3}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_3= \{\lambda_1(\bm{x}_1), \lambda_1(\bm{x}_2), \lambda_3(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_4= \phi_{1}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) \cdot \phi_{1}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_4= \{\lambda_1(\mathbf{x}_1), \lambda_1(\mathbf{x}_2), \lambda_1(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_4= \phi_{1}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) \cdot \phi_{1}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_4= \{\lambda_1(\bm{x}_1), \lambda_1(\bm{x}_2), \lambda_1(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_5= \phi_{1}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) \cdot \phi_{2}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_5= \{\lambda_1(\mathbf{x}_1), \lambda_1(\mathbf{x}_2), \lambda_2(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_5= \phi_{1}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) \cdot \phi_{2}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_5= \{\lambda_1(\bm{x}_1), \lambda_1(\bm{x}_2), \lambda_2(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_6= \phi_{1}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) \cdot \phi_{3}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_6= \{\lambda_1(\mathbf{x}_1), \lambda_1(\mathbf{x}_2), \lambda_3(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_6= \phi_{1}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) \cdot \phi_{3}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_6= \{\lambda_1(\bm{x}_1), \lambda_1(\bm{x}_2), \lambda_3(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_7= \phi_{2}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) \cdot \phi_{1}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_7= \{\lambda_2(\mathbf{x}_1), \lambda_2(\mathbf{x}_2), \lambda_1(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_7= \phi_{2}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) \cdot \phi_{1}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_7= \{\lambda_2(\bm{x}_1), \lambda_2(\bm{x}_2), \lambda_1(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_8= \phi_{2}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) \cdot \phi_{2}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_8= \{\lambda_2(\mathbf{x}_1), \lambda_2(\mathbf{x}_2), \lambda_2(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_8= \phi_{2}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) \cdot \phi_{2}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_8= \{\lambda_2(\bm{x}_1), \lambda_2(\bm{x}_2), \lambda_2(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_9= \phi_{2}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) \cdot \phi_{3}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_9= \{\lambda_2(\mathbf{x}_1), \lambda_2(\mathbf{x}_2), \lambda_3(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_9= \phi_{2}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) \cdot \phi_{3}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_9= \{\lambda_2(\bm{x}_1), \lambda_2(\bm{x}_2), \lambda_3(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_{10}= \phi_{2}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) \cdot \phi_{1}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_{10}= \{\lambda_2(\mathbf{x}_1), \lambda_2(\mathbf{x}_2), \lambda_1(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_{10}= \phi_{2}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) \cdot \phi_{1}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_{10}= \{\lambda_2(\bm{x}_1), \lambda_2(\bm{x}_2), \lambda_1(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_{11}= \phi_{2}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) \cdot \phi_{2}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_{11}= \{\lambda_2(\mathbf{x}_1), \lambda_2(\mathbf{x}_2), \lambda_2(\mathbf{x}_3)\} \nonumber \\
+\phi^{\ast}_{11}= \phi_{2}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) \cdot \phi_{2}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_{11}= \{\lambda_2(\bm{x}_1), \lambda_2(\bm{x}_2), \lambda_2(\bm{x}_3)\} \nonumber \\
 %
-\phi^{\ast}_{12}= \phi_{2}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) \cdot \phi_{3}(\mathbf{x}_3) \hspace{1.5cm} \boldsymbol{\lambda}^{\ast}_{12}= \{\lambda_2(\mathbf{x}_1), \lambda_2(\mathbf{x}_2), \lambda_3(\mathbf{x}_3)\} \nonumber
+\phi^{\ast}_{12}= \phi_{2}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) \cdot \phi_{3}(\bm{x}_3) \hspace{1.5cm} \bm{\lambda}^{\ast}_{12}= \{\lambda_2(\bm{x}_1), \lambda_2(\bm{x}_2), \lambda_3(\bm{x}_3)\} \nonumber
 \end{eqnarray}
 
+\newpage
+\begin{landscape}
 
 \section{Multidimensional generalization of covariance functions and spectral densities}
 
-\begin{enumerate}
-\item Exquare exponential covariance function 
+\subsection{Square Exponential covariance function ($k$) \textbf and spectral density ($S$)}
+\vspace{-2mm}
+\subsubsection{Using norm-L2 (Euclidean distance)}
+\vspace{-10mm}
 
-	\begin{align*}
-	k(\mathbf{r})= \mathrm{exp}(-\frac{1}{2} \frac{|\mathbf{r}|^2}{\ell^2})
-	\end{align*}
+\begin{table}[H]
+\small
+\begin{eqnarray*}
+\vspace{-20mm}
+&&\bm{x}, \bm{x}' \in \mathbb{R}^{D=2}; \hspace{2mm}\tau_{L2} =|\bm{x}-\bm{x}'|_{L2} = \sqrt{(\bm{x}-\bm{x}')^\top(\bm{x}-\bm{x}')} = \sqrt{(x_1-x_1')^2+(x_2-x_2')^2}  = \sqrt{r_1^2+r_2^2} \in \mathbb{R}; \hspace{2mm} k(\tau_{L2},\ell) = \mathrm{exp}\left(-\frac{1}{2} \frac{\tau^2}{\ell^2} \right)\\
+&& \omega_{L2}= \sqrt{s_1^2+s_2^2} \in \mathbb{R}; \hspace{2mm} S(\omega_{L2},\ell) = \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\left(-\frac{1}{2} \ell^2 \omega_{L2}^2 \right)
+\end{eqnarray*}
+\normalsize
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+       \hline
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\ell \in \mathbb{R}$
+       }
+       
+        & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		k(\tau_{L2},\ell) &=& k(|\bm{x}-\bm{x}'|_{L2},\ell)\\
+		 &=& \mathrm{exp}\left(-\frac{1}{2} \frac{(\bm{x}-\bm{x}')^\top(\bm{x}-\bm{x}')}{\ell^2} \right)\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \frac{\sum_{i=1}^{2}(x_i-x_i')^2}{\ell^2} \right) \\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{r_i^2}{\ell^2} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{\small
+         \begin{eqnarray*}
+		S(\omega_{L2},\ell) &=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\left(-\frac{1}{2} \ell^2 (s_1^2 + s_2^2) \right) \\
+		&=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^D \ell^2 s_i^2) \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{6.2cm}|}{\small
+         \begin{eqnarray*}
+        &&\text{-ISOTROPIC}\\
+        \\
+		&&\text{-SEPARABLE:} \\
+		\\
+		&&k(|\bm{x}-\bm{x}'|_{L2},\bm{\ell})\\
+		 &&= k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2)\\
+		 \\
+		&&S(\omega_{L2},\bm{\ell})= S(s_1,\ell_1)S(s_2,\ell_2)
+         \end{eqnarray*}
+       }\\
+        \cline{1-3}
+         
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       }
+       
+         & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		k(\tau_{L2},\bm{\ell}) &=& k(|\bm{x}-\bm{x}'|_{L2},\bm{\ell})\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{r_i^2}{\ell_i^2} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{\small
+       \begin{eqnarray*}
+		S(\omega_{L2},\bm{\ell}) &=& \sqrt{2\pi}^D \cdot \prod_{i=1}^D \ell_i \cdot \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^D \ell_i^2 s_i^2 \right)
+	   \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{6.2cm}|}{\small
 
-	\noindent $\mathbf{x}, \mathbf{x}' \in \mathbb{R}^D$\\
-	$\ell \in \mathbb{R}$\\
-	
-	\begin{enumerate}
-	\item
-	$r=||\mathbf{x}-\mathbf{x}'||$\\	
-	$r^2=||\mathbf{x}-\mathbf{x}'||^2= \sqrt{(\mathbf{x}-\mathbf{x}')(\mathbf{x}-\mathbf{x}')}^2= (\mathbf{x}-\mathbf{x}')(\mathbf{x}-\mathbf{x}')= (x_1-x_1')^2+\cdots+(x_D-x_D')^2$\\
-	\item
-	$\boldsymbol{\tau}=(\mathbf{x}-\mathbf{x}')$\\
-	$\tau^2=(\mathbf{x}-\mathbf{x}')^2= (\mathbf{x}-\mathbf{x}')(\mathbf{x}-\mathbf{x}')=(x_1-x_1')^2+\cdots+(x_D-x_D')^2$\\
-	
-	\end{enumerate}
-	
-	So, $r^2=\tau^2$.
+       } \\  
+       
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       
+       {Separable kernel} 
+       }
+       
+        & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		&&k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2) \\
+		&&= \mathrm{exp}\left(-\frac{1}{2} \frac{r_1^2}{\ell_1^2} \right) \mathrm{exp}\left(-\frac{1}{2} \frac{r_2^2}{\ell_2^2} \right) \\
+		&&=\mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{r_i^2}{\ell_i^2} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{\small
+         \begin{eqnarray*}
+         &&S(s_1,\ell_1)S(s_2,\ell_2) \\
+		&&= \sqrt{2\pi} \cdot \ell_1 \cdot \mathrm{exp}\left(-\frac{1}{2} \ell_1^2 s_1^2 \right) \\
+		 &&\times  \sqrt{2\pi} \cdot \ell_2 \cdot \mathrm{exp}\left(-\frac{1}{2} \ell_2^2 s_2^2 \right)\\
+		&&= \sqrt{2\pi}^D \cdot \prod_{i=1}^D \ell_i \cdot \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^D \ell_i^2 s_i^2 \right)
+         \end{eqnarray*}         
+       } 
 
-	\begin{align*}
-	k(||\mathbf{x}-\mathbf{x}'||) &= \mathrm{exp}\left(-\frac{1}{2} \frac{(\mathbf{x}-\mathbf{x}')\dot (\mathbf{x}-\mathbf{x}')}{\ell^2} \right) \\
-	%
-	&= \mathrm{exp}\left(-\frac{1}{2} \frac{\sum_{i=1}^{D}(x_i-x_i')^2}{\ell^2} \right) \\
-	%
-	&=\mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{(x_i-x_i')^2}{\ell^2} \right)
-	\end{align*}
-	
-	If we define $z_i=\frac{(x_i-x_i')}{\ell}$, the $D$-dimensional variable $\mathbf{x}-\mathbf{x}'$ is scaled by $\ell$. Let $\mathbf{z}=\{z_i\}_{i=1}^D$,
-	
-	\begin{align*}
-	k(\mathbf{z}) &=\mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}z_i^2 \right)\\
-	%
-	&=\mathrm{exp}\left(-\frac{1}{2} \mathbf{z}^2 \right)
-	\end{align*}
-	
-	We can notice that each component $(x_i-x_i')$ can be scaled differently such that $z_i=\frac{(x_i-x_i')}{\ell_i}$, and the kernel is still valid. Then, we can redefine $\mathbf{z}$ such as $z_i=\frac{(x_i-x_i')}{\ell_i}$,
-	
-	\begin{align*}
-	k(\mathbf{z}) &=\mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}z_i^2 \right)\\
-	%
-	&=\mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{(x_i-x_i')^2}{\ell_i^2} \right),
-	\end{align*}
-	
-	\noindent and now we are using a different lengthscale for each dimension. In this way we can generalize to using a different lengthscale for each dimension,\\
-	
-	\noindent $\mathbf{x}, \mathbf{x}' \in \mathbb{R}^D$\\
-	$\boldsymbol{\ell} \in \mathbb{R}^D$\\
-	
-	\begin{align*}
-	k(||\mathbf{x}-\mathbf{x}'||) &= \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{(x_i-x_i')^2}{\ell_i^2} \right)
-	\end{align*}
-	
+       & \multicolumn{1}{|p{6.2cm}|}{\small
 
-\end{enumerate}
-
-\section{Multidimensional generalization of covariance functions and spectral densities (old version)}
-
-
-\begin{itemize}
-\item 
-$x, x' \in \mathbb{R}$,\\
-$\ell \in \mathbb{R}$, \\
-$\tau=x-x'\in \mathbb{R}$, \\
-$r=||x-x'||\in \mathbb{R}$, \\
-$\tau=r$ \\
-$\omega\in \mathbb{R}$
-
-%
-\begin{align*}
-k_{\nu=\infty}(\tau)&=\exp(-\frac{1}{2} \tau^2/\ell^2) \\
-k_{\nu=\frac{1}{2}}(\tau)&=\exp(-\tau/\ell) \\
-k_{\nu=\frac{3}{2}}(\tau)&=(1+\sqrt{3}\tau/\ell) \exp(-\sqrt{3}\tau/\ell)  \\
-\\
-S_{\nu=\infty}(w)&= \sigma^2 \sqrt{2\pi} \cdot \ell \cdot \exp\left(-0.5 \ell^2 w^2\right) \\
-S_{\nu=\frac{1}{2}}(w)&= 2\sigma^2 \frac{1}{\ell}\left(\frac{1}{\ell^2} + \omega^2\right)^{-1} \\
-S_{\nu=\frac{3}{2}}(w)&= 4\sigma^2 \frac{\sqrt{3}}{\ell}^{3}\left(\frac{3}{\ell^2} + \omega^2\right)^{-2}
-\end{align*}
-
-
-\item 
-$\mathbf{x}, \mathbf{x}' \in \mathbb{R}^2$, \\
-$\ell \in \mathbb{R}$, \\
-$\bm{\tau}=\mathbf{x}- \mathbf{x}'=\{\tau_1,\tau_2 \}\in \mathbb{R}^2$, \\
-$\bm{\omega}=\{\omega_1,\omega_2 \}\in \mathbb{R}^2$
-
-%
-\begin{align*}
-k_{\nu=\infty}(\bm{\tau})&=\exp(-\frac{1}{2} \tau_1^2/\ell^2) \cdot \exp(-\frac{1}{2} \tau_2^2/\ell^2), \\
-k_{\nu=\frac{1}{2}}(\bm{\tau})&=\exp(-\tau_1/\ell) \cdot \exp(-\tau_2/\ell), \\
-k_{\nu=\frac{3}{2}}(\bm{\tau})&=(1+\sqrt{3}\tau_1/\ell) \exp(-\sqrt{3}\tau_1/\ell) \cdot (1+\sqrt{3}\tau_2/\ell) \exp(-\sqrt{3}\tau_2/\ell),  \\
-\\
-S_{\nu=\infty}(\bm{\omega})&= \sqrt{2\pi} \cdot \ell \cdot \exp\left(-0.5 \ell^2 \omega_1^2\right) \cdot  \sqrt{2\pi} \cdot \ell \cdot \exp\left(-0.5 \ell^2 \omega_2^2\right) \\
-S_{\nu=\frac{1}{2}}(\bm{\omega})&= 2 \frac{1}{\ell}\left(\frac{1}{\ell^2} + \omega_1^2\right)^{-1} \cdot 2 \frac{1}{\ell}\left(\frac{1}{\ell^2} + \omega_2^2\right)^{-1} \\
-S_{\nu=\frac{3}{2}}(\bm{\omega})&= 4 \frac{\sqrt{3}}{\ell}^{3}\left(\frac{3}{\ell^2} + \omega_1^2\right)^{-2} \cdot 4 \frac{\sqrt{3}}{\ell}^{3}\left(\frac{3}{\ell^2} + \omega_2^2\right)^{-2}
-\end{align*}
-
-
-\item
-$\mathbf{x}, \mathbf{x}' \in \mathbb{R}^2$,\\ 
-$\ell \in \mathbb{R}$, \\
-$r=||\mathbf{x}-\mathbf{x}'||=\sqrt{r_1^2+r_2^2}\in \mathbb{R}$, \\
-$\omega=\sqrt{\omega_1^2+\omega_2^2}\in \mathbb{R}$
-
-%
-\begin{align*}
-k_{\nu=\infty}(r)&=\exp(-\frac{1}{2} r^2/\ell^2), \\
-k_{\nu=\frac{1}{2}}(r)&=\exp(-r/\ell), \\
-k_{\nu=\frac{3}{2}}(r)&=(1+\sqrt{3}r/\ell) \exp(-\sqrt{3}r/\ell),    \\
-\\
-S_{\nu=\infty}(w)&=  \sqrt{2\pi} \cdot \ell \cdot \exp\left(-0.5 \ell^2 w^2\right) \\
-S_{\nu=\frac{1}{2}}(w)&= 2 \frac{1}{\ell}\left(\frac{1}{\ell^2} + \omega^2\right)^{-1} \\
-S_{\nu=\frac{3}{2}}(w)&= 4 \frac{\sqrt{3}}{\ell}^{3}\left(\frac{3}{\ell^2} + \omega^2\right)^{-2}
-\end{align*}
+       } \\ 
+       
+       \hline
+    \end{tabular}
+  \end{center}
+\end{table}
 
 
-\item 
-$\mathbf{x}, \mathbf{x}' \in \mathbb{R}^2$, \\
-$\bm{\ell}=\{\ell_1,\ell_2\} \in \mathbb{R}^2$, \\
-$\bm{\tau}=\mathbf{x}- \mathbf{x}'=\{\tau_1,\tau_2\}\in \mathbb{R}^2$, \\
-$\bm{\omega}=\{\omega_1,\omega_2\}\in \mathbb{R}^2$
+\newpage
+\subsubsection{Using norm-L1 }
+\vspace{-10mm}
 
-%
-\begin{align*}
-k_{\nu=\infty}(\bm{\tau})&=\exp(-\frac{1}{2} \tau_1^2/\ell_1^2) \cdot \exp(-\frac{1}{2} \tau_2^2/\ell_2^2), \\
-k_{\nu=\frac{1}{2}}(\bm{\tau})&=\exp(-\tau_1/\ell_1) \cdot \exp(-\tau_2/\ell_2), \\
-k_{\nu=\frac{3}{2}}(\bm{\tau})&=(1+\sqrt{3}\tau_1/\ell_1) \exp(-\sqrt{3}\tau_1/\ell_1) \cdot (1+\sqrt{3}\tau_2/\ell_2) \exp(-\sqrt{3}\tau_2/\ell_2),  \\
-\\
-S_{\nu=\infty}(\bm{\omega})&= \sqrt{2\pi} \cdot \ell_1 \cdot \exp\left(-0.5 \ell_1^2 \omega_1^2\right) \cdot  \sqrt{2\pi} \cdot \ell_2 \cdot \exp\left(-0.5 \ell_2^2 \omega_2^2\right) \\
-S_{\nu=\frac{1}{2}}(\bm{\omega})&= 2 \frac{1}{\ell_1}\left(\frac{1}{\ell_1^2} + \omega_1^2\right)^{-1} \cdot 2 \frac{1}{\ell_2}\left(\frac{1}{\ell_2^2} + \omega_2^2\right)^{-1} \\
-S_{\nu=\frac{3}{2}}(\bm{\omega})&= 4 \frac{\sqrt{3}}{\ell_1}^{3}\left(\frac{3}{\ell_1^2} + \omega_1^2\right)^{-2} \cdot 4 \frac{\sqrt{3}}{\ell_2}^{3}\left(\frac{3}{\ell_2^2} + \omega_2^2\right)^{-2}
-\end{align*}
+\begin{table}[H]
+\small
+\begin{eqnarray*}
+\vspace{-20mm}
+&&\bm{x}, \bm{x}' \in \mathbb{R}^{D=2}; \hspace{2mm}\tau_{L1} =|\bm{x}-\bm{x}'|_{L1} = |x_1-x_1'|+|x_2-x_2'| = r_1+r_2 \in \mathbb{R}; \hspace{2mm} k(\tau_{L1},\ell) = \mathrm{exp}\left(-\frac{1}{2} \frac{\tau_{L1}^2}{\ell^2} \right)\\
+&& \omega_{L1}= s_1+s_2 \in \mathbb{R}; \hspace{2mm} S(\omega_{L1},\ell) = \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\left(-\frac{1}{2} \ell^2 \omega_{L1}^2 \right)
+\end{eqnarray*}
+\normalsize
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+       \hline
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\ell \in \mathbb{R}$
+       }
+       
+        & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		k(\tau_{L1},\ell) &=& k(|\bm{x}-\bm{x}'|_{L1},\ell)\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \frac{(r_1 + r_2)(r_1 + r_2)}{\ell^2} \right)\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \frac{(r_1 + r_2)}{\ell}\frac{(r_1 + r_2)}{\ell} \right)\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \left(\frac{r_1}{\ell} + \frac{r_2}{\ell}\right)\left(\frac{r_1}{\ell} + \frac{r_2}{\ell}\right) \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		S(\omega_{L1},\ell) &=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\Big(-\frac{1}{2} \ell^2 (s_1 + s_2)\\
+		&\cdot & (s_1 + s_2) \Big) \\
+		&=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\Big(-\frac{1}{2} \ell (s_1 + s_2)\\
+		&\cdot & \ell(s_1 + s_2) \Big) \\
+		&=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\Big(-\frac{1}{2} (\ell s_1 + \ell s_2)\\
+		&\cdot &(\ell s_1 + \ell s_2) \Big)
+         \end{eqnarray*}
+       } 
+       
+       & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+        &&\text{-ISOTROPIC}\\
+        \\
+		&&\text{-NO SEPARABLE:} \\
+		\\
+		&&k(|\bm{x}-\bm{x}'|_{L1},\bm{\ell})\\
+		 &&\neq k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2)\\
+		 \\
+		&&S(\omega_{L1},\bm{\ell})\neq S(s_1,\ell_1)S(s_2,\ell_2)
+         \end{eqnarray*}
+       }\\
+       \vspace{-10mm}\\
+        \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       }
+       
+         & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		k(\tau_{L1},\bm{\ell}) &=& k(|\bm{x}-\bm{x}'|_{L1},\bm{\ell})\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \left(\frac{r_1}{\ell_1} + \frac{r_2}{\ell_2}\right)\left(\frac{r_1}{\ell_1} + \frac{r_2}{\ell_2}\right) \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		S(\omega_{L1},\bm{\ell}) &=& \sqrt{2\pi}^D \cdot \ell_1 \ell_2 \cdot \mathrm{exp}\Big(-\frac{1}{2} (\ell_1 s_1 + \ell_2 s_2)\\
+		&\cdot &(\ell_1 s_1 + \ell_2 s_2) \Big) \\
+         \end{eqnarray*}
+       }
+		
+       & \multicolumn{1}{|p{5.2cm}|}{
 
-\end{itemize}
+       } \\  
+       \vspace{-15mm}\\
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+        $\bm{\ell} \in \mathbb{R}^2$
+        
+       {Separable kernel} 
+       }
+       
+        & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		&&k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2) \\
+		&&= \mathrm{exp}\left(-\frac{1}{2} \frac{r_1^2}{\ell_1^2} \right) \mathrm{exp}\left(-\frac{1}{2} \frac{r_2^2}{\ell_2^2} \right)\\
+		&&= \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{2}\frac{r_i^2}{\ell_i^2} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{
+       \begin{eqnarray*}
+		&&S(s_1,\ell_1)S(s_2,\ell_2) \\
+		&&= \sqrt{2\pi} \cdot \ell_1 \cdot \mathrm{exp}\left(-\frac{1}{2} \ell_1^2 s_1^2 \right) \\
+		&& \times \sqrt{2\pi} \cdot \ell_2 \cdot \mathrm{exp}\left(-\frac{1}{2} \ell_2^2 s_2^2 \right)\\
+		&&= \sqrt{2\pi}^D \cdot \prod_{i=1}^D \ell_i \cdot \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^D \ell_i^2 s_i^2 \right)
+		\end{eqnarray*}
+       } 
+
+       & \multicolumn{1}{|p{5.2cm}|}{
+
+       } \\          
+       \hline\\   
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+\newpage	
+\subsubsection{Using vector difference of inputs}
+\vspace{-5mm}
+
+\begin{table}[H]
+\small
+\begin{eqnarray*}
+\vspace{-10mm}
+&&\bm{x}, \bm{x}' \in \mathbb{R}^{D=2}; \hspace{2mm}\bm{\tau} =\bm{x}-\bm{x}' = (x_1-x_1',x_2-x_2') = (r_1,r_2) \in \mathbb{R}^2; \hspace{2mm} k(\bm{\tau},\ell) = \mathrm{exp}\left(-\frac{1}{2} \frac{\bm{\tau}^2}{\ell^2} \right)\\
+&& \bm{\omega}= (s_1,s_2) \in \mathbb{R}^2; \hspace{2mm} S(\bm{\omega},\ell) = \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\left(-\frac{1}{2} \ell^2 \bm{\omega}^2 \right)
+\end{eqnarray*}
+\normalsize
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+    
+       \hline
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\ell \in \mathbb{R}$
+       }
+       
+        & \multicolumn{1}{|p{7.2cm}|}{
+         \begin{eqnarray*}
+		k(\bm{\tau},\ell) &=& k(\bm{x}-\bm{x}',\ell)\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \frac{\bm{\tau}^\top \bm{\tau}}{\ell^2} \right)\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \frac{(r_1, r_2)^\top (r_1, r_2)}{\ell^2} \right)\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{r_i^2}{\ell^2} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		S(\bm{\omega},\ell) &=& S(\bm{x}-\bm{x}',\ell)\\
+		&=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\left(-\frac{1}{2} \ell^2 \bm{\omega}^\top\bm{\omega} \right) \\
+		&=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\Big(-\frac{1}{2} \ell^2 (s_1, s_2)^\top\\
+		&\cdot& (s_1, s_2) \Big) \\
+		&=& \sqrt{2\pi}^D \cdot \ell^D \cdot \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\ell^2 s_i^2 \right) \\
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{6.2cm}|}{
+         \begin{eqnarray*}
+        &&\text{-ISOTROPIC}\\
+        \\
+		&&\text{-SEPARABLE:} \\
+		\\
+		&&k(\bm{x}-\bm{x}',\bm{\ell})\\
+		 &&= k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2)\\
+		 \\
+		&&S(\bm{\omega},\bm{\ell})= S(s_1,\ell_1)S(s_2,\ell_2)
+         \end{eqnarray*}
+       } \\
+       \vspace{-15mm}\\
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       }
+       
+         & \multicolumn{1}{|p{7.2cm}|}{
+         \begin{eqnarray*}
+		k(\bm{\tau},\bm{\ell}) &=& k(\bm{x}-\bm{x}',\bm{\ell})\\
+		&=& \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{r_i^2}{\ell_i^2} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		S(\bm{\omega},\ell) &=& \sqrt{2\pi}^D \cdot \prod_{i=1}^D \ell_i \cdot \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^D \ell_i^2 s_i^2 \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{6.2cm}|}{
+
+       } \\
+       \vspace{-10mm}\\
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       
+       {Separable kernel} 
+       }
+       
+        & \multicolumn{1}{|p{7.2cm}|}{
+         \begin{eqnarray*}
+		&&k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2) \\
+		&&= \mathrm{exp}\left(-\frac{1}{2} \frac{r_1^2}{\ell_1^2} \right) \mathrm{exp}\left(-\frac{1}{2} \frac{r_2^2}{\ell_2^2} \right) \\
+		&&= \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^{D}\frac{r_i^2}{\ell_i^2} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{
+         \begin{eqnarray*}
+		&&S(s_1,\ell_1)S(s_2,\ell_2) \\
+		&&= \sqrt{2\pi} \cdot \ell_1 \cdot \mathrm{exp}\left(-\frac{1}{2} \ell_1^2 s_1^2 \right) \\
+		&& \times \sqrt{2\pi} \cdot \ell_2 \cdot \mathrm{exp}\left(-\frac{1}{2} \ell_2^2 s_2^2 \right)\\
+		&&= \sqrt{2\pi}^D \cdot \prod_{i=1}^D \ell_i \cdot \mathrm{exp}\left(-\frac{1}{2} \sum_{i=1}^D \ell_i^2 s_i^2 \right)
+         \end{eqnarray*}
+       } 
+
+       & \multicolumn{1}{|p{6.2cm}|}{
+
+       } \\
+              
+       \hline
+       
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+
+\newpage	
+\subsection{Matern($\nu=1/2$) covariance function ($k$) \textbf and spectral density ($S$)}
+\vspace{-2mm}
+\subsubsection{Using norm-L2 (Euclidean distance)}
+\vspace{-8mm}
+
+\begin{table}[H]
+\small
+\begin{eqnarray*}
+\vspace{-20mm}
+&&\bm{x}, \bm{x}' \in \mathbb{R}^{D=2}; \hspace{2mm}\tau_{L2} =|\bm{x}-\bm{x}'|_{L2} = \sqrt{(\bm{x}-\bm{x}')^\top(\bm{x}-\bm{x}')} = \sqrt{(x_1-x_1')^2+(x_2-x_2')^2}  = \sqrt{r_1^2+r_2^2} \in \mathbb{R}; \hspace{2mm} k(\tau_{L2},\ell) = \mathrm{exp}\left(- \frac{\tau_{L2}}{\ell} \right)\\
+&& \omega_{L2}= \sqrt{s_1^2+s_2^2} \in \mathbb{R}; \hspace{2mm} S_{\nu}(\omega_{L2},\ell) = \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+\omega_{L2}^2 \right)^{-(\nu+D/2)}; \hspace{2mm} S_{1/2}(\omega_{L2},\ell) = \frac{2^D\pi^{\frac{D}{2}}\Gamma(\frac{D+1}{2})}{\sqrt{\pi}\ell}\left(\frac{1}{\ell^2}+\omega_{L2}^2 \right)^{-\frac{D+1}{2}}
+\end{eqnarray*}
+\normalsize
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+       \hline
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\ell \in \mathbb{R}$
+       }
+       
+        & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		k(\tau_{L2},\ell) &=& k(|\bm{x}-\bm{x}'|_{L2},\ell)\\
+		 &=& \mathrm{exp}\left(- \frac{\sqrt{(\bm{x}-\bm{x}')^\top(\bm{x}-\bm{x}')}}{\ell} \right)\\
+		&=& \mathrm{exp}\left(- \sqrt{\frac{(\bm{x}-\bm{x}')^\top(\bm{x}-\bm{x}')}{\ell^2}} \right)\\
+		&=& \mathrm{exp}\left(- \sqrt{\frac{\sum_{i=1}^{2}(x_i-x_i')^2}{\ell^2}} \right) \\
+		&=& \mathrm{exp}\left(-\sqrt{ \sum_{i=1}^{2}\frac{r_i^2}{\ell^2}} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{\small
+         \begin{eqnarray*}
+		D &=& 2\\
+		S_{1/2}(\omega_{L2},\ell) &=& \frac{2\pi}{\ell}\left(\frac{1}{\ell^2}+\omega_{L2}^2 \right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\ell^2\omega_{L2}^2\right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\ell^2s_{1}^2+\ell^2s_{2}^2\right)^{-\frac{3}{2}} \\
+		\\
+		D &=& 3\\
+		S_{1/2}(\omega_{L2},\ell) &=& \frac{8\pi}{\ell}\left(\frac{1}{\ell^2}+\omega_{L2}^2 \right)^{-2} \\
+		&=& 8\pi\ell^3\left(1+\ell^2\omega_{L2}^2\right)^{-2} \\
+		&=& 8\pi\ell^3\left(1+\ell^2s_{1}^2+\ell^2s_{2}^2+\ell^2s_{3}^2\right)^{-2} 
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{6.2cm}|}{\small
+         \begin{eqnarray*}
+        &&\text{-ISOTROPIC}\\
+        \\
+		&&\text{-NO SEPARABLE:} \\
+		\\
+		&&k(|\bm{x}-\bm{x}'|_{L2},\bm{\ell})\\
+		 &&\neq k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2)\\
+		 \\
+		&&S_{1/2}(\omega_{L2},\ell)\neq S_{1/2}(s_1,\ell)S_{1/2}(s_2,\ell)
+         \end{eqnarray*}
+       }\\
+       \vspace{-10mm}\\
+        \cline{1-3}
+         
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       }
+       
+         & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		k(\tau_{L2},\bm{\ell}) &=& k(|\bm{x}-\bm{x}'|_{L2},\bm{\ell})\\
+		&=& \mathrm{exp}\left(-\sqrt{\sum_{i=1}^{2}\frac{r_i^2}{\ell_i^2}} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{\small
+         \begin{eqnarray*}
+		D &=& 2\\
+		S_{1/2}(\omega_{L2},\bm{\ell}) &=& 2\pi\ell_1\ell_2 \left( 1+ \sum_{i=1}^{D}\ell_i^2 s_i^2 \right)^{-\frac{3}{2}}\\
+		S_{1/2}(\omega_{L2},\bm{\ell}) &=& 2\pi\prod_{i=1}^{D}\ell_i \left( 1+ \sum_{i=1}^{D}\ell_i^2 s_i^2 \right)^{-\frac{3}{2}}
+         \end{eqnarray*}
+        }
+        
+       & \multicolumn{1}{|p{6.2cm}|}{\small
+
+       } \\  
+       \vspace{-8mm}\\
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       
+       {Separable kernel} 
+       }
+       
+        & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		&&k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2) \\
+		&=& \mathrm{exp}\left(- \frac{r_1}{\ell_1} \right) \mathrm{exp}\left(- \frac{r_2}{\ell_2} \right) \\
+		&=& \mathrm{exp}\left(- \sum_{i=1}^{2}\frac{r_i}{\ell_i} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{8.2cm}|}{\small
+         \begin{eqnarray*}
+         &&S_{1/2}(s_1,\ell_1)S_{1/2}(s_2,\ell_2) \\
+		&=& \frac{2}{\ell_1}\left(\frac{1}{\ell_1^2}+s_1^2 \right)^{-1} \cdot \frac{2}{\ell_2}\left(\frac{1}{\ell_2^2}+s_2^2 \right)^{-1} \\
+		%
+		&=& 4\ell_1\ell_2\left(1+\ell_1^2s_1^2 \right)^{-1} \left(1+\ell_2^2s_2^2 \right)^{-1} \\
+         \end{eqnarray*}        
+       } 
+
+       & \multicolumn{1}{|p{6.2cm}|}{\small
+
+       } \\ 
+       
+       \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+\newpage
+\subsubsection{Using norm-L1}
+\vspace{-5mm}
+
+\begin{table}[H]
+\small
+\begin{eqnarray*}
+\vspace{-20mm}
+&&\bm{x}, \bm{x}' \in \mathbb{R}^{D=2}; \hspace{2mm}\tau_{L1} =|\bm{x}-\bm{x}'|_{L1} = |x_1-x_1'|+|x_2-x_2'| = r_1+r_2 \in \mathbb{R}; \hspace{2mm} k(\tau_{L1},\ell) = \mathrm{exp}\left(- \frac{\tau_{L1}}{\ell} \right)\\
+&& \omega_{L1}= s_1+s_2 \in \mathbb{R}; \hspace{2mm} S_{\nu}(\omega_{L2},\ell) = \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+\omega_{L2}^2 \right)^{-(\nu+D/2)}; \hspace{2mm} S_{1/2}(\omega_{L2},\ell) = \frac{2^D\pi^{\frac{D}{2}}\Gamma(\frac{D+1}{2})}{\sqrt{\pi}\ell}\left(\frac{1}{\ell^2}+\omega_{L2}^2 \right)^{-\frac{D+1}{2}}
+\end{eqnarray*}
+\normalsize
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+       \hline
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\ell \in \mathbb{R}$
+       }
+       
+        & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+		k(\tau_{L1},\ell) &=& k(|\bm{x}-\bm{x}'|_{L1},\ell)\\
+		 &=& \mathrm{exp}\left(- \frac{\tau}{\ell} \right) \\
+		&=& \mathrm{exp}\left(- \frac{r_1 + r_2}{\ell} \right)\\
+		&=& \mathrm{exp}\left(- \sum_{i=1}^{D}\frac{r_i}{\ell} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{9.7cm}|}{\small
+         \begin{eqnarray*}
+		D &=& 2\\
+		S_{1/2}(\omega_{L1},\ell) &=& \frac{2\pi}{\ell}\left(\frac{1}{\ell^2}+\omega_{L1}^2 \right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\ell^2\omega_{L1}^2\right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\ell^2(s_{1}+s_{2})(s_{1}+s_{2})\right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+(\ell s_{1}+\ell s_{2})(\ell s_{1}+\ell s_{2})\right)^{-\frac{3}{2}} \\
+		\\
+		D &=& 3\\
+		S_{1/2}(\omega_{L1},\ell) &=& \frac{8\pi}{\ell}\left(\frac{1}{\ell^2}+\omega_{L1}^2 \right)^{-2} \\
+		&=& 8\pi\ell^3\left(1+\ell^2\omega_{L1}^2\right)^{-2} \\
+		&=& 8\pi\ell^3\left(1+\ell^2(s_{1}+s_{2}+s_{3})(s_{1}+s_{2}+s_{3})\right)^{-2} \\
+		&=& 8\pi\ell^3\left(1+(\ell s_{1}+\ell s_{2}+\ell s_{3})(\ell s_{1}+\ell s_{2}+\ell s_{3})\right)^{-2} 
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+        &&\text{-ISOTROPIC}\\
+        \\
+		&&\text{-SEPARABLE:} \\
+		\\
+		&&k(|\bm{x}-\bm{x}'|_{L1},\bm{\ell})\\
+		 &&= k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2)\\
+		 \\
+		 \\
+		 &&\text{IT SHOULD BE SEPARABLE}\\
+		 &&\text{IN THE SPECTRAL DENSITY} \\
+		 &&\text{AS WELL?}\\
+		&&S_{1/2}(\omega_{L1},\ell) \text{ should be equal to }\\
+		 &&S_{1/2}(s_1,\ell)S_{1/2}(s_2,\ell)
+         \end{eqnarray*}
+       }\\
+       \vspace{-10mm}\\
+        \cline{1-3}
+         
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       }
+       
+         & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+		k(\tau_{L1},\bm{\ell}) &=& \mathrm{exp}\left(- \sum_{i=1}^{D}\frac{r_i}{\ell_i} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{9.7cm}|}{\small
+         \begin{eqnarray*}
+         D &=& 2\\
+		S_{1/2}(\omega_{L1},\bm{\ell}) &=& 2\pi\ell_1\ell_2 \left(1+(\ell_1 s_{1}+\ell_2 s_{2})(\ell_1 s_{1}+\ell_2 s_{2})\right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell_1\ell_2 \left( 1+ (\ell_1 s_{1}+\ell_2 s_{2})(\ell_1 s_{1}+\ell_2 s_{2}) \right)^{-\frac{3}{2}}
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{5.7cm}|}{\small
+
+       } \\  
+       
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       
+       {Separable kernel} 
+       }
+       
+        & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+		&&k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2) \\
+		&&= \mathrm{exp}\left(- \frac{r_1}{\ell_1} \right) \mathrm{exp}\left(- \frac{r_2}{\ell_2} \right) \\
+		&&= \mathrm{exp}\left(- \sum_{i=1}^{D}\frac{r_i}{\ell_i} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{9.7cm}|}{\small
+         \begin{eqnarray*}
+         &&S_{1/2}(s_1,\ell_1)S_{1/2}(s_2,\ell_2) \\
+		&=& \frac{2}{\ell_1}\left(\frac{1}{\ell_1^2}+s_1^2 \right)^{-1} \cdot \frac{2}{\ell_2}\left(\frac{1}{\ell_2^2}+s_2^2 \right)^{-1} \\
+		%
+		&=& 4\ell_1\ell_2\left(1+\ell_1^2s_1^2 \right)^{-1} \left(1+\ell_2^2s_2^2 \right)^{-1} \\
+         \end{eqnarray*}      
+       } 
+
+       & \multicolumn{1}{|p{6.7cm}|}{\small
+
+       } \\ 
+       
+       \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+\newpage
+\subsubsection{Using  the vector difference of inputs}
+\vspace{-5mm}
+
+\begin{table}[H]
+\small
+\begin{eqnarray*}
+\vspace{-20mm}
+&&\bm{x}, \bm{x}' \in \mathbb{R}^{D=2}; \hspace{2mm}\bm{\tau} =\bm{x}-\bm{x}' = (x_1-x_1',x_2-x_2') = (r_1,r_2) \in \mathbb{R}^2; \hspace{2mm} k(\bm{\tau},\ell) = \mathrm{exp}\left(- \frac{\bm{\tau}}{\ell} \right)\\
+&& \bm{\omega}= (s_1,s_2) \in \mathbb{R}^2; \hspace{2mm}S_{\nu}(\bm{\omega},\ell) = \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+\bm{\omega}^2 \right)^{-(\nu+D/2)}; \hspace{2mm} S_{1/2}(\bm{\omega},\ell) = \frac{2^D\pi^{\frac{D}{2}}\Gamma(\frac{D+1}{2})}{\sqrt{\pi}\ell}\left(\frac{1}{\ell^2}+\bm{\omega}^2 \right)^{-\frac{D+1}{2}}
+\end{eqnarray*}
+\normalsize
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+       \hline
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\ell \in \mathbb{R}$
+       }
+       
+        & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+		k(\bm{\tau},\ell) &=& k(\bm{x}-\bm{x}',\ell)\\
+		 &=& \mathrm{exp}\left(- \frac{\bm{\tau}}{\ell} \right) \\
+		&=& \mathrm{exp}\left(- \frac{(r_1, r_2)}{\ell} \right)\\
+		&&\text{(using dot product?)}\\
+		&=& \mathrm{exp}\left(- \sum_{i=1}^{2}\frac{r_i}{\ell} \right)
+		\end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{9.7cm}|}{\small
+         \begin{eqnarray*}
+		D &=& 2\\
+		S_{1/2}(\bm{\omega},\ell) &=& \frac{2\pi}{\ell}\left(\frac{1}{\ell^2}+\bm{\omega}^2 \right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\ell^2\bm{\omega}^2\right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\ell^2(s_{1},s_{2})^\top(s_{1},s_{2})\right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\ell^2(s_{1}^2+s_{2}^2)\right)^{-\frac{3}{2}} \\
+		&=& 2\pi\ell^2\left(1+\sum_{i=1}^{D}\ell^2s_{i}^2\right)^{-\frac{3}{2}} \\
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+        &&\text{-ISOTROPIC}\\
+        \\
+		&&\text{-SEPARABLE:} \\
+		&&k(\bm{x}-\bm{x}',\bm{\ell})\\
+		 &&= k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2)\\
+		 \\
+		 &&\text{IT SHOULD BE SEPARABLE}\\
+		 &&\text{IN THE SPECTRAL DENSITY} \\
+		 &&\text{AS WELL?}\\
+		&&S_{1/2}(\bm{\omega},\ell) \text{ should be equal to }\\
+		 &&S_{1/2}(s_1,\ell)S_{1/2}(s_2,\ell)
+         \end{eqnarray*}
+       }\\
+       \vspace{-10mm}\\
+        \cline{1-3}
+         
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       }
+       
+         & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+		k(\bm{\tau},\bm{\ell}) &=& \mathrm{exp}\left(- \frac{\bm{\tau}}{\bm{\ell}} \right) \\
+		&=& \mathrm{exp}\left(- \frac{(r_1, r_2)}{(\ell_1,\ell_2)} \right)\\
+		&&\text{(using dot product?)}\\
+		&=& \mathrm{exp}\left(- \sum_{i=1}^{2}\frac{r_i}{\ell_i} \right) 
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{9.7cm}|}{\small
+         \begin{eqnarray*}
+		S_{1/2}(\bm{\omega},\bm{\ell}) &=& 2\pi\ell_1\ell_2 \left(1+\sum_{i=1}^{D}\ell_i^2s_{i}^2\right)^{-\frac{3}{2}}
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{5.7cm}|}{\small
+
+       } \\  
+       
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       
+       {Separable kernel} 
+       }
+       
+        & \multicolumn{1}{|p{5.7cm}|}{\small
+         \begin{eqnarray*}
+		&&k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2) \\
+		&&= \mathrm{exp}\left(- \frac{r_1}{\ell_1} \right) \mathrm{exp}\left(- \frac{r_2}{\ell_2} \right) \\
+		&&= \mathrm{exp}\left(- \sum_{i=1}^{2}\frac{r_i}{\ell_i} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{9.7cm}|}{\small
+         \begin{eqnarray*}
+         &&S_{1/2}(s_1,\ell_1)S_{1/2}(s_2,\ell_2) \\
+		&=& \frac{2}{\ell_1}\left(\frac{1}{\ell_1^2}+s_1^2 \right)^{-1} \cdot \frac{2}{\ell_2}\left(\frac{1}{\ell_2^2}+s_2^2 \right)^{-1} \\
+		%
+		&=& 4\ell_1\ell_2\left(1+\ell_1^2s_1^2 \right)^{-1} \left(1+\ell_2^2s_2^2 \right)^{-1} \\
+         \end{eqnarray*}      
+       } 
+
+       & \multicolumn{1}{|p{6.7cm}|}{\small
+
+       } \\ 
+       
+       \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+
+\newpage	
+\subsection{Matern($\nu=3/2$) covariance function ($k$) \textbf and spectral density ($S$)}
+\vspace{-2mm}
+\subsubsection{Using norm-L2 (Euclidean distance)}
+\vspace{-8mm}
+
+\begin{table}[H]
+\small
+\begin{eqnarray*}
+\vspace{-20mm}
+&&\bm{x}, \bm{x}' \in \mathbb{R}^{D=2}; \hspace{2mm}\tau_{L2} =|\bm{x}-\bm{x}'|_{L2} = \sqrt{(\bm{x}-\bm{x}')(\bm{x}-\bm{x}')} = \sqrt{(x_1-x_1')^2+(x_2-x_2')^2}  = \sqrt{r_1^2+r_2^2} \in \mathbb{R}; \hspace{2mm} k(\tau_{L2},\ell) = \left(1+\frac{\sqrt{3}\tau}{\ell}\right) \mathrm{exp}\left(- \frac{\sqrt{3}\tau}{\ell} \right)\\
+&& \omega_{L2}= \sqrt{s_1^2+s_2^2} \in \mathbb{R}; \hspace{2mm} S_{\nu}(\omega_{L2}) = \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+\omega_{L2}^2 \right)^{-(\nu+D/2)}; \hspace{2mm} S_{3/2}(\omega_{L2}) = \frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2})\sqrt{3}^3}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\omega_{L2}^2 \right)^{-\frac{D+3}{2}}
+\end{eqnarray*}
+\normalsize
+  \begin{center}
+    \begin{tabular}{|c|c|c|c|}
+       \hline
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\ell \in \mathbb{R}$
+       }
+       
+        & \multicolumn{1}{|p{8.2cm}|}{\small
+         \begin{eqnarray*}
+		&&k(\tau_{L2},\ell) = k(|\bm{x}-\bm{x}'|_{L2},\ell)\\
+		&&= \left(1+\frac{\sqrt{3}\sqrt{\sum_{i=1}^{2}r_i^2}}{\ell} \right)\mathrm{exp}\left(-\frac{\sqrt{3}\sqrt{\sum_{i=1}^{2}r_i^2}}{\ell} \right)\\
+		&&= \left(1+\sqrt{\frac{\sum_{i=1}^{2}3r_i^2}{\ell^2}} \right)\mathrm{exp}\left(-\sqrt{\frac{\sum_{i=1}^{2}3r_i^2}{\ell^2}} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{7.5cm}|}{\small
+         \begin{eqnarray*}
+		D &=& 2\\
+		\\
+		S_{3/2}(\omega_{L2},\ell) &=& \frac{6\pi\sqrt{3}^3}{\ell^3}\left(\frac{3}{\ell^2}+\omega^2 \right)^{-\frac{5}{2}} \\
+		&=& 6\pi\sqrt{3}^3\ell^2\left(3+\ell^2\omega^2 \right)^{-\frac{5}{2}} \\
+		&=& 6\pi\sqrt{3}^3\ell^2\left(3+\ell^2s_1^2+\ell^2s_2^2 \right)^{-\frac{5}{2}} \\
+		\\
+		D &=& 3\\
+		S_{3/2}(\omega_{L2},\ell) &=& 32\pi\sqrt{3}^3\ell^3\left(3+\ell^2\omega^2 \right)^{-3}
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{6.2cm}|}{\small
+         \begin{eqnarray*}
+        &&\text{-ISOTROPIC}\\
+        \\
+		&&\text{-NO SEPARABLE:} \\
+		\\
+		&&k(|\bm{x}-\bm{x}'|_{L2},\bm{\ell})\\
+		 &&\neq k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2)\\
+		 \\
+		&&S_{3/2}(\omega_{L2},\ell)\neq S_{3/2}(s_1,\ell)S_{1/2}(s_2,\ell)
+         \end{eqnarray*} 
+       }\\
+       \vspace{-10mm}\\
+        \cline{1-3}
+         
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       }
+       
+         & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		&&k(\tau_{L2},\bm{\ell}) = k(|\bm{x}-\bm{x}'|_{L2},\bm{\ell})\\
+		&&= \left(1+\sqrt{\frac{\sum_{i=1}^{2}3r_i^2}{\ell_i^2}} \right)\mathrm{exp}\left(-\sqrt{\frac{\sum_{i=1}^{2}3r_i^2}{\ell_i^2}} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		S_{3/2}(\omega_{L2},\bm{\ell}) &=& 6\pi\sqrt{3}^3\ell_1\ell_2\left(3+\ell_1^2s_1^2+\ell_2^2s_2^2 \right)^{-\frac{5}{2}} \\
+		&=& 6\pi\sqrt{3}^3\prod_{i=1}^{D}\ell_i\left(3+\sum_{i=1}^{D}\ell_i^2s_i^2 \right)^{-\frac{5}{2}} \\
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{6.2cm}|}{\small
+
+       } \\  
+       \vspace{-10mm}\\
+       \cline{1-3}
+       
+       \multicolumn{1}{|p{1.5cm}|}{
+       \vspace{1mm}
+       $\bm{\ell} \in \mathbb{R}^2$
+       
+       {Separable kernel} 
+       }
+       
+        & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+		&&k(|x_1-x_1'|,\ell_1)k(|x_2-x_2'|,\ell_2) \\
+		&&= \left(1+\sqrt{3}\frac{r_1}{\ell_1}\right)\mathrm{exp}\left(-\sqrt{3}\frac{r_1}{\ell_1} \right)\\
+		&&\cdot \left(1+\sqrt{3}\frac{r_2}{\ell_2}\right)\mathrm{exp}\left(-\sqrt{3}\frac{r_2}{\ell_2} \right) \\
+		&&= \left(1+\sqrt{\frac{3r_1^2}{\ell_1^2}}\right)\left(1+\sqrt{\frac{3r_2^2}{\ell_2^2}}\right)\mathrm{exp}\left(-\sum_{i=1}^{2}\sqrt{\frac{3r_i^2}{\ell_i^2}} \right) \\
+		&&= \left(1+\sum_{i=1}^{2}\sqrt{\frac{3r_i^2}{\ell_i^2}}+\frac{3r_1^2r_2^2}{\ell_1^2\ell_2^2}\right)\mathrm{exp}\left(-\sum_{i=1}^{2}\sqrt{\frac{3r_i^2}{\ell_i^2}} \right)
+         \end{eqnarray*}
+       }
+       
+       & \multicolumn{1}{|p{7.2cm}|}{\small
+         \begin{eqnarray*}
+         &&S_{3/2}(s_1,\ell_1)S_{3/2}(s_2,\ell_2) \\
+		&=& \frac{4\sqrt{3}^3}{\ell_1^3}\left(\frac{3}{\ell_1^2}+s_1^2 \right)^{-3} \cdot \frac{4\sqrt{3}^3}{\ell_2^3}\left(\frac{3}{\ell_2^2}+s_2^2 \right)^{-3}\\ 
+		&=& 4^2\sqrt{3}^6\bm{\ell}^\top\bm{\ell}\left(3+\ell_1^2s_1^2 \right)^{-2} \left(3+\ell_2^2s_2^2 \right)^{-2}\\        
+		\end{eqnarray*}        
+       } 
+
+       & \multicolumn{1}{|p{6.2cm}|}{\small
+
+       } \\ 
+       
+       \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\end{landscape}
+
+
 
 \newpage
 \vspace{2mm}
@@ -1251,46 +1976,46 @@ S_{\nu=\frac{3}{2}}(\bm{\omega})&= 4 \frac{\sqrt{3}}{\ell_1}^{3}\left(\frac{3}{\
 
 ###########
 #######
-Next we show a little example of how to construct the new set of eigenfunctions and eigenvalues with input vector $\mathbf{x}=\{\mathbf{x}_1,\mathbf{x}_2\}$ in a two-dimensional input space ($D=2$) and three eigenfunctions and eigenvalues $(J=3)$ for every dimension. As a result we obtain sets of $J^D=3^2=9$ new eigenfunctions $\phi^{\ast}$ and eigenvalues $\lambda^{\ast}$. The eigenfunctions $\phi^{\ast}$ are the product combination of the unidimensional eigenfunctions $\phi$, and eigenvalues $\lambda^{\ast}$ is the $D$-vector of unidimensional eigenvalues $\lambda$:
+Next we show a little example of how to construct the new set of eigenfunctions and eigenvalues with input vector $\bm{x}=\{\bm{x}_1,\bm{x}_2\}$ in a two-dimensional input space ($D=2$) and three eigenfunctions and eigenvalues $(J=3)$ for every dimension. As a result we obtain sets of $J^D=3^2=9$ new eigenfunctions $\phi^{\ast}$ and eigenvalues $\lambda^{\ast}$. The eigenfunctions $\phi^{\ast}$ are the product combination of the unidimensional eigenfunctions $\phi$, and eigenvalues $\lambda^{\ast}$ is the $D$-vector of unidimensional eigenvalues $\lambda$:
 
 
 
 
 \begin{eqnarray}
-\phi^{\ast}_1(\mathbf{x}) = \phi_{1}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_1}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_1}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_1(\bm{x}) = \phi_{1}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_1}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_1}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_1 = \{\lambda_{1}(\mathbf{x}_1), \lambda_{1}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{1\pi}{2L_1}\right)^2, \left(\tfrac{1\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_1 = \{\lambda_{1}(\bm{x}_1), \lambda_{1}(\bm{x}_2)\} &=& \{ \left(\tfrac{1\pi}{2L_1}\right)^2, \left(\tfrac{1\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_2(\mathbf{x}) = \phi_{1}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_1}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_2}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_2(\bm{x}) = \phi_{1}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_1}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_2}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_2 = \{\lambda_{1}(\mathbf{x}_1), \lambda_{2}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{1\pi}{2L_1}\right)^2, \left(\tfrac{2\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_2 = \{\lambda_{1}(\bm{x}_1), \lambda_{2}(\bm{x}_2)\} &=& \{ \left(\tfrac{1\pi}{2L_1}\right)^2, \left(\tfrac{2\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_3(\mathbf{x}) = \phi_{1}(\mathbf{x}_1) \cdot \phi_{3}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_1}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_3}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_3(\bm{x}) = \phi_{1}(\bm{x}_1) \cdot \phi_{3}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_1}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_3}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_3 = \{\lambda_{1}(\mathbf{x}_1), \lambda_{3}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{1\pi}{2L_1}\right)^2, \left(\tfrac{3\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_3 = \{\lambda_{1}(\bm{x}_1), \lambda_{3}(\bm{x}_2)\} &=& \{ \left(\tfrac{1\pi}{2L_1}\right)^2, \left(\tfrac{3\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_4(\mathbf{x}) = \phi_{2}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_2}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_1}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_4(\bm{x}) = \phi_{2}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_2}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_1}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_4 = \{\lambda_{2}(\mathbf{x}_1), \lambda_{1}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{2\pi}{2L_1}\right)^2, \left(\tfrac{1\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_4 = \{\lambda_{2}(\bm{x}_1), \lambda_{1}(\bm{x}_2)\} &=& \{ \left(\tfrac{2\pi}{2L_1}\right)^2, \left(\tfrac{1\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_5(\mathbf{x}) = \phi_{2}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_2}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_2}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_5(\bm{x}) = \phi_{2}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_2}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_2}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_5 = \{\lambda_{2}(\mathbf{x}_1), \lambda_{2}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{2\pi}{2L_1}\right)^2, \left(\tfrac{2\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_5 = \{\lambda_{2}(\bm{x}_1), \lambda_{2}(\bm{x}_2)\} &=& \{ \left(\tfrac{2\pi}{2L_1}\right)^2, \left(\tfrac{2\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_6(\mathbf{x}) = \phi_{2}(\mathbf{x}_1) \cdot \phi_{3}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_2}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_3}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_6(\bm{x}) = \phi_{2}(\bm{x}_1) \cdot \phi_{3}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_2}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_3}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_6 = \{\lambda_{2}(\mathbf{x}_1), \lambda_{3}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{2\pi}{2L_1}\right)^2, \left(\tfrac{3\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_6 = \{\lambda_{2}(\bm{x}_1), \lambda_{3}(\bm{x}_2)\} &=& \{ \left(\tfrac{2\pi}{2L_1}\right)^2, \left(\tfrac{3\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_7(\mathbf{x}) = \phi_{3}(\mathbf{x}_1) \cdot \phi_{1}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_3}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_1}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_7(\bm{x}) = \phi_{3}(\bm{x}_1) \cdot \phi_{1}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_3}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_1}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_7 = \{\lambda_{3}(\mathbf{x}_1), \lambda_{1}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{3\pi}{2L_1}\right)^2, \left(\tfrac{1\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_7 = \{\lambda_{3}(\bm{x}_1), \lambda_{1}(\bm{x}_2)\} &=& \{ \left(\tfrac{3\pi}{2L_1}\right)^2, \left(\tfrac{1\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_8(\mathbf{x}) = \phi_{3}(\mathbf{x}_1) \cdot \phi_{2}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_3}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_2}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_8(\bm{x}) = \phi_{3}(\bm{x}_1) \cdot \phi_{2}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_3}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_2}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_8 = \{\lambda_{3}(\mathbf{x}_1), \lambda_{2}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{3\pi}{2L_1}\right)^2, \left(\tfrac{2\pi}{2L_2}\right)^2 \} \nonumber \\
+\bm{\lambda}^{\ast}_8 = \{\lambda_{3}(\bm{x}_1), \lambda_{2}(\bm{x}_2)\} &=& \{ \left(\tfrac{3\pi}{2L_1}\right)^2, \left(\tfrac{2\pi}{2L_2}\right)^2 \} \nonumber \\
 %
-\phi^{\ast}_9(\mathbf{x}) = \phi_{3}(\mathbf{x}_1) \cdot \phi_{3}(\mathbf{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_3}(\mathbf{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_3}(\mathbf{x}_2+L_2)\right) \nonumber \\
+\phi^{\ast}_9(\bm{x}) = \phi_{3}(\bm{x}_1) \cdot \phi_{3}(\bm{x}_2) &=& \sqrt{\tfrac{1}{L_1}} \text{sin}\left(\sqrt{\lambda_3}(\bm{x}_1+L_1)\right) \cdot \sqrt{\tfrac{1}{L_2}} \text{sin}\left(\sqrt{\lambda_3}(\bm{x}_2+L_2)\right) \nonumber \\
 %
-\boldsymbol{\lambda}^{\ast}_9 = \{\lambda_{3}(\mathbf{x}_1), \lambda_{3}(\mathbf{x}_2)\} &=& \{ \left(\tfrac{3\pi}{2L_1}\right)^2, \left(\tfrac{3\pi}{2L_2}\right)^2 \} \nonumber
+\bm{\lambda}^{\ast}_9 = \{\lambda_{3}(\bm{x}_1), \lambda_{3}(\bm{x}_2)\} &=& \{ \left(\tfrac{3\pi}{2L_1}\right)^2, \left(\tfrac{3\pi}{2L_2}\right)^2 \} \nonumber
 \end{eqnarray}
 
