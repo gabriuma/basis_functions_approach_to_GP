@@ -494,47 +494,36 @@ Next, we will focus on analyzing the interaction effects between these $m$ and $
 \end{itemize}
 
 \begin{figure}
-\centering
-\subfigure{\includegraphics[scale=0.30, trim = 10mm 95mm 10mm 30mm, clip]{fig4_legend.pdf}}\\
-\vspace{-1mm}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Post_part1.pdf}}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Cov_part1.pdf}}\\
-\vspace{-3mm}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Post_part2.pdf}}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Cov_part2.pdf}}\\
-\vspace{-3mm}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Post_part3.pdf}}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Cov_part3.pdf}}\\
-\vspace{-3mm}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Post_part4.pdf}}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Cov_part4.pdf}}\\
-\vspace{-3mm}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Post_part5.pdf}}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig4_Cov_part5.pdf}}\\
-\vspace{-3mm}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 10mm 10mm 20mm, clip]{fig4_Post_part6.pdf}}
-\subfigure{\includegraphics[scale=0.25, trim = 0mm 10mm 10mm 20mm, clip]{fig4_Cov_part6.pdf}}\\
-\vspace{-3mm}
-\caption{(left) Posterior predictive mean functions of both regular GP model and HSGP model for different boundary factors $c$. (right) Covariance functions of both regular GP model and HSGP model for different boundary factors $c$.}
-  \label{fig4_Post_part1}
+\begin{center}
+\begin{tabular}{ c c c}
+\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Post_part1.pdf} & \hspace{-5mm} \includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Cov_part1.pdf} & \hspace{-6mm} \multirow{30}{1em}{ \includegraphics[scale=0.35, trim = 20mm 60mm 120mm 40mm, clip]{fig3_legend.pdf}}\\ 
+\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Post_part2.pdf} & \hspace{-5mm} \includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Cov_part2.pdf} &\\
+\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Post_part3.pdf} & \hspace{-5mm} \includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Cov_part3.pdf} &\\
+\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Post_part4.pdf} & \hspace{-5mm} \includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Cov_part4.pdf} & \\
+\includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Post_part5.pdf} & \hspace{-5mm} \includegraphics[scale=0.25, trim = 0mm 30mm 10mm 20mm, clip]{fig3_Cov_part5.pdf} &\\
+\includegraphics[scale=0.25, trim = 0mm 5mm 10mm 20mm, clip]{fig3_Post_part6.pdf} & \hspace{-5mm} \includegraphics[scale=0.25, trim = 0mm 5mm 10mm 20mm, clip]{fig3_Cov_part6.pdf} &
+\end{tabular}
+\end{center}
+\caption{The X-axes represent the true data-generative functional lengthscales of every dataset scenario. The Y-axes represent the lengthscales estimates of GP and HSGP models. The use of different $m$ in the HSGP models is represented in separated plots. The dashed black line represents the recommended minimum lengthscales that can be closely approximate by the HSGP model in every case according to Figure \ref{fig3_lscale_vs_J_vs_c}.}
+  \label{fig3_Post_part1}
 \end{figure}
 
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig5_MSE_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig5_MSE_vs_c.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig4_MSE_vs_J.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig4_MSE_vs_c.pdf}}
 \caption{Root mean square error (RMSE) of the proposed HSGP models computed against the regular GP model. (left) RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$. (right) RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$. }
-  \label{fig5_MSE_vs_J}
+  \label{fig4_MSE_vs_J}
 \end{figure}
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig6_lscale_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig6_magnitud_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 22mm 45mm 120mm 0mm, clip]{fig6_legend.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig5_lscale_vs_J.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig5_magnitud_vs_J.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 22mm 45mm 120mm 0mm, clip]{fig5_legend.pdf}}
 \caption{Estimated lengthscale (left) and marginal variance (right) parameters of both regular GP and HSGP models, plotted versus the number of basis functions $m$ and for different values of the boundary factor $c$.}
-  \label{fig6_lscale_vs_J}
+  \label{fig5_lscale_vs_J}
 \end{figure}
 
 
@@ -563,10 +552,11 @@ Starting from some initial guess of $\ell$, we can choose initial values for $m$
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig3_lscale_vs_J_vs_c.pdf}}
-\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig3_lscale_vs_J_vs_c_zoomin.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig6_lscale_vs_J_vs_c.pdf}}
+\hspace{3mm}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig6_lscale_vs_J_vs_c_zoomin.pdf}}
 \caption{Relation among the minimum number of basis functions $m$, the boundary factor $c$ ($c = \frac{L}{S}$), and the lengthscale normalized by the half-range of the data ($\frac{\ell}{S}$). The right-side plot is a zoom in of the left-side plot.}
-  \label{fig3_lscale_vs_J_vs_c}
+  \label{fig6_lscale_vs_J_vs_c}
 \end{figure}
 
 If we look back to the conclusions drawn from Figures \ref{fig5_MSE_vs_J} and \ref{fig6_lscale_vs_J}, where $m = 10$ basis functions and a boundary factor of $c = 1.5$ were enough to closely approximate a function with $\ell = 0.3$, we can recognize that these conclusions also matches those obtained from Figure \ref{fig3_lscale_vs_J_vs_c}.
@@ -611,21 +601,21 @@ Figure \ref{fig7_varing_lscale} shows the posterior predictions of the regular G
 \end{figure}
 
 
-\begin{table}
+\begin{figure}
 \begin{flushleft}
 \begin{tabular}{ c c c c}
-\includegraphics[scale=0.28, trim = 0mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part1.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part2.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part3.pdf} \vspace{0mm} & \hspace{-8mm} \multirow{3}{1em}{\vspace{-9mm} \includegraphics[scale=0.35, trim = 10mm 105mm 130mm 50mm, clip]{fig8_legend.pdf}}\\ 
+\includegraphics[scale=0.28, trim = 0mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part1.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part2.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 30mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part3.pdf} \vspace{0mm} & \hspace{-8mm} \multirow{3}{1em}{\vspace{-9mm} \includegraphics[scale=0.35, trim = 10mm 105mm 130mm 45mm, clip]{fig8_legend.pdf}}\\ 
 \includegraphics[scale=0.28, trim = 0mm 10mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part4.pdf} \vspace{0mm}  & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 10mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part5.pdf} \vspace{0mm} & \hspace{-5mm} \includegraphics[scale=0.28, trim = 22mm 10mm 10mm 20mm, clip]{fig8_Tlscale_vs_Elscale_part6.pdf} \vspace{0mm}
 \end{tabular}
 \end{flushleft}
-\caption{The X-axes represent the true data-generative functional lengthscales of every dataset scenario. The Y-axes represent the lengthscales estimates of GP and HSGP models. The use of different $m$ in the HSGP models is represented in separated plots. The dashed black line represents the recommended minimum lengthscales that can be closely approximate by the HSGP model in every case according to Figure \ref{fig3_lscale_vs_J_vs_c}.}
+\caption{The X-axes represent the true data-generative functional lengthscales of every dataset scenario. The Y-axes represent the lengthscales estimates of GP and HSGP models. The use of different $m$ in the HSGP models is represented in separated plots. The dashed black line represents the recommended minimum lengthscales that can be closely approximate by the HSGP model in every case according to Figure \ref{fig6_lscale_vs_J_vs_c}.}
   \label{fig8_Tlscale_vs_Elscale}
-\end{table}
+\end{figure}
 
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.45]{fig9_MSE_varing_lscale.pdf}
+\includegraphics[scale=0.35]{fig9_MSE_varing_lscale.pdf}
 \caption{RMSE of the HSGP models for the different datasets with different wiggly effects (lengthscales) and number of basis functions $m$.}
   \label{fig9_MSE_varing_lscale}
 \end{figure}
@@ -638,7 +628,7 @@ The dashed black line in Figure \ref{fig8_Tlscale_vs_Elscale} represents the min
 \section{Univariate examples}
 
 
-\subsection{Simulated data}
+\subsection{Study case I: Simulated data}
 
 This example consists of a simulated dataset with 250 ($i=1,\dots,n=250$) single draws of a Gaussian process prior with a Mat{\'e}rn($\nu$=3/2) covariance function and hyperparameters marginal variance $\alpha=1$ and lengthscale $\ell=0.15$, with corresponding inputs values $\bm{x}=\{x_i\}_{i=1}^{250}$ with $x_i \in [-1,1] \subset {\rm I\!R}$. To form the final noisy dataset $\bm{y}$, Gaussian noise $\sigma=0.2$ was added to the GP draws.
 
@@ -689,24 +679,25 @@ In order to do model comparison, in addition to the regular GP model and HSGP mo
 
 Figure \ref{fig10_Posteriors_exI} shows the posteriors distributions of the three models, the regular GP, the HSGP with $m=80$ basis functions and boundary factor $c=1.2$ ($L=c\cdot 1= 1.2$ (\ref{eq:boundary})), and the splines model with 80 knots. The true data-generative function and the noisy observations are also plotted in the Figure. The right and left extremes and three small regions in the middle of the plot correspond to out-of-sample or test data which have not been taking part on training the models. The test data have been plotted as crosses and the training data as circles. The test data located at the extremes of the plot are used for assessing model extrapolation, and the test data located in the middle are used for assessing model interpolation.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
-\includegraphics[scale=0.35]{fig10_Posteriors_exI.pdf}
+\includegraphics[width=\textwidth]{fig10_Posteriors_exI.pdf}
 \caption{Posterior distributions of the proposed HSGP model, the regular GP model, and the Splines model.}
   \label{fig10_Posteriors_exI}
 \end{figure}
 
 In order to assess performance of the models as a function the number of basis functions and number of knots, different models with different number of basis functions for the HSGP model and different number of knots for the splines model have been fitted. Figure \ref{fig11_MSE_exI_inter} shows the  standardized root mean squared error (SRMSE), for interpolation and extrapolating data, as a function of the number of basis functions and knots. The SRMSE is computed against the true function. Model interpolation has been assessed either using the test data for interpolating and the training data. From Figures \ref{fig10_Posteriors_exI} and \ref{fig11_MSE_exI_inter}, it can be seen a close approximation of the HSGP model to the regular GP model, for interpolating and extrapolating data. However, the splines model does not extrapolate data properly. For interpolation both models show roughly similar performance.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.350]{fig11_MSE_exI_inter.pdf}}
-\subfigure{\includegraphics[scale=0.350]{fig11_MSE_exI_extra.pdf}}
-\caption{Standarized mean square error (SMSE) of the different methods againts the true function. (left) SMSE for interpolation. (right) SMSE for extrapolation}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig11_MSE_exI_inter.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig11_MSE_exI_extra.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 22mm 60mm 120mm 0mm, clip]{fig11_MSE_exI_legend.pdf}}
+\caption{Standarized root mean square error of the different methods againts the true function. (left) SMSE for interpolation. (right) SMSE for extrapolation.}
   \label{fig11_MSE_exI_inter}
 \end{figure}
 
-\subsection{Gay data}
+\subsection{Study case II: Gay data}
 This data set relates the proportion of support for same-sex marriage to the age. The data consists of 74 observations of the amount of people $y_i$ supporting same-sex marriage from a population $n_i$ per age group $i$ ($i=1,\cdots,74$). The observational model is a binomial model with parameters population $n_i$ and probability of supporting same-sex marriage $p_i$ per age group $i$,
 %
 \begin{equation*}
@@ -735,29 +726,40 @@ Figure \ref{fig12_Posteriors_gaydata} shows the posteriors distributions of the 
 
 For the HSGP model, different models with different number of basis functions and boundary factors have been fitted. The root mean square errors (RMSE) for every one of these models have been computed and plotted as a function of the number of basis functions and the boundary factor in Figure \ref{fig13_MSE_train_BF_gaydata}, for training (left) and test (right) data. In this case, the RMSE has been computed against the regular GP model. The expected patterns of the approximation as a function of the number of basis functions and boundary factor are recognized: as the boundary factor increases, more basis functions are needed.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.40]{fig13_MSE_train_BF_gaydata.pdf}}
-\subfigure{\includegraphics[scale=0.40]{fig13_MSE_pred_BF_gaydata.pdf}}
-\caption{Mean square error (MSE) of the different methods againts the true function. (left) MSE for training data. (right) MSE for test data.}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig13_MSE_train_BF_gaydata.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig13_MSE_pred_BF_gaydata.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 22mm 55mm 120mm 0mm, clip]{fig13_legend_gaydata.pdf}}
+\caption{Root mean square error (RMSE) of the different methods against the true function. (left) RMSE for training data. (right) RMSE for test data.}
   \label{fig13_MSE_train_BF_gaydata}
 \end{figure}
 
 Figure \ref{fig14_MSE_train_gaydata} shows the RMSE of the different models, regular GP, HSGP and splines, against the actual data, for training and test data. We can see how the splines models does not extrapolate data properly.
 
-\begin{figure}[H]
+\begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.40]{fig14_MSE_train_gaydata.pdf}}
-\subfigure{\includegraphics[scale=0.40]{fig14_MSE_pred_gaydata.pdf}}
-\caption{Mean square error (MSE) of the different methods againts the true function. (left) MSE for training data. (right) MSE for test data.}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig14_MSE_train_gaydata.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig14_MSE_pred_gaydata.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 22mm 50mm 120mm 0mm, clip]{fig14_legend_gaydata.pdf}}
+\caption{Mean square error (MSE) of the different methods againts the actual data. (left) MSE for training data. (right) MSE for test data.}
   \label{fig14_MSE_train_gaydata}
 \end{figure}
 
+%\begin{figure}[H]
+%\centering
+%\subfigure{\includegraphics[scale=0.40]{fig14_MSE_train_gaydata.pdf}}
+%\subfigure{\includegraphics[scale=0.40]{fig14_MSE_pred_gaydata.pdf}}
+%\caption{Mean square error (MSE) of the different methods againts the actual data. (left) MSE for training data. (right) MSE for test data.}
+%  \label{fig14_MSE_train_gaydata}
+%\end{figure}
 
-\subsection{Birthday data}
 
+\subsection{Study case III: Birthday data}
+
+\vspace{5mm}
 \section{Multivariate examples}
-\subsection{Simulated data}
+\subsection{Study case IV: Simulated data}
 
 This example consists of a simulated dataset with 120 ($i=1,\dots,n=120$) single draws from a Gaussian process prior with two ($D=2$) input dimensions. A square exponential covariance function, with hyperparameters marginal variance $\alpha=1$ and lengthscales $\ell_1=0.10$ for dimension 1 and $\ell_2=0.35$ for dimension 2, is used. The corresponding matrix of input values is $X=\{\bm{x}_i\}_{i=1}^{n=120} \in {\rm I\!R}^{n\times 2}$ with $\bm{x}_i \in \{[-1,1],[-1,1]\} \subset {\rm I\!R}^2$. Gaussian noise $\sigma=0.2$ was added to the GP draws to form the final noisy set of observations $\bm{y} \in {\rm I\!R}^n$.
 
@@ -810,22 +812,33 @@ In order to do model comparison, in addition to the regular GP and HSGP models, 
 Figure \ref{fig15_Posteriors_exII} shows the data-generative GP function, from where the dataset was drawn and the mean posterior functions of the three models fitted over the dataset: the regular GP, the HSGP, and the splines models. The noisy observations are also plotted in the plots as circles. For the HSGP model, $m_1=40$ and $m_2=40$ basis functions for each dimension respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension $c_1=1.5$ and $c_2=1.5$ are used. For the splines model, 40 knots in each dimension were used.
 
 \begin{figure}
-\centering
-\subfigure{\includegraphics[scale=0.40, trim = 0mm 33mm 35mm 20mm, clip]{fig15_truefun_exII.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 20mm 33mm 35mm 20mm, clip]{fig15_gpfun_exII.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 0mm 22mm 35mm 20mm, clip]{fig15_bffun_exII.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 20mm 22mm 35mm 20mm, clip]{fig15_spfun_exII.pdf}}
-\subfigure{\includegraphics[scale=0.5, trim = 0mm 5mm 0mm 155mm, clip]{fig15_colorbar_exII.pdf}}
+\begin{center}
+\begin{tabular}{ c c c}
+\includegraphics[scale=0.35, trim = 0mm 33mm 35mm 20mm, clip]{fig15_truefun_exII.pdf} & \hspace{-5mm} \includegraphics[scale=0.35, trim = 20mm 33mm 35mm 20mm, clip]{fig15_gpfun_exII.pdf} & \hspace{-5mm}\multirow{-5.5}{*}{ \includegraphics[scale=0.35, trim = 150mm 20mm 10mm 10mm, clip]{fig15_colorbar_vertical_exII.pdf}}\\ 
+\includegraphics[scale=0.35, trim = 0mm 22mm 35mm 20mm, clip]{fig15_bffun_exII.pdf}  & \hspace{-5mm} \includegraphics[scale=0.35, trim = 20mm 22mm 35mm 20mm, clip]{fig15_spfun_exII.pdf}
+\end{tabular}
+\end{center}
 \caption{(a) True data-generative function. (b) Posterior mean function of the GP model. (c) Posterior mean function of the HSGP model. (d) Posterior mean function of the splines (SP) model.}
   \label{fig15_Posteriors_exII}
 \end{figure}
 
+%\begin{figure}
+%\centering
+%\subfigure{\includegraphics[scale=0.40, trim = 0mm 33mm 35mm 20mm, clip]{fig15_truefun_exII.pdf}}
+%\subfigure{\includegraphics[scale=0.40, trim = 20mm 33mm 35mm 20mm, clip]{fig15_gpfun_exII.pdf}}
+%\subfigure{\includegraphics[scale=0.40, trim = 0mm 22mm 35mm 20mm, clip]{fig15_bffun_exII.pdf}}
+%\subfigure{\includegraphics[scale=0.40, trim = 20mm 22mm 35mm 20mm, clip]{fig15_spfun_exII.pdf}}
+%\subfigure{\includegraphics[scale=0.5, trim = 0mm 5mm 0mm 155mm, clip]{fig15_colorbar_exII.pdf}}
+%\caption{(a) True data-generative function. (b) Posterior mean function of the GP model. (c) Posterior mean function of the HSGP model. (d) Posterior mean function of the splines (SP) model.}
+%  \label{fig15_Posteriors_exII}
+%\end{figure}
+
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.36, trim = 8mm 23mm 40mm 20mm, clip]{fig16_errorGP_exII.pdf}}
-\subfigure{\includegraphics[scale=0.36, trim = 20mm 23mm 40mm 20mm, clip]{fig16_errorHSGP_exII.pdf}}
-\subfigure{\includegraphics[scale=0.36, trim = 20mm 23mm 40mm 20mm, clip]{fig16_errorSP_exII.pdf}}
-\subfigure{\includegraphics[scale=0.34, trim = 150mm 20mm 10mm 20mm, clip]{fig16_error_colorbar_exII.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 8mm 23mm 40mm 20mm, clip]{fig16_errorGP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 20mm 23mm 40mm 20mm, clip]{fig16_errorHSGP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 20mm 23mm 40mm 20mm, clip]{fig16_errorSP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.33, trim = 149mm 20mm 5mm 20mm, clip]{fig16_error_colorbar_exII.pdf}}
 \caption{Mean error between the data-generative function and the GP (a), HSGP (b) and splines (c) models.}
   \label{fig16_errors_exII}
 \end{figure}
@@ -843,11 +856,59 @@ In order to assess performance of the models as a function the number of basis f
 \end{figure}
 
 
+\subsection{Study case V: Diabetes data}\label{sec:bf_caseV}
+The next example presents an epidemiological study of the diabetes diseases. The study aims to relate the probability of suffering from diabetes to some risk factors. The data set consists of 392 individuals ($i=1,\cdots,n=392$) from which the binary variable of suffering ($y_i=1$) or not suffering ($y_i=0$) from diabetes have been observed. The matrix $X=\{\bm{x}_i\}_{i=1}^{n=392} \in {\rm I\!R}^{n\times 3}$,  with $\bm{x}_i=\{x_{i1},x_{i2},x_{i3}\} \in {\rm I\!R}^{3}$, contains the risk factor values, Glucose ($x_{i1}$), Pregnancy ($x_{i2}$) and Age ($x_{i3}$), per individual $i$,. The observational model is a bernoulli model with parameter the probability $p_i$ of suffering from diabetes per observation $i$,
+%
+\begin{equation*}
+y_i \sim \text{Bernoulli}(p_i).
+\end{equation*}
+
+\noindent The goal is to estimate the 
+ probability $p_i$ as a function of the risk factors, which function $f(X)$ is modeled as a Gaussian process with a squared exponential covariance function $k$ depending of the matrix $X$ of risk factors and hyperparameters $\theta=\{\alpha,\ell\}$, and related to the probabilities $p_i$ through the {\it logit} link function,
+%
+\begin{eqnarray*} \label{eq:gpprior_gay}
+p_i &=& \text{logit}(f(\bm{x}_i)) \nonumber \\
+f(X) &\sim& \mathcal{GP}(0, k(X,X, \theta).
+\end{eqnarray*}
+
+\noindent The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale of the GP process. Notice that a scalar lengthscale is considered only in the multivariate covariance function.
+
+In the HSGP model with $D$ input dimensions, the latent function $f$, evaluated at input vector $\bm{x} \in {\rm I\!R}^D$, is approximated as (\ref{approxf_multi}),
+%
+\begin{equation*}
+f(\bm{x}) \approx \sum_{j}^m \left( S(\sqrt{\bm{\lambda}_j})\right)^{1/2} \phi_j(\bm{x}) \beta_j,
+\end{equation*}
+
+\noindent where $\bm{\lambda}_j$ is the $D$-vector (\ref{eigenvalue_multi}) with elements that are univariate eigenvalues (\ref{eigenvalue}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
+%
+\begin{align*}
+\bm{\lambda}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^{D} = \left\{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \right\}_{d=1}^{D},
+\end{align*}
+
+\noindent and $\phi_j$ is the multivariate eigenfunction (\ref{eigenfunction_multi}), as the product of univariate eigenfunctions (\ref{eigenfunction}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
+%
+\begin{align*}
+\phi_j(\bm{x}) &= \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}} = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(x_d+L_d)\right),
+\end{align*}
+
+\noindent where $x_d$ is the input value corresponding to dimension $d$. $S$ is the spectral density (\ref{eq:specdens_inf}), as a function of $\sqrt{\bm{\lambda}_j}= \left\{ \sqrt{\lambda_{\mathbb{S}_{jd}}} \right\}_{d=1}^{D}$, of the $D$-dimensional square exponential covariance function with a scalar lengthscale $\ell$,
+%
+\begin{eqnarray*}
+S(\sqrt{\bm{\lambda}_j})= \sigma^2 2\pi \ell^D  \mathrm{exp}\bigg(-\frac{1}{2} \ell^2 \sum_{d=1}^D  \sqrt{\lambda_{\mathbb{S}_{jd}}}^2 \bigg). 
+\end{eqnarray*}
+
+\noindent In the previous equations, $j$ denotes the index for the $m= \prod_{d=1}^{D} m_d$ multivariate basis functions (\ref{m_multi}), where $m_d$ is the number of basis functions considered for dimension $d$. $\mathbb{S}$ is the matrix of $D$-tuples, with rows being the indices of every possible combinations of univariate eigenvalues (\ref{eigenvalue}) over the $D$ dimensions. $L_d$ is the boundary for the dimension $d$. The parameters $\beta_j$ are $\mathcal{N}(0,1)$ distributed, and $\alpha$ and $\ell$ are the marginal variance and lengthscale, respectively, of the approximate multivariate covariance function.
+
+In order to do model comparison, in addition to the regular GP and HSGP models, a $D$-dimensional splines-based model is also fitted using a cubic spline basis, penalized by the conventional intergrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms}.
+
+In order to analyze the increase of computational time  of the HSGP model with higher dimensions $D$, we perform the study twice, first using two risk factors only, Glucose and Pregnancy, and second using the three risk factors, Glucose, Pregnancy and Age. With the HSGP approach in a multivariate input space, choosing the optimal number of basis functions per dimension can be crucial to avoid excessive computational times.
+
+%Figure \ref{fig15_Posteriors_exII} shows the data-generative GP function, from where the dataset was drawn and the mean posterior functions of the three models fitted over the dataset: the regular GP, the HSGP, and the splines models. The noisy observations are also plotted in the plots as circles. For the HSGP model, $m_1=40$ and $m_2=40$ basis functions for each dimension respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension $c_1=1.5$ and $c_2=1.5$ are used. For the splines model, 40 knots in each dimension were used.
 
 
-\subsection{Case III: Diabetes data}\label{sec:bf_caseIV}
-\subsection{Case IV: Leukemia data}\label{sec:bf_caseV}
-\subsection{Case V: Land use spatio-temporal classification task}\label{sec:bf_caseVII}
+
+\subsection{Study case VI: Leukemia data}\label{sec:bf_caseVI}
+\subsection{Study case VII: Land use spatio-temporal classification task}\label{sec:bf_caseVII}
 
 \vspace{3mm}
 \appendix
