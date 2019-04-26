@@ -822,16 +822,6 @@ Figure \ref{fig15_Posteriors_exII} shows the data-generative GP function, from w
   \label{fig15_Posteriors_exII}
 \end{figure}
 
-%\begin{figure}
-%\centering
-%\subfigure{\includegraphics[scale=0.40, trim = 0mm 33mm 35mm 20mm, clip]{fig15_truefun_exII.pdf}}
-%\subfigure{\includegraphics[scale=0.40, trim = 20mm 33mm 35mm 20mm, clip]{fig15_gpfun_exII.pdf}}
-%\subfigure{\includegraphics[scale=0.40, trim = 0mm 22mm 35mm 20mm, clip]{fig15_bffun_exII.pdf}}
-%\subfigure{\includegraphics[scale=0.40, trim = 20mm 22mm 35mm 20mm, clip]{fig15_spfun_exII.pdf}}
-%\subfigure{\includegraphics[scale=0.5, trim = 0mm 5mm 0mm 155mm, clip]{fig15_colorbar_exII.pdf}}
-%\caption{(a) True data-generative function. (b) Posterior mean function of the GP model. (c) Posterior mean function of the HSGP model. (d) Posterior mean function of the splines (SP) model.}
-%  \label{fig15_Posteriors_exII}
-%\end{figure}
 
 \begin{figure}
 \centering
@@ -843,7 +833,7 @@ Figure \ref{fig15_Posteriors_exII} shows the data-generative GP function, from w
   \label{fig16_errors_exII}
 \end{figure}
 
-In order to assess performance of the models as a function the number of basis functions and knots, different models with different number of basis functions for the HSGP model and different number of knots for the splines model have been fitted. In all models, the same number of basis functions and knots for each dimension were used. Figure \ref{fig11_MSE_exI_inter} shows the root mean squared error (RMSE) as a function of the number of univariate basis functions and knots. The RMSE is computed against the true function. From Figures \ref{fig16_errors_exII} and \ref{fig17_RMSE_exII}, it can be seen a close approximation of the HSGP model to the regular GP model. However, the performance of the splines model is significantly worse.
+In order to assess performance of the models as a function of the number of basis functions and knots, different models with different number of basis functions for the HSGP model and different number of knots for the splines model have been fitted. In all models, the same number of basis functions and knots for each dimension were used. Figure \ref{fig17_RMSE_exII}(left) shows the root mean squared error (RMSE) as a function of the boundary factor, the number of univariate basis functions and knots. The RMSE is computed against the true function. From Figures \ref{fig16_errors_exII} and \ref{fig17_RMSE_exII}(left), it can be seen a close approximation of the HSGP model to the regular GP model. However, the performance of the splines model is significantly worse. Figure \ref{fig17_RMSE_exII}(right) shows the times of computation of the different models as a function of the boundary factor, number of basis functions and knots. From both plots in Figure \ref{fig17_RMSE_exII} it can be noticed that choosing the optimal boundary factor allows for less number of basis functions and less computational time.
 
 
 \begin{figure}
@@ -851,27 +841,27 @@ In order to assess performance of the models as a function the number of basis f
 \subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig17_RMSE_exII.pdf}}
 \subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig17_time_exII.pdf}}
 \subfigure{\includegraphics[scale=0.40, trim = 22mm 45mm 120mm 0mm, clip]{fig17_legend_exII.pdf}}
-\caption{Standarized mean square error (SMSE) of the different methods againts the true function. (left) SMSE for interpolation. (right) SMSE for extrapolation.}
+\caption{Standarized mean square error (SMSE) of the different methods against the true function (left), and time of computation of the different models (right), as a function of the boundary factor $c$, number of basis functions $m$ and knots.}
   \label{fig17_RMSE_exII}
 \end{figure}
 
 
 \subsection{Study case V: Diabetes data}\label{sec:bf_caseV}
-The next example presents an epidemiological study of the diabetes diseases. The study aims to relate the probability of suffering from diabetes to some risk factors. The data set consists of 392 individuals ($i=1,\cdots,n=392$) from which the binary variable of suffering ($y_i=1$) or not suffering ($y_i=0$) from diabetes have been observed. The matrix $X=\{\bm{x}_i\}_{i=1}^{n=392} \in {\rm I\!R}^{n\times 3}$,  with $\bm{x}_i=\{x_{i1},x_{i2},x_{i3}\} \in {\rm I\!R}^{3}$, contains the risk factor values, Glucose ($x_{i1}$), Pregnancy ($x_{i2}$) and Age ($x_{i3}$), per individual $i$,. The observational model is a bernoulli model with parameter the probability $p_i$ of suffering from diabetes per observation $i$,
+The next example presents an epidemiological study of the diabetes diseases. The study aims to relate the probability of suffering from diabetes to some risk factors. The data contains 392 individuals ($i=1,\cdots,n=392$) from which the binary variable of suffering ($y_i=1$) or not suffering ($y_i=0$) from diabetes have been observed. The matrix $X=\{\bm{x}_i\}_{i=1}^{n=392} \in {\rm I\!R}^{n\times 4}$,  with $\bm{x}_i=\{x_{i1},x_{i2},x_{i3},x_{i4}\} \in {\rm I\!R}^{4}$, contains the risk factors, \textit{Glucose} ($x_{i1}$), \textit{Pregnancy} ($x_{i2}$), \textit{Age} ($x_{i3}$) and \textit{BMI} ($x_{i4}$), per individual $i$. The observational model is a bernoulli model with parameter the probability $p_i$ of suffering from diabetes per observation $i$,
 %
 \begin{equation*}
 y_i \sim \text{Bernoulli}(p_i).
 \end{equation*}
 
 \noindent The goal is to estimate the 
- probability $p_i$ as a function of the risk factors, which function $f(X)$ is modeled as a Gaussian process with a squared exponential covariance function $k$ depending of the matrix $X$ of risk factors and hyperparameters $\theta=\{\alpha,\ell\}$, and related to the probabilities $p_i$ through the {\it logit} link function,
+ probability $p_i$ as a function of the risk factors, which function $f(X)$ is modeled as a Gaussian process with a squared exponential covariance function $k$ depending on the matrix $X$ of risk factors and hyperparameters $\theta=\{\alpha,\ell\}$, and related to the probabilities $p_i$ through the {\it logit} link function,
 %
 \begin{eqnarray*} \label{eq:gpprior_gay}
 p_i &=& \text{logit}(f(\bm{x}_i)) \nonumber \\
 f(X) &\sim& \mathcal{GP}(0, k(X,X, \theta).
 \end{eqnarray*}
 
-\noindent The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale of the GP process. Notice that a scalar lengthscale is considered only in the multivariate covariance function.
+\noindent The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. Notice that a scalar lengthscale is considered in the multivariate covariance function.
 
 In the HSGP model with $D$ input dimensions, the latent function $f$, evaluated at input vector $\bm{x} \in {\rm I\!R}^D$, is approximated as (\ref{approxf_multi}),
 %
@@ -879,13 +869,13 @@ In the HSGP model with $D$ input dimensions, the latent function $f$, evaluated 
 f(\bm{x}) \approx \sum_{j}^m \left( S(\sqrt{\bm{\lambda}_j})\right)^{1/2} \phi_j(\bm{x}) \beta_j,
 \end{equation*}
 
-\noindent where $\bm{\lambda}_j$ is the $D$-vector (\ref{eigenvalue_multi}) with elements that are univariate eigenvalues (\ref{eigenvalue}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
+\noindent where $\bm{\lambda}_j$ is the $D$-vector (\ref{eigenvalue_multi}) which elements are the univariate eigenvalues (\ref{eigenvalue}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
 %
 \begin{align*}
 \bm{\lambda}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^{D} = \left\{ \left(\tfrac{\pi \mathbb{S}_{jd}}{2L_d}\right)^2 \right\}_{d=1}^{D},
 \end{align*}
 
-\noindent and $\phi_j$ is the multivariate eigenfunction (\ref{eigenfunction_multi}), as the product of univariate eigenfunctions (\ref{eigenfunction}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
+\noindent and $\phi_j$ is the multivariate eigenfunction (\ref{eigenfunction_multi}) as the product of univariate eigenfunctions (\ref{eigenfunction}) whose indices correspond to the elements of the $D$-tupple $\mathbb{S}_{j\cdotp}$,
 %
 \begin{align*}
 \phi_j(\bm{x}) &= \prod_{d=1}^{D} \phi_{\mathbb{S}_{jd}} = \prod_{d=1}^{D} \sqrt{\frac{1}{L_d}} \text{sin}\left(\sqrt{\lambda_{\mathbb{S}_{jd}}}(x_d+L_d)\right),
@@ -901,9 +891,39 @@ S(\sqrt{\bm{\lambda}_j})= \sigma^2 2\pi \ell^D  \mathrm{exp}\bigg(-\frac{1}{2} \
 
 In order to do model comparison, in addition to the regular GP and HSGP models, a $D$-dimensional splines-based model is also fitted using a cubic spline basis, penalized by the conventional intergrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms}.
 
-In order to analyze the increase of computational time  of the HSGP model with higher dimensions $D$, we perform the study twice, first using two risk factors only, Glucose and Pregnancy, and second using the three risk factors, Glucose, Pregnancy and Age. With the HSGP approach in a multivariate input space, choosing the optimal number of basis functions per dimension can be crucial to avoid excessive computational times.
+Figure \ref{fig18_gpfun_diabetes} shows the mean posterior probability ($p_i$) function of the three models, the regular GP, the HSGP, and the splines, fitted over the dataset with the 2 input dimensions ($D=2$) \textit{Glucose} and \textit{Pregnancy}. The binary observations $y_i$ are also plotted in the plots as colored points. For the HSGP model, $m_1=20$ and $m_2=20$ basis functions for each dimension, respectively, were used, which lead to a total of 400 multivariate basis functions. A boundary factor for each dimension $c_1=4$ and $c_2=4$ were used. For the splines model, 20 knots in each dimension were used.
+%
+\begin{figure}
+\centering
+\subfigure{\includegraphics[scale=0.35, trim = 8mm 23mm 40mm 20mm, clip]{fig18_gpfun_diabetes.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 20mm 23mm 40mm 20mm, clip]{fig18_bffun_diabetes.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 20mm 23mm 40mm 20mm, clip]{fig18_spfun_diabetes.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 149mm 18mm 5mm 20mm, clip]{fig18_legend_diabetes.pdf}}
+\caption{(a) Posterior mean function of the GP model. (b) Posterior mean function of the HSGP model. (c) Posterior mean function of the splines (SP) model.}
+  \label{fig18_gpfun_diabetes}
+\end{figure}
 
-%Figure \ref{fig15_Posteriors_exII} shows the data-generative GP function, from where the dataset was drawn and the mean posterior functions of the three models fitted over the dataset: the regular GP, the HSGP, and the splines models. The noisy observations are also plotted in the plots as circles. For the HSGP model, $m_1=40$ and $m_2=40$ basis functions for each dimension respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension $c_1=1.5$ and $c_2=1.5$ are used. For the splines model, 40 knots in each dimension were used.
+In order to assess performance of the models as a function of the boundary factor, the number of basis functions and knots, different models with different number of basis functions and boundary factor for the HSGP model and different number of knots for the splines model have been fitted. In all models, the same boundary factor, number of basis functions and knots for each dimension were used. Figure \ref{fig19_ELPD_diabetes} shows the expected log predictive density (ELPD) as a function of the boundary factor, the number of univariate basis functions and knots. The ELPD is computed over the actual observations. Basically, with slightly differences, all models show similar performances, due to the process is very smooth with a estimated lengthscale $\ell=4.51$ very large. A slight pattern of improvement of performance can be noticed as the boundary factor $c$ increases, which fact is because small boundary factors are not allowed when large lengthscales.
+%
+\begin{figure}
+\centering
+\subfigure{\includegraphics[scale=0.35, trim = 0mm 0mm 10mm 0mm, clip]{fig19_ELPD_diabetes.pdf}}
+\caption{Expected log predictive density (ELPD) of the different methods as a function of the boundary factor $c$ and the number of basis functions $m$ and knots.}
+  \label{fig19_ELPD_diabetes}
+\end{figure}
+
+Figure \ref{fig20_time2D_diabetes} shows the times of computation in the logarithm scale of the different models fitted over the dataset with 2 input dimensions (left), 3 input dimensions (center) and 4 input dimensions (right), as a function of the boundary factor, number of univariate basis functions and knots. We can notice the significant increase of computational time with higher dimensions for the HSGP and splines models. This fact shows that choosing optimal values for the number of basis functions and bounfary factor is essential to avoid excessive time of computation. It is interesting to be noticed that considering more than 10 knots per dimension in the splines model with 3D is not allowed for an amount of 392 observations.
+
+\begin{figure}
+\centering
+\subfigure{\includegraphics[scale=0.29, trim = 10mm 0mm 13mm 0mm, clip]{fig20_time2D_diabetes.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 25mm 0mm 13mm 0mm, clip]{fig20_time3D_diabetes.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 25mm 0mm 13mm 0mm, clip]{fig20_time4D_diabetes.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 22mm 55mm 120mm 0mm, clip]{fig20_legend_diabetes.pdf}}
+\caption{Time of computation in the log scale of the different models fitted over the dataset with 2 input dimensions (left) and 3 input dimensions (center) and 4 input dimensions (right), as a function of the boundary factor $c$, number of basis functions $m$ and knots.}
+  \label{fig20_time2D_diabetes}
+\end{figure}
+
 
 
 
