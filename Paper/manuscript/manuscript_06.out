@@ -1,0 +1,40 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Method}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Gaussian process as a prior}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Covariance function and spectral density}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Hilbert space approximate Gaussian process model}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Generalization to multidimensional GPs}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{The accuracy of the approximation}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Dependency on the number of basis functions and the boundary condition}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{Comparing lengthscale estimates}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Univariate examples}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Study case I: Simulated data}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.2}{Study case II: Gay data}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.3}{Study case III: Birthday data}{section.4}% 13
+\BOOKMARK [1][-]{section.5}{Multivariate examples}{}% 14
+\BOOKMARK [2][-]{subsection.5.1}{Study case IV: Simulated data}{section.5}% 15
+\BOOKMARK [2][-]{subsection.5.2}{Study case V: Diabetes data}{section.5}% 16
+\BOOKMARK [2][-]{subsection.5.3}{Study case VI: Leukemia data}{section.5}% 17
+\BOOKMARK [2][-]{subsection.5.4}{Study case VII: Land use spatio-temporal classification task}{section.5}% 18
+\BOOKMARK [1][-]{appendix.A}{Approximate the covariance function using Hilbert space methods}{}% 19
+\BOOKMARK [1][-]{appendix.B}{Low-rank GP model with a periodic square exponential covariance function}{}% 20
+\BOOKMARK [1][-]{appendix.C}{ADDITIONAL MATERIAL \205 NOT TO BE INCLUDED IN THE PAPER}{}% 21
+\BOOKMARK [2][-]{subsection.C.1}{State space representation of a periodic and stationary covariance function}{appendix.C}% 22
+\BOOKMARK [2][-]{subsection.C.2}{Related work}{appendix.C}% 23
+\BOOKMARK [3][-]{subsubsection.C.2.1}{Inducing points methods}{subsection.C.2}% 24
+\BOOKMARK [3][-]{subsubsection.C.2.2}{Basis function methods}{subsection.C.2}% 25
+\BOOKMARK [2][-]{subsection.C.3}{Brief details about computational demands and model inference}{appendix.C}% 26
+\BOOKMARK [2][-]{subsection.C.4}{Contributions of the work}{appendix.C}% 27
+\BOOKMARK [2][-]{subsection.C.5}{Spectral densities of stationary covariance functions}{appendix.C}% 28
+\BOOKMARK [2][-]{subsection.C.6}{Example of generalization to the multivariate case}{appendix.C}% 29
+\BOOKMARK [2][-]{subsection.C.7}{Multidimensional generalization of covariance functions and spectral densities}{appendix.C}% 30
+\BOOKMARK [3][-]{subsubsection.C.7.1}{Square Exponential covariance function \(k\) and spectral density \(S\)}{subsection.C.7}% 31
+\BOOKMARK [4][-]{subsubsubsection.C.7.1.1}{Using norm-L2 \(Euclidean distance\)}{subsubsection.C.7.1}% 32
+\BOOKMARK [4][-]{subsubsubsection.C.7.1.2}{Using norm-L1 }{subsubsection.C.7.1}% 33
+\BOOKMARK [4][-]{subsubsubsection.C.7.1.3}{Using vector difference of inputs}{subsubsection.C.7.1}% 34
+\BOOKMARK [3][-]{subsubsection.C.7.2}{Matern\(=1/2\) covariance function \(k\) and spectral density \(S\)}{subsection.C.7}% 35
+\BOOKMARK [4][-]{subsubsubsection.C.7.2.1}{Using norm-L2 \(Euclidean distance\)}{subsubsection.C.7.2}% 36
+\BOOKMARK [4][-]{subsubsubsection.C.7.2.2}{Using norm-L1}{subsubsection.C.7.2}% 37
+\BOOKMARK [4][-]{subsubsubsection.C.7.2.3}{Using the vector difference of inputs}{subsubsection.C.7.2}% 38
+\BOOKMARK [3][-]{subsubsection.C.7.3}{Matern\(=3/2\) covariance function \(k\) and spectral density \(S\)}{subsection.C.7}% 39
+\BOOKMARK [4][-]{subsubsubsection.C.7.3.1}{Using norm-L2 \(Euclidean distance\)}{subsubsection.C.7.3}% 40
