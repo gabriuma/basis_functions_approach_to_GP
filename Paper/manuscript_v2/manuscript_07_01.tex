@@ -60,7 +60,7 @@
 \maketitle
 
 \begin{abstract}
-Gaussian processes are powerful non-parametric probabilistic models for stochastic functions, however they entail a complexity that is computationally intractable when the number of observations is large. In this paper, we focus on a novel approach for low-rank approximate Gaussian processes, based on the basis functions approximation via Laplace eigenfunctions for stationary covariance functions. The main contribution of this paper is the realization of a detailed analysis of the performance and practical implementation of the method in relation to key factors such as the number of basis functions, desired prediction space and non-linearity of the function to be learned. Intuitive visualizations and useful recommendations for the values of these factors which help users to improve performance and computation are provided. A diagnosis procedure of whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is also proposed. Furthermore, we show the simplicity of the method, with an attractive computational complexity due to its linear structure, which makes it easier to be used as modular components in probabilistic programming frameworks. Several illustrative examples of the performance and applicability of the method in the Stan programming software are presented, and their Stan model codes are also provided.
+Gaussian processes are powerful non-parametric probabilistic models for stochastic functions, however they entail a complexity that is computationally intractable when the number of observations is large. In this paper, we focus on a novel approach for low-rank approximate Gaussian processes, based on the basis functions approximation via Laplace eigenfunctions for stationary covariance functions. The main contribution of this paper is the realization of a detailed analysis of the performance and practical implementation of the method in relation to key factors such as the number of basis functions, desired prediction space and non-linearity of the function to be learned. Intuitive visualizations and useful recommendations for the values of these factors which help users to improve performance and computation are provided. A diagnosis procedure of whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is also proposed. We show the simplicity of the method, with an attractive computational complexity due to its linear structure, which makes it easier to be used as modular components in probabilistic programming frameworks. Several illustrative examples of the performance and applicability of the method in the Stan programming software are presented, and their Stan model codes are also provided.
 \end{abstract}
 
 \keywords{Gaussian process; Low-rank Gaussian process; Hilbert space methods; Sparse Gaussian process.}
@@ -109,16 +109,22 @@ The Laplace eigenfunctions can be computed analytically and they are independent
 %computational complexity and approximation accuracy can easily be
 %controlled.
 
-While \citet{solin2018hilbert} have fully developed the mathematical theory behind this specific approximation of GPs, further work is needed for its practical implementation in probabilistic programming frameworks. In this paper, the relations going on among the key factors of the method such as the number of basis functions, desired prediction space, or properties of the true functional relationship between covariates and response variable, are investigated and analyzed in detail in relation to the performance and accuracy of the method. Practical recommendations for the values of the key factors, based on useful graphs that encode the recognized relationships, are given. Which will help users to chose valid and optimized values for these factors, improving computational performance and saving time of computation. A diagnosis of whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is proposed.
+While \citet{solin2018hilbert} have fully developed the mathematical theory behind this specific approximation of GPs, further work is needed for its practical implementation in probabilistic programming frameworks. In this paper, the relations going on among the key factors of the method such as the number of basis functions, desired prediction space, or properties of the true functional relationship between covariates and response variable, are investigated and analyzed in detail in relation to the performance and accuracy of the method. Practical recommendations for the values of the key factors based on useful graphs that encode the recognized relationships are given. Which will help users to chose valid and optimized values for these factors, improving performance and saving time of computation. A diagnosis of whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is proposed.
 
-{\color{blue} (Gabi: This paragraph is the old version of the former paragraph) While \citet{solin2018hilbert} have fully developed the mathematical theory behind this specific approximation of GPs, further work is needed for its practical implementation in probabilistic programming frameworks. In this paper, we analyze in detail the performance and accuracy of the method in relation to key factors such as the number of basis functions, desired prediction space, or properties of the true functional relationship between covariates and response variable. We provide intuitive visualizations and practical recommendations for the choice of these factors, which will help users to improve computational performance while maintaining close approximation to exact GPs.}
+%In this paper, we analyze in detail the performance and accuracy of the method in relation to key factors such as the number of basis functions, desired prediction space, or properties of the true functional relationship between covariates and response variable. We provide intuitive visualizations and practical recommendations for the choice of these factors, which will help users to improve computational performance while maintaining close approximation to exact GPs.
 
 The approach is implemented in a fully probabilistic framework and for the Stan programming probabilistic software. This work has served as a basis for the subsequent implementation of the method in the \textit{brms} library \citep{burkner2017brms} of the R software \citep{R2014R}. Several illustrative examples, simulated and real datasets, of the performance and applicability of the model, and accompanied by their Stan model codes, are developed. 
 
 Although there are several GP specific software packages available to date (GPML \citep{rasmussen2010gpml},  GPstuff \citep{vanhatalo2013gpstuff}, GPy \citep{gpy2014}, GPflow \citep{GPflow2017}), each provide efficient implementations only for a restricted range of GP based models. In this paper, we do not focus on the fastest possible inference for some specific GP models, but instead are interested in how GPs can be easily used as modular components in probabilistic programming frameworks. 
 
 The remainder of the paper is structured as follows. In Section \ref{ch4_gp}, we introduce GPs with the covariance and spectral density functions. In Section \ref{ch5_sec_method}, the reduced rank approximation to GPs proposed by \cite{solin2018hilbert} is described. In Section \ref{ch5_sec_accuracy}, the accuracy of these approximations under several conditions using analytical and numerical methods is analyzed. Several case studies in which we fit
-exact and approximate GPs to real and simulated data are provided in Sections \ref{ch5_sec_univariate_cases} and \ref{ch5_sec_multivariate_cases}. We end with a discussion in Section \ref{ch5_sec_conclusion}. Appendix \ref{ch5_app_approx_covfun} includes a brief presentation of the mathematical details behind this Hilbert space approximation of a stationary covariance function, and Appendix \ref{ch5_sec_periodic} presents a low-rank representation of a GP for the particular case of a periodic covariance function. Additional content as online complementary material with more case studies illustrating the performance and applicability of the method can be found through the following link:
+exact and approximate GPs to real and simulated data are provided in Sections \ref{ch5_sec_univariate_cases} and \ref{ch5_sec_multivariate_cases}. A brief conclusion of the work is made in Section \ref{ch5_sec_conclusion}. Appendix \ref{ch5_app_approx_covfun} includes a brief presentation of the mathematical details behind this Hilbert space approximation of a stationary covariance function, and Appendix \ref{ch5_sec_periodic} presents a low-rank representation of a GP for the particular case of a periodic covariance function. 
+
+Online complementary material with more case studies illustrating the performance and applicability of the method can be found through the following link:
+%
+\begin{lstlisting}[breaklines]
+https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/online_appendices
+\end{lstlisting}
 
 
 \section{Gaussian process as a prior}\label{ch4_gp}
@@ -453,7 +459,7 @@ c  = 2.5 & \includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{ch5_fig3
 \centering
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 0mm 0mm, clip]{ch5_fig4_MSE_vs_J.pdf}}
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig4_MSE_vs_c.pdf}}
-\caption{Root mean square error (RMSE) of the proposed HSGP models computed against the regular GP model. (left) RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$. (right) RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$. }
+\caption{Root mean square error (RMSE) of the proposed HSGP models computed against the regular GP model. RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$ (left). RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$ (right). }
   \label{fig4_MSE_vs_J}
 \end{figure}
 
@@ -521,31 +527,31 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.4, trim = 10mm 100mm 5mm 30mm, clip]{ch5_fig7_legend.pdf}}\\
+\subfigure{\includegraphics[scale=0.42, trim = 10mm 100mm 5mm 30mm, clip]{ch5_fig7_legend.pdf}}\\
 \vspace{-3mm}
-\subfigure{\includegraphics[scale=0.30, trim = 1mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part1.pdf}}
-\subfigure{\includegraphics[scale=0.30, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part2.pdf}}
-\subfigure{\includegraphics[scale=0.30, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part3.pdf}}\\
+\subfigure{\includegraphics[scale=0.31, trim = 1mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part1.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part2.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part3.pdf}}\\
 \vspace{-3mm}
-\subfigure{\includegraphics[scale=0.30, trim = 1mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part4.pdf}}
-\subfigure{\includegraphics[scale=0.30, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part5.pdf}}
-\subfigure{\includegraphics[scale=0.30, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part6.pdf}}\\
+\subfigure{\includegraphics[scale=0.31, trim = 1mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part4.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part5.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part6.pdf}}\\
 \vspace{-3mm}
-\subfigure{\includegraphics[scale=0.30, trim = 1mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part7.pdf}}
-\subfigure{\includegraphics[scale=0.30, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part8.pdf}}
-\subfigure{\includegraphics[scale=0.30, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part9.pdf}}\\
+\subfigure{\includegraphics[scale=0.31, trim = 1mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part7.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part8.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part9.pdf}}\\
 \vspace{-3mm}
-\caption{Mean posterior predictions of both regular GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{True function}). Notice that the dashed red line of the regular GP can hardly be seen in the plots because it is under the blue lines.}
+\caption{Mean posterior predictions of both regular GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). Notice that the dashed red line of the regular GP can hardly be seen in the plots because it is under the blue lines.}
   \label{fig7_posterior_varing_lscale_part1}
 \end{figure}
 
 \begin{figure}
 \begin{flushleft}
 \begin{tabular}{ccc}
-\multicolumn{3}{c}{ \includegraphics[scale=0.40, trim = 25mm 117mm 90mm 45mm, clip]{ch5_fig8_legend.pdf}}\\
-\includegraphics[scale=0.30, trim = 0mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part1.pdf} & \hspace{-4mm}
-\includegraphics[scale=0.30, trim = 25mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part2.pdf} & \hspace{-4mm} \includegraphics[scale=0.30, trim = 25mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part3.pdf} \\ 
-\includegraphics[scale=0.30, trim = 0mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part4.pdf} & \hspace{-4mm} \includegraphics[scale=0.30, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part5.pdf} & \hspace{-4mm} \includegraphics[scale=0.30, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part6.pdf}
+\multicolumn{3}{c}{ \includegraphics[scale=0.42, trim = 25mm 117mm 90mm 45mm, clip]{ch5_fig8_legend.pdf}}\\
+\includegraphics[scale=0.31, trim = 0mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part1.pdf} & \hspace{-4mm}
+\includegraphics[scale=0.31, trim = 25mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part2.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part3.pdf} \\ 
+\includegraphics[scale=0.31, trim = 0mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part4.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part5.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part6.pdf}
 \end{tabular}
 \end{flushleft}
 \caption{Data-generating functional lengthscales ($\ell$), of the various datasets illustrated in Figure \ref{fig7_posterior_varing_lscale_part1}, versus the corresponding lengthscale estimates $(\hat{\ell})$ from the regular GP and HSGP models. 95\% confident intervals of the lengthscale estimates are plotted as dot lines. The different plots represent the use of different number of basis functions $m$ in the HSGP model. The dashed black line represents the recommended minimum lengthscales provided by Figure \ref{fig6_lscale_vs_J_vs_c} that can be closely approximated by the HSGP model in every case.}
