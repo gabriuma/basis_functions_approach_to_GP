@@ -51,7 +51,7 @@
 \bibliographystyle{authordate1}
 
 
-\title{Hilbert space approximate Gaussian process using Stan}
+\title{Hilbert space approximate Bayesian Gaussian processes using Stan}
 
 
 \begin{document}
@@ -60,10 +60,10 @@
 \maketitle
 
 \begin{abstract}
-Gaussian processes are powerful non-parametric probabilistic models for stochastic functions, however they entail a complexity that is computationally intractable when the number of observations is large. In this paper, we focus on a novel approach for low-rank approximate Gaussian processes, based on the basis functions approximation via Laplace eigenfunctions for stationary covariance functions. The main contribution of this paper is the realization of a detailed analysis of the performance and practical implementation of the method in relation to key factors such as the number of basis functions, desired prediction space and non-linearity of the function to be learned. Intuitive visualizations and useful recommendations for the values of these factors which help users to improve performance and computation are provided. A diagnosis procedure of whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is also proposed. We show the simplicity of the method, with an attractive computational complexity due to its linear structure, which makes it easier to be used as modular components in probabilistic programming frameworks. Several illustrative examples of the performance and applicability of the method in the Stan programming software are presented, and their Stan model codes are also provided.
+Gaussian processes are powerful non-parametric probabilistic models for stochastic functions, however they entail a complexity that is computationally intractable when the number of observations is large, especially when estimated with fully Bayesian methods such as Markov-Chain Monte-Carlo. In this paper, we focus on a novel approach for low-rank approximate Bayesian Gaussian processes, based on the basis functions approximation via Laplace eigenfunctions for stationary covariance functions. The main contribution of this paper is the realization of a detailed analysis of the performance and practical implementation of the method in relation to key factors such as the number of basis functions, desired prediction space and non-linearity of the function to be learned. Intuitive visualizations and useful recommendations for the values of these factors which help users to improve performance and computation are provided. A diagnosis procedure of whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is also proposed. We show the simplicity of the method, with an attractive computational complexity due to its linear structure, which makes it easier to be used as modular components in probabilistic programming frameworks. Several illustrative examples of the performance and applicability of the method in the probabilistic programming language Stan are presented together with the underlying Stan model code.
 \end{abstract}
 
-\keywords{Gaussian process; Low-rank Gaussian process; Hilbert space methods; Sparse Gaussian process.}
+\keywords{Gaussian process; Low-rank Gaussian process; Hilbert space methods; Sparse Gaussian process; Bayesian statistics; Stan.}
 
 \tableofcontents
 
