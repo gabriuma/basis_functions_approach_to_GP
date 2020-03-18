@@ -896,7 +896,7 @@ l(\bm{x},\bm{x}')= \sum_j \lambda_j \phi_j(\bm{x}) \phi_j(\bm{x}'),
 
 \noindent and all the eigenvalues $\lambda_j$ are real and positive. 
 
-Due to normality of the basis of the representation of the formal kernel $l(\bm{x},\bm{x}')$, its formal powers $s=1,2,\dots$ can be write as
+Due to normality of the basis of the representation of the formal kernel $l(\bm{x},\bm{x}')$, its formal powers $s=1,2,\dots$ can be written as
 %
 \begin{eqnarray}\label{ch5_eq_formalkernel}
 l(\bm{x},\bm{x}')^s= \sum_j \lambda_j^s \phi_j(\bm{x}) \phi_j(\bm{x}'),
@@ -939,20 +939,20 @@ k(\bm{x},\bm{x}')= \sum_j S(\sqrt{\lambda_j}) \phi_j(\bm{x}) \phi_j(\bm{x}'),
 
 \section{Low-rank Gaussian process with a periodic covariance function}\label{ch5_sec_periodic}
 
-A GP model with a periodic covariance function does no fit under the framework of the HSGP approximation covered so far in this study. However, it do has a low-rank representation. In this section, we first give a brief presentation of the results from \cite{solin2014explicit}, where the authors obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic square exponential covariance function.
+A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study. However, it do has a low-rank representation. In this section, we first give a brief presentation of the results from \cite{solin2014explicit}, where the authors obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic square exponential covariance function.
 
 The periodic squared exponential covariance function takes the form
 %
 \begin{eqnarray} \label{ch5_eq_cov_periodic}
-k(\bm{\tau})= \sigma^2 \exp\Big(-\frac{2\text{sin}^2\left(\omega_0\frac{\bm{\tau}}{2}\right)}{\ell^2}\Big),
+k(\bm{\tau})= \alpha \exp\Big(-\frac{2\text{sin}^2\left(\omega_0\frac{\bm{\tau}}{2}\right)}{\ell^2}\Big),
 \end{eqnarray}
 
-\noindent where $\sigma^2$ is the magnitude scale of the covariance, $\ell$ is the characteristic lengthscale of the covariance, and $\omega_0$ is the angular frequency defining the periodicity. 
+\noindent where $\alpha$ is the magnitude scale of the covariance, $\ell$ is the characteristic lengthscale of the covariance, and $\omega_0$ is the angular frequency defining the periodicity. 
 
 In \cite{solin2014explicit}, the authors come to a cosine series expansion for the periodic covariance function (\ref{ch5_eq_cov_periodic}) as follows,
 % 
 \begin{eqnarray} \label{ch5_eq_cov_periodic_taylor_approx}
-k(\tau)= \sigma^2 \sum_{j=0}^{J} \tilde{q}_j^2 \text{cos}(j\omega_0 \tau),
+k(\tau)= \alpha \sum_{j=0}^{J} \tilde{q}_j^2 \text{cos}(j\omega_0 \tau),
 \end{eqnarray}
 
 \noindent which comes basically from a Taylor series representation of the periodic covariance function. The coefficients $\tilde{q}_j^2$ of the previous expression are
@@ -979,12 +979,12 @@ An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q
 \end{split}
 \end{equation} 
 
-\noindent for $j=1,2,\cdots,J$, and where the $\text{I}_{\alpha}(z)$ is the modified Bessel function \citep{handbook1970m} of the first order of $\alpha$. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required \citep{solin2014explicit}. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function can be found in \cite{solin2014explicit}. 
+\noindent for $j=1,2,\cdots,J$, and where the $\text{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required \citep{solin2014explicit}. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function can be found in \cite{solin2014explicit}. 
 
 %Note that the terms in equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}) are underneath bounded approximations for any $J$. 
 
 
-In order to assess the accuracy of this representation as a function of the number of cosine terms $J$ considered in the approximation, an empirical evaluation is carried out in a similar way than that in Section \ref{ch5_sec_accuracy} of this work. Thus, Figure \ref{ch5_fig28_m_lscale_periodic} shows the minimum number of terms $J$ required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the lengthscale of the kernel. We have considered an approximation to be close enough in terms of satisfying equation (\ref{ch5_eq_diff_covs}) with $\varepsilon=0.5\%$. Notice that since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition.
+In order to assess the accuracy of this representation as a function of the number of cosine terms $J$ considered in the approximation, an empirical evaluation is carried out in a similar way than that in Section \ref{ch5_sec_accuracy} of this work. Thus, Figure \ref{ch5_fig28_m_lscale_periodic} shows the minimum number of terms $J$ required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the lengthscale of the kernel. We have considered an approximation to be close enough in terms of satisfying equation (\ref{eq_diff_covs}) with $\varepsilon=0.5\%$. Notice that since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition.
 
 \begin{figure}
 \centering
@@ -1014,10 +1014,8 @@ f(x) \approx \sigma \Big( \sum_{j=0}^J  \tilde{q}_j \text{cos}(j\omega_0 x) \bet
 \end{equation}
 
 \noindent where $\beta_j \sim \text{Normal}(0,1)$, with $j=1,\dots,2J+1$. The cosine $\text{cos}(j\omega_0 x)$ and sinus $\text{sin}(j\omega_0 x)$ terms do not depend on the covariance hyperparameters $\ell$. The only dependence on the hyperparameter $\ell$ is through the coefficients $\tilde{q}_j$, which are $J$-dimensional. The computational cost of this approximation scales as $O\big(n(2J+1) + (2J+1)\big)$, where $n$ is the number of observations and $J$ the number of cosine terms.
-
-The parameterization in equation (\ref{ch5_eq_f_period}) is naturally in the non-centered
-parameterization form with independent prior distribution on
-$\beta_j$, which makes the posterior inference easier.
+The parameterization in equation (\ref{ch5_eq_f_period}) is naturally in the non-centered form with independent prior distributions on
+$\beta_j$, which makes posterior inference easier.
 
 
 
