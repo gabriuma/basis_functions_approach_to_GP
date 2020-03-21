@@ -736,21 +736,21 @@ The Stan model code for the approximate GP model of this case study can be found
 
  
 \subsection{Leukemia data}\label{ch5_sec_bf_caseVI}
-The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($\bm{x}_1$), \textit{sex} ($\bm{x}_2$), \textit{white blood cell} (WBC) ($\bm{x}_3$) count at diagnosis with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($\bm{x}_4$) which is a measure of deprivation for district of residence. We denote the matrix $X=[\bm{x}_1\,\, \bm{x}_2\,\, \bm{x}_3\,\, \bm{x}_4] \in {\rm I\!R}^{n\times 4}$ which contains the column-vectors $\bm{x}_d \in {\rm I\!R}^n$ of predictors ($d=1,\dots,4$).
+The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnosis with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
+
+%We denote the matrix $X=[\bm{x}_1\, \cdots \bm{x}_i\, \cdots \bm{x}_n] \in {\rm I\!R}^{n\times 4}$ where $\bm{x}_i=(x_1,x_2,x_3,x_4) \in {\rm I\!R}^{4}$ the vector of predictor values for observations $i$
 
 As the WBC measurements were strictly positive and highly skewed, we fit the model to its logarithm. Continuous predictors were normalized to have zero mean and unit standard deviation. %Survival time was normalized to have zero mean for the logarithm of time. 
-We assume a log-normal observation model for the observed survival time, $t_i$, with a function of the predictors, $f(X_i)$, as the location parameter, and $\sigma$ as the Gaussian noise: 
+We assume a log-normal observation model for the observed survival time, $t_i$, with a function of the predictors, $f(\bm{x}_i):{\rm I\!R}^4 \to {\rm I\!R}$, as the location parameter, and $\sigma$ as the Gaussian noise: 
 %
 \begin{equation*}
-p(t_i)= \mathrm{LogNormal}(t_i|f(X_i),\sigma^2)
+p(t_i)= \mathrm{LogNormal}(t_i|f(\bm{x}_i),\sigma^2).
 \end{equation*}
-
-\noindent with $X_i=\{x_{i1},x_{i2},x_{i3},x_{i4}\} \in {\rm I\!R}^4$ and $f:{\rm I\!R} \to {\rm I\!R}$.
 
 As we do not have a model for the censoring process, we do not have a full observation model, and the observational model for the censored data $t_i$ is assumed to be the complementary cumulative normal probability distribution:
 %
 \begin{equation*}
-p(y_i > t_i)= \int_{t_i}^{\infty} \mathrm{LogNormal}(y_i|f(X_i),\sigma^2) \mathrm{d}y_i=  1 - \Phi\! \Big( \frac{\mathrm{log}(y_i)-f(X_i)}{\sigma} \Big),
+p(y_i > t_i)= \int_{t_i}^{\infty} \mathrm{LogNormal}(y_i|f(\bm{x}_i),\sigma^2) \mathrm{d}y_i=  1 - \Phi\! \Big( \frac{\mathrm{log}(y_i)-f(\bm{x}_i)}{\sigma} \Big),
 \end{equation*}
 
 \noindent where $y_i$ denotes the uncensored time.
@@ -767,9 +767,9 @@ f(\bm{x}) \sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta)),
 Due to the predictor \textit{sex} ($\bm{x}_2$) is a categorical variable (1 for female and 2 for male), we can outline a multilevel model for the GP function, in a similar way like categorical effects are treated in linear models. The relative contribution of a GP function given one of the levels of the predictor (equation \ref{ch5_eq_gpml2}) to a general mean GP function (equation \ref{ch5_eq_gpml1}) is defined. For the other level of the predictor, the GP function effects are set to zero. This multilevel construction is depicted as follows:
 %
 \begin{align} 
-&f(\bm{x}) \sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) \label{ch5_eq_gpml1} \\
-&g(\bm{x}) \sim \mathcal{GP}(0, k(\bm{x},\bm{x}', \theta_2|\bm{x}_2\!=\!2)) \label{ch5_eq_gpml2} \\ 
-&f(\bm{x}|\bm{x}_2\!=\!2) = f(X|\bm{x}_2\!=\!2) + g(\bm{x}) \nonumber
+f(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) \label{ch5_eq_gpml1} \\
+g(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_2|\bm{x}_2\!=\!2)) \label{ch5_eq_gpml2} \\ 
+f(\bm{x}|\bm{x}_2\!=\!2) &= f(\bm{x}|\bm{x}_2\!=\!2) + g(\bm{x}). \nonumber
 \end{align}
 
 \begin{figure}
