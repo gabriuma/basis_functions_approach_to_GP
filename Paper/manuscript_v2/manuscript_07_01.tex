@@ -54,9 +54,14 @@
 
 \title{Hilbert space approximate Bayesian Gaussian processes using Stan}
 
-\author{TODO}
+\author{Gabriel R. Mayol$^{1*}$, Paul-Christian Bürkner$^{2}$, Michael R. Anderson$^3$, Aki Vehtari$^{2}$}
 
-\date{}
+\date{
+$^1$ TODO\break
+$^2$ Department of Computer Science, Aalto University, Finland\break
+$^3$ TODO\break
+$^*$ Corresponding author, Email: gabriuma@gmail.com
+}
 
 \begin{document}
 
@@ -624,7 +629,7 @@ Figure \ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributi
 
 In order to assess the performance of the models as a function of the number of basis functions and number of knots, different models with different number of basis functions for the HSGP model, and different number of knots for the spline model, have been fitted. Figure \ref{ch5_fig11_MSE_exI_inter} shows the standardized root mean squared error (SRMSE) for interpolation and extrapolating data as a function of the number of basis functions and knots. The SRMSE is computed against the data-generating model. From Figures \ref{ch5_fig10_Posteriors_exI} and \ref{ch5_fig11_MSE_exI_inter}, it can be seen a close approximation of the HSGP model to the regular GP model for interpolating and extrapolating data. However, the spline model does not extrapolate data properly. Both models show roughly similar interpolating performance. 
 
-Figure \ref{ch5_fig11_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. {\color{blue}The HSGP model is on average roughly 400 times faster than the regular GP and 10 times faster than the spline model, for this particular application with a univariate input space. The increase of computation as function of the number of basis functions in a univariate input space is relatively slight, as can be seen in the figure.}
+Figure \ref{ch5_fig11_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The HSGP model is on average roughly 400 times faster than the regular GP and 10 times faster than the spline model, for this particular application with a univariate input space. Also, the increase in computation time as a function of the number of basis functions in a univariate input space is relatively slight.
 
 The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}.
 %
@@ -645,11 +650,11 @@ The Stan model code for the exact GP, the approximate GP and the spline models o
   \label{ch5_fig11_time_exI}
 \end{figure}
 
-{\color{blue}In the online supplemental material, some other case studies are presented. From those examples, it can be seen how computation demand of the HSGP model increases severely with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see equation (\ref{eq_m_multi})). Even though in a bivariate input space the computation demand increases significantly with $D$, the HSGP model works significantly better that the regular GP for most of the non-linear $2D$ functions (even highly wiggly functions) (see Figures B.3-right and C.3 in the online material). However, HSGPs are slower than exact GPs for $D>3$ with a relatively low number of basis functions ($m \gtrsim 5$), as well as even for $D=3$ with a moderate high number of basis functions ($m \gtrsim 20$) in the approximation (see Figure C.3 in the online material). It can be appreciated in all the cases how choosing the optimal boundary factor in the HSGP approximation allows for less number of basis functions (see Figures A.3, B.3-left and C.2 in the online material) and therefore less computational time, which can makes the difference in multivariate input spaces.
+In the online supplemental material, some other case studies are presented. From those examples, it can be seen how computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see equation (\ref{eq_m_multi})). Even though, in a bivariate input space, the computation time increases significantly with $D$, the HSGP model works significantly faster than the regular GP for most of the non-linear $2D$ functions (even highly wiggly functions; see Figures B.3-right and C.3 in the online material). However, HSGPs tend to be slower than exact GPs for $D>3$ with a relatively low number of basis functions ($m \gtrsim 5$), as well as even for $D=3$ with a moderate high number of basis functions ($m \gtrsim 20$; see Figure C.3 in the online material). In all of the investigated cases, choosing the optimal boundary factor in the HSGP approximation reduces the number of required basis functions noticably (see Figures A.3, B.3-left and C.2 in the online material) and therefore also reduces computational time drastically in particular in multivariate input spaces.
 
 %This fact reveals that choosing optimal values for the number of basis functions and boundary factor, looking at the recommendations and diagnosis provided by Figure \ref{fig6_lscale_vs_J_vs_c}, is essential to avoid a excessive computational time, especially in multivariate input spaces.
 
-Roughly similar or even worse consideration is found for splines where serious difficulties have been encountered in building the spline model from $D=3$ and \textit{knots} $> 10$, or even for $D=2$ and \textit{knots} $> 40$ (see Figures B.3-right and C.3 in the online material).}
+Roughly similar or even worse behavior was found for splines where serious difficulties with computation time were encountered in building spline models for $D=3$ and \textit{knots} $> 10$, or even for $D=2$ and \textit{knots} $> 40$ (see Figures B.3-right and C.3 in the online material).
 
 
 \subsection{Birthday data}\label{ch5_sec_birthday}
@@ -769,7 +774,7 @@ Due to the predictor \textit{sex} ($\bm{x}_2$) is a categorical variable (1 for 
 \begin{align} 
 f(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) \label{ch5_eq_gpml1} \\
 g(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_2|\bm{x}_2\!=\!2)) \label{ch5_eq_gpml2} \\ 
-f(\bm{x}|\bm{x}_2\!=\!2) &= f(\bm{x}|\bm{x}_2\!=\!2) + g(\bm{x}). \nonumber
+f(\bm{x}|\bm{x}_2\!=\!2) &= f(\bm{x}|\bm{x}_2\!=\!1) + g(\bm{x}). \nonumber
 \end{align}
 
 \begin{figure}
@@ -786,7 +791,7 @@ Using the HSGP approximation, the functions $f(\bm{x})$ and $g(\bm{x})$ are appr
 Figure \ref{ch5_fig21_posteriors_leukemia} shows estimated conditional comparison of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. The model has found smooth non-linear patterns and the right bottom subplot also shows that the conditional comparison associated with WBC has an interaction with TDI.
 
 
-Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density (ELPD; see \cite{vehtari_2012}) and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in equation (\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{ch5_fig22_elpd_leukemia}-left); Small boundary factors are not allowed when large lengthscales, as can be seen in Figure \ref{fig6_lscale_vs_J_vs_c}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{ch5_fig22_elpd_leukemia}-right). {\color{blue} With a moderate number of univariate basis functions ($m=15$) the HSGP model already becomes slower than the exact GP model, in this specific application with $3$ input variables.}
+Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density (ELPD; see \cite{vehtari_2012}) and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in equation (\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{ch5_fig22_elpd_leukemia}-left); Small boundary factors are not allowed when large lengthscales, as can be seen in Figure \ref{fig6_lscale_vs_J_vs_c}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{ch5_fig22_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
 %
 \begin{figure}
 \centering
@@ -809,7 +814,8 @@ The dominating cost per log density evaluation (during sampling) is $O(nm+m)$, w
 The main contribution of this paper is an in-depth analysis and diagnosis of the performance and accuracy of the approximation in relation to the key factors of the method, that is, the number of basis functions, the boundary condition of the Laplace eigenfunctions, and the non-linearity of the function to be learned. Recommendations for the values of these key factors based on the recognized relations among them have been provided along with illustrations of these relations. These illustrations will not only help users to improve performance and save computation time, but also serve as a powerful diagnosis tool whether the chosen values for the number of basis functions and the boundary condition are adequate to fit to the data at hand with sufficient accuracy.
 
 The developed approximate GPs can be easily applied as modular components in probabilistic programming frameworks such as Stan in both Gaussian and non-Gaussian observational models. Using several simulated and real datasets, we have demonstrated the practical applicability and improved sampling effiency, as compared to regular GPs, of the developed method.
-The main drawback of the approach is that its computational complexity scales exponentially with the number of input dimensions. {\color{red}Hence, choosing optimal values for the number of basis functions and boundary factor, looking at the recommendations and diagnosis provided by Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern}, is essential to avoid a excessive computational time, especially in multivariate input spaces. However, in practice, input dimensionalities larger than 3 start to be quite computationally demanding even for moderate wiggly functions.} In these cases, the proposed approxiamate GP method may still be used for low-dimensional components in an additive modeling scheme but without modeling very high dimensional interactions.
+The main drawback of the approach is that its computational complexity scales exponentially with the number of input dimensions. Hence, choosing optimal values for the number of basis functions and the boundary factor, using the
+ recommendations and diagnostics provided in Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern}, is essential to avoid a excessive computational time especially in multivariate input spaces. However, in practice, input dimensionalities larger than 3 start to be quite computationally demanding even for moderately wiggly functions and few basis functions per input dimension. In these high dimensional cases, the proposed approxiamte GP methods may still be used for low-dimensional components in an additive modeling scheme but without modeling very high dimensional interactions.
 
 The obtained functional relationships between the key factors influencing the approximation not only help users to visually assess the accuracy of the method
 but can also serve an automatic diagnostic tool, if appropriately implemented.
