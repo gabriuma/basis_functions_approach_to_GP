@@ -54,12 +54,12 @@
 
 \title{Hilbert space approximate Bayesian Gaussian processes using Stan}
 
-\author{Gabriel R. Mayol$^{1*}$, Paul-Christian Bürkner$^{2}$, Michael R. Anderson$^3$, Aki Vehtari$^{2}$}
+\author{Gabriel Riutort-Mayol$^{1*}$, Michael R. Andersen$^2$, Paul-Christian Bürkner$^{3}$, Aki Vehtari$^{2}$}
 
-\date{
-$^1$ TODO\break
-$^2$ Department of Computer Science, Aalto University, Finland\break
-$^3$ TODO\break
+\date{ \small
+$^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain. \break
+$^2$ TODO\break
+$^3$ Department of Computer Science, Aalto University, Finland\break
 $^*$ Corresponding author, Email: gabriuma@gmail.com
 }
 
@@ -768,7 +768,7 @@ f(\bm{x}) \sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta)),
 
 \noindent where $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model.  Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ are multivariate Gaussian distributed with mean function $\mu(\cdot)$ and covariance matrix $K$, where $\mu(\bm{x}_i)=c + \bm{\beta}\bm{x}_i$ and $K_{rs}=k(\bm{x}_r,\bm{x}_s,\theta)$, with $r,s=1,\dots,n$.  The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. Notice that a scalar lengthscale is considered in the multivariate covariance function assuming an isotropic function.
 
-Due to the predictor \textit{sex} ($\bm{x}_2$) being a categorical variable ('1' for female and '2' for male), we apply dummy/treatment coding for the GP functions, in a similar way such coding is applied in linear models. A general mean GP function is defined for all observations, while a second GP function only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise. More formally, this construction reads as follows:
+Due to the predictor \textit{sex} ($x_2$) being a categorical variable ('1' for female and '2' for male), we apply dummy/treatment coding for the GP functions, in a similar way such coding is applied in linear models. A general mean GP function is defined for all observations, while a second GP function only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise. More formally, this construction reads as follows:
 %
 \begin{align} 
 f(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) + g(\bm{x}), \label{ch5_eq_gpml1}
@@ -802,7 +802,7 @@ g(\bm{x}) =
   \label{ch5_fig21_posteriors_leukemia}
 \end{figure}
 
-\noindent In the former equations, $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale, respectively, of the general mean GP function, and $\theta_2$ contains the hyperparameters $\alpha_2$ and $\ell_2$ which are the marginal variance and lengthscale, respectively, of a specific GP function restricted to the male sex ($\bm{x}_2=\text{'}2\text{'}$).
+\noindent In the former equations, $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale, respectively, of the general mean GP function, and $\theta_2$ contains the hyperparameters $\alpha_2$ and $\ell_2$ which are the marginal variance and lengthscale, respectively, of a specific GP function restricted to the male sex ($x_2=\text{'}2\text{'}$).
 
 Using the HSGP approximation, the functions $f(\bm{x})$ and $g(\bm{x})$ are approximated as in equation (\ref{eq_approxf_multi}), with the $D$-dimensional (with a scalar lengthscale) squared exponential spectral density $S$ as in equation (\ref{eq_specdens_inf}), and the multivariate eigenfunctions $\phi_j$ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ as in equations (\ref{eq_eigenfunction_multi}) and  (\ref{eq_eigenvalue_multi}), respectively.
 
