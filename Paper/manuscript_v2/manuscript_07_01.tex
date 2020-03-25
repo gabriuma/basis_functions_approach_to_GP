@@ -31,6 +31,7 @@
 \usepackage{amsthm}
 \usepackage{bm}
 \usepackage{url}
+\usepackage{parskip}
 
 \usepackage[titletoc]{appendix}
 
@@ -246,9 +247,9 @@ S_{\frac{3}{2}}(\omega)&= \alpha \, 32\pi\sqrt{3}^3\prod_{i=1}^{3}\ell_i\big(3+\
 
 \section{Hilbert space approximate Gaussian process model}\label{ch5_sec_method}
 
-The approximate GP method, developed by \cite{solin2018hilbert} and implemented in this paper, is based on considering the covariance operator of a homogeneous (stationary) covariance function as a pseudo-differential operator constructed as a series of Laplace operators. Then, the pseudo-differential operator is approximated with Hilbert space methods on a compact subset $\Omega \subset {\rm I\!R}^D$ subject to some boundary condition. For brevity, we will refer to these approximate Gaussian processes as HSGPs. Below, we will present the main results around HSGPs relevant for practical application. More details and mathematical proofs are provided in \cite{solin2018hilbert}. Our starting point for presenting the method is the main result obtained by \cite{solin2018hilbert} of the definition of the covariance function as a series expansion of eigenvalues and eigenfunctions of the Laplacian operator. The mathematical details of this approximation are briefly presented in Appendix \ref{ch5_app_approx_covfun}.
+The approximate GP method, developed by \cite{solin2018hilbert} and implemented in this paper, is based on considering the covariance operator of a stationary covariance function as a pseudo-differential operator constructed as a series of Laplace operators. Then, the pseudo-differential operator is approximated with Hilbert space methods on a compact subset $\Omega \subset {\rm I\!R}^D$ subject to boundary conditions. For brevity, we will refer to these approximate Gaussian processes as HSGPs. Below, we will present the main results around HSGPs relevant for practical applications. More details and mathematical proofs are provided in \cite{solin2018hilbert}. Our starting point for presenting the method is the main result obtained by \cite{solin2018hilbert} of the definition of the covariance function as a series expansion of eigenvalues and eigenfunctions of the Laplacian operator. The mathematical details of this approximation are briefly presented in Appendix \ref{ch5_app_approx_covfun}.
 
-We begin by focusing on the case of a unidimensional input space (i.e., on GPs with just a single covariate) such that $\Omega \in [-L,L] \subset {\rm I\!R}$, where $L$ is some positive real value to which we also refer as boundary condition. As $\Omega$ describes the interval in which the approximations are valid, $L$ plays a critical role in the accuracy of HSGPs. We will come back to this issue in Section \ref{ch5_sec_accuracy}.
+We begin by focusing on the case of a unidimensional input space (i.e. on GPs with just a single covariate) such that $\Omega \in [-L,L] \subset {\rm I\!R}$, where $L$ is some positive real number to which we also refer as boundary condition. As $\Omega$ describes the interval in which the approximations are valid, $L$ plays a critical role in the accuracy of HSGPs. We will come back to this issue in Section \ref{ch5_sec_accuracy}.
 
 Within $\Omega$, we can write any stationary covariance function with input values $\{x,x'\} \in \Omega$ as
 %
@@ -256,7 +257,7 @@ Within $\Omega$, we can write any stationary covariance function with input valu
 k(x,x') = \sum_{j=1}^\infty S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
 \end{equation} 
 
-\noindent where $S_{\theta}$ is the spectral density of the stationary covariance function $k$ (see Section \ref{ch4_sec_cov}) and $\theta$ the set of hyperparameters of $k$ \citep{rasmussen2006gaussian}. The terms $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the sets of eigenvalues and eigenvectors, respectively, of the Laplacian operator in the given domain $\Omega$. Namely, they satisfy the following eigenvalue problem in $\Omega$ when applying the Dirichlet boundary condition (other boundary conditions could be used as well):
+\noindent where $S_{\theta}$ is the spectral density of the stationary covariance function $k$ (see Section \ref{ch4_sec_cov}) and $\theta$ the set of hyperparameters of $k$ \citep{rasmussen2006gaussian}. The terms $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the sets of eigenvalues and eigenvectors, respectively, of the Laplacian operator in the given domain $\Omega$. Namely, they satisfy the following eigenvalue problem in $\Omega$ when applying the Dirichlet boundary condition (other boundary conditions could be used as well)
 %
 \begin{align}\label{eq_eigenproblem}
 \begin{split}
@@ -265,20 +266,20 @@ k(x,x') = \sum_{j=1}^\infty S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
 \end{split}
 \end{align} 
 
-\noindent The eigenvalues $\lambda_j>0$ are real and positive because the Laplacian is a positive definite Hermitian operator, and the eigenfunctions $\phi_j$ for the eigenvalues problem in equation (\ref{eq_eigenproblem}) are sinusoidal functions. Independently of the covariance function, they can be computed as
+\noindent The eigenvalues $\lambda_j>0$ are real and positive because the Laplacian is a positive definite Hermitian operator, and the eigenfunctions $\phi_j$ for the eigenvalue problem in equation (\ref{eq_eigenproblem}) are sinusoidal functions. The solution to the eigenvalue problem is independent of  the specific choice of covariance function and is given by
 %
 \begin{align}
 \lambda_j&=\Big(\frac{j\pi}{2L}\Big)^{\!2}, \label{eq_eigenvalue}\\
 \phi_j(x)&=\sqrt{\frac{1}{L}}\, \sin\!\!\big(\sqrt{\lambda_j}(x+L)\big). \label{eq_eigenfunction}
 \end{align}
 
-If we truncate the sum in (\ref{eq_approxcov}) to the first $m$ terms, the approximate covariance function becomes
+If we truncate the sum in eq. \eqref{eq_approxcov} to the first $m$ terms, the approximate covariance function becomes
 %
 \begin{equation}
 k(x,x') \approx \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x') = \bm{\phi}(x)^\intercal \Delta \, \bm{\phi}(x'), \nonumber
 \end{equation}
 
-\noindent where $\bm{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{m\times m}$ is the diagonal matrix of the spectral densities $S_{\theta}(\sqrt{\lambda_j})$: 
+\noindent where $\bm{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{m\times m}$ is a diagonal matrix of the spectral density evaluated at the square root of the eigenvalues, i.e. $S_{\theta}(\sqrt{\lambda_j})$,
 %
 \begin{align}
 \Delta =  \begin{bmatrix}
@@ -294,7 +295,7 @@ Thus, the Gram matrix $\text{K}$ of the covariance function $k$ for a set of obs
 \text{K}= \Phi \Delta \Phi^\intercal, \nonumber
 \end{equation}
 
-\noindent where $\Phi \in {\rm I\!R}^{n\times m}$ is the matrix of eigenfunctions $\phi_j(x_i)$:
+\noindent where $\Phi \in {\rm I\!R}^{n\times m}$ is the matrix of eigenfunctions $\phi_j(x_i)$
 %
 \begin{align}
 \Phi =  \left[ {\begin{array}{ccc}
@@ -316,13 +317,13 @@ Thus, the Gram matrix $\text{K}$ of the covariance function $k$ for a set of obs
 f(x) \approx \sum_{j}^m \big( S_{\theta}(\sqrt{\lambda_j})\big)^{\! \frac{1}{2}} \phi_j(x) \beta_j,
 \end{equation}
 
-\noindent where $\beta_j \sim \text{Normal}(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the covariance hyperparameters $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, equation (\ref{eq_approxf}) can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
+\noindent where $\beta_j \sim \text{Normal}(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the hyperparameters of the covariance function $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, eq. \eqref{eq_approxf} can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
 
-The parameterization in equation (\ref{eq_approxf}) is naturally in the non-centered parameterization form with independent prior distribution on $\beta_j$, which makes the posterior inference easier. Furthermore, all dependencies on the covariance kernel and the hyperparameters is through the prior distribution of the regression weights $\beta_j$. The parameter posterior distribution $p(\bm{\beta}|\bm{y})$ is $m$-dimensional, where $m$ is much smaller than the number of observations $n$. Therefore, the parameter space is greatly reduced and this makes inference faster, especially when sampling methods are used.
+The parameterization in eq. \eqref{eq_approxf} is naturally in the non-centered parameterization form with independent prior distribution on $\beta_j$, which makes the posterior inference easier. Furthermore, all dependencies on the covariance function and the hyperparameters is through the prior distribution of the regression weights $\beta_j$. The posterior distribution of the parameters $p(\bm{\beta}|\bm{y})$ is a distribution over a $m$-dimensional space, where $m$ is much smaller than the number of observations $n$. Therefore, the parameter space is greatly reduced and this makes inference faster, especially when sampling methods are used.
 
 \subsection{Generalization to multidimensional GPs} \label{ch5_sec_method_multi}
 
-The results from the previous section can be generalizes to a multidimensional input space with compact regular domain $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions. 
+The results from the previous section can be generalizes to a multidimensional input space with compact support, $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions. 
 In a $D$-dimensional input space, the total number of eigenfunctions and eigenvalues in the approximation is equal to the number of $D$-tuples, that is possible combinations of univariate eigenfunctions over all dimensions. The number of $D$-tuples is given by 
 %
 \begin{align} \label{eq_m_multi}
@@ -348,7 +349,7 @@ m^{\ast} = \prod_{d=1}^{D} m_d,
 \end{array} } \right].
 \end{align} 
 
-Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$, and each multivariate eigenvalue $\bm{\lambda}^{\ast}_j$ is a $D$-vector with elements that are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\bm{\cdotp}}$. Thus, for $\bm{x}=\{x_d\}_{d=1}^D \in \Omega$ and $j=1,\ldots,m^{\ast}$, we have: 
+Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$, and each multivariate eigenvalue $\bm{\lambda}^{\ast}_j$ is a $D$-vector with elements that are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\bm{\cdotp}}$. Thus, for $\bm{x}=\{x_d\}_{d=1}^D \in \Omega$ and $j=1,\ldots,m^{\ast}$, we have 
 %
 \begin{align}
 \bm{\lambda}^{\ast}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^D =  \Big\{ \Big(\frac{\pi \mathbb{S}_{jd}}{2L_d}\Big)^{\!2} \Big\}_{d=1}^D, \label{eq_eigenvalue_multi} \\
@@ -371,7 +372,7 @@ f(\bm{x}) \approx \sum_{j=1}^{m^{\ast}}
 \big( S^{\ast}_{\theta} \big(\sqrt{\bm{\lambda}^{\ast}_j} \big)\big)^{\! \frac{1}{2}} \phi^{\ast}_j(\bm{x}) \beta_j, 
 \end{equation}
 
-\noindent where, again, $\beta_j \sim \text{Normal}(0,1)$. The computational cost, in learning the covariance function hyperparameters, of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
+\noindent where, again, $\beta_j \sim \text{Normal}(0,1)$. The computational cost, in learning the covariance function hyperparameters, of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions \todo{I dont think the first of part of this sentence is correct. Do you mean the cost of evaluating the joint distribution in a single iteration rather than "the cost of learnaing the covariance function hyperparameters?}. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
 
 
 \section{The accuracy of the approximation}\label{ch5_sec_accuracy}
