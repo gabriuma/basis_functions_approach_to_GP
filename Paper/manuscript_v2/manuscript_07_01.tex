@@ -56,12 +56,14 @@
 
 \title{Hilbert space approximate Bayesian Gaussian processes using Stan}
 
-\author{Gabriel Riutort-Mayol$^{1*}$, Michael R. Andersen$^2$, Paul-Christian Bürkner$^{3}$, Aki Vehtari$^{2}$}
+\author{Gabriel Riutort-Mayol$^{1*}$, Michael R. Andersen$^2$, Paul-Christian Bürkner$^{3}$, Aki Vehtari$^{3}$}
 
 \date{ \small
-$^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain. \break
+$^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain \break
 $^2$ Department of Applied Mathematics and Computer Science, Technical University of Denmark, Denmark
-$^3$ Department of Computer Science, Aalto University, Finland\break
+\break
+$^3$ Department of Computer Science, Aalto University, Finland
+\break
 $^*$ Corresponding author, Email: gabriuma@gmail.com
 }
 
@@ -82,7 +84,7 @@ Gaussian processes are powerful non-parametric probabilistic models for stochast
 
 Gaussian processes (GPs) are flexible statistical models for specifying probability distributions over multi-dimensional non-linear functions \citep{rasmussen2006gaussian,neal1997monte}. Their name stems from the fact that any finite set of function values is jointly distributed as a multivariate Gaussian. GPs are defined by a mean and a covariance function. The covariance function encodes our prior assumptions about the functional relationship, such as continuity, smoothness, periodicity and scale properties. GPs not only allow for non-linear effects but can also implicitly handle interactions between input variables (covariates). Different types of covariance functions can be combined for further increased flexibility. Due to their generality and flexibility, GPs are of broad interest across machine learning and statistics \citep{rasmussen2006gaussian,neal1997monte}. Among others, they find application in the fields of spatial epidemiology \citep{diggle2013statistical,carlin2014hierarchical}, robotics and control \citep{deisenroth2015gaussian}, signal processing \citep{sarkka2013spatiotemporal}, neuroimaging \citep{andersen2017} as well as Bayesian optimization and probabilistic numerics \citep{roberts2010bayesian,briol2015probabilistic,hennig2015probabilistic}.
 
-The key element of a GP is the covariance function that defines the dependence structure between function values at different inputs. However, evaluating the covariance function \todo{evaluating the covariance function is not a problem, but computing the posterior is} comes with a computational issue because of the need of inverting its Gram matrix to optimize the hyperparameters. Given $n$ observations in the data, the computational complexity and memory requirements of computing the posterior distribution for a GP in general scale as $O(n^3)$ and $O(n^2)$, respectively. This limits their application to rather small data sets of a few tens of thousands observations at most. The problem becomes more severe when performing full Bayesian inference via sampling methods, where in each sampling step we need $O(n^3)$ computations when inverting the Gram matrix of the covariance function, usually through Cholesky factorization. To alleviate these computational demands, several approximate methods have been proposed. 
+The key element of a GP is the covariance function that defines the dependence structure between function values at different inputs. However, computing the posterior distribution of a GP comes with a computational issue because of the need of inverting the covariance matrix. Given $n$ observations in the data, the computational complexity and memory requirements of computing the posterior distribution for a GP in general scale as $O(n^3)$ and $O(n^2)$, respectively. This limits their application to rather small data sets of a few tens of thousands observations at most. The problem becomes more severe when performing full Bayesian inference via sampling methods, where in each sampling step we need $O(n^3)$ computations when inverting the Gram matrix of the covariance function, usually through Cholesky factorization. To alleviate these computational demands, several approximate methods have been proposed. 
 
 Sparse GPs are based on low-rank approximations of the covariance matrix. The low-rank approximation with $m \ll n$ {\it inducing points} implies reduced memory requirements of $O(nm)$ and corresponding computational complexity of $O(nm^2)$.
 A unifying view on sparse GPs based on approximate generative methods
@@ -192,7 +194,7 @@ f^*
 % \end{align*}
 % where $\sigma^2$ is the noise variance.
 
-If $p(y_n|f(\bm{x}_n),\phi)=\mathcal{N}(y_n|f(\bm{x}_n),\sigma)$ then $\bm{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GPs and $O(nm^2)$ for sparse GPs). If $p(y_n|f(\bm{x}_n),\phi)=\mathcal{N}(y_n|f(\bm{x}_n),g(\bm{x}_n))$ \todo{Is something missing here? The function g is missing on the left hand side. } or $p(y_n|f(\bm{x}_n),\phi)$ is non-Gaussian, the marginalization does not have a closed form solution. Furthermore, if a prior distribution is imposed on $\phi$ and $\bm{\theta}$ to form a joint posterior for $\phi$, $\bm{\theta}$ and $\bm{f}$, approximate inference such as Markov chain Monte Carlo (MCMC) \citep{brooks_2011}, Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational Bayes methods \citep{gibbs2000variational,csato2000efficient} are required. In this paper, we focus on the use of MCMC for integrating over the joint
+If $p(y_n|f(\bm{x}_n),\phi)=\mathcal{N}(y_n|f(\bm{x}_n),\sigma)$ then $\bm{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GPs and $O(nm^2)$ for sparse GPs). If $p(y_n|f(\bm{x}_n),g(\bm{x}_n))=\mathcal{N}(y_n|f(\bm{x}_n),g(\bm{x}_n))$ or $p(y_n|f(\bm{x}_n),\phi)$ is non-Gaussian, the marginalization does not have a closed form solution. Furthermore, if a prior distribution is imposed on $\phi$ and $\bm{\theta}$ to form a joint posterior for $\phi$, $\bm{\theta}$ and $\bm{f}$, approximate inference such as Markov chain Monte Carlo (MCMC) \citep{brooks_2011}, Laplace approximation (\citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational Bayes methods \citep{gibbs2000variational,csato2000efficient} are required. In this paper, we focus on the use of MCMC for integrating over the joint
 posterior. MCMC is usually not the fastest approach, but it is flexible and allows
 accurate inference and uncertainty estimates for general models in probabilistic programming
 settings. We consider the computational costs of GPs specifically from
@@ -236,7 +238,7 @@ S_{\nu}(\omega)&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamm
 S_{\infty}(\omega)&= \alpha \sqrt{2\pi}^D  \ell^D \exp(-0.5 \ell^2 \omega^2), \label{eq_specdens_inf}  \\
 S_{\frac{3}{2}}(\omega)&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2})\sqrt{3}^3}{\frac{1}{2}\sqrt{\pi}\,\ell^3}\Big(\frac{3}{\ell^2}+\omega^2 \Big)^{\!-\frac{D+3}{2}}. \label{eq_specdens_32} 
 \end{align}
-\todo{Is it only purpose that only some equations have numbers?}
+\todo{Is it only purpose that only some equations have numbers? Res: Only text referenced equations have number (Gabi). }
 \noindent For input dimension $D=3$ and Euclidean distance $\omega=\sqrt{\sum_{i=1}^{3}s_i^2}$, and considering a multidimensional lengthscale $\bm{\ell} \in {\rm I\!R}^{3}$, the spectral densities written above take the form
 %
 \begin{align*}
@@ -317,7 +319,7 @@ Thus, the Gram matrix $\text{K}$ of the covariance function $k$ for a set of obs
 f(x) \approx \sum_{j}^m \big( S_{\theta}(\sqrt{\lambda_j})\big)^{\! \frac{1}{2}} \phi_j(x) \beta_j,
 \end{equation}
 
-\noindent where $\beta_j \sim \text{Normal}(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the hyperparameters of the covariance function $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, eq. \eqref{eq_approxf} can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
+\noindent where $\beta_j \sim \text{Normal}(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the hyperparameters of the covariance function $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, eq. \eqref{eq_approxf} can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of evaluating the posterior distribution of univariate HSGPs scales as $O(nm + m)$ in a single iteration, where $n$ is the number of observations and $m$ the number of basis functions.
 
 The parameterization in eq. \eqref{eq_approxf} is naturally in the non-centered parameterization form with independent prior distribution on $\beta_j$, which makes the posterior inference easier. Furthermore, all dependencies on the covariance function and the hyperparameters is through the prior distribution of the regression weights $\beta_j$. The posterior distribution of the parameters $p(\bm{\beta}|\bm{y})$ is a distribution over a $m$-dimensional space, where $m$ is much smaller than the number of observations $n$. Therefore, the parameter space is greatly reduced and this makes inference faster, especially when sampling methods are used.
 
@@ -372,7 +374,7 @@ f(\bm{x}) \approx \sum_{j=1}^{m^{\ast}}
 \big( S^{\ast}_{\theta} \big(\sqrt{\bm{\lambda}^{\ast}_j} \big)\big)^{\! \frac{1}{2}} \phi^{\ast}_j(\bm{x}) \beta_j, 
 \end{equation}
 
-\noindent where, again, $\beta_j \sim \text{Normal}(0,1)$. The computational cost, in learning the covariance function hyperparameters, of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions \todo{I dont think the first of part of this sentence is correct. Do you mean the cost of evaluating the joint distribution in a single iteration rather than "the cost of learnaing the covariance function hyperparameters?}. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
+\noindent where, again, $\beta_j \sim \text{Normal}(0,1)$. The computational cost of evaluating the posterior distribution  of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$ in a single iteration, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
 
 
 \section{The accuracy of the approximation}\label{ch5_sec_accuracy}
