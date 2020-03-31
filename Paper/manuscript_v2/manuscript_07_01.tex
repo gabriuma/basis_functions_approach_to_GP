@@ -34,6 +34,9 @@
 \usepackage{parskip}
 
 \usepackage[titletoc]{appendix}
+\usepackage{booktabs}
+\usepackage{boldline}
+\usepackage{colortbl}
 
 \providecommand{\keywords}[1]
 {
@@ -53,16 +56,19 @@
 \bibliographystyle{authordate1}
 % TODO macro
 \newcommand{\todo}[1]{\textcolor{blue}{\textbf{[#1]}}}
+\newcommand{\resp}[1]{\textcolor{red}{\textbf{[#1]}}}
+
 
 \title{Hilbert space approximate Bayesian Gaussian processes using Stan}
 
-\author{Gabriel Riutort-Mayol$^{1*}$, Michael R. Andersen$^2$, Paul-Christian Bürkner$^{3}$, Aki Vehtari$^{3}$}
+\author{Gabriel Riutort-Mayol$^{1*}$, Paul-Christian Bürkner$^2$, Michael R. Andersen$^{3}$, Aki Vehtari$^{2}$}
 
 \date{ \small
-$^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain \break
-$^2$ Department of Applied Mathematics and Computer Science, Technical University of Denmark, Denmark
+$^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain 
 \break
-$^3$ Department of Computer Science, Aalto University, Finland
+$^2$ Department of Computer Science, Aalto University, Finland
+\break
+$^3$ Department of Applied Mathematics and Computer Science, Technical University of Denmark, Denmark
 \break
 $^*$ Corresponding author, Email: gabriuma@gmail.com
 }
@@ -73,7 +79,7 @@ $^*$ Corresponding author, Email: gabriuma@gmail.com
 \maketitle
 
 \begin{abstract}
-Gaussian processes are powerful non-parametric probabilistic models for stochastic functions, however they entail a complexity that is computationally intractable when the number of observations is large, especially when estimated with fully Bayesian methods such as Markov-Chain Monte-Carlo. In this paper, we focus on a novel approach for low-rank approximate Bayesian Gaussian processes, based on a basis functions approximation via Laplace eigenfunctions for stationary covariance functions. The main contribution of this paper is a detailed analysis of the performance and practical implementation of the method in relation to key factors such as the number of basis functions, desired prediction space and smoothness of the function to be learned. Intuitive visualizations and useful recommendations for the values of these factors which help users to improve performance and computation are provided. A diagnosis procedure for whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is also proposed. The proposed method is simple and exhibits an attractive computational complexity due to its linear structure and it is easy to implmenent in probabilistic programming frameworks. Several illustrative examples of the performance and applicability of the method in the probabilistic programming language Stan are presented together with the underlying Stan model code.
+Gaussian processes are powerful non-parametric probabilistic models for stochastic functions, however they entail a complexity that is computationally intractable when the number of observations is large, especially when estimated with fully Bayesian methods such as Markov-Chain Monte-Carlo. In this paper, we focus on a novel approach for low-rank approximate Bayesian Gaussian processes, based on a basis functions approximation via Laplace eigenfunctions for stationary covariance functions. The main contribution of this paper is a detailed analysis of the performance and practical implementation of the method in relation to key factors such as the number of basis functions, desired prediction space and smoothness of the function to be learned. Intuitive visualizations and useful recommendations for the values of these factors which help users to improve performance and computation are provided. A diagnosis procedure for whether the chosen values for the number of basis functions and the desired prediction space are adequate to fit to the actual data is also proposed. The proposed method is simple and exhibits an attractive computational complexity due to its linear structure and it is easy to implement in probabilistic programming frameworks. Several illustrative examples of the performance and applicability of the method in the probabilistic programming language Stan are presented together with the underlying Stan model code.
 \end{abstract}
 
 \keywords{Gaussian process; Low-rank Gaussian process; Hilbert space methods; Sparse Gaussian process; Bayesian statistics; Stan.}
@@ -106,7 +112,7 @@ Furthermore, a recent related work based on a spectral representation of GPs as 
 In this paper we propose and evaluate a new framework for fast and accurate inference for fully Bayesian GPs using basis function approximations. We focus on the basis function approximation via Laplace eigenfunctions for stationary covariance functions proposed by \citet{solin2018hilbert}. Using a basis function expansion, a GP is approximated with a linear model which makes inference considerably faster. The linear model structure makes GPs easy to implement as a building block in more complicated models in modular probabilistic programming frameworks, where there is a big benefit if the approximation specific computation is simple. Furthermore, a linear representation of a GP makes it easier to be used as latent function
 in non-Gaussian observational models allowing for more modelling flexibility. The basis function approximation via Laplace eigenfunctions can be made arbitrary accurate and the trade-off between computational complexity and approximation accuracy can easily be controlled.
 
-The Laplace eigenfunctions can be computed analytically and they are independent of the particular choice of the covariance function including the hyperparameters. While the pre-computation cost of the basis functions is $O(m^2n)$, the computational cost of learning the covariance function parameters is $O(mn+m)$ in every step of the optimizer or sampler. This is a big advantage in terms of speed for iterative algorithms such as Markov chain Monte Carlo (MCMC). Another advantage is the reduced memory requirements of automatic differentation methods used in modern probabilistic programming frameworks, such as Stan \citep{carpenter2017stan}, WinBUGS \citep{lunn2000winbugs} and others. This is because the memory requirements of automatic differentation rather scale with the computational complexity instead of with the usual memory requirements for the posterior density computation \todo{I don't understand the sentence about autodiff and computational complexity}. The basis function approach also provides an easy way to apply a non-centered parameterization of GPs, which reduces the posterior dependency between parameters representing the estimated function and the hyperparameters of the covariance function, which further improves MCMC efficiency.
+The Laplace eigenfunctions can be computed analytically and they are independent of the particular choice of the covariance function including the hyperparameters. While the pre-computation cost of the basis functions is $O(m^2n)$, the computational cost of learning the covariance function parameters is $O(mn+m)$ in every step of the optimizer or sampler. This is a big advantage in terms of speed for iterative algorithms such as Markov chain Monte Carlo (MCMC). Another advantage is the reduced memory requirements of automatic differentation methods used in modern probabilistic programming frameworks, such as Stan \citep{carpenter2017stan}, WinBUGS \citep{lunn2000winbugs} and others. This is because the memory requirements of automatic differentation rather scale with the computational complexity instead of with the usual memory requirements for the posterior density computation \todo{I don't understand the sentence about autodiff and computational complexity} \resp{Res: This sentence scapes me. I think this was written by Aki}. The basis function approach also provides an easy way to apply a non-centered parameterization of GPs, which reduces the posterior dependency between parameters representing the estimated function and the hyperparameters of the covariance function, which further improves MCMC efficiency.
 
 %\textcolor{red}{Aki: I moved this from section 2, needs to be combined with other intro}
 %We propose an approximate framework for fast and accurate inference
@@ -238,7 +244,7 @@ S_{\nu}(\omega)&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamm
 S_{\infty}(\omega)&= \alpha \sqrt{2\pi}^D  \ell^D \exp(-0.5 \ell^2 \omega^2), \label{eq_specdens_inf}  \\
 S_{\frac{3}{2}}(\omega)&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2})\sqrt{3}^3}{\frac{1}{2}\sqrt{\pi}\,\ell^3}\Big(\frac{3}{\ell^2}+\omega^2 \Big)^{\!-\frac{D+3}{2}}. \label{eq_specdens_32} 
 \end{align}
-\todo{Is it only purpose that only some equations have numbers? Res: Only text referenced equations have number (Gabi). }
+
 \noindent For input dimension $D=3$ and Euclidean distance $\omega=\sqrt{\sum_{i=1}^{3}s_i^2}$, and considering a multidimensional lengthscale $\bm{\ell} \in {\rm I\!R}^{3}$, the spectral densities written above take the form
 %
 \begin{align*}
@@ -379,85 +385,106 @@ f(\bm{x}) \approx \sum_{j=1}^{m^{\ast}}
 
 \section{The accuracy of the approximation}\label{ch5_sec_accuracy}
 
-The accuracy and speed of the HSGP model depends on several interrelated factors, most notably on the number of basis functions and on the boundary condition of the Laplace eigenfunctions. Furthermore, appropriate values for these factors will depend on the non-linearity of the estimated function, which is in turn characterized by the lengthscale of the covariance function.
+The accuracy and speed of the HSGP model depends on several interrelated factors, most notably on the number of basis functions and on the boundary condition of the Laplace eigenfunctions. Furthermore, appropriate values for these factors will depend on the degree of non-linearity of the estimated function, which is in turn characterized by the lengthscale of the covariance function.
 In this section, we analyze the effects of the number of basis functions and the boundary condition on the approximation accuracy. We present recommendations on how they should be chosen and diagnostics to check the accuracy of the obtained approximation. 
 
-Ultimately, these recommendations are based on the relationships among the number of basis functions, the boundary factor and the lengthscale of the function, which depend on the particular choice of the kernel function. In this work we built these relationships for the square exponential covariance function and Matern ($\nu$=3/2) covariance function in the present section, and for the periodic squared exponential covariance function in Appendix \ref{ch5_sec_periodic}. For other kernels, the relationships will be slightly different, in function of mainly the smoothness or wigglyness of the kernel effects.
+Ultimately, these recommendations are based on the relationships among the number of basis functions, the boundary condition and the lengthscale of the function, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the square exponential covariance function and Mat{\'e}rn ($\nu$=3/2) covariance function in the present section, and for the periodic squared exponential covariance function in Appendix \ref{ch5_sec_periodic}. For other kernels, the relationships will be slightly different, in function of mainly the smoothness or wigglyness of the kernel effects on the posterior function.
 
 \subsection{Dependency on the number of basis functions and the boundary condition} \label{ch5_subsec_dependency}
 
-As explained in Section \ref{ch5_sec_method}, the approximation of the covariance function is a series expansion of eigenfunctions and eigenvalues of the Laplace operator in a given domain $\Omega$, for instance in a one-dimensional input space $\Omega=[-L,L]\subset {\rm I\!R}$:
+As explained in Section \ref{ch5_sec_method}, the approximation of the covariance function is a series expansion of eigenfunctions and eigenvalues of the Laplace operator in a given domain $\Omega$, for instance in a one-dimensional input space $\Omega=[-L,L]\subset {\rm I\!R}$
 %
 \begin{equation*}
 k(\tau) = \sum_{j=1}^{\infty} S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0), 
 \end{equation*} 
 
-\noindent where $L$ describes the boundary condition, $j$ is the index for the eigenfunctions and eigenvalues, and $\tau=x-x'$ is the difference between two covariate values $x$ and $x'$ in $\Omega$. The eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ are given in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}) for the unidimensional case and in equations (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi}) for the multidimensional case. The number of basis functions can be truncated at some finite positive value $m$ such that the difference between the densities of the exact and approximate covariance functions is less than a predefined threshold $\varepsilon > 0$:
+\noindent where $L$ describes the boundary condition, $j$ is the index for the eigenfunctions and eigenvalues, and $\tau=x-x'$ is the difference between two covariate values $x$ and $x'$ in $\Omega$. The eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ are given in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}) for the unidimensional case and in equations (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi}) for the multidimensional case. The number of basis functions can be truncated at some finite positive value $m$ such that the total variation difference between the exact and approximate covariance functions is less than a predefined threshold $\varepsilon > 0$:
 %
 \begin{equation}\label{eq_diff_covs}
-\Big( \int k(\tau) \mathrm{d}\tau - 
-\int \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0) \mathrm{d}\tau \Big) < \varepsilon.
+ \int | k(\tau) - \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0)|  \mathrm{d}\tau  < \varepsilon.
 \end{equation}
 
-The finite number $m$ of basis functions in the approximation needed to satisfy equation (\ref{eq_diff_covs}) depends on the non-linearity of the function to be learned, that is on its lengthscale $\ell$, which constitutes a hyperparameter of the GP. The approximation also depends on the boundary $L$ (see equations (\ref{eq_eigenvalue}), (\ref{eq_eigenfunction}), (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi})), which will affect its accuracy especially near the boundaries. As we will see later on, $L$ will also influence the number of basis functions required in the approximation. In the present paper, we will set $L$ an extension of the desired covariate input domain $\Psi$. Without loss of generality, we can assume $\Psi$ to be symmetric around zero, that is $\Psi=[-S,S] \subset \Omega$. We now define $L$ as
+The specific numbe of basis functions  $m$ in the approximation needed to satisfy equation (\ref{eq_diff_covs}) depends on the degree of non-linearity of the function to be estimated, that is on its lengthscale $\ell$, which constitutes a hyperparameter of the GP. The approximation also depends on the boundary $L$ (see equations (\ref{eq_eigenvalue}), (\ref{eq_eigenfunction}), (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi})), which will affect its accuracy especially near the boundaries. As we will see later on, $L$ will also influence the number of basis functions required in the approximation. In the present paper, we will set $L$ an extension of the desired covariate input domain $\Psi = \max_{i}|x_i|$. Without loss of generality, we can assume $\Psi$ to be symmetric around zero, that is $\Psi=[-S,S] \subset \Omega$. We now define $L$ as
 %
 \begin{equation}\label{eq_boundary}
 L=c \cdot S,
 \end{equation} 
 
-\noindent where $S$ (for $S > 0$) represents the half-range of the input space, and $c$ (for $c \geq 1$) is the proportional extension factor. In the following, we will refer to $c$ as the boundary factor of the approximation. The boundary factor can also be regarded as the boundary $L$ normalized by the half-range $S$ of the input space.
+\noindent where $S$ (for $S > 0$) represents the half-range of the input space, and $c \geq 1$ is the proportional extension factor. In the following, we will refer to $c$ as the boundary factor of the approximation. The boundary factor can also be regarded as the boundary $L$ normalized by the half-range $S$ of the input space.
 
-We start with an illustration on how the number of basis functions $m$ and boundary factor $c$ influences the accuracy of the HSGP approximations, separately. For this purpose, a set of noisy observations are drawn from an exact GP model with lengthscale $\ell=0.3$ and marginal variance $\alpha=1$ of the kernel function, using input values from the zero-mean input domain with half-range $S=1$. Several HSGP models with varying $m$ and $L$ are fitted to this data. In this example, the lengthscale and marginal variance parameters used in the HSGPs are fixed to the true values of the data-generating model. 
-Figures \ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictions of the estimated function and on the covariance function itself. For $c$ fixed to a large enough value, Figure \ref{fig1_Post_J} shows clearly how $m$ affects the accuracy on the approximation and the non-linearity of the estimated function, in the sense that fewer basis functions inaccurately imply larger lengthscales and consequently more linear functional forms.
-The higher the "wigglyness" of the function to be estimated, the more basis functions will be required. If $m$ fixed to a large enough value, Figure \ref{fig2_Post_L} shows that $c$ mainly affects the approximation near the boundaries as well as covariances at long distances.
+We start by illustrating how the number of basis functions $m$ and boundary factor $c$ influence the accuracy of the HSGP approximations individually. For this purpose, a set of noisy observations are drawn from an exact GP model with a squared exponential covariance function of lengthscale $\ell=0.3$ and marginal variance $\alpha=1$, using input values from the zero-mean input domain with half-range $S=1$. Several HSGP models with varying $m$ and $L$ are fitted to this data. In this example, the lengthscale and marginal variance parameters used in the HSGPs are fixed to the true values of the data-generating model. 
+Figures \ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function and on the covariance function itself. For $c$ fixed to a large enough value, Figure \ref{fig1_Post_J} shows clearly how $m$ affects the accuracy on the approximation, either in mean or uncertainty, and the non-linearity of the estimated function, in the sense that fewer basis functions inaccurately imply larger lengthscales and consequently more linear functional forms.
+The higher the "wigglyness" of the function to be estimated, the more basis functions will be required. If $m$ fixed to a large enough value, Figure \ref{fig2_Post_L} shows that $c$ affects the approximation mainly near the boundaries in mean, although along the whole domain in the uncertainty. The approximation shows to be slighter sensitive in the uncertainty than in mean.
 
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig1_Post_J.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig1_Cov_J.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 27mm 32mm 122mm 10mm, clip]{ch5_fig1_legend.pdf}}
-\caption{Mean posterior predictive functions (left) and covariance functions (right) of both the regular GP model (dashed red line) and the HSGP model for different number of basis functions $m$, with the boundary factor fixed to a large enough value. Notice that the dashed red line of the regular GP can hardly be seen in the plots because it is under the blue lines.}
+%\subfigure{\includegraphics[scale=0.38, trim = 10mm 100mm 5mm 30mm, clip]{ch5_fig1_legend_01.pdf}}\\
+%\vspace{-9mm}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 10mm 0mm, clip]{ch5_fig1_Post_J.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig1_Sigma_J.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 3mm 0mm, clip]{ch5_fig1_Cov_J.pdf}}
+%\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig1_legend.pdf}}
+\caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the regular GP model (dashed red line) and the HSGP model for different number of basis functions $m$, with the boundary factor fixed to a large enough value.}
   \label{fig1_Post_J}
 \end{figure}
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig2_Post_L.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig2_Cov_L.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 27mm 32mm 120mm 0mm, clip]{ch5_fig2_legend.pdf}}
-\caption{Mean posterior predictive functions (left) and covariance functions (right) of both the regular GP model (dashed red line) and the HSGP model for different values of the boundary factor $c$, with a large enough fixed number of basis functions. Notice that the dashed red line of the regular GP can hardly be seen in the plots because it is under the blue lines.}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 10mm 0mm, clip]{ch5_fig2_Post_L.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig2_Sigma_L.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 3mm 0mm, clip]{ch5_fig2_Cov_L.pdf}}
+%\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig2_legend.pdf}}
+\caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the regular GP model (dashed red line) and the HSGP model for different values of the boundary factor $c$, with a large enough fixed number of basis functions.}
   \label{fig2_Post_L}
 \end{figure}
 
 
-Next, we will focus on analyzing the interaction effects between these $m$ and $c$ on the performance of the approximation. The lengthscale and marginal variance of the kernel will no longer be fixed but rather estimated in both regular GP and HSGP models. Figure \ref{fig3_Post_part1} shows the functional posterior predictions and the covariance function obtained after fitting the data, for varying $m$ and $c$. Figure \ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models, computed against the regular GP model. Figure \ref{fig5_lscale_vs_J} shows the estimated lengthscale and marginal variance for the regular GP model and the HSGP models. Looking at the RMSEs in Figure \ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computations would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the choice of $m = 10$ and $c = 1.5$ could still be an accurate enough choice. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure \ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
+Next, we analyze how the interaction effects between $m$ and $c$ affects the quality of the approximation. The lengthscale and marginal variance of the covariance function will no longer be fixed but instead their posterior marginal distributions estimated using HMC methods, for both regular GP and HSGP models. Figure \ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function and the covariance function obtained after fitting the data for varying $m$ and $c$. Figure \ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the regular GP model. Figure \ref{fig5_lscale_vs_J} shows the estimated lengthscale and marginal variance for the regular GP model and the HSGP models. Looking at the RMSEs in Figure \ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computations would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$  could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure \ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
 
 \begin{itemize}
-\item As $c$ increases, $m$ has to increase as well (and vice versa).
-\item There exists a minimum $c$ below which a close approximation will never be achieved regardless of $m$.
+\item As $c$ increases, $m$ has to increase as well (and vice versa). This is consistent with the expression for the eigenvalues in eq. \eqref{eq_eigenvalue}, where $L$ appears in the denominator	.
+\item There exists a minimum $c$ below which a accurate approximation will never be achieved regardless of the number of basis functions $m$.
 \end{itemize}
 
 
 \begin{figure}
-\begin{center}
-\begin{tabular}{| c | c | c | c |}
-\hline
-c  = 1.05 & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part1.pdf} & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Cov_part1.pdf} & \multirow{32}{1.3cm}{\includegraphics[scale=0.35, trim = 28mm 30mm 100mm 30mm, clip]{ch5_fig3_legend.pdf}}\\ 
-\cline{1-3}
-c  = 1.1 & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part2.pdf} & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Cov_part2.pdf} &\\
-\cline{1-3}
-c  = 1.2 & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part3.pdf} & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Cov_part3.pdf} &\\
-\cline{1-3}
-c  = 1.5 & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part4.pdf} & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Cov_part4.pdf} & \\
-\cline{1-3}
-c  = 2 & \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part5.pdf} &  \includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Cov_part5.pdf} & \\
-\cline{1-3}
-c  = 2.5 & \includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{ch5_fig3_Post_part6.pdf} & \includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{ch5_fig3_Cov_part6.pdf} &\\
-\hline
+\centering
+\begin{tabular}{ c c c }
+\arrayrulecolor{darkgray}\hline
+c = 1.05 &
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part1.pdf}
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Sigma_part1.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{ch5_fig3_Cov_part1.pdf} & 
+\multirow{32}{1cm}{ \includegraphics[scale=0.35, trim = 28mm 30mm 100mm 30mm, clip]{ch5_fig3_legend.pdf}}\\ 
+\arrayrulecolor{lightgray}\cline{1-2}
+c = 1.1 &
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part2.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Sigma_part2.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{ch5_fig3_Cov_part2.pdf} &\\
+\cline{1-2}
+c = 1.2 &
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part3.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Sigma_part3.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{ch5_fig3_Cov_part3.pdf} &\\
+\cline{1-2}
+c = 1.5 &
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part4.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Sigma_part4.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{ch5_fig3_Cov_part4.pdf} & \\
+\cline{1-2}
+c = 2 &
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Post_part5.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{ch5_fig3_Sigma_part5.pdf} 
+\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{ch5_fig3_Cov_part5.pdf} & \\
+\cline{1-2}
+c = 2.5 &
+\includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{ch5_fig3_Post_part6.pdf}
+\includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{ch5_fig3_Sigma_part6.pdf}
+\includegraphics[scale=0.215, trim = 0mm 4mm 5mm 14mm, clip]{ch5_fig3_Cov_part6.pdf} &\\
+\arrayrulecolor{darkgray}\hline
 \end{tabular}
-\end{center}
-\caption{Mean posterior predictive functions (left) and covariance functions (right) of both the regular GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$. Notice that the dashed red line of the regular GP can hardly be seen in the some of the plots because it is under the blue lines.}
+\caption{Posterior mean predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the regular GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$. Notice that the dashed red line of the regular GP can hardly be seen in the some of the plots because it is under the blue lines.}
   \label{fig3_Post_part1}
 \end{figure}
 
@@ -480,11 +507,12 @@ c  = 2.5 & \includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{ch5_fig3
 \end{figure}
 
 
-Additionally, there is a clear relation of the number of basis functions $m$ and the boundary factor $c$ with the lengthscale $\ell$ of the approximated function. Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern} depicts how these three factors interact with each other in relation to a close approximation of the HSGP model, in the cases of a GP with square exponential covariance function and Mat\'ern($\nu$=3/2) covariance function, respectively, and a single input dimension. More precisely, for a given GP model (with a square exponential covariance function) with lengthscale $\ell$ and given a boundary factor $c$, Figure \ref{fig6_lscale_vs_J_vs_c} shows the minimum $m$ required to achieve a close approximation in terms of satisfying equation (\ref{eq_diff_covs}). Similarly for Figure \ref{fig6_lscale_vs_J_vs_c_Matern} in the case of a Mat\'ern($\nu$=3/2) covariance function. We have considered an approximation to be a close enough when the difference between densities of the approximate covariance function and the exact covariance function, $\varepsilon$ in equation (\ref{eq_diff_covs}), is below 1$\%$ of the density of the exact covariance function:
+Additionally, there is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the lengthscale $\ell$ of the approximated function. Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern} depict how these three factors interact with each other in relation to a close approximation of the HSGP model, in the cases of a GP with square exponential covariance function and Mat\'ern($\nu$=3/2) covariance function, respectively, and a single input dimension. More precisely, for a given GP model (with a squared exponential covariance function) with lengthscale $\ell$ and given a boundary factor $c$, Figure \ref{fig6_lscale_vs_J_vs_c} shows the minimum $m$ required to achieve a accurate approximation in the sense of satisfying equation (\ref{eq_diff_covs}). Similarly for Figure \ref{fig6_lscale_vs_J_vs_c_Matern} in the case of a Mat\'ern($\nu$=3/2) covariance function. We considered an approximation to be a close enough when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in equation (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$:
 %
 \begin{equation*}
  \frac{\varepsilon}{\int k(\tau) \mathrm{d}\tau} < 0.01.
 \end{equation*}
+
 
 \noindent Alternatively, these figures could be understood as providing the minimum $c$ that we should use for given $\ell$ and $m$. Of course, we may also read it as providing the minimum $\ell$ that can be closely approximated given $m$ and $c$. We obtain the following main conclusions:
 
@@ -495,7 +523,7 @@ Additionally, there is a clear relation of the number of basis functions $m$ and
 \end{itemize}
 
 As stated above, Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern} provide the minimum lengthscale that can be closely approximated given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the lenghscale $\ell$ controls the "wigglyness" of
-the functional relationship, it strongly influences the difficulty of obtaining accurate
+the function, it strongly influences the difficulty of obtaining accurate
 inference about the function from the data. Basically, if the lengthscale estimate is accurate, 
 we can expect the HSGP approximation to be accurate as well. Thus, having obtained an estimate $\hat{\ell}$ of $\ell$ from the HSGP model based on prespecified $m$ and $c$, we can check whether or not $\hat{\ell}$ exceeds the minimum lengthscale provided in Figure \ref{fig6_lscale_vs_J_vs_c} or \ref{fig6_lscale_vs_J_vs_c_Matern} (depending on which kernel is used). If $\hat{\ell}$ exceeds this recommended minimum lengthscale, the approximation should be close enough. If, however, $\hat{\ell}$ does not exceed recommended minimum lengthscale, the approximation may be inaccurate and $m$ should be increased or $c$ decreased. We may also use this diagnostic in a iterative procedure.
 Starting from some initial guess of $\ell$, we can choose initial values for $m$ and $c$ and fit an HSGP model, then check the approximation accuracy, and, if not accurate enough because the estimated $\hat{\ell}$ is below the minimum lengthscale, repeat the process while increasing $m$ or decreasing $c$.
