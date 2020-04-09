@@ -17,7 +17,7 @@
 
 \usepackage{epstopdf}
 
-\usepackage[numbers,sort&compress]{natbib}
+\usepackage[sort&compress]{natbib}
 \usepackage{subfigure}
 \usepackage{multirow}
 \usepackage{float}
@@ -45,7 +45,7 @@
 }
 
 
-\bibpunct[, ]{[}{]}{,}{}{,}{,}
+% \bibpunct[, ]{[}{]}{,}{}{,}{,}
 \renewcommand\bibfont{\fontsize{10}{12}\selectfont}
 
 \usepackage{listings}
@@ -94,14 +94,14 @@ The key element of a GP is the covariance function that defines the dependence s
 
 Sparse GPs are based on low-rank approximations of the covariance matrix. The low-rank approximation with $m \ll n$ {\it inducing points} implies reduced memory requirements of $O(nm)$ and corresponding computational complexity of $O(nm^2)$.
 A unifying view on sparse GPs based on approximate generative methods
-is provided in \cite{quinonero2005unifying}, while a general review
-can be found in \cite{rasmussen2006gaussian}. \citet{Burt+Rasmussen+vanderWilk:2019} show that for regression with normally distributed covariates in $D$ dimensions and using the squared exponential covariance function, $M=O(\log^DN)$ is sufficient for an accurate approximation.
+is provided by \citet{quinonero2005unifying}, while a general review
+is provided by \citet{rasmussen2006gaussian}. \citet{Burt+Rasmussen+vanderWilk:2019} show that for regression with normally distributed covariates in $D$ dimensions and using the squared exponential covariance function, $M=O(\log^DN)$ is sufficient for an accurate approximation.
 % More recent developments in the context of sparse GPs include a structured kernel interpolation method \citep{wilson2015kernel}. More recently, \citep{bui2017unifying} proposed to use inducing points-based sparse approximation methods to perform GP approximations at inference time rather than at modeling time.
 
 An alternative class of low-rank approximations is based on forming a basis function approximation with $m \ll n$ basis functions. The basis functions are usually presented explicitly, but can also be used to form a low rank covariance matrix approximation. Common basis function approximations rest on the spectral analysis and series expansions of GPs \citep{loeve1977probability,trees1968detection,adler1981geometry,cramer2013stationary}.
-Sparse spectrum GPs are based on a sparse approximation to the frequency domain representation of a GP \citep{lazaro2010sparse,quia2010sparse,gal2015improving}. Recently, \cite{hensman2017variational} presented a variational Fourier feature approximation for GPs that was derived for the Mat{\'e}rn class of kernels. Another related method for approximating kernels relies on random Fourier features \citep{rahimi2008random,rahimi2009weighted}.
-Further, certain spline smoothing basis functions are equivalent to GPs with certain covariance functions \citep{wahba1990spline,Furrer+Nychka:2007}.
-Furthermore, a recent related work based on a spectral representation of GPs as an infinite series expansion with the Karhunen-Loève representation (see, e.g. \cite{grenander1981abstract}) can be found in \cite{JSSv090i10}.
+Sparse spectrum GPs are based on a sparse approximation to the frequency domain representation of a GP \citep{lazaro2010sparse,quia2010sparse,gal2015improving}. Recently, \citet{hensman2017variational} presented a variational Fourier feature approximation for GPs that was derived for the Mat{\'e}rn class of kernels. Another related method for approximating kernels relies on random Fourier features \citep{rahimi2008random,rahimi2009weighted}.
+Certain spline smoothing basis functions are equivalent to GPs with certain covariance functions \citep{wahba1990spline,Furrer+Nychka:2007}.
+A recent related work based on a spectral representation of GPs as an infinite series expansion with the Karhunen-Loève representation \citep[see, e.g.][]{grenander1981abstract} is presented by \citet{JSSv090i10}.
 % , but not all spline models are GPs (e.g., some spline models are not marginalization consistent).
 
 %{\color{blue} Paul: Can we clarify how our discussed method relates to the former paragraph,
@@ -136,7 +136,7 @@ code.
 
 Although there are several GP specific software packages available to date, for example, GPML \citep{rasmussen2010gpml},  GPstuff \citep{vanhatalo2013gpstuff}, GPy \citep{gpy2014}, and GPflow \citep{GPflow2017}), each provide efficient implementations only for a restricted range of GP-based models. In this paper, we do not focus on the fastest possible inference for some specific GP models, but instead are interested in how GPs can be easily used as modular components in probabilistic programming frameworks. 
 
-The remainder of the paper is structured as follows. In Section \ref{ch4_gp}, we introduce GPs, covariance functions and spectral density functions. In Section \ref{ch5_sec_method}, the reduced rank approximation to GPs proposed by \cite{solin2018hilbert} is described. In Section \ref{ch5_sec_accuracy}, the accuracy of these approximations under several conditions using analytical and numerical methods is analyzed. Several case studies in which we fit
+The remainder of the paper is structured as follows. In Section \ref{ch4_gp}, we introduce GPs, covariance functions and spectral density functions. In Section \ref{ch5_sec_method}, the reduced rank approximation to GPs proposed by \citet{solin2018hilbert} is described. In Section \ref{ch5_sec_accuracy}, the accuracy of these approximations under several conditions using analytical and numerical methods is analyzed. Several case studies in which we fit
 exact and approximate GPs to real and simulated data are provided in Section \ref{ch5_sec_cases}. A brief conclusion of the work is made in Section \ref{ch5_sec_conclusion}. Appendix \ref{ch5_app_approx_covfun} includes a brief presentation of the mathematical details behind this Hilbert space approximation of a stationary covariance function, and Appendix \ref{ch5_sec_periodic} presents a low-rank representation of a GP for the particular case of a periodic covariance function. 
 Online supplemental material with more case studies illustrating the performance and applicability of the method can be found at \url{https://github.com/gabriuma/basis_functions_approach_to_GP} in the subfolder \url{Paper/online_supplemental_material}.
 
@@ -232,7 +232,7 @@ k_{\frac{3}{2}}(|\bm{x}-\bm{x}'|_{L2})&=\alpha \bigg(1+\sqrt{\sum_{i=1}^{D}\frac
 
 \noindent Notice that the previous expressions have been easily generalized to using a multidimensional length-scale $\bm{\ell}\in {\rm I\!R}^D$. Using individual length-scales for each dimension turns the isotropic covariance function into a non-isotropic covariance function. That is, for a non-isotropic covariance function, the smoothness may vary across different input dimensions. 
 
-Stationary covariance functions can be represented in terms of their spectral densities \citep{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure (\textit{Bochner's theorem}, see, e.g. \cite{akhiezer1993theory}). If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern class of covariance functions is given by
+Stationary covariance functions can be represented in terms of their spectral densities \citep{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure \citep[\textit{Bochner's theorem}, see, e.g. ][]{akhiezer1993theory}. If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern class of covariance functions is given by
 %
 \begin{align*}
 S_{\nu}(\omega)&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\, l^{2\nu}}\Big(\frac{2\nu}{l^2}+4\pi^2\omega^2 \Big)^{\!(\nu+D/2)}
@@ -255,7 +255,7 @@ S_{\frac{3}{2}}(\omega)&= \alpha \, 32\pi\sqrt{3}^3\prod_{i=1}^{3}\ell_i\big(3+\
 
 \section{Hilbert space approximate Gaussian process model}\label{ch5_sec_method}
 
-The approximate GP method, developed by \cite{solin2018hilbert} and implemented in this paper, is based on considering the covariance operator of a stationary covariance function as a pseudo-differential operator constructed as a series of Laplace operators. Then, the pseudo-differential operator is approximated with Hilbert space methods on a compact subset $\Omega \subset {\rm I\!R}^D$ subject to boundary conditions. For brevity, we will refer to these approximate Gaussian processes as HSGPs. Below, we will present the main results around HSGPs relevant for practical applications. More details and mathematical proofs are provided in \cite{solin2018hilbert}. Our starting point for presenting the method is the main result obtained by \cite{solin2018hilbert} of the definition of the covariance function as a series expansion of eigenvalues and eigenfunctions of the Laplacian operator. The mathematical details of this approximation are briefly presented in Appendix \ref{ch5_app_approx_covfun}.
+The approximate GP method, developed by \citet{solin2018hilbert} and implemented in this paper, is based on considering the covariance operator of a stationary covariance function as a pseudo-differential operator constructed as a series of Laplace operators. Then, the pseudo-differential operator is approximated with Hilbert space methods on a compact subset $\Omega \subset {\rm I\!R}^D$ subject to boundary conditions. For brevity, we will refer to these approximate Gaussian processes as HSGPs. Below, we will present the main results around HSGPs relevant for practical applications. More details and mathematical proofs are provided by \citet{solin2018hilbert}. Our starting point for presenting the method is the main result obtained by \citet{solin2018hilbert} of the definition of the covariance function as a series expansion of eigenvalues and eigenfunctions of the Laplacian operator. The mathematical details of this approximation are briefly presented in Appendix \ref{ch5_app_approx_covfun}.
 
 We begin by focusing on the case of a unidimensional input space (i.e. on GPs with just a single covariate) such that $\Omega \in [-L,L] \subset {\rm I\!R}$, where $L$ is some positive real number to which we also refer as boundary condition. As $\Omega$ describes the interval in which the approximations are valid, $L$ plays a critical role in the accuracy of HSGPs. We will come back to this issue in Section \ref{ch5_sec_accuracy}.
 
@@ -648,7 +648,7 @@ A more computationally efficient formulation of a GP model with Gaussian likelih
 \noindent where the function values $\bm{f}$ have been integrated out, yielding a lower-dimensional parameter space over which to do inference, reducing the time of computation and improving the sampling and the effective number of samples.
 
 In the HSGP model, the latent function values $f(x)$ are approximated as in equation (\ref{eq_approxf}), with the Mat{\'e}rn($\nu$=3/2) spectral density $S$ as in equation (\ref{eq_specdens_32}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}), respectively. 
-In order to do model comparison, in addition to the regular GP model and HSGP model, a spline-based model is also fitted using the thin plate regression spline approach in \cite{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
+In order to do model comparison, in addition to the regular GP model and HSGP model, a spline-based model is also fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
 
 Figure \ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributions of the three models, the regular GP, the HSGP with $m=80$ basis functions and boundary factor $c=1.2$ ($L=c\cdot 1= 1.2$; see equation (\ref{eq_boundary})), and the spline model with 80 knots. The true data-generative function and the noisy observations are also plotted. The sample observations are plotted as circles and the out-of-sample or test data, which have not been taking part on training the models, are plotted as crosses. The test data located at the extremes of the plot are used for assessing model extrapolation, and the test data located in the middle are used for assessing model interpolation. The posteriors of the three models, regular GP, HSGP and spline, are pretty similar within the interpolation input space. However, when extrapolating the spline model solution clearly differs from the regular GP and HSGP models as well as the actual observations. 
 
@@ -690,7 +690,7 @@ Roughly similar or even worse behavior was found for splines where serious diffi
 
 
 \subsection{Birthday data}\label{ch5_sec_birthday}
-This example is an analysis of patterns in birthday frequencies in a dataset containing records of all births in the United States on each day during the period 1969–1988. The model decomposes the number of births along all the period in longer-term trend effects, patterns during the year, day-of-week effects, and special days effects. The special days effects cover patterns such as possible fewer births on Halloween, Christmas or new year, and excess of births on Valentine’s Day or the days after Christmas (due, presumably, to choices involved in scheduled deliveries, along with decisions of whether to induce a birth for health reasons). This analysis was originally addressed in \cite{gelman2013bayesian}. The total number of days within the period is $T=7305$ ($t=1,\dots,T$), then a regular GP model is unfeasible to be fitted on this dataset as we know inference scales $O(T^3)$ in covariance matrix inversion. 
+This example is an analysis of patterns in birthday frequencies in a dataset containing records of all births in the United States on each day during the period 1969–1988. The model decomposes the number of births along all the period in longer-term trend effects, patterns during the year, day-of-week effects, and special days effects. The special days effects cover patterns such as possible fewer births on Halloween, Christmas or new year, and excess of births on Valentine’s Day or the days after Christmas (due, presumably, to choices involved in scheduled deliveries, along with decisions of whether to induce a birth for health reasons). This analysis was originally presented by \citet{gelman2013bayesian}. The total number of days within the period is $T=7305$ ($t=1,\dots,T$), then a regular GP model is unfeasible to be fitted on this dataset as we know inference scales $O(T^3)$ in covariance matrix inversion. 
 Therefore, an approximate approach has to be used to fit a GP model on this data. We will use the HSGP method as well as the low-rank GP model with a periodic covariance function introduced in Appendix \ref{ch5_sec_periodic} which is based on expanding the periodic covariance function into a series of stochastic resonators \citep{solin2014explicit}.
 
 Let's denote $y_t$ as the number of births of day $t$. The observational model is a normal model with parameters the mean function $\mu(t)$ and noise variance $\sigma^2$,
@@ -841,7 +841,7 @@ Using the HSGP approximation, the functions $f(\bm{x})$ and $g(\bm{x})$ are appr
 Figure \ref{ch5_fig21_posteriors_leukemia} shows estimated conditional comparison of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. The model has found smooth non-linear patterns and the right bottom subplot also shows that the conditional comparison associated with WBC has an interaction with TDI.
 
 
-Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density (ELPD; see \cite{vehtari_2012}) and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in equation (\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{ch5_fig22_elpd_leukemia}-left); Small boundary factors are not allowed when large lengthscales, as can be seen in Figure \ref{fig6_lscale_vs_J_vs_c}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{ch5_fig22_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
+Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density \citep[ELPD; see][]{vehtari_2012} and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in equation (\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{ch5_fig22_elpd_leukemia}-left); Small boundary factors are not allowed when large lengthscales, as can be seen in Figure \ref{fig6_lscale_vs_J_vs_c}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{ch5_fig22_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
 %
 \begin{figure}
 \centering
@@ -856,7 +856,7 @@ The Stan model code for the exact GP and the approximate GP models of this case 
 %
 
 \section{Conclusion}\label{ch5_sec_conclusion}
-Modeling unknown functions using exact GPs is computationally intractable for a lot of applications. This problem becomes especially severe when performing full Bayesian inference using sampling-based methods. In this paper, a novel approach for a low-rank representation of stationary GPs, originally proposed by \cite{solin2018hilbert}, has been implemented and analyzed in detail. The method is based on a basis function approximation via Laplace eigenfunctions. The method has an attractive computational cost as it effectively approximates GPs by linear models, which is also an attractive property in modular probabilistic programming programming frameworks. 
+Modeling unknown functions using exact GPs is computationally intractable for a lot of applications. This problem becomes especially severe when performing full Bayesian inference using sampling-based methods. In this paper, a novel approach for a low-rank representation of stationary GPs, originally proposed by \citet{solin2018hilbert}, has been implemented and analyzed in detail. The method is based on a basis function approximation via Laplace eigenfunctions. The method has an attractive computational cost as it effectively approximates GPs by linear models, which is also an attractive property in modular probabilistic programming programming frameworks. 
 The dominating cost per log density evaluation (during sampling) is $O(nm+m)$, which is a big benefit in comparison to $O(n^3)$ of a regular GP model. The obtained design matrix is independent of hyperparameters and therefore only needs to be constructed once, at cost $O(nm)$. All dependencies on the kernel and the hyperparameters are through the prior distribution of the regression weights. The parameters' posterior distribution is $m$-dimensional, where $m$ is usually much smaller than the number of observations $n$. 
 
 %In terms of scaling, one main drawback of the method is the scaling with respect to the number of input dimensions, as the number of basis functions $m$ scales exponentially with the number of dimensions.
@@ -884,7 +884,7 @@ In this paper, we primarily studied the functional relationships for univariate 
 \section{Approximation of the covariance function using Hilbert space methods} \label{ch5_app_approx_covfun}
 
 
-In this section, we briefly present a summary of the mathematical details of the approximation of a stationary covariance function as a series expansion of eigenvalues and eigenfunctions of the Laplacian operator. This statement is basically an extract of the work \cite{solin2018hilbert}, where the authors fully develop the mathematical theory behind the Hilbert Space approximation for stationary covariance functions.
+In this section, we briefly present a summary of the mathematical details of the approximation of a stationary covariance function as a series expansion of eigenvalues and eigenfunctions of the Laplacian operator. This statement is based on the work by \citet{solin2018hilbert}, who developed the mathematical theory behind the Hilbert Space approximation for stationary covariance functions.
 
 Associated to each covariance function $k(\bm{x},\bm{x}')$ we can also define a covariance operator $\mathcal{K}$ over a function $f(\bm{x})$ as follows:
 %
@@ -998,7 +998,7 @@ k(\bm{x},\bm{x}')= \sum_j S(\sqrt{\lambda_j}) \phi_j(\bm{x}) \phi_j(\bm{x}'),
 
 \section{Low-rank Gaussian process with a periodic covariance function}\label{ch5_sec_periodic}
 
-A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study. However, it do has a low-rank representation. In this section, we first give a brief presentation of the results from \cite{solin2014explicit}, where the authors obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic square exponential covariance function.
+A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study. However, it do has a low-rank representation. In this section, we first give a brief presentation of the results by \citep{solin2014explicit}, whi obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic square exponential covariance function.
 
 The periodic squared exponential covariance function takes the form
 %
@@ -1008,7 +1008,7 @@ k(\bm{\tau})= \alpha \exp\!\!\Big(\! -\frac{2\sin^{\!2}\!(\omega_0\frac{\bm{\tau
 
 \noindent where $\alpha$ is the magnitude scale of the covariance, $\ell$ is the characteristic lengthscale of the covariance, and $\omega_0$ is the angular frequency defining the periodicity. 
 
-In \cite{solin2014explicit}, the authors come to a cosine series expansion for the periodic covariance function (\ref{ch5_eq_cov_periodic}) as follows,
+\citet{solin2014explicit} come to a cosine series expansion for the periodic covariance function (\ref{ch5_eq_cov_periodic}) as follows,
 % 
 \begin{equation} \label{ch5_eq_cov_periodic_taylor_approx}
 k(\tau)= \alpha \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 \tau),
@@ -1026,7 +1026,7 @@ k(\tau)= \alpha \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 \tau),
 \tilde{q}_0^2= \frac{1}{2} \frac{2}{\exp(\frac{1}{\ell^2})} \sum_{j=0}^{\lfloor \frac{J-j}{2} \rfloor} \frac{(2\ell^2)^{-j-2}}{(j+i)!i!}.
 \end{equation}
  
-\noindent Note that the covariance in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) is a $J$th order truncation of a Taylor series representation. As \cite{solin2014explicit} argue, this approximation converges to equation (\ref{ch5_eq_cov_periodic}) when $J \rightarrow \infty$.
+\noindent Note that the covariance in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) is a $J$th order truncation of a Taylor series representation. As \citet{solin2014explicit} argue, this approximation converges to equation (\ref{ch5_eq_cov_periodic}) when $J \rightarrow \infty$.
 
 %If the requirement of a valid covariance function is relaxed and only an optimal series approximation is required, taking the limit $J \rightarrow \infty$ in the sub-sums in equation (\ref{ch5_eq_q}) gives the following variance coefficients
 An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q}_0^2$ can be obtained by taking the limit $J \rightarrow \infty$ in the sub-sums in the corresponding equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}), and thus leading to the following variance coefficients:
@@ -1038,7 +1038,7 @@ An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q
 \end{split}
 \end{equation} 
 
-\noindent for $j=1,2,\cdots,J$, and where the $\text{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required \citep{solin2014explicit}. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function can be found in \cite{solin2014explicit}. 
+\noindent for $j=1,2,\cdots,J$, and where the $\text{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required \citep{solin2014explicit}. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
 
 %Note that the terms in equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}) are underneath bounded approximations for any $J$. 
 
