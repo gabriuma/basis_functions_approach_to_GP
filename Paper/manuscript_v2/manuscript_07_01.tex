@@ -40,6 +40,7 @@
 \usepackage{boldline}
 \usepackage{colortbl}
 \DeclareMathOperator{\LogNormal}{LogNormal}
+\DeclareMathOperator{\GP}{\mathcal{GP}}
 
 \providecommand{\keywords}[1]
 {
@@ -152,7 +153,7 @@ In this work, GPs will take the role of a prior distribution over function space
 Consider a data set $\mathcal{D} = \left\lbrace \bm{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is modelled conditionally as $p(y_n \mid f(\bm{x}_n),\phi)$, where $p$ is some parametric distribution with parameters  $\phi$, and $f$ is an unknown function with GP prior, which depends on an input $\bm{x}_n\in {\rm I\!R}^D$. This generalizes readily to more complex models depending on several unknown functions, for example such as $p(y_n \mid f(\bm{x}_n),g(\bm{x}_n))$ or multilevel models. Our goal is to obtain the posterior distribution for the value of the function $\tilde{f}=f(\tilde{\bm{x}})$  evaluated at a new input point $\tilde{\bm{x}}$.
 % That is, we want to obtain the predictive distribution $p(f^* \mid \mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.\\
 
-We assume a GP prior for $f \sim \mathcal{GP}(\mu(\bm{x}), k(\bm{x}, \bm{x}'))$, where $\mu: {\rm I\!R}^D \rightarrow {\rm I\!R}$ and $k: {\rm I\!R}^D \times {\rm I\!R}^D \rightarrow {\rm I\!R}$ are the mean and covariance functions, respectively,
+We assume a GP prior for $f \sim \GP(\mu(\bm{x}), k(\bm{x}, \bm{x}'))$, where $\mu: {\rm I\!R}^D \rightarrow {\rm I\!R}$ and $k: {\rm I\!R}^D \times {\rm I\!R}^D \rightarrow {\rm I\!R}$ are the mean and covariance functions, respectively,
 %
 \begin{align*}
  	\mu(\bm{x}) &= \mathbb{E}\!\left[f(\bm{x})\right],\\ 
@@ -411,7 +412,7 @@ The higher the wigglyness of the function to be estimated, the more basis functi
 \subfigure{\includegraphics[scale=0.29, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig1_Sigma_J.pdf}}
 \subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 3mm 0mm, clip]{ch5_fig1_Cov_J.pdf}}
 %\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig1_legend.pdf}}
-\caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the regular GP model (dashed red line) and the HSGP model for different number of basis functions $m$, with the boundary factor fixed to a large enough value.}
+\caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model (dashed red line) and the HSGP model for different number of basis functions $m$, with the boundary factor fixed to a large enough value.}
   \label{fig1_Post_J}
 \end{figure}
 
@@ -421,12 +422,12 @@ The higher the wigglyness of the function to be estimated, the more basis functi
 \subfigure{\includegraphics[scale=0.29, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig2_Sigma_L.pdf}}
 \subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 3mm 0mm, clip]{ch5_fig2_Cov_L.pdf}}
 %\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig2_legend.pdf}}
-\caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the regular GP model (dashed red line) and the HSGP model for different values of the boundary factor $c$, with a large enough fixed number of basis functions.}
+\caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model (dashed red line) and the HSGP model for different values of the boundary factor $c$, with a large enough fixed number of basis functions.}
   \label{fig2_Post_L}
 \end{figure}
 
 
-Next, we analyze how the interaction effects between $m$ and $c$ affects the quality of the approximation. The lengthscale and marginal variance of the covariance function will no longer be fixed but instead their posterior marginal distributions estimated using dynamic HMC algorithm implemented in Stan \citep{carpenter2017stan,betancourt2017conceptual}, for both regular GP and HSGP models. Figure \ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the data for varying $m$ and $c$. Figure \ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the regular GP model. Figure \ref{fig5_lscale_vs_J} shows the estimated lengthscale and marginal variance for the regular GP model and the HSGP models. Looking at the RMSEs in Figure \ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computations would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$  could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure \ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
+Next, we analyze how the interaction effects between $m$ and $c$ affects the quality of the approximation. The lengthscale and marginal variance of the covariance function will no longer be fixed but instead their posterior marginal distributions estimated using dynamic HMC algorithm implemented in Stan \citep{carpenter2017stan,betancourt2017conceptual}, for both exact GP and HSGP models. Figure \ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the data for varying $m$ and $c$. Figure \ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the exact GP model. Figure \ref{fig5_lscale_vs_J} shows the estimated lengthscale and marginal variance for the exact GP model and the HSGP models. Looking at the RMSEs in Figure \ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computations would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$  could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure \ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
 
 \begin{itemize}
 \item As $c$ increases, $m$ has to increase as well (and vice versa). This is consistent with the expression for the eigenvalues in eq. \eqref{eq_eigenvalue}, where $L$ appears in the denominator	.
@@ -470,7 +471,7 @@ c = 2.5 &
 \includegraphics[scale=0.215, trim = 0mm 4mm 5mm 14mm, clip]{ch5_fig3_Cov_part6.pdf} &\\
 \arrayrulecolor{darkgray}\hline
 \end{tabular}
-\caption{Posterior mean predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the regular GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$. The dashed red line of the regular GP can hardly be seen in the some of the plots because it is under the blue lines.}
+\caption{Posterior mean predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$. The dashed red line of the exact GP can hardly be seen in the some of the plots because it is under the blue lines.}
   \label{fig3_Post_part1}
 \end{figure}
 
@@ -479,7 +480,7 @@ c = 2.5 &
 \centering
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 0mm 0mm, clip]{ch5_fig4_MSE_vs_J.pdf}}
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig4_MSE_vs_c.pdf}}
-\caption{Root mean square error (RMSE) of the proposed HSGP models computed against the regular GP model. RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$ (left). RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$ (right). }
+\caption{Root mean square error (RMSE) of the proposed HSGP models computed against the exact GP model. RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$ (left). RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$ (right). }
   \label{fig4_MSE_vs_J}
 \end{figure}
 
@@ -488,7 +489,7 @@ c = 2.5 &
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig5_lscale_vs_J.pdf}}
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig5_magnitud_vs_J.pdf}}
 \subfigure{\includegraphics[scale=0.40, trim = 28mm 28mm 119mm 0mm, clip]{ch5_fig5_legend.pdf}}
-\caption{Estimated lengthscale (left) and marginal variance (right) parameters of both regular GP and HSGP models, plotted versus the number of basis functions $m$ and for different values of the boundary factor $c$.}
+\caption{Estimated lengthscale (left) and marginal variance (right) parameters of both exact GP and HSGP models, plotted versus the number of basis functions $m$ and for different values of the boundary factor $c$.}
   \label{fig5_lscale_vs_J}
 \end{figure}
 
@@ -542,10 +543,10 @@ Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern} were 
 \subsection{Comparing lengthscale estimates}
 
 In this example, we make a comparison of the lengthscale estimates
-obtained from the regular GP and HSGP models. We also have a look at those recommended minimum lengthscales provided by Figure \ref{fig6_lscale_vs_J_vs_c}.
+obtained from the exact GP and HSGP models. We also have a look at those recommended minimum lengthscales provided by Figure \ref{fig6_lscale_vs_J_vs_c}.
 For this analysis, we will use various datasets consisting of noisy draws from a GP prior model with a squared exponential covariance function and varying lengthscale values. Different values of the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case. 
 
-Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions of both regular GP and HSGP models fitted to those datasets. The lengthscale estimates as obtained by regular GP and HSGP models are depicted in Figure \ref{fig8_Tlscale_vs_Elscale}. As noted previously, an accurate estimate of the lengthscale can be a good indicator of a close approximation of the HSGP model to the regular GP model. Further, Figure \ref{fig9_MSE_varing_lscale} shows the root mean square error (RMSE) of the HSGP models, computed against the regular GP models, as a function of the lengthscale and number of basis functions.
+Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions of both exact GP and HSGP models fitted to those datasets. The lengthscale estimates as obtained by exact GP and HSGP models are depicted in Figure \ref{fig8_Tlscale_vs_Elscale}. As noted previously, an accurate estimate of the lengthscale can be a good indicator of a close approximation of the HSGP model to the exact GP model. Further, Figure \ref{fig9_MSE_varing_lscale} shows the root mean square error (RMSE) of the HSGP models, computed against the exact GP models, as a function of the lengthscale and number of basis functions.
 
 \begin{figure}
 \centering
@@ -563,7 +564,7 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part8.pdf}}
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part9.pdf}}\\
 \vspace{-3mm}
-\caption{Mean posterior predictions of both regular GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). The dashed red line of the regular GP can hardly be seen in the plots because it is almost perfectly overlayed by the blue lines.}
+\caption{Mean posterior predictions of both exact GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). The dashed red line of the exact GP can hardly be seen in the plots because it is almost perfectly overlayed by the blue lines.}
   \label{fig7_posterior_varing_lscale_part1}
 \end{figure}
 
@@ -576,7 +577,7 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
 \includegraphics[scale=0.31, trim = 0mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part4.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part5.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part6.pdf}
 \end{tabular}
 \end{flushleft}
-\caption{Data-generating functional lengthscales ($\ell$), of the various datasets illustrated in Figure \ref{fig7_posterior_varing_lscale_part1}, versus the corresponding lengthscale estimates $(\hat{\ell})$ from the regular GP and HSGP models. 95\% confident intervals of the lengthscale estimates are plotted as dot lines. The different plots represent the use of different number of basis functions $m$ in the HSGP model. The dashed black line represents the recommended minimum lengthscales provided by Figure \ref{fig6_lscale_vs_J_vs_c} that can be closely approximated by the HSGP model in every case.}
+\caption{Data-generating functional lengthscales ($\ell$), of the various datasets illustrated in Figure \ref{fig7_posterior_varing_lscale_part1}, versus the corresponding lengthscale estimates $(\hat{\ell})$ from the exact GP and HSGP models. 95\% confident intervals of the lengthscale estimates are plotted as dot lines. The different plots represent the use of different number of basis functions $m$ in the HSGP model. The dashed black line represents the recommended minimum lengthscales provided by Figure \ref{fig6_lscale_vs_J_vs_c} that can be closely approximated by the HSGP model in every case.}
   \label{fig8_Tlscale_vs_Elscale}
 \end{figure}
 
@@ -614,13 +615,13 @@ In this section, we will present several simulated and real case studies in whic
 
 This example consists of a simulated dataset with $n=250$ ($i=1,\dots,n$) single draws from a Gaussian process prior with a Mat{\'e}rn($\nu$=3/2) covariance function and hyperparameters marginal variance $\alpha=1$ and lengthscale $\ell=0.15$, with corresponding inputs values $\bm{x}=(x_1\dots,x_n)$ with $x_i \in [-1,1] \subset {\rm I\!R}$. To form the final noisy dataset $\bm{y}$, Gaussian noise standard deviation $\sigma=0.2$ was added to the GP draws.
 
-The regular GP model for fitting this simulated dataset $\bm{y}$ can be written as follows,
+The exact GP model for fitting this simulated dataset $\bm{y}$ can be written as follows,
 %
 \begin{align*}\label{ch5_eq_latentgp_simudata1}
 \begin{split}
 \bm{y} &= \bm{f} + \bm{\epsilon} \\
 \bm{\epsilon} &\sim \mathcal{N}(0, \sigma^2  I) \\
-f(x) &\sim \mathcal{GP}(0, k(x, x', \theta)),
+f(x) &\sim \GP(0, k(x, x', \theta)),
 \end{split}
 \end{align*}
 where $I$ represents the identity matrix and $\bm{f}=\{f(x_i)\}_{i=1}^n$ represents the underlying function values to the noisy data. The previous formulation corresponds to the latent form of a GP model. The function $f:{\rm I\!R} \to {\rm I\!R}$ is a GP prior with a Mat{\'e}rn($\nu$=3/2) covariance function $k$. Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ is multivariate Gaussian distributed with covariance matrix $K$, where $K_{ij}=k(x_i,x_j,\theta)$, with $i,j=1,\dots,n$.
@@ -633,20 +634,20 @@ A more computationally efficient formulation of a GP model with Gaussian likelih
 where the function values $\bm{f}$ have been integrated out, yielding a lower-dimensional parameter space over which to do inference, reducing the time of computation and improving the sampling and the effective number of samples.
 
 In the HSGP model, the latent function values $f(x)$ are approximated as in equation (\ref{eq_approxf}), with the Mat{\'e}rn($\nu$=3/2) spectral density $S$ as in equation (\ref{eq_specdens_32}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}), respectively. 
-In order to do model comparison, in addition to the regular GP model and HSGP model, a spline-based model is also fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
+In order to do model comparison, in addition to the exact GP model and HSGP model, a spline-based model is also fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
 
-Figure \ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributions of the three models, the regular GP, the HSGP with $m=80$ basis functions and boundary factor $c=1.2$ ($L=c\cdot 1= 1.2$; see equation (\ref{eq_boundary})), and the spline model with 80 knots. The true data-generative function and the noisy observations are also plotted. The sample observations are plotted as circles and the out-of-sample or test data, which have not been taking part on training the models, are plotted as crosses. The test data located at the extremes of the plot are used for assessing model extrapolation, and the test data located in the middle are used for assessing model interpolation. The posteriors of the three models, regular GP, HSGP and spline, are pretty similar within the interpolation input space. However, when extrapolating the spline model solution clearly differs from the regular GP and HSGP models as well as the actual observations. 
+Figure \ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributions of the three models, the exact GP, the HSGP with $m=80$ basis functions and boundary factor $c=1.2$ ($L=c\cdot 1= 1.2$; see equation (\ref{eq_boundary})), and the spline model with 80 knots. The true data-generative function and the noisy observations are also plotted. The sample observations are plotted as circles and the out-of-sample or test data, which have not been taking part on training the models, are plotted as crosses. The test data located at the extremes of the plot are used for assessing model extrapolation, and the test data located in the middle are used for assessing model interpolation. The posteriors of the three models, exact GP, HSGP and spline, are pretty similar within the interpolation input space. However, when extrapolating the spline model solution clearly differs from the exact GP and HSGP models as well as the actual observations. 
 
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{ch5_fig10_Posteriors_exI.pdf}
-\caption{Posterior predictive means of the proposed HSGP model, the regular GP model, and the spline model. 95\% credible intervals are plotted as dashed lines.}
+\caption{Posterior predictive means of the proposed HSGP model, the exact GP model, and the spline model. 95\% credible intervals are plotted as dashed lines.}
   \label{ch5_fig10_Posteriors_exI}
 \end{figure}
 
-In order to assess the performance of the models as a function of the number of basis functions and number of knots, different models with different number of basis functions for the HSGP model, and different number of knots for the spline model, have been fitted. Figure \ref{ch5_fig11_MSE_exI_inter} shows the standardized root mean squared error (SRMSE) for interpolation and extrapolating data as a function of the number of basis functions and knots. The SRMSE is computed against the data-generating model. From Figures \ref{ch5_fig10_Posteriors_exI} and \ref{ch5_fig11_MSE_exI_inter}, it can be seen a close approximation of the HSGP model to the regular GP model for interpolating and extrapolating data. However, the spline model does not extrapolate data properly. Both models show roughly similar interpolating performance. 
+In order to assess the performance of the models as a function of the number of basis functions and number of knots, different models with different number of basis functions for the HSGP model, and different number of knots for the spline model, have been fitted. Figure \ref{ch5_fig11_MSE_exI_inter} shows the standardized root mean squared error (SRMSE) for interpolation and extrapolating data as a function of the number of basis functions and knots. The SRMSE is computed against the data-generating model. From Figures \ref{ch5_fig10_Posteriors_exI} and \ref{ch5_fig11_MSE_exI_inter}, it can be seen a close approximation of the HSGP model to the exact GP model for interpolating and extrapolating data. However, the spline model does not extrapolate data properly. Both models show roughly similar interpolating performance. 
 
-Figure \ref{ch5_fig11_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The HSGP model is on average roughly 400 times faster than the regular GP and 10 times faster than the spline model, for this particular application with a univariate input space. Also, the increase in computation time as a function of the number of basis functions in a univariate input space is relatively slight.
+Figure \ref{ch5_fig11_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model, for this particular application with a univariate input space. Also, the increase in computation time as a function of the number of basis functions in a univariate input space is relatively slight.
 
 The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}.
 %
@@ -667,7 +668,7 @@ The Stan model code for the exact GP, the approximate GP and the spline models o
   \label{ch5_fig11_time_exI}
 \end{figure}
 
-In the online supplemental material, some other case studies are presented. From those examples, it can be seen how computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see equation (\ref{eq_m_multi})). Even though, in a bivariate input space, the computation time increases significantly with $D$, the HSGP model works significantly faster than the regular GP for most of the non-linear $2D$ functions (even highly wiggly functions; see Figures B.3-right and C.3 in the online material). However, HSGPs tend to be slower than exact GPs for $D>3$ with a relatively low number of basis functions ($m \gtrsim 5$), as well as even for $D=3$ with a moderate high number of basis functions ($m \gtrsim 20$; see Figure C.3 in the online material). In all of the investigated cases, choosing the optimal boundary factor in the HSGP approximation reduces the number of required basis functions noticeably (see Figures A.3, B.3-left and C.2 in the online material) and therefore also reduces computational time drastically in particular in multivariate input spaces.
+In the online supplemental material, some other case studies are presented. From those examples, it can be seen how computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see equation (\ref{eq_m_multi})). Even though, in a bivariate input space, the computation time increases significantly with $D$, the HSGP model works significantly faster than the exact GP for most of the non-linear $2D$ functions (even highly wiggly functions; see Figures B.3-right and C.3 in the online material). However, HSGPs tend to be slower than exact GPs for $D>3$ with a relatively low number of basis functions ($m \gtrsim 5$), as well as even for $D=3$ with a moderate high number of basis functions ($m \gtrsim 20$; see Figure C.3 in the online material). In all of the investigated cases, choosing the optimal boundary factor in the HSGP approximation reduces the number of required basis functions noticeably (see Figures A.3, B.3-left and C.2 in the online material) and therefore also reduces computational time drastically in particular in multivariate input spaces.
 
 %This fact reveals that choosing optimal values for the number of basis functions and boundary factor, looking at the recommendations and diagnosis provided by Figure \ref{fig6_lscale_vs_J_vs_c}, is essential to avoid a excessive computational time, especially in multivariate input spaces.
 
@@ -675,7 +676,7 @@ Roughly similar or even worse behavior was found for splines where serious diffi
 
 
 \subsection{Birthday data}\label{ch5_sec_birthday}
-This example is an analysis of patterns in birthday frequencies in a dataset containing records of all births in the United States on each day during the period 1969–1988. The model decomposes the number of births along all the period in longer-term trend effects, patterns during the year, day-of-week effects, and special days effects. The special days effects cover patterns such as possible fewer births on Halloween, Christmas or new year, and excess of births on Valentine’s Day or the days after Christmas (due, presumably, to choices involved in scheduled deliveries, along with decisions of whether to induce a birth for health reasons). \citet{gelman2013bayesian} presented an analysis using regular GP and maximum a posteriori inference. As the total number of days within the period is $T=7305$ ($t=1,\dots,T$), a full Bayesian inference with MCMC for a regular GP model is memory and time consuming.
+This example is an analysis of patterns in birthday frequencies in a dataset containing records of all births in the United States on each day during the period 1969–1988. The model decomposes the number of births along all the period in longer-term trend effects, patterns during the year, day-of-week effects, and special days effects. The special days effects cover patterns such as possible fewer births on Halloween, Christmas or new year, and excess of births on Valentine’s Day or the days after Christmas (due, presumably, to choices involved in scheduled deliveries, along with decisions of whether to induce a birth for health reasons). \citet{gelman2013bayesian} presented an analysis using exact GP and maximum a posteriori inference. As the total number of days within the period is $T=7305$ ($t=1,\dots,T$), a full Bayesian inference with MCMC for a exact GP model is memory and time consuming.
 We will use the HSGP method as well as the low-rank GP model with a periodic covariance function described in Appendix \ref{ch5_sec_periodic} which is based on expanding the periodic covariance function into a series of stochastic resonators \citep{solin2014explicit}.
 
 Let's denote $y_t$ as the number of births of day $t$. The observational model is a normal model with parameters the mean function $\mu(t)$ and noise variance $\sigma^2$,
@@ -692,21 +693,21 @@ The mean function $\mu(t)$ will be defined as an additive model in the form:
 The component $f_1(t)$ represents the long-term trends modeled by a GP with squared exponential covariance function,
 %
 \begin{equation*}
-f_1(t) \sim \mathcal{GP}(0,k_1), \hspace{5mm} k_1(t,t') = \sigma_1^2 \exp\!\!\left(\!-\frac{1}{2} \frac{(t-t')^2}{\ell_1^2}\right), 
+f_1(t) \sim \GP(0,k_1), \hspace{5mm} k_1(t,t') = \sigma_1^2 \exp\!\!\left(\!-\frac{1}{2} \frac{(t-t')^2}{\ell_1^2}\right), 
 \end{equation*}
 which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_1$, where $K_{1_{t,s}}=k_1(t,s)$, with $t,s=1,\dots,T$.
 
 The component $f_2(t)$ represents the yearly smooth seasonal pattern, using a periodic squared exponential covariance function (with period 365.25 to match the average length of the year) in a GP model,
 %
 \begin{equation*}
-f_2(t) \sim \mathcal{GP}(0,k_2), \hspace{5mm} k_2(t,t') = \sigma_2^2 \exp\!\!\left(\!-\frac{2\,\text{sin}^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
+f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \sigma_2^2 \exp\!\!\left(\!-\frac{2\,\text{sin}^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
 \end{equation*}
 % which means the function values $\bm{f}_2=\{f_2(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_2$, where $K_{2_{t,s}}=k_2(t,s)$, with $t,s=1,\dots,T$.
 
 The component $f_3(t)$ represents the weekly smooth pattern using a periodic squared exponential covariance function (with period 7 of length of the week) in a GP model,
 %
 \begin{equation*}
-f_3(t) \sim \mathcal{GP}(0,k_3), \hspace{5mm} k_3(t,t') = \sigma_3^2 \exp\!\!\left(\!-\frac{2\,\text{sin}^{\!2}\!(\pi(t-t')/7}{\ell_3^2}\right). 
+f_3(t) \sim \GP(0,k_3), \hspace{5mm} k_3(t,t') = \sigma_3^2 \exp\!\!\left(\!-\frac{2\,\text{sin}^{\!2}\!(\pi(t-t')/7}{\ell_3^2}\right). 
 \end{equation*}
 % which means the function values $\bm{f}_3=\{f_3(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_3$, where $K_{3_{t,s}}=k_3(t,s)$, with $t,s=1,\dots,T$.
 
@@ -756,35 +757,37 @@ The Stan model code for the approximate GP model of this case study can be found
 
  
 \subsection{Leukemia data}\label{ch5_sec_bf_caseVI}
-The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnosis with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
+The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival and censoring times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnosis with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
 
 %We denote the matrix $X=[\bm{x}_1\, \cdots \bm{x}_i\, \cdots \bm{x}_n] \in {\rm I\!R}^{n\times 4}$ where $\bm{x}_i=(x_1,x_2,x_3,x_4) \in {\rm I\!R}^{4}$ the vector of predictor values for observations $i$
 
-As the WBC measurements were strictly positive and highly skewed, logarithm transformation is used for it. Continuous predictors were normalized to have zero mean and unit standard deviation. %Survival time was normalized to have zero mean for the logarithm of time. 
+As the WBC predictor values were strictly positive and highly skewed, logarithm transformation is used for it. Continuous predictors were normalized to have zero mean and unit standard deviation. %Survival time was normalized to have zero mean for the logarithm of time. 
 We assume a log-normal observation model for the observed survival time, $t_i$, with a function of the predictors, $f(\bm{x}_i):{\rm I\!R}^4 \to {\rm I\!R}$, as the location parameter, and $\sigma$ as the Gaussian noise: 
 %
 \begin{equation*}
 p(t_i)= \LogNormal(t_i \mid f(\bm{x}_i),\sigma^2).
 \end{equation*}
 
-As we do not have a model for the censoring process, we do not have a full observation model, and the observational model for the censored data $t_i$ is assumed to be the complementary cumulative log-normal probability distribution:
+We do not have a full observation model, as we do not have a model for the censoring process. We use the complementary cumulative log-normal probability distribution for the censored data conditionally on the censoring time $t_i$:
 %
 \begin{equation*}
 p(y_i > t_i)= \int_{t_i}^{\infty} \LogNormal(y_i \mid f(\bm{x}_i),\sigma^2) \mathrm{d}y_i=  1 - \Phi\! \left( \frac{\mathrm{log}(y_i)-f(\bm{x}_i)}{\sigma} \right),
 \end{equation*}
-where $y_i$ denotes the uncensored time.
+where $y_i>t_i$ denotes the unobserved survival time.
 
 The latent function $f(\cdot)$ is modeled as a Gaussian process, centered around a linear model of the predictors $\bm{x}$, and with a squared exponential covariance function $k$ depending on predictors $x$ and hyperparameters $\theta=(\alpha,\ell)$,
 %
 \begin{equation*} 
-f(\bm{x}) \sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta)),
+f(\bm{x}) \sim \GP(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta)),
 \end{equation*}
-where $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model.  Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ are multivariate Gaussian distributed with mean function $\mu(\cdot)$ and covariance matrix $K$, where $\mu(\bm{x}_i)=c + \bm{\beta}\bm{x}_i$ and $K_{rs}=k(\bm{x}_r,\bm{x}_s,\theta)$, with $r,s=1,\dots,n$.  The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. A scalar lengthscale is used in the multivariate covariance function assuming an isotropic function.
+where $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model.
+% Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ are multivariate Gaussian distributed with mean function $\mu(\cdot)$ and covariance matrix $K$, where $\mu(\bm{x}_i)=c + \bm{\beta}\bm{x}_i$ and $K_{rs}=k(\bm{x}_r,\bm{x}_s,\theta)$, with $r,s=1,\dots,n$.
+The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. A scalar lengthscale is used in the multivariate covariance function assuming an isotropic function.
 
-Due to the predictor \textit{sex} ($x_2$) being a categorical variable ('1' for female and '2' for male), we apply dummy/treatment coding for the GP functions, in a similar way such coding is applied in linear models. A general mean GP function is defined for all observations, while a second GP function only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise. More formally, this construction reads as follows:
+Due to the predictor \textit{sex} ($x_2$) being a categorical variable ('1' for female and '2' for male), we apply indicator variable coding for the GP functions, in a similar way such coding is applied in linear models \citep{Gelman+Hill+Vehtari:2020:ROS}. A general mean GP function is defined for all observations, while a second GP function only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise:
 %
 \begin{align} 
-f(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) + g(\bm{x}), \label{ch5_eq_gpml1}
+f(\bm{x}) &\sim \GP\left(c + \bm{\beta}\bm{x},\, k(\bm{x},\bm{x}', \theta_1)\right) + g(\bm{x}), \label{ch5_eq_gpml1}
 \end{align}
 with
 %
@@ -792,17 +795,15 @@ with
 g(\bm{x}) =
 \left\{
 	\begin{array}{ll}
-		0 & \;\; \mbox{if } \;\; x_2\!=\!\text{'}1\text{'}  \\
-		\mathcal{GP}(0, k(\bm{x},\bm{x}', \theta_2))  & \;\; \mbox{if } \;\; x_2\!=\!\text{'}2\text{'} 
+		0 & \;\; \mbox{if } \;\; x_2=1  \\
+		\GP\left(0, k(\bm{x},\bm{x}', \theta_2)\right)  & \;\; \mbox{if } \;\; x_2=2 \,.
 	\end{array}
-\right.
+\right. 
 \end{align}
-%
-%
 
 %\begin{align} 
-%f(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) \label{ch5_eq_gpml1} \\
-%g(\bm{x}) &\sim \mathcal{GP}(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_2 \,|\, x_2\!=\!2)) \label{ch5_eq_gpml2} \\ 
+%f(\bm{x}) &\sim \GP(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) \label{ch5_eq_gpml1} \\
+%g(\bm{x}) &\sim \GP(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_2 \,|\, x_2\!=\!2)) \label{ch5_eq_gpml2} \\ 
 %f(\bm{x} \, |\, x_2\!=\!2) &= f(\bm{x} \,|\, x_2\!=\!1) + g(\bm{x}). \nonumber
 %\end{align}
 
@@ -813,14 +814,13 @@ g(\bm{x}) =
 \caption{Expected lifetime conditional comparison for each predictor with other predictors fixed to their mean values. The thick line in each graph is the posterior mean estimated using a HSGP model, and the thin lines represent pointwise 95\% credible intervals.}
   \label{ch5_fig21_posteriors_leukemia}
 \end{figure}
-In the former equations, $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale, respectively, of the general mean GP function, and $\theta_2$ contains the hyperparameters $\alpha_2$ and $\ell_2$ which are the marginal variance and lengthscale, respectively, of a specific GP function restricted to the male sex ($x_2=\text{'}2\text{'}$).
+Above, $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale of the general mean GP function, and $\theta_2$ contains the hyperparameters $\alpha_2$ and $\ell_2$ which are the marginal variance and lengthscale, respectively, of a GP function specific to the male sex ($x_2=2$).
 
 Using the HSGP approximation, the functions $f(\bm{x})$ and $g(\bm{x})$ are approximated as in equation (\ref{eq_approxf_multi}), with the $D$-dimensional (with a scalar lengthscale) squared exponential spectral density $S$ as in equation (\ref{eq_specdens_inf}), and the multivariate eigenfunctions $\phi_j$ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ as in equations (\ref{eq_eigenfunction_multi}) and  (\ref{eq_eigenvalue_multi}), respectively.
 
-Figure \ref{ch5_fig21_posteriors_leukemia} shows estimated conditional comparison of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. The model has found smooth non-linear patterns and the right bottom subplot also shows that the conditional comparison associated with WBC has an interaction with TDI.
+Figure \ref{ch5_fig21_posteriors_leukemia} shows estimated conditional functions of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. There are clear  non-linear patterns and the right bottom subplot also shows that the conditional function associated with WBC has an interaction with TDI.
 
-
-Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density \citep[ELPD; see][]{vehtari_2012} and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in equation (\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{ch5_fig22_elpd_leukemia}-left); Small boundary factors are not allowed when large lengthscales, as can be seen in Figure \ref{fig6_lscale_vs_J_vs_c}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{ch5_fig22_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
+Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density \citep[ELPD; ][]{vehtari_2012,Vehtari+Gelman+Gabry:2017_practical} and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in equation (\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{ch5_fig22_elpd_leukemia}-left); Small boundary factors are not allowed when large lengthscales, as can be seen in Figure \ref{fig6_lscale_vs_J_vs_c}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{ch5_fig22_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
 %
 \begin{figure}
 \centering
@@ -836,13 +836,13 @@ The Stan model code for the exact GP and the approximate GP models of this case 
 
 \section{Conclusion}\label{ch5_sec_conclusion}
 Modeling unknown functions using exact GPs is computationally intractable for a lot of applications. This problem becomes especially severe when performing full Bayesian inference using sampling-based methods. In this paper, a novel approach for a low-rank representation of stationary GPs, originally proposed by \citet{solin2018hilbert}, has been implemented and analyzed in detail. The method is based on a basis function approximation via Laplace eigenfunctions. The method has an attractive computational cost as it effectively approximates GPs by linear models, which is also an attractive property in modular probabilistic programming programming frameworks. 
-The dominating cost per log density evaluation (during sampling) is $O(nm+m)$, which is a big benefit in comparison to $O(n^3)$ of a regular GP model. The obtained design matrix is independent of hyperparameters and therefore only needs to be constructed once, at cost $O(nm)$. All dependencies on the kernel and the hyperparameters are through the prior distribution of the regression weights. The parameters' posterior distribution is $m$-dimensional, where $m$ is usually much smaller than the number of observations $n$. 
+The dominating cost per log density evaluation (during sampling) is $O(nm+m)$, which is a big benefit in comparison to $O(n^3)$ of a exact GP model. The obtained design matrix is independent of hyperparameters and therefore only needs to be constructed once, at cost $O(nm)$. All dependencies on the kernel and the hyperparameters are through the prior distribution of the regression weights. The parameters' posterior distribution is $m$-dimensional, where $m$ is usually much smaller than the number of observations $n$. 
 
 %In terms of scaling, one main drawback of the method is the scaling with respect to the number of input dimensions, as the number of basis functions $m$ scales exponentially with the number of dimensions.
 
 The main contribution of this paper is an in-depth analysis and diagnosis of the performance and accuracy of the approximation in relation to the key factors of the method, that is, the number of basis functions, the boundary condition of the Laplace eigenfunctions, and the non-linearity of the function to be learned. Recommendations for the values of these key factors based on the recognized relations among them have been provided along with illustrations of these relations. These illustrations will not only help users to improve performance and save computation time, but also serve as a powerful diagnosis tool whether the chosen values for the number of basis functions and the boundary condition are adequate to fit to the data at hand with sufficient accuracy.
 
-The developed approximate GPs can be easily applied as modular components in probabilistic programming frameworks such as Stan in both Gaussian and non-Gaussian observational models. Using several simulated and real datasets, we have demonstrated the practical applicability and improved sampling efficiency, as compared to regular GPs, of the developed method.
+The developed approximate GPs can be easily applied as modular components in probabilistic programming frameworks such as Stan in both Gaussian and non-Gaussian observation models. Using several simulated and real datasets, we have demonstrated the practical applicability and improved sampling efficiency, as compared to exact GPs, of the developed method.
 The main drawback of the approach is that its computational complexity scales exponentially with the number of input dimensions. Hence, choosing optimal values for the number of basis functions and the boundary factor, using the
  recommendations and diagnostics provided in Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern}, is essential to avoid a excessive computational time especially in multivariate input spaces. However, in practice, input dimensionalities larger than 3 start to be quite computationally demanding even for moderately wiggly functions and few basis functions per input dimension. In these high dimensional cases, the proposed approximate GP methods may still be used for low-dimensional components in an additive modeling scheme but without modeling very high dimensional interactions.
 
@@ -871,7 +871,7 @@ Associated to each covariance function $k(\bm{x},\bm{x}')$ we can also define a 
 \mathcal{K} f(\bm{x}) = \int k(\bm{x},\bm{x}') f(\bm{x}') \mathrm{d}\bm{x}'.
 \end{equation*} 
 
-From the Bochner’s and Wiener-Khintchine theorem, the spectral density of a stationary covariance function $k(\bm{x},\bm{x}') = k(\bm{\tau})$, $\bm{\tau}=(\bm{x}-\bm{x}')$, is the Fourier transform of the covariance function,
+From the Bochner’s and Wiener-Khintchine theorems, the spectral density of a stationary covariance function $k(\bm{x},\bm{x}') = k(\bm{\tau})$, $\bm{\tau}=(\bm{x}-\bm{x}')$, is the Fourier transform of the covariance function,
 %
 \begin{equation*}
 S(\bm{w}) = \int k(\bm{\tau}) e^{-2\pi i \bm{w} \bm{\tau}} \mathrm{d}\bm{\tau}, \nonumber
@@ -908,7 +908,7 @@ then the formal kernel can be represented as
 \begin{equation*}
 l(\bm{x},\bm{x}')= \sum_j \lambda_j \phi_j(\bm{x}) \phi_j(\bm{x}'),
 \end{equation*}
-where $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(\bm{x})\}_{j=1}^{\infty}$ are the set of eigenvalues and eigenvectors, respectively, of the Laplacian operator. Namely, they satisfy the following eigenvalue problem in the compact subset $\bm{x} \in \Omega \subset {\rm I\!R}^D$ and with the Dirichlet boundary condition (another boundary condition could be used as well):
+where $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(\bm{x})\}_{j=1}^{\infty}$ are the set of eigenvalues and eigenvectors, respectively, of the Laplacian operator. Namely, they satisfy the following eigenvalue problem in the compact subset $\bm{x} \in \Omega \subset {\rm I\!R}^D$ and with the Dirichlet boundary condition (other boundary conditions could be used as well):
 %
 \begin{align*}
 -\nabla^2 \phi_j(\bm{x})&=\lambda \phi_j(\bm{x}), \hspace{1cm}  x\in \Omega \nonumber \\ 
@@ -953,7 +953,7 @@ By letting $||\bm{w}||^2=\lambda_j$ the spectral density in Equation (\ref{ch5_e
 \begin{equation*}
 S(\sqrt{\lambda_j})=a_0+a_1\lambda_j+a_2\lambda_j^2+a_3\lambda_j^3+\cdots,
 \end{equation*}
-and substituting in equation (\ref{ch5_eq_k}) then leads to the final searched approximation
+and substituting in equation (\ref{ch5_eq_k}) then leads to the final form
 %
 \begin{equation}\label{ch5_eq_k_2}
 k(\bm{x},\bm{x}')= \sum_j S(\sqrt{\lambda_j}) \phi_j(\bm{x}) \phi_j(\bm{x}'),
@@ -964,21 +964,21 @@ where $S(\cdot)$ is the spectral density of the covariance function, $\lambda_j$
 
 \section{Low-rank Gaussian process with a periodic covariance function}\label{ch5_sec_periodic}
 
-A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study. However, it do has a low-rank representation. In this section, we first give a brief presentation of the results by \citep{solin2014explicit}, whi obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic square exponential covariance function.
+A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study, but it has also a low-rank representation. In this section, we first give a brief presentation of the results by \citet{solin2014explicit}, who obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic square exponential covariance function.
 
 The periodic squared exponential covariance function takes the form
 %
 \begin{equation} \label{ch5_eq_cov_periodic}
-k(\bm{\tau})= \alpha \exp\!\!\Big(\! -\frac{2\sin^{\!2}\!(\omega_0\frac{\bm{\tau}}{2})}{\ell^2}\Big),
+k(\bm{\tau})= \alpha \exp\left( -\frac{2\sin^{2}(\omega_0\frac{\bm{\tau}}{2})}{\ell^2}\right),
 \end{equation}
 where $\alpha$ is the magnitude scale of the covariance, $\ell$ is the characteristic lengthscale of the covariance, and $\omega_0$ is the angular frequency defining the periodicity. 
 
-\citet{solin2014explicit} come to a cosine series expansion for the periodic covariance function (\ref{ch5_eq_cov_periodic}) as follows,
+\citet{solin2014explicit} derive a cosine series expansion for the periodic covariance function (\ref{ch5_eq_cov_periodic}) as follows,
 % 
 \begin{equation} \label{ch5_eq_cov_periodic_taylor_approx}
 k(\tau)= \alpha \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 \tau),
 \end{equation}
-which comes basically from a Taylor series representation of the periodic covariance function. The coefficients $\tilde{q}_j^2$ of the previous expression are
+which comes basically from a Taylor series representation of the periodic covariance function. The coefficients $\tilde{q}_j^2$ 
 %
 \begin{equation} \label{ch5_eq_q}
 \tilde{q}_j^2= \frac{2}{\exp(\frac{1}{\ell^2})} \sum_{j=0}^{\lfloor \frac{J-j}{2} \rfloor} \frac{(2\ell^2)^{-j-2}}{(j+i)!i!},
@@ -988,7 +988,7 @@ where $j=1,2,\cdots,J$, and $\lfloor \cdot \rfloor$ denotes the floor round-off 
 \begin{equation} \label{ch5_eq_q0}
 \tilde{q}_0^2= \frac{1}{2} \frac{2}{\exp(\frac{1}{\ell^2})} \sum_{j=0}^{\lfloor \frac{J-j}{2} \rfloor} \frac{(2\ell^2)^{-j-2}}{(j+i)!i!}.
 \end{equation}
-The covariance in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) is a $J$th order truncation of a Taylor series representation. As \citet{solin2014explicit} argue, this approximation converges to equation (\ref{ch5_eq_cov_periodic}) when $J \rightarrow \infty$.
+The covariance in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) is a $J$th order truncation of a Taylor series representation. This approximation converges to equation (\ref{ch5_eq_cov_periodic}) when $J \rightarrow \infty$.
 
 %If the requirement of a valid covariance function is relaxed and only an optimal series approximation is required, taking the limit $J \rightarrow \infty$ in the sub-sums in equation (\ref{ch5_eq_q}) gives the following variance coefficients
 An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q}_0^2$ can be obtained by taking the limit $J \rightarrow \infty$ in the sub-sums in the corresponding equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}), and thus leading to the following variance coefficients:
@@ -999,7 +999,7 @@ An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q
 \tilde{q}_0^2= \frac{\text{I}_0(\ell^{-2})}{\exp(\frac{1}{\ell^2})},
 \end{split}
 \end{equation} 
-for $j=1,2,\cdots,J$, and where the $\text{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required \citep{solin2014explicit}. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
+for $j=1,2,\cdots,J$, and where the $\text{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
 
 %Note that the terms in equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}) are underneath bounded approximations for any $J$. 
 
@@ -1021,15 +1021,15 @@ The function values of a GP model with this low-rank representation of the perio
 \begin{equation*}
 \cos(j\omega_0 (x-x'))=\cos(j\omega_0 x) \cos(j\omega_0 x') + \sin(j\omega_0 x) \sin(j\omega_0 x'),
 \end{equation*}
-the covariance $k(\tau)$ in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) can be re-writing as
+the covariance $k(\tau)$ in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) can be written as
 %
 \begin{equation} \label{ch5_eq_cov_periodic_taylor_approx_2}
-k(x,x')= \sigma^2 \Big( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \Big).
+k(x,x')= \sigma^2 \left( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \right).
 \end{equation}
-where $\tau=x-x'$. With this approximation for the periodic squared exponential covariance function $k(x,x')$, the approximate GP model $f(x) \sim \mathcal{GP}(0,k(x,x')$ equivalently leads to a linear representation of $f(\cdot)$ via
+With this approximation for the periodic squared exponential covariance function $k(x,x')$, the approximate GP model $f(x) \sim \GP\left(0,k(x,x')\right)$ equivalently leads to a linear representation of $f(\cdot)$ via
 %
 \begin{equation} \label{ch5_eq_f_period}
-f(x) \approx \sigma \Big( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j +  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \Big),
+f(x) \approx \sigma \left( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j +  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \right),
 \end{equation}
 where $\beta_j \sim \text{Normal}(0,1)$, with $j=1,\dots,2J+1$. The cosine $\cos(j\omega_0 x)$ and sinus $\sin(j\omega_0 x)$ terms do not depend on the covariance hyperparameters $\ell$. The only dependence on the hyperparameter $\ell$ is through the coefficients $\tilde{q}_j$, which are $J$-dimensional. The computational cost of this approximation scales as $O\big(n(2J+1) + (2J+1)\big)$, where $n$ is the number of observations and $J$ the number of cosine terms.
 The parameterization in equation (\ref{ch5_eq_f_period}) is naturally in the non-centered form with independent prior distributions on
