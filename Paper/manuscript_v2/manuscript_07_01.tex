@@ -67,7 +67,8 @@
 
 \title{Hilbert space approximate Bayesian Gaussian processes using Stan}
 
-\author{Gabriel Riutort-Mayol$^{1*}$, Paul-Christian Bürkner$^2$, Michael R. Andersen$^{3}$, Aki Vehtari$^{2}$}
+\author{Gabriel Riutort-Mayol$^{1*}$, Paul-Christian Bürkner$^2$, Michael R. Andersen$^{3}$,\\
+ Aki Vehtari$^{2}$, Arno Solin$^{2}$}
 
 \date{ \small
 $^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain 
@@ -458,7 +459,8 @@ c = 2.5 &
 \includegraphics[scale=0.215, trim = 0mm 4mm 5mm 14mm, clip]{ch5_fig3_Cov_part6.pdf} &\\
 \arrayrulecolor{darkgray}\hline
 \end{tabular}
-\caption{Posterior mean predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$. The dashed red line of the exact GP can hardly be seen in the some of the plots because it is under the blue lines.}
+\caption{Posterior mean predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$. %The dashed red line of the exact GP can hardly be seen in the some of the plots because it is under the blue lines.
+}
   \label{fig3_Post_part1}
 \end{figure}
 
@@ -551,7 +553,8 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part8.pdf}}
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part9.pdf}}\\
 \vspace{-3mm}
-\caption{Mean posterior predictions of both exact GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). The dashed red line of the exact GP can hardly be seen in the plots because it is almost perfectly overlayed by the blue lines.}
+\caption{Mean posterior predictions of both exact GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). %The dashed red line of the exact GP can hardly be seen in the plots because it is almost perfectly overlayed by the blue lines.
+}
   \label{fig7_posterior_varing_lscale_part1}
 \end{figure}
 
