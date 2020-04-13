@@ -60,8 +60,8 @@
   volume={6},
   pages={142--228},
   year={2012},
-  publisher={The author, under a Creative Commons Attribution License},
-  note={doi:10.1214/12-SS102}
+  nopublisher={The author, under a Creative Commons Attribution License},
+  nonote={doi:10.1214/12-SS102}
 }
 @article{andersen2017,
   author  = {Michael Riis Andersen and Aki Vehtari and Ole Winther and Lars Kai Hansen},
@@ -90,10 +90,10 @@
    volume = {90},
    number = {10},
    year = {2019},
-   issn = {1548-7660},
+   noissn = {1548-7660},
    pages = {1--41},
-   doi = {10.18637/jss.v090.i10},
-   url = {https://www.jstatsoft.org/v090/i10}
+   nodoi = {10.18637/jss.v090.i10},
+   nourl = {https://www.jstatsoft.org/v090/i10}
 }
 
 @article{Furrer+Nychka:2007,
@@ -121,7 +121,7 @@
 
 
 @book{rasmussen2006gaussian,
-  title={Gaussian process for machine learning},
+  title={Gaussian Processes for Machine Learning},
   author={Rasmussen, Carl Edward and Williams, Christopher KI},
   year={2006},
   publisher={MIT press}
@@ -135,10 +135,15 @@
 }
 
 @article{solin2018hilbert,
-  title={Hilbert space methods for reduced-rank {Gaussian} process regression},
+  title={Hilbert space methods for reduced-rank {G}aussian process regression},
   author={Solin, Arno and S{\"a}rkk{\"a}, Simo},
-  journal={arXiv preprint arXiv:1401.5508},
-  year={2018}
+  journal={Statistics and Computing},
+  volume={30},
+  number={2},
+  pages={419--446},
+  year={2020},
+  publisher={Springer},
+  note={Much of the work in this paper is based on the pre-print version predating the published paper. Pre-print available at \url{https://arxiv.org/abs/1401.5508}.}
 }
 
 @inproceedings{snelson2007local,
@@ -299,9 +304,10 @@
   year={2015}
 }
 
-@article{lazaro2010sparse,
-  title={Sparse {Gaussian} processes for large-scale machine learning},
+@phdthesis{lazaro2010sparse,
+  title={Sparse {Gaussian} Processes for Large-scale Machine Learning},
   author={L{\'a}zaro Gredilla, Miguel},
+  school={Universidad Carlos III de Madrid},
   year={2010}
 }
 
@@ -328,11 +334,15 @@
 
 @inproceedings{rahimi2008random,
   title={Random features for large-scale kernel machines},
-  author={Rahimi, Ali and Recht, Benjamin},
-  booktitle={Advances in neural information processing systems},
-  pages={1177--1184},
-  year={2008}
+  author = {Ali Rahimi and Recht, Benjamin},
+  booktitle = {Advances in Neural Information Processing Systems 20},
+  editor = {J. C. Platt and D. Koller and Y. Singer and S. T. Roweis},
+  pages = {1177--1184},
+  year = {2008},
+  publisher = {Curran Associates, Inc.}
 }
+
+
 
 @inproceedings{rahimi2009weighted,
   title={Weighted sums of random kitchen sinks: Replacing minimization with randomization in learning},
@@ -394,14 +404,14 @@
 }
 
 @phdthesis{roberts2010bayesian,
-  title={Bayesian {Gaussian} processes for sequential prediction, optimisation and quadrature},
+  title={Bayesian {Gaussian} Processes for Sequential Prediction, Optimisation and Quadrature},
   author={Roberts, Stephen J},
   year={2010},
   school={University of Oxford}
 }
 
 @article{briol2015probabilistic,
-  title={Probabilistic integration: A role in statistical computation?},
+  title={Probabilistic integration: {A} role in statistical computation?},
   author={Briol, Fran{\c{c}}ois-Xavier and Oates, Chris and Girolami, Mark and Osborne, Michael A and Sejdinovic, Dino},
   journal={arXiv preprint arXiv:1512.00933},
   year={2015}
@@ -446,17 +456,18 @@
 }
 
 @misc{loeve1977probability,
-  title={Probability theory},
-  author={Lo{\`e}ve, M},
+  title={Probability Theory},
+  author={Lo{\`e}ve, Michel},
   year={1977},
   publisher={Springer-Verlag, New York}
 }
 
-@misc{trees1968detection,
-  title={Detection, estimation and modulation theory, vol. 1},
-  author={Trees, HLV},
-  year={1968},
-  publisher={Wiley New York}
+@book{trees1968detection,
+      author = {Harry. L. {Van~Trees}},
+       title = {Detection, Estimation, and Modulation Theory, Part~I: Detection, Estimation, and Linear Modulation Theory},
+   publisher = {John Wiley \& Sons},
+     address = {New York, NY},
+        year = {1968}
 }
 
 @book{adler1981geometry,
@@ -476,7 +487,7 @@
 @article{wahba1978improper,
   title={Improper priors, spline smoothing and the problem of guarding against model errors in regression},
   author={Wahba, Grace},
-  journal={Journal of the Royal Statistical Society. Series B (Methodological)},
+  journal={Journal of the Royal Statistical Society: Series B (Methodological)},
   pages={364--372},
   year={1978},
   publisher={JSTOR}
@@ -494,7 +505,7 @@
 }
 
 @book{wahba1990spline,
-  title={Spline models for observational data},
+  title={Spline Models for Observational Data},
   author={Wahba, Grace},
   volume={59},
   year={1990},
@@ -551,7 +562,7 @@
 }
 
 @article{neal1997monte,
-  title={Monte Carlo implementation of {Gaussian} process models for {Bayesian} regression and classification},
+  title={Monte {C}arlo implementation of {Gaussian} process models for {Bayesian} regression and classification},
   author={Neal, Radford M},
   journal={arXiv preprint physics/9701026},
   year={1997}
@@ -578,7 +589,7 @@
 @inproceedings{minka2001expectation,
   title={Expectation propagation for approximate {Bayesian} inference},
   author={Minka, Thomas P},
-  booktitle={Proceedings of the Seventeenth conference on Uncertainty in artificial intelligence},
+  booktitle={Proceedings of the Seventeenth Conference on Uncertainty in Artificial Intelligence},
   pages={362--369},
   year={2001},
   organization={Morgan Kaufmann Publishers Inc.}
@@ -624,7 +635,7 @@
 }
 
 @book{wood2017generalized,
-  title={Generalized additive models: an introduction with R},
+  title={Generalized additive models: an introduction with {R}},
   author={Wood, Simon N},
   year={2017},
   publisher={Chapman and Hall/CRC}
@@ -664,8 +675,8 @@ year = {2017},
 month = {apr},
 volume = {18},
 number = {40},
-pages = {1-6},
-url = {http://jmlr.org/papers/v18/16-537.html}
+pages = {1--6},
+nourl = {http://jmlr.org/papers/v18/16-537.html}
 }
 
 @article{lunn2000winbugs,
@@ -682,12 +693,12 @@ url = {http://jmlr.org/papers/v18/16-537.html}
 @Article{wood2011mgcv,
     title = {Fast stable restricted maximum likelihood and marginal 
 likelihood estimation of semiparametric generalized linear models},
-    journal = {Journal of the Royal Statistical Society (B)},
+    journal = {Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
     volume = {73},
     number = {1},
-    pages = {3-36},
+    pages = {3--36},
     year = {2011},
-    author = {S. N. Wood},
+    author = {Simon N Wood},
   }
 
 @article{burkner2017brms,
@@ -708,11 +719,17 @@ likelihood estimation of semiparametric generalized linear models},
   publisher={Chapman and Hall/CRC}
 }
 
-@article{piironen2016hyperprior,
-  title={On the hyperprior choice for the global shrinkage parameter in the horseshoe prior},
-  author={Piironen, Juho and Vehtari, Aki},
-  journal={arXiv preprint arXiv:1610.05559},
-  year={2016}
+@inproceedings{piironen2016hyperprior,
+  title = 	 {On the Hyperprior Choice for the Global Shrinkage Parameter in the Horseshoe Prior},
+  author = 	 {Juho Piironen and Aki Vehtari},
+  booktitle = 	 {Proceedings of the 20th International Conference on Artificial Intelligence and Statistics},
+  pages = 	 {905--913},
+  year = 	 {2017},
+  editor = 	 {Aarti Singh and Jerry Zhu},
+  volume = 	 {54},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {20--22 Apr},
+  publisher = 	 {PMLR}
 }
 
 @article{piironen2017sparsity,
@@ -729,9 +746,13 @@ likelihood estimation of semiparametric generalized linear models},
 @inproceedings{solin2014explicit,
   title={Explicit link between periodic covariance functions and state space models},
   author={Solin, Arno and S{\"a}rkk{\"a}, Simo},
-  booktitle={Artificial Intelligence and Statistics},
-  pages={904--912},
-  year={2014}
+  booktitle = 	 {Proceedings of the Seventeenth International Conference on Artificial Intelligence and Statistics},
+  pages = 	 {904--912},
+  year = 	 {2014},
+  editor = 	 {Samuel Kaski and Jukka Corander},
+  volume = 	 {33},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher = 	 {PMLR}
 }
 
 @book{handbook1970m,
