@@ -175,12 +175,12 @@ where $\bm{k}_{\bm{f},\tilde{f}}$ is the covariance between $\bm{f}$ and $\tilde
 % By marginalizing over $\bm{f}$ and conditioning on vector of observations $\bm{y}$, we obtain the posterior distribution of interest
 % %
 % \begin{align}\label{eq:posterior}
-% 	p(f^*|\bm{y}) = \frac{\int p(\bm{y}|\bm{f})p(\bm{f}, f^*)\text{d}\bm{f}}{p(\bm{y})},
+% 	p(f^*|\bm{y}) = \frac{\int p(\bm{y}|\bm{f})p(\bm{f}, f^*)\mathrm{d}\bm{f}}{p(\bm{y})},
 % \end{align}
 % where $p(\bm{y})$ is the marginal likelihood and is given by
 % %
 % \begin{align}\label{eq:evidence}
-% 	p(\textbf{y}) = \int p(\bm{y}|\bm{f})p(\bm{f}, f^*) \text{d}\bm{f}\text{d}f^*.
+% 	p(\textbf{y}) = \int p(\bm{y}|\bm{f})p(\bm{f}, f^*) \mathrm{d}\bm{f}\mathrm{d}f^*.
 % \end{align}
 % %
 % If the observation model $p(\bm{y}|\bm{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
@@ -284,11 +284,12 @@ where $\bm{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column ve
   \end{bmatrix}.
 \end{align}
 
-Thus, the Gram matrix $\mathrm{K}$ of the covariance function $k$ for a set of observations $i=1,\ldots,n$ and corresponding input values $\{x_i\}_{i=1}^{n} \in \Omega^{n}$ can be represented as
+Thus, the Gram matrix $K$ of the covariance function $k$ for a set of observations $i=1,\ldots,n$ and corresponding input values $\{x_i\}_{i=1}^{n} \in \Omega^{n}$ can be represented as
 %
 \begin{equation}
-\mathrm{K} = \Phi \Delta \Phi^\intercal, \nonumber
+  K = \Phi \Delta \Phi^\intercal, \nonumber
 \end{equation}
+%
 where $\Phi \in {\rm I\!R}^{n\times m}$ is the matrix of eigenfunctions $\phi_j(x_i)$
 %
 \begin{align}
@@ -385,7 +386,7 @@ k(\tau) = \sum_{j=1}^{\infty} S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0
 where $L$ describes the boundary condition, $j$ is the index for the eigenfunctions and eigenvalues, and $\tau=x-x'$ is the difference between two covariate values $x$ and $x'$ in $\Omega$. The eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ are given in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}) for the unidimensional case and in equations (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi}) for the multidimensional case. The number of basis functions can be truncated at some finite positive value $m$ such that the total variation difference between the exact and approximate covariance functions is less than a predefined threshold $\varepsilon > 0$:
 %
 \begin{equation}\label{eq_diff_covs}
- \int | k(\tau) - \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0)|  \mathrm{d}\tau  < \varepsilon.
+ \int | k(\tau) - \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0)|  \,\mathrm{d}\tau  < \varepsilon.
 \end{equation}
 
 The specific number of basis functions $m$ needed to satisfy equation (\ref{eq_diff_covs}) depends on the degree of non-linearity of the function to be estimated, that is on its lengthscale $\ell$, which constitutes a hyperparameter of the GP. The approximation also depends on the boundary $L$ (see equations (\ref{eq_eigenvalue}), (\ref{eq_eigenfunction}), (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi})), which will affect its accuracy especially near the boundaries. As we will see later on, $L$ will also influence the number of basis functions required in the approximation. In the present paper, we will set $L$ an extension of the desired covariate input domain $\Psi = \max_{i}|x_i|$. Without loss of generality, we can assume $\Psi$ to be symmetric around zero, that is $\Psi=[-S,S] \subset \Omega$. We now define $L$ as
@@ -682,14 +683,14 @@ which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate G
 The component $f_2(t)$ represents the yearly smooth seasonal pattern, using a periodic squared exponential covariance function (with period 365.25 to match the average length of the year) in a GP model,
 %
 \begin{equation*}
-f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \sigma_2^2 \exp\!\!\left(\!-\frac{2\,\mathrm{sin}^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
+f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \sigma_2^2 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
 \end{equation*}
 % which means the function values $\bm{f}_2=\{f_2(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_2$, where $K_{2_{t,s}}=k_2(t,s)$, with $t,s=1,\dots,T$.
 
 The component $f_3(t)$ represents the weekly smooth pattern using a periodic squared exponential covariance function (with period 7 of length of the week) in a GP model,
 %
 \begin{equation*}
-f_3(t) \sim \GP(0,k_3), \hspace{5mm} k_3(t,t') = \sigma_3^2 \exp\!\!\left(\!-\frac{2\,\text{sin}^{\!2}\!(\pi(t-t')/7}{\ell_3^2}\right). 
+f_3(t) \sim \GP(0,k_3), \hspace{5mm} k_3(t,t') = \sigma_3^2 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/7}{\ell_3^2}\right). 
 \end{equation*}
 % which means the function values $\bm{f}_3=\{f_3(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_3$, where $K_{3_{t,s}}=k_3(t,s)$, with $t,s=1,\dots,T$.
 
@@ -749,7 +750,7 @@ We assume a log-normal observation model for the observed survival time, $t_i$, 
 We do not have a full observation model, as we do not have a model for the censoring process. We use the complementary cumulative log-normal probability distribution for the censored data conditionally on the censoring time $t_i$:
 %
 \begin{equation*}
-p(y_i > t_i)= \int_{t_i}^{\infty} \LogNormal(y_i \mid f(\bm{x}_i),\sigma^2) \mathrm{d}y_i=  1 - \Phi\! \left( \frac{\mathrm{log}(y_i)-f(\bm{x}_i)}{\sigma} \right),
+p(y_i > t_i)= \int_{t_i}^{\infty} \LogNormal(y_i \mid f(\bm{x}_i),\sigma^2) \,\mathrm{d}y_i=  1 - \Phi\! \left( \frac{\log(y_i)-f(\bm{x}_i)}{\sigma} \right),
 \end{equation*}
 %
 where $y_i>t_i$ denotes the unobserved survival time.
@@ -845,13 +846,13 @@ In this section, we briefly present a summary of the mathematical details of the
 Associated to each covariance function $k(\bm{x},\bm{x}')$ we can also define a covariance operator $\mathcal{K}$ over a function $f(\bm{x})$ as follows:
 %
 \begin{equation*}
-\mathcal{K} f(\bm{x}) = \int k(\bm{x},\bm{x}') f(\bm{x}') \mathrm{d}\bm{x}'.
+\mathcal{K} f(\bm{x}) = \int k(\bm{x},\bm{x}') f(\bm{x}') \,\mathrm{d}\bm{x}'.
 \end{equation*} 
 
 From the Bochner’s and Wiener-Khintchine theorems, the spectral density of a stationary covariance function $k(\bm{x},\bm{x}') = k(\bm{\tau})$, $\bm{\tau}=(\bm{x}-\bm{x}')$, is the Fourier transform of the covariance function,
 %
 \begin{equation*}
-S(\bm{w}) = \int k(\bm{\tau}) e^{-2\pi i \bm{w} \bm{\tau}} \mathrm{d}\bm{\tau}, \nonumber
+S(\bm{w}) = \int k(\bm{\tau}) e^{-2\pi i \bm{w} \bm{\tau}} \,\mathrm{d}\bm{\tau}, \nonumber
 \end{equation*}
 where $\bm{w}$ is in the frequency domain. The operator $\mathcal{K}$ will be translation invariant if the covariance function is stationary. This allows for a Fourier representation of the operator $\mathcal{K}$ as a transfer function which is the spectral density of the Gaussian process. 
 %When the covariance function is homogeneous, the corresponding operator $\mathcal{K}$ will be translation invariant thus allowing for Fourier-representation as a transfer function. This transfer function is the spectral density of the Gaussian process
@@ -878,7 +879,7 @@ defining a pseudo-differential operator as a series of Laplace operators.
 If the negative Laplace operator $-\nabla^2$ is defined as the covariance operator of the formal kernel $l$,
 %
 \begin{equation*}
--\nabla^2 f(\bm{x}) = \int l(\bm{x},\bm{x}') f(\bm{x}') \mathrm{d}\bm{x}',
+-\nabla^2 f(\bm{x}) = \int l(\bm{x},\bm{x}') f(\bm{x}') \,\mathrm{d}\bm{x}',
 \end{equation*} 
 then the formal kernel can be represented as 
 %
@@ -894,12 +895,12 @@ where $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(\bm{x})\}_{j=1}^{\infty}$ are
 Because $-\nabla^2$ is a positive definite Hermitian operator, the set of eigenfunctions $\phi_j(\cdot)$ are orthonormal with respect to the inner product
 %
 \begin{align*}
-<f,g>=\int_\Omega f(\bm{x}) g(\bm{x}) \mathrm{d}(\bm{x})
+<f,g>=\int_\Omega f(\bm{x}) g(\bm{x}) \,\mathrm{d}(\bm{x})
 \end{align*} 
 that is,
 %
 \begin{align*}
-\int_\Omega \phi_i(\bm{x}) \phi_j(\bm{x}) \mathrm{d}(\bm{x}) = \delta_{ij},
+\int_\Omega \phi_i(\bm{x}) \phi_j(\bm{x}) \,\mathrm{d}(\bm{x}) = \delta_{ij},
 \end{align*} 
 and all the eigenvalues $\lambda_j$ are real and positive. 
 
@@ -911,12 +912,12 @@ l(\bm{x},\bm{x}')^s= \sum_j \lambda_j^s \phi_j(\bm{x}) \phi_j(\bm{x}'),
 which are again to be interpreted to mean that
 %
 \begin{equation*}
-(-\nabla^2)^s f(\bm{x}) = \int l^s(\bm{x},\bm{x}') f(\bm{x}') \mathrm{d}\bm{x}'.
+(-\nabla^2)^s f(\bm{x}) = \int l^s(\bm{x},\bm{x}') f(\bm{x}') \,\mathrm{d}\bm{x}'.
 \end{equation*} 
 This implies that we also have
 %
 \begin{equation*}
-[a_0+a_1(-\nabla^2)+a_2(-\nabla^2)^2+\cdots] f(\bm{x}) = \int [a_0+a_1l^1(\bm{x},\bm{x}')+a_2l^2(\bm{x},\bm{x}')+\cdots] f(\bm{x}')  \mathrm{d}\bm{x}'.
+[a_0+a_1(-\nabla^2)+a_2(-\nabla^2)^2+\cdots] f(\bm{x}) = \int [a_0+a_1l^1(\bm{x},\bm{x}')+a_2l^2(\bm{x},\bm{x}')+\cdots] f(\bm{x}')  \,\mathrm{d}\bm{x}'.
 \end{equation*} 
 
 
@@ -972,11 +973,11 @@ An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q
 %
 \begin{equation}\label{ch5_eq_q_2}
 \begin{split}
-\tilde{q}_j^2= \frac{2\text{I}_j(\ell^{-2})}{\exp(\frac{1}{\ell^2})}, \\
-\tilde{q}_0^2= \frac{\text{I}_0(\ell^{-2})}{\exp(\frac{1}{\ell^2})},
+\tilde{q}_j^2= \frac{2\mathrm{I}_j(\ell^{-2})}{\exp(\frac{1}{\ell^2})}, \\
+\tilde{q}_0^2= \frac{\mathrm{I}_0(\ell^{-2})}{\exp(\frac{1}{\ell^2})},
 \end{split}
 \end{equation} 
-for $j=1,2,\cdots,J$, and where the $\text{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
+for $j=1,2,\cdots,J$, and where the $\mathrm{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
 
 %Note that the terms in equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}) are underneath bounded approximations for any $J$. 
 
