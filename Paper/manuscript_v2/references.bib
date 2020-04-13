@@ -8,7 +8,7 @@
  journal={Statistics and Computing},
 }
 @book{Gelman+Hill+Vehtari:2020:ROS,
-  title={Regression and other stories},
+  title={Regression and Other Stories},
   author={Gelman, Andrew and Hill, Jennifer and Gelman, Andrew},
   year={2020},
   publisher={Cambridge University Press}
@@ -23,10 +23,10 @@
     pages = {465--480},
     volume = {97},
     publisher = {Biometrika Trust},
-    isbn = {0006-3444},
-    doi = {10.1093/biomet/asq017},
-    issn = {00063444},
-    pmid = {20882103},
+    noisbn = {0006-3444},
+    nodoi = {10.1093/biomet/asq017},
+    noissn = {00063444},
+    nopmid = {20882103},
     keywords = {Normal scale mixture, Ridge regression, Robustness, Shrinkage, Sparsity, Thresholding}
 }
 @article{betancourt2017conceptual,
@@ -70,8 +70,8 @@
   year    = {2017},
   volume  = {18},
   number  = {139},
-  pages   = {1-58},
-  url     = {http://jmlr.org/papers/v18/15-464.html}
+  pages   = {1--58},
+  nourl   = {http://jmlr.org/papers/v18/15-464.html}
 }
 
 @Misc{R2019R,
@@ -106,12 +106,19 @@
   year={2007}
 }
 
-@article{Burt+Rasmussen+vanderWilk:2019,
-  title={Explicit rates of convergence for sparse variational inference in {Gaussian} process regression},
-  author={Burt, David and Rasmussen, Carl Edward and van der Wilk, Mark},
-  journal={arXiv preprint arXiv:1903.03571},
-  year={2019}
+@inproceedings{Burt+Rasmussen+vanderWilk:2019,
+  title = 	 {Rates of Convergence for Sparse Variational {G}aussian Process Regression},
+  author = 	 {Burt, David and Rasmussen, Carl Edward and Van Der Wilk, Mark},
+  booktitle = 	 {Proceedings of the 36th International Conference on Machine Learning},
+  pages = 	 {862--871},
+  year = 	 {2019},
+  editor = 	 {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+  volume = 	 {97},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher = 	 {PMLR}
 }
+
+
 
 @book{rasmussen2006gaussian,
   title={Gaussian process for machine learning},
@@ -121,8 +128,8 @@
 }
 
 @book{grenander1981abstract,
-  title={Abstract inference},
-  author={Grenander, U},
+  title={Abstract Inference},
+  author={Grenander, Ulf},
   year={1981},
   publisher={John Wiley {\&} Sons}
 }
@@ -253,7 +260,7 @@
 @article{vanhatalo2010approximate,
   title={Approximate inference for disease mapping with sparse {Gaussian} processes},
   author={Vanhatalo, Jarno and Pietil{\"a}inen, Ville and Vehtari, Aki},
-  journal={Statistics in medicine},
+  journal={Statistics in Medicine},
   volume={29},
   number={15},
   pages={1580--1607},
@@ -336,22 +343,29 @@
 }
 
 @inproceedings{gal2015improving,
-  title={Improving the {Gaussian} process sparse spectrum approximation by representing uncertainty in frequency inputs},
-  author={Gal, Yarin and Turner, Richard},
-  booktitle={International Conference on Machine Learning},
-  pages={655--664},
-  year={2015}
+  title = 	 {Improving the {G}aussian Process Sparse Spectrum Approximation by Representing Uncertainty in Frequency Inputs},
+  author = 	 {Yarin Gal and Richard Turner},
+  booktitle = 	 {Proceedings of the 32nd International Conference on Machine Learning},
+  pages = 	 {655--664},
+  year = 	 {2015},
+  editor = 	 {Francis Bach and David Blei},
+  volume = 	 {37},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher = 	 {PMLR}
 }
 
+
+
+
 @book{diggle2013statistical,
-  title={Statistical analysis of spatial and spatio-temporal point patterns},
+  title={Statistical Analysis of Spatial and Spatio-temporal Point Patterns},
   author={Diggle, Peter J},
   year={2013},
   publisher={Chapman and Hall/CRC}
 }
 
 @book{carlin2014hierarchical,
-  title={Hierarchical modeling and analysis for spatial data},
+  title={Hierarchical Modeling and Analysis for Spatial Data},
   author={Carlin, Bradley P and Gelfand, Alan E and Banerjee, Sudipto},
   year={2014},
   publisher={Chapman and Hall/CRC}
@@ -360,7 +374,7 @@
 @article{deisenroth2015gaussian,
   title={Gaussian processes for data-efficient learning in robotics and control},
   author={Deisenroth, Marc Peter and Fox, Dieter and Rasmussen, Carl Edward},
-  journal={IEEE transactions on pattern analysis and machine intelligence},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
   volume={37},
   number={2},
   pages={408--423},
@@ -396,7 +410,7 @@
 @article{hennig2015probabilistic,
   title={Probabilistic numerics and uncertainty in computations},
   author={Hennig, Philipp and Osborne, Michael A and Girolami, Mark},
-  journal={Proc. R. Soc. A},
+  journal={Proceedings of the Royal Society A: Mathematical, Physical and Engineering Sciences},
   volume={471},
   number={2179},
   pages={20150142},
@@ -446,9 +460,8 @@
 }
 
 @book{adler1981geometry,
-  title={The geometry of random fields},
+  title={The Geometry of Random Fields},
   author={Adler, Robert J},
-  volume={62},
   year={1981},
   publisher={SIAM}
 }
@@ -548,7 +561,7 @@
   title={Handbook of Markov Chain Monte Carlo},
   author={Brooks, Steve and Gelman, Andrew and Jones, Galin and Meng, Xiao-Li},
   year={2011},
-  publisher={CRC press}
+  publisher={CRC Press}
 }
 
 @article{williams1998bayesian,
@@ -590,18 +603,20 @@
   year={2000}
 }
 
-@article{akhiezer1993theory,
-  title={Theory of Linear Operators in Hilbert Space (Ungar, New York, 1963)},
-  author={Akhiezer, NI and Glazman, IM},
-  journal={Vol. II},
-  pages={121--126},
-  year={1993}
+@book{akhiezer1993theory,
+       title = {Theory of Linear Operators in Hilbert Space},
+      author = {Akhiezer, Naum I. and Glazman, Izrail' M.},
+  translated = {and Nestell, Merlynd},
+        year = {1993},
+   publisher = {Dover},
+     address = {New York},
+      noisbn = {0-486-67748-6}
 }
 
 @article{carpenter2017stan,
-  title={Stan: A probabilistic programming language},
+  title={Stan: {A} probabilistic programming language},
   author={Carpenter, Bob and Gelman, Andrew and Hoffman, Matthew D and Lee, Daniel and Goodrich, Ben and Betancourt, Michael and Brubaker, Marcus and Guo, Jiqiang and Li, Peter and Riddell, Allen},
-  journal={Journal of statistical software},
+  journal={Journal of Statistical Software},
   volume={76},
   number={1},
   year={2017},
@@ -616,7 +631,7 @@
 }
 
 @article{vanhatalo2013gpstuff,
-  title={GPstuff: {Bayesian} modeling with {Gaussian} processes},
+  title={{GPstuff}: {Bayesian} modeling with {Gaussian} processes},
   author={Vanhatalo, Jarno and Riihimäki, Jaakko and Hartikainen, Jouni and Jylänki, Pasi and Tolvanen, Ville and Vehtari, Aki},
   journal={The Journal of Machine Learning Research},
   volume={14},
@@ -687,7 +702,7 @@ likelihood estimation of semiparametric generalized linear models},
 }
 
 @book{gelman2013bayesian,
-  title={Bayesian data analysis},
+  title={Bayesian Data Analysis},
   author={Gelman, Andrew and Carlin, John B and Stern, Hal S and Dunson, David B and Vehtari, Aki and Rubin, Donald B},
   year={2013},
   publisher={Chapman and Hall/CRC}
@@ -719,11 +734,12 @@ likelihood estimation of semiparametric generalized linear models},
   year={2014}
 }
 
-@misc{handbook1970m,
-  author={Abramowitz, M. and Stegun, I.A.},
-  title={Handbook of mathematical functions},
-  year={1970},
-  publisher={Dover Publications, Inc., New York}
+@book{handbook1970m,
+       title = {Handbook of Mathematical Functions},
+      author = {Abramowitz, Milton and Stegun, Irene},
+        year = {1970},
+   publisher = {Dover Publishing},
+     address = {New York}
 }
 
 
