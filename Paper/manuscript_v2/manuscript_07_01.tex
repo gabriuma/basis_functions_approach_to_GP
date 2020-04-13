@@ -582,22 +582,8 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
   \label{fig9_MSE_varing_lscale}
 \end{figure}
 
-Comparing the accuracy of the lengthscale in Figure 
-\ref{fig8_Tlscale_vs_Elscale} to the RMSE in Figure \ref{fig9_MSE_varing_lscale},
-we see that they agree closely with each other for medium lengthscales.
-That is, a good estimation of the lengthscale implies a
-small RMSE. This is no longer true for very small or large lengthscales.
-In small lengthscales, even very small inaccuracies 
-may have a strong influence on the posteriors predictions and thus on the RMSE.
-In large lengthscales, larger inaccuracies change the posterior predictions
-only little and may thus not yield large RMSEs.
-The dashed black line in Figure \ref{fig8_Tlscale_vs_Elscale} represents the 
-minimum lengthscale that can be closely approximated under the given condition, according to the results presented in Figure \ref{fig6_lscale_vs_J_vs_c}. 
-We observe that whenever the estimated lengthscale exceeds the minimally
-estimable lengthscale, the RMSE of the posterior predictions is small
-(see Figure \ref{fig9_MSE_varing_lscale}).
-Conversely, when the estimated lengthscale is smaller than the minimally
-estimable one, the RMSE becomes very large.
+Comparing the accuracy of the lengthscale in Figure~\ref{fig8_Tlscale_vs_Elscale} to the RMSE in Figure~\ref{fig9_MSE_varing_lscale}, we see that they agree closely with each other for medium lengthscales. That is, a good estimation of the lengthscale implies a small RMSE. This is no longer true for very small or large lengthscales. In small lengthscales, even very small inaccuracies  may have a strong influence on the posteriors predictions and thus on the RMSE. In large lengthscales, larger inaccuracies change the posterior predictions only little and may thus not yield large RMSEs. The dashed black line in Figure \ref{fig8_Tlscale_vs_Elscale} represents the  minimum lengthscale that can be closely approximated under the given condition, according to the results presented in Figure \ref{fig6_lscale_vs_J_vs_c}.  We observe that whenever the estimated lengthscale exceeds the minimally estimable lengthscale, the RMSE of the posterior predictions is small
+(see Figure \ref{fig9_MSE_varing_lscale}). Conversely, when the estimated lengthscale is smaller than the minimally estimable one, the RMSE becomes very large.
 
 
 \section{Case studies}\label{ch5_sec_cases}
@@ -606,7 +592,7 @@ In this section, we will present several simulated and real case studies in whic
 
 \subsection{Simulated data for a univariate function}\label{ch5_sec_univariate_simu}
 
-This example consists of a simulated dataset with $n=250$ ($i=1,\dots,n$) single draws from a Gaussian process prior with a Mat{\'e}rn($\nu$=3/2) covariance function and hyperparameters marginal variance $\alpha=1$ and lengthscale $\ell=0.15$, with corresponding inputs values $\bm{x}=(x_1\dots,x_n)$ with $x_i \in [-1,1] \subset {\rm I\!R}$. To form the final noisy dataset $\bm{y}$, Gaussian noise standard deviation $\sigma=0.2$ was added to the GP draws.
+This example consists of a simulated dataset with $n=250$ ($i=1,2,\dots,n$) single draws from a Gaussian process prior with a Mat{\'e}rn($\nu$=3/2) covariance function and hyperparameters marginal variance $\alpha=1$ and lengthscale $\ell=0.15$, with corresponding inputs values $\bm{x}=(x_1,x_2,\dots,x_n)$ with $x_i \in [-1,1] \subset {\rm I\!R}$. To form the final noisy dataset $\bm{y}$, Gaussian noise standard deviation $\sigma=0.2$ was added to the GP draws.
 
 The exact GP model for fitting this simulated dataset $\bm{y}$ can be written as follows,
 %
@@ -617,6 +603,7 @@ The exact GP model for fitting this simulated dataset $\bm{y}$ can be written as
 f(x) &\sim \GP(0, k(x, x', \theta)),
 \end{split}
 \end{align*}
+%
 where $I$ represents the identity matrix and $\bm{f}=\{f(x_i)\}_{i=1}^n$ represents the underlying function values to the noisy data. The previous formulation corresponds to the latent form of a GP model. The function $f:{\rm I\!R} \to {\rm I\!R}$ is a GP prior with a Mat{\'e}rn($\nu$=3/2) covariance function $k$. Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ is multivariate Gaussian distributed with covariance matrix $K$, where $K_{ij}=k(x_i,x_j,\theta)$, with $i,j=1,\dots,n$.
  
 A more computationally efficient formulation of a GP model with Gaussian likelihood, and for probabilistic inference using MCMC sampling methods, would be its marginalized form,
@@ -624,10 +611,10 @@ A more computationally efficient formulation of a GP model with Gaussian likelih
 \begin{equation*}\label{ch5_eq_marginalizedgp_simudata1}
 \bm{y} \sim \mathcal{N}(0, K + \sigma^2 I ),
 \end{equation*}
+%
 where the function values $\bm{f}$ have been integrated out, yielding a lower-dimensional parameter space over which to do inference, reducing the time of computation and improving the sampling and the effective number of samples.
 
-In the HSGP model, the latent function values $f(x)$ are approximated as in eq.~(\ref{eq_approxf}), with the Mat{\'e}rn($\nu$=3/2) spectral density $S$ as in eq. ~(\ref{eq_specdens_32}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}), respectively. 
-In order to do model comparison, in addition to the exact GP model and HSGP model, a spline-based model is also fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
+In the HSGP model, the latent function values $f(x)$ are approximated as in eq.~(\ref{eq_approxf}), with the Mat{\'e}rn($\nu$=3/2) spectral density $S$ as in eq.~(\ref{eq_specdens_32}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}), respectively.  In order to do model comparison, in addition to the exact GP model and HSGP model, a spline-based model is also fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
 
 Figure~\ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributions of the three models, the exact GP, the HSGP with $m=80$ basis functions and boundary factor $c=1.2$ ($L=c\cdot 1= 1.2$; see equation (\ref{eq_boundary})), and the spline model with 80 knots. The true data-generative function and the noisy observations are also plotted. The sample observations are plotted as circles and the out-of-sample or test data, which have not been taking part on training the models, are plotted as crosses. The test data located at the extremes of the plot are used for assessing model extrapolation, and the test data located in the middle are used for assessing model interpolation. The posteriors of the three models, exact GP, HSGP and spline, are pretty similar within the interpolation input space. However, when extrapolating the spline model solution clearly differs from the exact GP and HSGP models as well as the actual observations. 
 
@@ -695,7 +682,7 @@ which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate G
 The component $f_2(t)$ represents the yearly smooth seasonal pattern, using a periodic squared exponential covariance function (with period 365.25 to match the average length of the year) in a GP model,
 %
 \begin{equation*}
-f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \sigma_2^2 \exp\!\!\left(\!-\frac{2\,\text{sin}^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
+f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \sigma_2^2 \exp\!\!\left(\!-\frac{2\,\mathrm{sin}^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
 \end{equation*}
 % which means the function values $\bm{f}_2=\{f_2(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_2$, where $K_{2_{t,s}}=k_2(t,s)$, with $t,s=1,\dots,T$.
 
