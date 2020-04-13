@@ -41,6 +41,7 @@
 \usepackage{colortbl}
 \DeclareMathOperator{\LogNormal}{LogNormal}
 \DeclareMathOperator{\GP}{\mathcal{GP}}
+\DeclareMathOperator{\Normal}{Normal}
 
 \providecommand{\keywords}[1]
 {
@@ -148,10 +149,10 @@ We assume a GP prior for $f \sim \GP(\mu(\bm{x}), k(\bm{x}, \bm{x}'))$, where $\
  	k(\bm{x}, \bm{x}') &= \mathbb{E}\!\left[\left( f(\bm{x}) - \mu(\bm{x}) \right)\left( f(\bm{x}') - \mu(\bm{x}') \right)\right].
 \end{align*} 
 
-The mean and covariance functions completely characterize the GP prior, and control the a priori behavior of the function $f$. Let $\bm{f}=\left\lbrace f(\bm{x}_n) \right\rbrace_{n=1}^N$, then the resulting prior distribution for $\bm{f}$ is a multivariate Gaussian distribution $\bm{f} \sim \mathcal{N}(\bm{\mu}, \bm{K})$, where $\bm{\mu} = \left\lbrace \mu(\bm{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\bm{K}$ the covariance matrix, where $K_{i,j}=k(\bm{x}_i,\bm{x}_j)$. In the following, we focus on zero-mean Gaussian processes, that is set $\mu(\bm{x}) = 0$. The covariance function $k(\bm{x}, \bm{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation. The joint distribution of $\bm{f}$ and a new $\tilde{f}$ is also a multivariate Gaussian as,
+The mean and covariance functions completely characterize the GP prior, and control the a priori behavior of the function $f$. Let $\bm{f}=\left\lbrace f(\bm{x}_n) \right\rbrace_{n=1}^N$, then the resulting prior distribution for $\bm{f}$ is a multivariate Gaussian distribution $\bm{f} \sim \Normal(\bm{\mu}, \bm{K})$, where $\bm{\mu} = \left\lbrace \mu(\bm{x}_n) \right\rbrace_{n=1}^N$ is the mean and $\bm{K}$ the covariance matrix, where $K_{i,j}=k(\bm{x}_i,\bm{x}_j)$. In the following, we focus on zero-mean Gaussian processes, that is set $\mu(\bm{x}) = 0$. The covariance function $k(\bm{x}, \bm{x}')$ might depend on a set of hyperparameters, $\bm{\theta}$, but we will not write this dependency explicitly to ease the notation. The joint distribution of $\bm{f}$ and a new $\tilde{f}$ is also a multivariate Gaussian as,
 %
 \begin{align*}
-p(\bm{f}, \tilde{f})=\mathcal{N} \left( \left[ \begin{array}{cc}
+p(\bm{f}, \tilde{f})=\Normal \left( \left[ \begin{array}{cc}
 \bm{f} \\ 
 f^*
 \end{array} \right] \,\middle|\, \bm{0},\left[ \begin{array}{cc}
@@ -162,7 +163,7 @@ f^*
 %
 where $\bm{k}_{\bm{f},\tilde{f}}$ is the covariance between $\bm{f}$ and $\tilde{f}$, and $k_{\tilde{f},\tilde{f}}$ is the prior variance of $\tilde{f}$. %By using the conditioning properties of multivariate Gaussian distributions, we can derive the predictive distribution for $f^*$  given $\bm{f}$ analytically,
 % \begin{align*}
-	% p(f^*| \bm{f}) = \mathcal{N}(f^*| \bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{k}_{\bm{f},f^*}  )
+	% p(f^*| \bm{f}) = \Normal(f^*| \bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{k}_{\bm{f},f^*}  )
 % \end{align*}
 
 % {\color{red} Aki: the following until ``While Gaussian'' seems too basic to be in the paper:}
@@ -185,11 +186,11 @@ where $\bm{k}_{\bm{f},\tilde{f}}$ is the covariance between $\bm{f}$ and $\tilde
 % %
 % If the observation model $p(\bm{y}|\bm{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
 % \begin{align*}
-% 	p(f^*| \bm{y}) = \mathcal{N}(f^*| \textbf{k}_{f^*,\bm{f}} (\textbf{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} (\bm{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{k}_{\bm{f},f^*}  ),
+% 	p(f^*| \bm{y}) = \Normal(f^*| \textbf{k}_{f^*,\bm{f}} (\textbf{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} (\bm{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{k}_{\bm{f},f^*}  ),
 % \end{align*}
 % where $\sigma^2$ is the noise variance.
 
-If $p(y_n \mid f(\bm{x}_n),\phi)=\mathcal{N}(y_n \mid f(\bm{x}_n),\sigma)$ then $\bm{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GPs and $O(nm^2)$ for sparse GPs). If $p(y_n \mid f(\bm{x}_n),g(\bm{x}_n))=\mathcal{N}(y_n \mid f(\bm{x}_n),g(\bm{x}_n))$ or $p(y_n \mid f(\bm{x}_n),\phi)$ is non-Gaussian, the marginalization does not have a closed-form solution. Furthermore, if a prior distribution is imposed on $\phi$ and $\bm{\theta}$ to form a joint posterior for $\phi$, $\bm{\theta}$ and $\bm{f}$, approximate inference such as Markov chain Monte Carlo \citep[MCMC; ][]{brooks_2011}, Laplace approximation \citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational inference methods \citep{gibbs2000variational,csato2000efficient} are required. In this paper, we focus on the use of MCMC for integrating over the joint posterior. MCMC is usually not the fastest approach, but it is flexible and allows accurate inference and uncertainty estimates for general models in probabilistic programming settings. We consider the computational costs of GPs specifically from this point of view.
+If $p(y_n \mid f(\bm{x}_n),\phi)=\Normal(y_n \mid f(\bm{x}_n),\sigma)$ then $\bm{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GPs and $O(nm^2)$ for sparse GPs). If $p(y_n \mid f(\bm{x}_n),g(\bm{x}_n))=\Normal(y_n \mid f(\bm{x}_n),g(\bm{x}_n))$ or $p(y_n \mid f(\bm{x}_n),\phi)$ is non-Gaussian, the marginalization does not have a closed-form solution. Furthermore, if a prior distribution is imposed on $\phi$ and $\bm{\theta}$ to form a joint posterior for $\phi$, $\bm{\theta}$ and $\bm{f}$, approximate inference such as Markov chain Monte Carlo \citep[MCMC; ][]{brooks_2011}, Laplace approximation \citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational inference methods \citep{gibbs2000variational,csato2000efficient} are required. In this paper, we focus on the use of MCMC for integrating over the joint posterior. MCMC is usually not the fastest approach, but it is flexible and allows accurate inference and uncertainty estimates for general models in probabilistic programming settings. We consider the computational costs of GPs specifically from this point of view.
 
 \subsection{Covariance functions and spectral density}\label{ch4_sec_cov}
 
@@ -287,7 +288,7 @@ where $\bm{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column ve
 Thus, the Gram matrix $K$ of the covariance function $k$ for a set of observations $i=1,\ldots,n$ and corresponding input values $\{x_i\}_{i=1}^{n} \in \Omega^{n}$ can be represented as
 %
 \begin{equation}
-  K = \Phi \Delta \Phi^\intercal, \nonumber
+ \bm{K} = \Phi \Delta \Phi^\intercal, \nonumber
 \end{equation}
 %
 where $\Phi \in {\rm I\!R}^{n\times m}$ is the matrix of eigenfunctions $\phi_j(x_i)$
@@ -302,7 +303,7 @@ where $\Phi \in {\rm I\!R}^{n\times m}$ is the matrix of eigenfunctions $\phi_j(
 As a result, the model for $f$ can be written as
 %
 \begin{equation}
-\bm{f} \sim \mathcal{N}(\bm{\mu},\Phi \Delta \Phi^\intercal). \nonumber
+\bm{f} \sim \Normal(\bm{\mu},\Phi \Delta \Phi^\intercal). \nonumber
 \end{equation}
 This equivalently leads to a linear representation of $f$ via
 %
@@ -310,7 +311,7 @@ This equivalently leads to a linear representation of $f$ via
 f(x) \approx \sum_{j}^m \left( S_{\theta}(\sqrt{\lambda_j})\right)^{\frac{1}{2}} \phi_j(x) \beta_j,
 \end{equation}
 %
-where $\beta_j \sim \mathcal{N}(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the hyperparameters of the covariance function $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, eq.~\eqref{eq_approxf} can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of evaluating the log posterior density of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
+where $\beta_j \sim \Normal(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the hyperparameters of the covariance function $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, eq.~\eqref{eq_approxf} can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of evaluating the log posterior density of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
 
 The parameterization in eq.~\eqref{eq_approxf} is naturally in the non-centered parameterization form with independent prior distribution on $\beta_j$, which can make the posterior inference easier \citep[see, e.g., ][]{Betancourt+Girolami:2019}. Furthermore, all dependencies on the covariance function and the hyperparameters is through the prior distribution of the regression weights $\beta_j$. The posterior distribution of the parameters $p(\bm{\beta}|\bm{y})$ is a distribution over a $m$-dimensional space, where $m$ is much smaller than the number of observations $n$. Therefore, the parameter space is greatly reduced and this makes inference faster, especially when sampling methods are used.
 
@@ -366,7 +367,7 @@ f(\bm{x}) \approx \sum_{j=1}^{m^{\ast}}
 \left( S^{\ast}_{\theta} \left(\sqrt{\bm{\lambda}^{\ast}_j} \right)\right)^{\! \frac{1}{2}} \phi^{\ast}_j(\bm{x}) \beta_j, 
 \end{equation}
 %
-where, again, $\beta_j \sim \mathcal{N}(0,1)$. The computational cost of evaluating the log posterior density of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
+where, again, $\beta_j \sim \Normal(0,1)$. The computational cost of evaluating the log posterior density of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
 
 
 \section{The accuracy of the approximation}\label{ch5_sec_accuracy}
@@ -600,17 +601,17 @@ The exact GP model for fitting this simulated dataset $\bm{y}$ can be written as
 \begin{align*}\label{ch5_eq_latentgp_simudata1}
 \begin{split}
 \bm{y} &= \bm{f} + \bm{\epsilon} \\
-\bm{\epsilon} &\sim \mathcal{N}(0, \sigma^2  I) \\
+\bm{\epsilon} &\sim \Normal(0, \sigma^2  I) \\
 f(x) &\sim \GP(0, k(x, x', \theta)),
 \end{split}
 \end{align*}
 %
-where $I$ represents the identity matrix and $\bm{f}=\{f(x_i)\}_{i=1}^n$ represents the underlying function values to the noisy data. The previous formulation corresponds to the latent form of a GP model. The function $f:{\rm I\!R} \to {\rm I\!R}$ is a GP prior with a Mat{\'e}rn($\nu$=3/2) covariance function $k$. Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ is multivariate Gaussian distributed with covariance matrix $K$, where $K_{ij}=k(x_i,x_j,\theta)$, with $i,j=1,\dots,n$.
+where $I$ represents the identity matrix and $\bm{f}=\{f(x_i)\}_{i=1}^n$ represents the underlying function values to the noisy data. The previous formulation corresponds to the latent form of a GP model. The function $f:{\rm I\!R} \to {\rm I\!R}$ is a GP prior with a Mat{\'e}rn($\nu$=3/2) covariance function $k$. Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ is multivariate Gaussian distributed with covariance matrix $\bm{K}$, where $K_{ij}=k(x_i,x_j,\theta)$, with $i,j=1,\dots,n$.
  
 A more computationally efficient formulation of a GP model with Gaussian likelihood, and for probabilistic inference using MCMC sampling methods, would be its marginalized form,
 %
 \begin{equation*}\label{ch5_eq_marginalizedgp_simudata1}
-\bm{y} \sim \mathcal{N}(0, K + \sigma^2 I ),
+\bm{y} \sim \Normal(0,\bm{K}+ \sigma^2 \bm{I} ),
 \end{equation*}
 %
 where the function values $\bm{f}$ have been integrated out, yielding a lower-dimensional parameter space over which to do inference, reducing the time of computation and improving the sampling and the effective number of samples.
@@ -663,7 +664,7 @@ This example is an analysis of patterns in birthday frequencies in a dataset con
 Let us denote $y_t$ as the number of births of day $t$. The observational model is a normal model with parameters the mean function $\mu(t)$ and noise variance $\sigma^2$,
 %
 \begin{equation*}
-y_{t} \sim \mathcal{N}(\mu(t),\sigma^2).
+y_{t} \sim \Normal(\mu(t),\sigma^2).
 \end{equation*}
 %
 The mean function $\mu(t)$ will be defined as an additive model in the form: 
@@ -678,7 +679,7 @@ The component $f_1(t)$ represents the long-term trends modeled by a GP with squa
 f_1(t) \sim \GP(0,k_1), \hspace{5mm} k_1(t,t') = \sigma_1^2 \exp\!\!\left(\!-\frac{1}{2} \frac{(t-t')^2}{\ell_1^2}\right), 
 \end{equation*}
 %
-which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_1$, where $K_{1_{t,s}}=k_1(t,s)$, with $t,s=1,\dots,T$.
+which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $\bm{K}_1$, where $\bm{K}_{1_{t,s}}=k_1(t,s)$, with $t,s=1,\dots,T$.
 
 The component $f_2(t)$ represents the yearly smooth seasonal pattern, using a periodic squared exponential covariance function (with period 365.25 to match the average length of the year) in a GP model,
 %
@@ -697,7 +698,7 @@ f_3(t) \sim \GP(0,k_3), \hspace{5mm} k_3(t,t') = \sigma_3^2 \exp\!\!\left(\!-\fr
 The component $f_4(t)$ represents the special days effects, modeled as a horse-shoe prior model \citep{carvalho2010,piironen2017sparsity}:
 %
 \begin{equation*}
-f_4(t) \sim \mathcal{N}(0,\lambda^2_t \tau^2), \hspace{5mm} \lambda^2_t \sim \mathcal{C}^{+}(0,1).
+f_4(t) \sim \Normal(0,\lambda^2_t \tau^2), \hspace{5mm} \lambda^2_t \sim \mathcal{C}^{+}(0,1).
 \end{equation*}
 %
 A horse-shoe prior allows for sparse distributed effects. Its global parameter $\tau$ pulls all the weights (effects) globally towards zero, while the thick half-Cauchy tails for the local scales $\lambda_t$ allow some of the weights to escape the shrinkage. Different levels of sparsity can be accommodated by changing the value of $\tau$: with large $\tau$ all the variables have very diffuse priors with very little shrinkage towards zero, but letting $\tau \rightarrow 0$ will shrink all the weights $f_4(t)$ to zero \citep{piironen2016hyperprior}. 
@@ -1009,7 +1010,7 @@ With this approximation for the periodic squared exponential covariance function
 \begin{equation} \label{ch5_eq_f_period}
 f(x) \approx \sigma \left( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j +  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \right),
 \end{equation}
-where $\beta_j \sim \mathcal{N}(0,1)$, with $j=1,\dots,2J+1$. The cosine $\cos(j\omega_0 x)$ and sinus $\sin(j\omega_0 x)$ terms do not depend on the covariance hyperparameters $\ell$. The only dependence on the hyperparameter $\ell$ is through the coefficients $\tilde{q}_j$, which are $J$-dimensional. The computational cost of this approximation scales as $O\big(n(2J+1) + (2J+1)\big)$, where $n$ is the number of observations and $J$ the number of cosine terms.
+where $\beta_j \sim \Normal(0,1)$, with $j=1,\dots,2J+1$. The cosine $\cos(j\omega_0 x)$ and sinus $\sin(j\omega_0 x)$ terms do not depend on the covariance hyperparameters $\ell$. The only dependence on the hyperparameter $\ell$ is through the coefficients $\tilde{q}_j$, which are $J$-dimensional. The computational cost of this approximation scales as $O\big(n(2J+1) + (2J+1)\big)$, where $n$ is the number of observations and $J$ the number of cosine terms.
 The parameterization in equation (\ref{ch5_eq_f_period}) is naturally in the non-centered form with independent prior distributions on
 $\beta_j$, which makes posterior inference easier.
 
