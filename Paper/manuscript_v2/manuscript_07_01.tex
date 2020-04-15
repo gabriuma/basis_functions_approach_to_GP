@@ -57,7 +57,7 @@
 %\usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
+%\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
 
 %\bibliographystyle{authordate1}
 % TODO macro
@@ -493,7 +493,7 @@ c = 2.5 &
 \end{figure}
 
 
-Additionally, there is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the lengthscale $\ell$ of the approximated function. Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern} depict how these three factors interact with each other in relation to a close approximation of the HSGP model, in the cases of a GP with square exponential covariance function and Mat\'ern($\nu$=3/2) covariance function, respectively, and a single input dimension. More precisely, for a given GP model (with a squared exponential covariance function) with lengthscale $\ell$ and given a boundary factor $c$, Figure \ref{fig6_lscale_vs_J_vs_c} shows the minimum $m$ required to achieve a accurate approximation in the sense of satisfying equation (\ref{eq_diff_covs}). Similarly for Figure \ref{fig6_lscale_vs_J_vs_c_Matern} in the case of a Mat\'ern($\nu$=3/2) covariance function. We considered an approximation to be a close enough when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in equation (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$:
+Additionally, there is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the lengthscale $\ell$ of the approximated function. Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern} depict how these three factors interact with each other in relation to a close approximation of the HSGP model, in the cases of a GP with square exponential covariance function and Mat\'ern($\nu$=3/2) covariance function, respectively, and a single input dimension. More precisely, for a given GP model (with a squared exponential covariance function) with lengthscale $\ell$ and given a boundary factor $c$, Figure \ref{fig6_lscale_vs_J_vs_c} shows the minimum $m$ required to achieve a accurate approximation in the sense of satisfying eq. (\ref{eq_diff_covs}). Similarly for Figure \ref{fig6_lscale_vs_J_vs_c_Matern} in the case of a Mat\'ern($\nu$=3/2) covariance function. We considered an approximation to be a close enough when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in eq. (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$:
 %
 \begin{equation*}
  \frac{\varepsilon}{\int k(\tau) \,\mathrm{d}\tau} < 0.01.
@@ -1003,12 +1003,12 @@ The function values of a GP model with this low-rank representation of the perio
 the covariance $k(\tau)$ in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) can be written as
 %
 \begin{equation} \label{ch5_eq_cov_periodic_taylor_approx_2}
-k(x,x')= \sigma^2 \left( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \right).
+k(x,x')= \alpha \left( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \right).
 \end{equation}
 With this approximation for the periodic squared exponential covariance function $k(x,x')$, the approximate GP model $f(x) \sim \GP\left(0,k(x,x')\right)$ equivalently leads to a linear representation of $f(\cdot)$ via
 %
 \begin{equation} \label{ch5_eq_f_period}
-f(x) \approx \sigma \left( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j +  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \right),
+f(x) \approx \alpha^{1/2} \left( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j +  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \right),
 \end{equation}
 where $\beta_j \sim \Normal(0,1)$, with $j=1,\dots,2J+1$. The cosine $\cos(j\omega_0 x)$ and sinus $\sin(j\omega_0 x)$ terms do not depend on the covariance hyperparameters $\ell$. The only dependence on the hyperparameter $\ell$ is through the coefficients $\tilde{q}_j$, which are $J$-dimensional. The computational cost of this approximation scales as $O\big(n(2J+1) + (2J+1)\big)$, where $n$ is the number of observations and $J$ the number of cosine terms.
 The parameterization in equation (\ref{ch5_eq_f_period}) is naturally in the non-centered form with independent prior distributions on
