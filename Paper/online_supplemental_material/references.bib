@@ -1,6 +1,51 @@
+@Article{Vehtari+Gelman+Gabry:2017_practical,
+ author	     = {Aki Vehtari and Andrew Gelman and Jonah Gabry},
+ title	     = {Practical {Bayesian} model evaluation using leave-one-out cross-validation and {WAIC}},
+  volume={27},
+  number={5},
+  pages={1413--1432},
+  year={2017},
+ journal={Statistics and Computing},
+}
+@book{Gelman+Hill+Vehtari:2020:ROS,
+  title={Regression and Other Stories},
+  author={Gelman, Andrew and Hill, Jennifer and Gelman, Andrew},
+  year={2020},
+  publisher={Cambridge University Press}
+}
+
+@article{carvalho2010,
+    title = {The horseshoe estimator for sparse signals},
+    year = {2010},
+    journal = {Biometrika},
+    author = {Carvalho, Carlos M. and Polson, Nicholas G. and Scott, James G.},
+    number = {2},
+    pages = {465--480},
+    volume = {97},
+    publisher = {Biometrika Trust},
+    noisbn = {0006-3444},
+    nodoi = {10.1093/biomet/asq017},
+    noissn = {00063444},
+    nopmid = {20882103},
+    keywords = {Normal scale mixture, Ridge regression, Robustness, Shrinkage, Sparsity, Thresholding}
+}
+@article{betancourt2017conceptual,
+  title={A conceptual introduction to {Hamiltonian Monte Carlo}},
+  author={Betancourt, Michael},
+  journal={arXiv preprint arXiv:1701.02434},
+  year={2017}
+}
+@incollection{Betancourt+Girolami:2019,
+  title={{Hamiltonian} {Monte} {Carlo} for hierarchical models},
+  author={Betancourt, Michael and Girolami, Mark},
+  booktitle={Current Trends in {Bayesian} Methodology with Applications},
+  pages={79--101},
+  year={2019},
+  publisher={Chapman and Hall/CRC}
+}
 @article{ruiz2011feature,
   title={A feature extraction software tool for agricultural object-based image analysis},
-  author={Ruiz, LA and Recio, JA and Fern{\'a}ndez-Sarr{\'\i}a, Alfonso and Hermosilla, T},
+  author={Ruiz, Luis Ángel and Recio, Jorge Abel and Fern{\'a}ndez-Sarr{\'\i}a, Alfonso and Hermosilla, Txomin},
   journal={Computers and Electronics in Agriculture},
   volume={76},
   number={2},
@@ -10,20 +55,31 @@
 }
 @article{vehtari_2012,
   title={A survey of {B}ayesian predictive methods for model assessment, selection and comparison},
-  author={Vehtari, Aki and Ojanen, Janne and others},
+  author={Vehtari, Aki and Ojanen, Janne},
   journal={Statistics Surveys},
   volume={6},
   pages={142--228},
   year={2012},
-  publisher={The author, under a Creative Commons Attribution License},
-  note={doi:10.1214/12-SS102}
+  nopublisher={The author, under a Creative Commons Attribution License},
+  nonote={doi:10.1214/12-SS102}
 }
-@Misc{R2014R,
+@article{andersen2017,
+  author  = {Michael Riis Andersen and Aki Vehtari and Ole Winther and Lars Kai Hansen},
+  title   = {Bayesian Inference for Spatio-temporal Spike-and-Slab Priors},
+  journal = {Journal of Machine Learning Research},
+  year    = {2017},
+  volume  = {18},
+  number  = {139},
+  pages   = {1--58},
+  nourl   = {http://jmlr.org/papers/v18/15-464.html}
+}
+
+@Misc{R2019R,
      title = {R: A Language and Environment for Statistical Computing},
      author = {{R Core Team}},
      organization = {R Foundation for Statistical Computing},
      address = {Vienna, Austria},
-     year = {2014},
+     year = {2019},
      note = {http://www.R-project.org/},
 }
 
@@ -34,10 +90,10 @@
    volume = {90},
    number = {10},
    year = {2019},
-   issn = {1548-7660},
+   noissn = {1548-7660},
    pages = {1--41},
-   doi = {10.18637/jss.v090.i10},
-   url = {https://www.jstatsoft.org/v090/i10}
+   nodoi = {10.18637/jss.v090.i10},
+   nourl = {https://www.jstatsoft.org/v090/i10}
 }
 
 @article{Furrer+Nychka:2007,
@@ -50,36 +106,48 @@
   year={2007}
 }
 
-@article{Burt+Rasmussen+vanderWilk:2019,
-  title={Explicit rates of convergence for sparse variational inference in Gaussian process regression},
-  author={Burt, David and Rasmussen, Carl Edward and van der Wilk, Mark},
-  journal={arXiv preprint arXiv:1903.03571},
-  year={2019}
+@inproceedings{Burt+Rasmussen+vanderWilk:2019,
+  title = 	 {Rates of Convergence for Sparse Variational {G}aussian Process Regression},
+  author = 	 {Burt, David and Rasmussen, Carl Edward and Van Der Wilk, Mark},
+  booktitle = 	 {Proceedings of the 36th International Conference on Machine Learning},
+  pages = 	 {862--871},
+  year = 	 {2019},
+  editor = 	 {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+  volume = 	 {97},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher = 	 {PMLR}
 }
 
+
+
 @book{rasmussen2006gaussian,
-  title={Gaussian process for machine learning},
+  title={Gaussian Processes for Machine Learning},
   author={Rasmussen, Carl Edward and Williams, Christopher KI},
   year={2006},
   publisher={MIT press}
 }
 
 @book{grenander1981abstract,
-  title={Abstract inference},
-  author={Grenander, U},
+  title={Abstract Inference},
+  author={Grenander, Ulf},
   year={1981},
   publisher={John Wiley {\&} Sons}
 }
 
 @article{solin2018hilbert,
-  title={Hilbert space methods for reduced-rank Gaussian process regression},
+  title={Hilbert space methods for reduced-rank {G}aussian process regression},
   author={Solin, Arno and S{\"a}rkk{\"a}, Simo},
-  journal={arXiv preprint arXiv:1401.5508},
-  year={2018}
+  journal={Statistics and Computing},
+  volume={30},
+  number={2},
+  pages={419--446},
+  year={2020},
+  publisher={Springer},
+  note={Much of the work in this paper is based on the pre-print version predating the published paper. Pre-print available at \url{https://arxiv.org/abs/1401.5508}.}
 }
 
 @inproceedings{snelson2007local,
-  title={Local and global sparse Gaussian process approximations},
+  title={Local and global sparse {Gaussian} process approximations},
   author={Snelson, Edward and Ghahramani, Zoubin},
   booktitle={Artificial Intelligence and Statistics},
   pages={524--531},
@@ -96,7 +164,7 @@
 }
 
 @article{quinonero2005unifying,
-  title={A unifying view of sparse approximate Gaussian process regression},
+  title={A unifying view of sparse approximate {Gaussian} process regression},
   author={Qui{\~n}onero-Candela, Joaquin and Rasmussen, Carl Edward},
   journal={Journal of Machine Learning Research},
   volume={6},
@@ -106,7 +174,7 @@
 }
 
 @article{bui2017unifying,
-  title={A unifying framework for Gaussian process pseudo-point approximations using power expectation propagation},
+  title={A unifying framework for {Gaussian} process pseudo-point approximations using power expectation propagation},
   author={Bui, Thang D and Yan, Josiah and Turner, Richard E},
   journal={The Journal of Machine Learning Research},
   volume={18},
@@ -136,7 +204,7 @@
 }
 
 @inproceedings{smola2001sparse,
-  title={Sparse greedy Gaussian process regression},
+  title={Sparse greedy {Gaussian} process regression},
   author={Smola, Alex J and Bartlett, Peter L},
   booktitle={Advances in neural information processing systems},
   pages={619--625},
@@ -144,7 +212,7 @@
 }
 
 @article{ro2001sparse,
-  title={Sparse online Gaussian processes},
+  title={Sparse online {Gaussian} processes},
   author={Ro, Lehel Csat and Opper, Manfred},
   journal={Neural Comput.},
   volume={14},
@@ -153,7 +221,7 @@
 }
 
 @inproceedings{seeger2003fast,
-  title={Fast forward selection to speed up sparse Gaussian process regression},
+  title={Fast forward selection to speed up sparse {Gaussian} process regression},
   author={Seeger, Matthias and Williams, Christopher and Lawrence, Neil},
   booktitle={Artificial Intelligence and Statistics 9},
   number={EPFL-CONF-161318},
@@ -161,7 +229,7 @@
 }
 
 @inproceedings{titsias2009variational,
-  title={Variational learning of inducing variables in sparse Gaussian processes},
+  title={Variational learning of inducing variables in sparse {Gaussian} processes},
   author={Titsias, Michalis},
   booktitle={Artificial Intelligence and Statistics},
   pages={567--574},
@@ -169,7 +237,7 @@
 }
 
 @inproceedings{snelson2006sparse,
-  title={Sparse Gaussian processes using pseudo-inputs},
+  title={Sparse {Gaussian} processes using pseudo-inputs},
   author={Snelson, Edward and Ghahramani, Zoubin},
   booktitle={Advances in neural information processing systems},
   pages={1257--1264},
@@ -195,9 +263,9 @@
 }
 
 @article{vanhatalo2010approximate,
-  title={Approximate inference for disease mapping with sparse Gaussian processes},
+  title={Approximate inference for disease mapping with sparse {Gaussian} processes},
   author={Vanhatalo, Jarno and Pietil{\"a}inen, Ville and Vehtari, Aki},
-  journal={Statistics in medicine},
+  journal={Statistics in Medicine},
   volume={29},
   number={15},
   pages={1580--1607},
@@ -206,21 +274,21 @@
 }
 
 @article{vanhatalo2012modelling,
-  title={Modelling local and global phenomena with sparse Gaussian processes},
+  title={Modelling local and global phenomena with sparse {Gaussian} processes},
   author={Vanhatalo, Jarno and Vehtari, Aki},
   journal={arXiv preprint arXiv:1206.3290},
   year={2012}
 }
 
 @phdthesis{saatcci2012scalable,
-  title={Scalable inference for structured Gaussian process models},
+  title={Scalable inference for structured {Gaussian} process models},
   author={Saat{\c{c}}i, Yunus},
   year={2012},
   school={Citeseer}
 }
 
 @inproceedings{cunningham2008fast,
-  title={Fast Gaussian process methods for point process intensity estimation},
+  title={Fast {Gaussian} process methods for point process intensity estimation},
   author={Cunningham, John P and Shenoy, Krishna V and Sahani, Maneesh},
   booktitle={Proceedings of the 25th international conference on Machine learning},
   pages={192--199},
@@ -229,22 +297,23 @@
 }
 
 @inproceedings{wilson2015kernel,
-  title={Kernel interpolation for scalable structured Gaussian processes (KISS-GP)},
+  title={Kernel interpolation for scalable structured {Gaussian} processes (KISS-GP)},
   author={Wilson, Andrew and Nickisch, Hannes},
   booktitle={International Conference on Machine Learning},
   pages={1775--1784},
   year={2015}
 }
 
-@article{lazaro2010sparse,
-  title={Sparse Gaussian processes for large-scale machine learning},
+@phdthesis{lazaro2010sparse,
+  title={Sparse {Gaussian} Processes for Large-scale Machine Learning},
   author={L{\'a}zaro Gredilla, Miguel},
+  school={Universidad Carlos III de Madrid},
   year={2010}
 }
 
 @article{quia2010sparse,
-  title={Sparse spectrum Gaussian process regression},
-  author={Qui{\~n}onero-Candela, Joaquin and Rasmussen, Carl Edward and Figueiras-Vidal, An{\'i}bal R and others},
+  title={Sparse spectrum {Gaussian} process regression},
+  author={Qui{\~n}onero-Candela, Joaquin and Rasmussen, Carl Edward and Figueiras-Vidal, An{\'i}bal R},
   journal={Journal of Machine Learning Research},
   volume={11},
   number={Jun},
@@ -253,7 +322,7 @@
 }
 
 @article{hensman2017variational,
-  title={Variational Fourier features for Gaussian processes},
+  title={Variational Fourier features for {Gaussian} processes},
   author={Hensman, James and Durrande, Nicolas and Solin, Arno},
   journal={The Journal of Machine Learning Research},
   volume={18},
@@ -265,37 +334,45 @@
 
 @inproceedings{rahimi2008random,
   title={Random features for large-scale kernel machines},
-  author={Rahimi, Ali and Recht, Benjamin},
-  booktitle={Advances in neural information processing systems},
-  pages={1177--1184},
-  year={2008}
+  author = {Ali Rahimi and Recht, Benjamin},
+  booktitle = {Advances in Neural Information Processing Systems 20},
+  editor = {J. C. Platt and D. Koller and Y. Singer and S. T. Roweis},
+  pages = {1177--1184},
+  year = {2008},
+  publisher = {Curran Associates, Inc.}
 }
 
 @inproceedings{rahimi2009weighted,
-  title={Weighted sums of random kitchen sinks: Replacing minimization with randomization in learning},
-  author={Rahimi, Ali and Recht, Benjamin},
-  booktitle={Advances in neural information processing systems},
-  pages={1313--1320},
-  year={2009}
+title = {Weighted Sums of Random Kitchen Sinks: {R}eplacing minimization with randomization in learning},
+author = {Ali Rahimi and Recht, Benjamin},
+booktitle = {Advances in Neural Information Processing Systems 21},
+editor = {D. Koller and D. Schuurmans and Y. Bengio and L. Bottou},
+pages = {1313--1320},
+year = {2009},
+publisher = {Curran Associates, Inc.}
 }
 
 @inproceedings{gal2015improving,
-  title={Improving the Gaussian process sparse spectrum approximation by representing uncertainty in frequency inputs},
-  author={Gal, Yarin and Turner, Richard},
-  booktitle={International Conference on Machine Learning},
-  pages={655--664},
-  year={2015}
+  title = 	 {Improving the {G}aussian Process Sparse Spectrum Approximation by Representing Uncertainty in Frequency Inputs},
+  author = 	 {Yarin Gal and Richard Turner},
+  booktitle = 	 {Proceedings of the 32nd International Conference on Machine Learning},
+  pages = 	 {655--664},
+  year = 	 {2015},
+  editor = 	 {Francis Bach and David Blei},
+  volume = 	 {37},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher = 	 {PMLR}
 }
 
 @book{diggle2013statistical,
-  title={Statistical analysis of spatial and spatio-temporal point patterns},
+  title={Statistical Analysis of Spatial and Spatio-temporal Point Patterns},
   author={Diggle, Peter J},
   year={2013},
   publisher={Chapman and Hall/CRC}
 }
 
 @book{carlin2014hierarchical,
-  title={Hierarchical modeling and analysis for spatial data},
+  title={Hierarchical Modeling and Analysis for Spatial Data},
   author={Carlin, Bradley P and Gelfand, Alan E and Banerjee, Sudipto},
   year={2014},
   publisher={Chapman and Hall/CRC}
@@ -304,7 +381,7 @@
 @article{deisenroth2015gaussian,
   title={Gaussian processes for data-efficient learning in robotics and control},
   author={Deisenroth, Marc Peter and Fox, Dieter and Rasmussen, Carl Edward},
-  journal={IEEE transactions on pattern analysis and machine intelligence},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
   volume={37},
   number={2},
   pages={408--423},
@@ -313,7 +390,7 @@
 }
 
 @article{sarkka2013spatiotemporal,
-  title={Spatiotemporal learning via infinite-dimensional Bayesian filtering and smoothing: A look at Gaussian process regression through Kalman filtering},
+  title={Spatiotemporal learning via infinite-dimensional {Bayesian} filtering and smoothing: A look at {Gaussian} process regression through {Kalman} filtering},
   author={Särkkä, Simo and Solin, Arno and Hartikainen, Jouni},
   journal={IEEE Signal Processing Magazine},
   volume={30},
@@ -324,15 +401,15 @@
 }
 
 @phdthesis{roberts2010bayesian,
-  title={Bayesian Gaussian processes for sequential prediction, optimisation and quadrature},
+  title={Bayesian {Gaussian} Processes for Sequential Prediction, Optimisation and Quadrature},
   author={Roberts, Stephen J},
   year={2010},
   school={University of Oxford}
 }
 
 @article{briol2015probabilistic,
-  title={Probabilistic integration: A role in statistical computation?},
-  author={Briol, Fran{\c{c}}ois-Xavier and Oates, Chris and Girolami, Mark and Osborne, Michael A and Sejdinovic, Dino and others},
+  title={Probabilistic integration: {A} role in statistical computation?},
+  author={Briol, Fran{\c{c}}ois-Xavier and Oates, Chris and Girolami, Mark and Osborne, Michael A and Sejdinovic, Dino},
   journal={arXiv preprint arXiv:1512.00933},
   year={2015}
 }
@@ -340,7 +417,7 @@
 @article{hennig2015probabilistic,
   title={Probabilistic numerics and uncertainty in computations},
   author={Hennig, Philipp and Osborne, Michael A and Girolami, Mark},
-  journal={Proc. R. Soc. A},
+  journal={Proceedings of the Royal Society A: Mathematical, Physical and Engineering Sciences},
   volume={471},
   number={2179},
   pages={20150142},
@@ -349,7 +426,7 @@
 }
 
 @inproceedings{bui2014tree,
-  title={Tree-structured Gaussian process approximations},
+  title={Tree-structured {Gaussian} process approximations},
   author={Bui, Thang D and Turner, Richard E},
   booktitle={Advances in Neural Information Processing Systems},
   pages={2213--2221},
@@ -375,24 +452,24 @@
   publisher={Wiley Online Library}
 }
 
-@misc{loeve1977probability,
-  title={Probability theory},
-  author={Lo{\`e}ve, M},
+@book{loeve1977probability,
+  title={Probability Theory},
+  author={Lo{\`e}ve, Michel},
   year={1977},
   publisher={Springer-Verlag, New York}
 }
 
-@misc{trees1968detection,
-  title={Detection, estimation and modulation theory, vol. 1},
-  author={Trees, HLV},
-  year={1968},
-  publisher={Wiley New York}
+@book{trees1968detection,
+      author = {Harry. L. {Van~Trees}},
+       title = {Detection, Estimation, and Modulation Theory, Part~I: Detection, Estimation, and Linear Modulation Theory},
+   publisher = {John Wiley \& Sons},
+     address = {New York, NY},
+        year = {1968}
 }
 
 @book{adler1981geometry,
-  title={The geometry of random fields},
+  title={The Geometry of Random Fields},
   author={Adler, Robert J},
-  volume={62},
   year={1981},
   publisher={SIAM}
 }
@@ -407,14 +484,14 @@
 @article{wahba1978improper,
   title={Improper priors, spline smoothing and the problem of guarding against model errors in regression},
   author={Wahba, Grace},
-  journal={Journal of the Royal Statistical Society. Series B (Methodological)},
+  journal={Journal of the Royal Statistical Society: Series B (Methodological)},
   pages={364--372},
   year={1978},
   publisher={JSTOR}
 }
 
 @article{kimeldorf1970correspondence,
-  title={A correspondence between Bayesian estimation on stochastic processes and smoothing by splines},
+  title={A correspondence between {Bayesian} estimation on stochastic processes and smoothing by splines},
   author={Kimeldorf, George S and Wahba, Grace},
   journal={The Annals of Mathematical Statistics},
   volume={41},
@@ -425,7 +502,7 @@
 }
 
 @book{wahba1990spline,
-  title={Spline models for observational data},
+  title={Spline Models for Observational Data},
   author={Wahba, Grace},
   volume={59},
   year={1990},
@@ -451,7 +528,7 @@
 }
 
 @article{paciorek2007bayesian,
-  title={Bayesian smoothing with Gaussian processes using Fourier basis functions in the spectralGP package},
+  title={Bayesian smoothing with {Gaussian} processes using Fourier basis functions in the spectralGP package},
   author={Paciorek, Christopher J},
   journal={Journal of statistical software},
   volume={19},
@@ -463,7 +540,7 @@
 
 @article{wood2003thin,
   title={Thin plate regression splines},
-  author={Wood, Simon N},
+  author={Simon N Wood},
   journal={Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
   volume={65},
   number={1},
@@ -473,8 +550,8 @@
 }
 
 @article{bernardo1998regression,
-  title={Regression and classification using Gaussian process priors},
-  author={Bernardo, J and Berger, J and Dawid, A and Smith, A and others},
+  title={Regression and classification using {Gaussian} process priors},
+  author={Bernardo, J and Berger, J and Dawid, A and Smith, A},
   journal={Bayesian statistics},
   volume={6},
   pages={475},
@@ -482,7 +559,7 @@
 }
 
 @article{neal1997monte,
-  title={Monte Carlo implementation of Gaussian process models for Bayesian regression and classification},
+  title={Monte {C}arlo implementation of {Gaussian} process models for {Bayesian} regression and classification},
   author={Neal, Radford M},
   journal={arXiv preprint physics/9701026},
   year={1997}
@@ -492,11 +569,11 @@
   title={Handbook of Markov Chain Monte Carlo},
   author={Brooks, Steve and Gelman, Andrew and Jones, Galin and Meng, Xiao-Li},
   year={2011},
-  publisher={CRC press}
+  publisher={CRC Press}
 }
 
 @article{williams1998bayesian,
-  title={Bayesian classification with Gaussian processes},
+  title={Bayesian classification with {Gaussian} processes},
   author={Williams, Christopher KI and Barber, David},
   journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
   volume={20},
@@ -507,16 +584,16 @@
 }
 
 @inproceedings{minka2001expectation,
-  title={Expectation propagation for approximate Bayesian inference},
+  title={Expectation propagation for approximate {Bayesian} inference},
   author={Minka, Thomas P},
-  booktitle={Proceedings of the Seventeenth conference on Uncertainty in artificial intelligence},
+  booktitle={Proceedings of the Seventeenth Conference on Uncertainty in Artificial Intelligence},
   pages={362--369},
   year={2001},
   organization={Morgan Kaufmann Publishers Inc.}
 }
 
 @article{gibbs2000variational,
-  title={Variational Gaussian process classifiers},
+  title={Variational {Gaussian} process classifiers},
   author={Gibbs, Mark N and MacKay, David JC},
   journal={IEEE Transactions on Neural Networks},
   volume={11},
@@ -527,25 +604,27 @@
 }
 
 @inproceedings{csato2000efficient,
-  title={Efficient approaches to Gaussian process classification},
+  title={Efficient approaches to {Gaussian} process classification},
   author={Csat{\'o}, Lehel and Fokou{\'e}, Ernest and Opper, Manfred and Schottky, Bernhard and Winther, Ole},
   booktitle={Advances in neural information processing systems},
   pages={251--257},
   year={2000}
 }
 
-@article{akhiezer1993theory,
-  title={Theory of Linear Operators in Hilbert Space (Ungar, New York, 1963)},
-  author={Akhiezer, NI and Glazman, IM},
-  journal={Vol. II},
-  pages={121--126},
-  year={1993}
+@book{akhiezer1993theory,
+       title = {Theory of Linear Operators in Hilbert Space},
+      author = {Akhiezer, Naum I. and Glazman, Izrail' M.},
+  translated = {and Nestell, Merlynd},
+        year = {1993},
+   publisher = {Dover},
+     address = {New York},
+      noisbn = {0-486-67748-6}
 }
 
 @article{carpenter2017stan,
-  title={Stan: A probabilistic programming language},
+  title={Stan: {A} probabilistic programming language},
   author={Carpenter, Bob and Gelman, Andrew and Hoffman, Matthew D and Lee, Daniel and Goodrich, Ben and Betancourt, Michael and Brubaker, Marcus and Guo, Jiqiang and Li, Peter and Riddell, Allen},
-  journal={Journal of statistical software},
+  journal={Journal of Statistical Software},
   volume={76},
   number={1},
   year={2017},
@@ -553,14 +632,14 @@
 }
 
 @book{wood2017generalized,
-  title={Generalized additive models: an introduction with R},
-  author={Wood, Simon N},
+  title={Generalized additive models: an introduction with {R}},
+  author={Simon N Wood},
   year={2017},
   publisher={Chapman and Hall/CRC}
 }
 
 @article{vanhatalo2013gpstuff,
-  title={GPstuff: Bayesian modeling with Gaussian processes},
+  title={{GPstuff}: {Bayesian} modeling with {Gaussian} processes},
   author={Vanhatalo, Jarno and Riihimäki, Jaakko and Hartikainen, Jouni and Jylänki, Pasi and Tolvanen, Ville and Vehtari, Aki},
   journal={The Journal of Machine Learning Research},
   volume={14},
@@ -570,7 +649,7 @@
 }
 
 @article{rasmussen2010gpml,
-  title={Gaussian processes for machine learning (GPML) toolbox},
+  title={Gaussian processes for machine learning ({GPML}) toolbox},
   author={Rasmussen, Carl Edward and Nickisch, Hannes},
   journal={The Journal of Machine Learning Research},
   volume={11},
@@ -580,8 +659,8 @@
 
 @Misc{gpy2014,
   author =   {GPy},
-  title =    {{GPy}: A Gaussian process framework in Python},
-  url = {http://github.com/SheffieldML/GPy}
+  title =    {{GPy}: A {Gaussian} process framework in {Python}},
+  url = {http://github.com/SheffieldML/GPy},
   year = {2012}
 }
 
@@ -593,33 +672,35 @@ year = {2017},
 month = {apr},
 volume = {18},
 number = {40},
-pages = {1-6},
-url = {http://jmlr.org/papers/v18/16-537.html}
+pages = {1--6},
+nourl = {http://jmlr.org/papers/v18/16-537.html}
 }
 
 @article{lunn2000winbugs,
-  title={WinBUGS - a Bayesian modelling framework: concepts, structure, and extensibility},
+  title={WinBUGS - a {Bayesian} modelling framework: concepts, structure, and extensibility},
   author={Lunn, David J and Thomas, Andrew and Best, Nicky and Spiegelhalter, David},
   journal={Statistics and computing},
-  volume={10},
-  number={4},
+  volume=10,
+  number=4,
   pages={325--337},
-  year={2000},
+  year=2000,
   publisher={Springer}
 }
 
-@article{wood2015package,
-  title={Package ‘mgcv’},
-  author={Wood, Simon and Wood, Maintainer Simon},
-  journal={R package version},
-  volume={1},
-  pages={29},
-  year={2015}
-}
+@Article{wood2011mgcv,
+    title = {Fast stable restricted maximum likelihood and marginal 
+likelihood estimation of semiparametric generalized linear models},
+    journal = {Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
+    volume = {73},
+    number = {1},
+    pages = {3--36},
+    year = {2011},
+    author = {Simon N Wood},
+  }
 
 @article{burkner2017brms,
-  title={brms: An R package for Bayesian multilevel models using Stan},
-  author={B{\"u}rkner, Paul-Christian and others},
+  title={brms: An {R} package for {Bayesian} multilevel models using {Stan}},
+  author={B{\"u}rkner, Paul-Christian},
   journal={Journal of Statistical Software},
   volume={80},
   number={1},
@@ -629,22 +710,28 @@ url = {http://jmlr.org/papers/v18/16-537.html}
 }
 
 @book{gelman2013bayesian,
-  title={Bayesian data analysis},
+  title={Bayesian Data Analysis},
   author={Gelman, Andrew and Carlin, John B and Stern, Hal S and Dunson, David B and Vehtari, Aki and Rubin, Donald B},
   year={2013},
   publisher={Chapman and Hall/CRC}
 }
 
-@article{piironen2016hyperprior,
-  title={On the hyperprior choice for the global shrinkage parameter in the horseshoe prior},
-  author={Piironen, Juho and Vehtari, Aki},
-  journal={arXiv preprint arXiv:1610.05559},
-  year={2016}
+@inproceedings{piironen2016hyperprior,
+  title = 	 {On the Hyperprior Choice for the Global Shrinkage Parameter in the Horseshoe Prior},
+  author = 	 {Juho Piironen and Aki Vehtari},
+  booktitle = 	 {Proceedings of the 20th International Conference on Artificial Intelligence and Statistics},
+  pages = 	 {905--913},
+  year = 	 {2017},
+  editor = 	 {Aarti Singh and Jerry Zhu},
+  volume = 	 {54},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {20--22 Apr},
+  publisher = 	 {PMLR}
 }
 
 @article{piironen2017sparsity,
   title={Sparsity information and regularization in the horseshoe and other shrinkage priors},
-  author={Piironen, Juho and Vehtari, Aki and others},
+  author={Piironen, Juho and Vehtari, Aki},
   journal={Electronic Journal of Statistics},
   volume={11},
   number={2},
@@ -656,16 +743,21 @@ url = {http://jmlr.org/papers/v18/16-537.html}
 @inproceedings{solin2014explicit,
   title={Explicit link between periodic covariance functions and state space models},
   author={Solin, Arno and S{\"a}rkk{\"a}, Simo},
-  booktitle={Artificial Intelligence and Statistics},
-  pages={904--912},
-  year={2014}
+  booktitle = 	 {Proceedings of the Seventeenth International Conference on Artificial Intelligence and Statistics},
+  pages = 	 {904--912},
+  year = 	 {2014},
+  editor = 	 {Samuel Kaski and Jukka Corander},
+  volume = 	 {33},
+  series = 	 {Proceedings of Machine Learning Research},
+  publisher = 	 {PMLR}
 }
 
-@misc{handbook1970m,
-  author={Abramowitz, M. and Stegun, I.A.},
-  title={Handbook of mathematical functions},
-  year={1970},
-  publisher={Dover Publications, Inc., New York}
+@book{handbook1970m,
+       title = {Handbook of Mathematical Functions},
+      author = {Abramowitz, Milton and Stegun, Irene},
+        year = {1970},
+   publisher = {Dover Publishing},
+     address = {New York}
 }
 
 
