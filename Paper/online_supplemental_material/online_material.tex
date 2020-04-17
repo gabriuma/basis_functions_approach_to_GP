@@ -58,7 +58,7 @@
 \usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
+%\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
 
 %\bibliographystyle{authordate1}
 % TODO macro
@@ -118,7 +118,7 @@ Figure \ref{ch5_fig12_Posteriors_gaydata} shows the posterior mean predictive di
 \begin{figure}
 \centering
 \includegraphics[scale=0.50]{ch5_fig12_Posteriors_gaydata.pdf}
-\caption{Posterior mean predictive distributions of the proposed HSGP model, the regular GP model, and the Splines model. 95\% credible intervals are plotted as dashed lines.}
+\caption{Posterior predictive means of the proposed HSGP model, the regular GP model, and the Splines model. 95\% confident intervals are plotted as dashed lines.}
   \label{ch5_fig12_Posteriors_gaydata}
 \end{figure}
 
@@ -128,7 +128,7 @@ Figure \ref{ch5_fig14_MSE_train_gaydata} shows the RMSE of the regular GP, HSGP 
 
 Figure \ref{ch5_fig14_1_time_gaydata} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the splines model. The computational times is represented in the y-axis which is on a logarithmic scale. The HSGP model is on average roughly 15 times faster than the regular GP and 5 times faster than the spline model, for this particular case and univariate input space. Computation time increases relatively slight with the number of basis functions in a univariate input space, as can be seen in the figure.
 
-The Stan model codes for the exact GP, the approximate GP and the splines models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Same-sex-marriage-data}}.
+The Stan model codes for the exact GP, the approximate GP and the splines models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Same-sex-marriage-data}}\,.
 
 %\begin{lstlisting}[breaklines]
 %https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Same-sex-marriage-data
@@ -202,7 +202,7 @@ Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the da
 \includegraphics[scale=0.40, trim = 0mm 18mm 35mm 20mm, clip]{ch5_fig15_bffun_exII.pdf}  & \hspace{-5mm} \includegraphics[scale=0.40, trim = 19mm 18mm 35mm 20mm, clip]{ch5_fig15_spfun_exII.pdf}
 \end{tabular}
 \end{center}
-\caption{(a) Data-generating function. (b) Posterior mean predictive function of the GP model. (c) Posterior mean predictive function of the HSGP model. (d) Posterior mean predictive function of the splines model. Sample points are plotted as circles}
+\caption{Data-generating function (a) and posterior predictive mean functions of the GP (b), HSGP (c) and spline (d) models. Sample points are plotted as circles}
   \label{ch5_fig15_Posteriors_exII}
 \end{figure}
 
@@ -213,7 +213,7 @@ Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the da
 \subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorHSGP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorSP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.30, trim = 150mm 5mm 0mm 20mm, clip]{ch5_fig16_error_colorbar_exII.pdf}}
-\caption{Error between the data-generating mean function and the posterior mean of the GP (a), HSGP (b) and spline (c) models. Sample points are plotted as circles.}
+\caption{Error between the data-generating function and posterior mean functions of the GP (a), HSGP (b) and spline (c) models. Sample points are plotted as circles.}
   \label{ch5_fig16_errors_exII}
 \end{figure}
 
@@ -221,7 +221,7 @@ In order to assess performance of the models as a function of the number of basi
 
 Figure \ref{ch5_fig17_RMSE_exII}-right shows the computational times of the different models as a function of the boundary factor, number of basis functions and knots. Figure \ref{ch5_fig17_RMSE_exII} reveals that choosing the optimal boundary factor allows for less number of basis functions and less computation time. Even though in a bivariate input space the computation demand increases significantly with the number of dimensions or knots, either the HSGP or spline models work significantly better than regular GP, even for highly wiggly functions that require a high number of basis functions or knots for a accurate approximation. However, serious difficulties with cumputation time were encountered in building the spline model with $50$ knots for this bivariate function.
 
-The Stan model codes for the exact GP, the approximate GP and the splines models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_2D-Simulated-data}}.
+The Stan model codes for the exact GP, the approximate GP and the splines models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_2D-Simulated-data}}\,.
 
 
 \begin{figure}
@@ -267,7 +267,7 @@ Figure \ref{ch5_fig18_gpfun_diabetes} shows the posterior mean predictions of pr
 \subfigure{\includegraphics[scale=0.37, trim = 20mm 23mm 39mm 20mm, clip]{ch5_fig18_bffun_diabetes.pdf}}
 \subfigure{\includegraphics[scale=0.37, trim = 20mm 23mm 39mm 20mm, clip]{ch5_fig18_spfun_diabetes.pdf}}
 \subfigure{\includegraphics[scale=0.30, trim = 150mm 4mm 2mm 15mm, clip]{ch5_fig18_legend_diabetes.pdf}}
-\caption{(a) Posterior mean predictive functions of the GP model. (b) Posterior mean predictive functions of the HSGP model. (c) Posterior mean predictive functions of the spline (SP) model. Samples observations of suffering (red points) and not suffering (blue points) form the disease are plotted.}
+\caption{Posterior predictive mean functions of the GP (a), HSGP (b) and spline (c) models. Samples observations of suffering (red points) and not suffering (blue points) from the disease are plotted.}
   \label{ch5_fig18_gpfun_diabetes}
 \end{figure}
 
@@ -284,7 +284,7 @@ In order to assess the performance of the models as a function of the boundary f
 Figure \ref{ch5_fig20_time2D_diabetes} shows the computational times of the different models, regular GP, HSGP and spline, fitted over the dataset with 2, 3 and 4 input dimensions, as a function of the boundary factor $c$ and number of univariate basis functions $m$ and knots. The time of omputation increases significantly with higher dimensions for the HSGP and spline models. In this sense, choosing optimal values for the number of basis functions and boundary factor, looking at the recommendations and diagnosis provided by Figure 6% \ref{fig6_lscale_vs_J_vs_c}
 , can be essential to avoid a excessive computation time, especially in multivariate input spaces. Serious difficulties with computation time were encountered in building spline models in a 4D input space or even in a 3D input space with more than 10 knots.
 
-The Stan model codes for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Diabetes-data}}.
+The Stan model codes for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Diabetes-data}}\,.
 
 \begin{figure}
 \centering
@@ -388,7 +388,7 @@ The marginals of the columns (true classes) represent the percentage of misclass
   \label{ch5_tab_parcels}
 \end{table}
 
-The Stan model code for the approximate GP model of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Land-use-classification}}.
+The Stan model code for the approximate GP model of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Land-use-classification}}\,.
 
 
 \bibliography{../manuscript_v2/references}
