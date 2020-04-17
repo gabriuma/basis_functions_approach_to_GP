@@ -26,7 +26,7 @@
 \usepackage{float}
 \usepackage{soul}
 \usepackage{xcolor}
-\graphicspath{{./images/}}
+\graphicspath{{../manuscript_v2/images/}}
 
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -122,7 +122,7 @@ Figure \ref{ch5_fig12_Posteriors_gaydata} shows the posterior mean predictive di
   \label{ch5_fig12_Posteriors_gaydata}
 \end{figure}
 
-For the HSGP model, different models with different number of basis functions and boundary factor have been fitted. The root mean square errors (RMSE) for every one of these models have been computed against the regular GP model, and plotted as a function of the number of basis functions $m$ and boundary factor $c$ in Figure \ref{ch5_fig13_MSE_train_BF_gaydata}-left, for sample data, and in Figure \ref{ch5_fig13_MSE_train_BF_gaydata}-right, for test data. As the boundary factor increases, more basis functions are needed for a accurate approximation, as it was expected.
+For the HSGP model, different models with different number of basis functions and boundary factor have been fitted. The root mean square errors (RMSE) for every one of these models have been computed against the regular GP model, and plotted as a function of the number of basis functions $m$ and boundary factor $c$ in Figure \ref{ch5_fig13_MSE_train_BF_gaydata}-left, for sample data, and in Figure \ref{ch5_fig13_MSE_train_BF_gaydata}-right, for test data. As the boundary factor increases, more basis functions are needed for a accurate approximation.
 
 Figure \ref{ch5_fig14_MSE_train_gaydata} shows the RMSE of the regular GP, HSGP and splines models computed against the actual data, for training and test data, as a function of the number of basis functions $m$ and boundary factor $c$ for the HSGP model, and  knots for the splines model. We can see how the splines models do not extrapolate data properly (Figure \ref{ch5_fig14_MSE_train_gaydata}-right). 
 
@@ -191,7 +191,7 @@ In the HSGP model with $2$ input dimensions, the latent function $f(\bm{x})$ is 
 
 In order to do model comparison, in addition to the regular GP and HSGP models, a two-dimensional splines-based model is also fitted using a cubic spline basis, penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
 
-Figure \ref{ch5_fig15_Posteriors_exII} shows the data-generating GP function, from where the dataset was drawn, and the mean posterior predictive functions of the three models, the regular GP, the HSGP, and the splines, fitted over the dataset. Sample observations are also plotted as circles. For the HSGP model, $m_1=40$ and $m_2=40$ basis functions for each dimension respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension $c_1=1.5$ and $c_2=1.5$ were used. For the splines model, 40 knots in each dimension were used.
+Figure \ref{ch5_fig15_Posteriors_exII} shows the data-generating GP function, from where the dataset was drawn, and the mean posterior predictive functions of the three models, regular GP, HSGP, and splines, fitted over the dataset. Sample observations are also plotted as circles. For the HSGP model, $m_1=40$ and $m_2=40$ basis functions for each dimension respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension $c_1=1.5$ and $c_2=1.5$ were used. For the splines model, 40 knots in each dimension were used.
 
 Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the data-generating function and the GP, HSGP and splines models, respectively.
 
@@ -202,7 +202,7 @@ Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the da
 \includegraphics[scale=0.40, trim = 0mm 18mm 35mm 20mm, clip]{ch5_fig15_bffun_exII.pdf}  & \hspace{-5mm} \includegraphics[scale=0.40, trim = 19mm 18mm 35mm 20mm, clip]{ch5_fig15_spfun_exII.pdf}
 \end{tabular}
 \end{center}
-\caption{(a) Data-generating function. (b) Mean posterior predictive function of the GP model. (c) Mean posterior predictive function of the HSGP model. (d) Mean posterior predictive function of the splines model. Sample points are plotted as circles}
+\caption{(a) Data-generating function. (b) Posterior mean predictive function of the GP model. (c) Posterior mean predictive function of the HSGP model. (d) Posterior mean predictive function of the splines model. Sample points are plotted as circles}
   \label{ch5_fig15_Posteriors_exII}
 \end{figure}
 
@@ -213,7 +213,7 @@ Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the da
 \subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorHSGP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorSP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.30, trim = 150mm 5mm 0mm 20mm, clip]{ch5_fig16_error_colorbar_exII.pdf}}
-\caption{Mean error between the data-generating function and the GP (a), HSGP (b) and splines (c) models. Sample points are plotted as circles.}
+\caption{Error between the data-generating mean function and the posterior mean of the GP (a), HSGP (b) and spline (c) models. Sample points are plotted as circles.}
   \label{ch5_fig16_errors_exII}
 \end{figure}
 
@@ -259,7 +259,7 @@ and (10)% (\ref{eq_eigenfunction_multi})
 
 In order to do model comparison, in addition to the regular GP and HSGP models, a $D$-dimensional spline-based model is also fitted using a cubic spline basis penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}.
 
-Figure \ref{ch5_fig18_gpfun_diabetes} shows the mean posterior predictions of probabilities ($p_i$) of the three models, the regular GP, the HSGP and the spline, fitted over the dataset with the 2 input dimensions \textit{Glucose} and \textit{Pregnancy} ($D=2$). The binary observations $y_i$ are also plotted in the plots as colored points. For the HSGP model, $m_1=20$ and $m_2=20$ basis functions for each dimension, respectively, were used, which lead to a total of 400 multivariate basis functions. A boundary factor for each dimension $c_1=4$ and $c_2=4$ were used. For the spline model, 20 knots per dimension were used.
+Figure \ref{ch5_fig18_gpfun_diabetes} shows the posterior mean predictions of probabilities ($p_i$) of the three models, regular GP, HSGP and spline, fitted over the dataset with the 2 input dimensions \textit{Glucose} and \textit{Pregnancy} ($D=2$). The binary observations $y_i$ are also plotted in the plots as colored points. For the HSGP model, $m_1=20$ and $m_2=20$ basis functions for each dimension, respectively, were used, which lead to a total of 400 multivariate basis functions. A boundary factor for each dimension $c_1=4$ and $c_2=4$ were used. For the spline model, 20 knots per dimension were used.
 %
 \begin{figure}
 \centering
@@ -267,7 +267,7 @@ Figure \ref{ch5_fig18_gpfun_diabetes} shows the mean posterior predictions of pr
 \subfigure{\includegraphics[scale=0.37, trim = 20mm 23mm 39mm 20mm, clip]{ch5_fig18_bffun_diabetes.pdf}}
 \subfigure{\includegraphics[scale=0.37, trim = 20mm 23mm 39mm 20mm, clip]{ch5_fig18_spfun_diabetes.pdf}}
 \subfigure{\includegraphics[scale=0.30, trim = 150mm 4mm 2mm 15mm, clip]{ch5_fig18_legend_diabetes.pdf}}
-\caption{(a) Mean posterior predictive functions of the GP model. (b) Mean posterior predictive functions of the HSGP model. (c) Mean posterior predictive functions of the spline (SP) model. Samples observations of suffering (red points) and not suffering (blue points) form the disease are plotted.}
+\caption{(a) Posterior mean predictive functions of the GP model. (b) Posterior mean predictive functions of the HSGP model. (c) Posterior mean predictive functions of the spline (SP) model. Samples observations of suffering (red points) and not suffering (blue points) form the disease are plotted.}
   \label{ch5_fig18_gpfun_diabetes}
 \end{figure}
 
@@ -281,8 +281,8 @@ In order to assess the performance of the models as a function of the boundary f
   \label{ch5_fig19_ELPD_diabetes}
 \end{figure}
 
-Figure \ref{ch5_fig20_time2D_diabetes} shows the computational times of the different models, regular GP, HSGP and spline, fitted over the dataset with 2, 3 and 4 input dimensions, as a function of the boundary factor $c$ and number of univariate basis functions $m$ and knots. The time of omputation increases significantly with higher dimensions for the HSGP and spline models. In this sense, choosing optimal values for the number of basis functions and boundary factor, looking at the recommendations and diagnosis provided by Figure 6 % \ref{fig6_lscale_vs_J_vs_c}
-in the main document, can be essential to avoid a excessive computation time, especially in multivariate input spaces. Serious difficulties with computation time were encountered in building spline models in a 4D input space or even in a 3D input space with more than 10 knots.
+Figure \ref{ch5_fig20_time2D_diabetes} shows the computational times of the different models, regular GP, HSGP and spline, fitted over the dataset with 2, 3 and 4 input dimensions, as a function of the boundary factor $c$ and number of univariate basis functions $m$ and knots. The time of omputation increases significantly with higher dimensions for the HSGP and spline models. In this sense, choosing optimal values for the number of basis functions and boundary factor, looking at the recommendations and diagnosis provided by Figure 6% \ref{fig6_lscale_vs_J_vs_c}
+, can be essential to avoid a excessive computation time, especially in multivariate input spaces. Serious difficulties with computation time were encountered in building spline models in a 4D input space or even in a 3D input space with more than 10 knots.
 
 The Stan model codes for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Diabetes-data}}.
 
@@ -391,7 +391,7 @@ The marginals of the columns (true classes) represent the percentage of misclass
 The Stan model code for the approximate GP model of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Land-use-classification}}.
 
 
-\bibliography{references}
+\bibliography{../manuscript_v2/references}
 
 \end{document}
 
