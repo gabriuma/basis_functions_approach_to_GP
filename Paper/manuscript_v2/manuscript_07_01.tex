@@ -57,7 +57,7 @@
 %\usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
+%\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
 
 %\bibliographystyle{authordate1}
 % TODO macro
@@ -631,7 +631,7 @@ In order to assess the performance of the models as a function of the number of 
 
 Figure~\ref{ch5_fig11_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model, for this particular application with a univariate input space. Also, the increase in computation time as a function of the number of basis functions in a univariate input space is relatively slight.
 
-The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}.
+The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}\,.
 %
 
 \begin{figure}
@@ -676,22 +676,22 @@ The mean function $\mu(t)$ will be defined as an additive model in the form:
 The component $f_1(t)$ represents the long-term trends modeled by a GP with squared exponential covariance function,
 %
 \begin{equation*}
-f_1(t) \sim \GP(0,k_1), \hspace{5mm} k_1(t,t') = \sigma_1^2 \exp\!\!\left(\!-\frac{1}{2} \frac{(t-t')^2}{\ell_1^2}\right), 
+f_1(t) \sim \GP(0,k_1), \hspace{5mm} k_1(t,t') = \alpha_1 \exp\!\!\left(\!-\frac{1}{2} \frac{(t-t')^2}{\ell_1^2}\right), 
 \end{equation*}
 %
-which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $\bm{K}_1$, where $\bm{K}_{1_{t,s}}=k_1(t,s)$, with $t,s=1,\dots,T$.
+which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $\bm{K}_1$, where $K_{1_{t,s}}=k_1(t,s)$, with $t,s=1,\dots,T$. $\ell_1$ and $\alpha_1$ represent the marginal variance and lengthscale, respectively, of this GP prior component.
 
 The component $f_2(t)$ represents the yearly smooth seasonal pattern, using a periodic squared exponential covariance function (with period 365.25 to match the average length of the year) in a GP model,
 %
 \begin{equation*}
-f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \sigma_2^2 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
+f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \alpha_2 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
 \end{equation*}
 % which means the function values $\bm{f}_2=\{f_2(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_2$, where $K_{2_{t,s}}=k_2(t,s)$, with $t,s=1,\dots,T$.
 
 The component $f_3(t)$ represents the weekly smooth pattern using a periodic squared exponential covariance function (with period 7 of length of the week) in a GP model,
 %
 \begin{equation*}
-f_3(t) \sim \GP(0,k_3), \hspace{5mm} k_3(t,t') = \sigma_3^2 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/7}{\ell_3^2}\right). 
+f_3(t) \sim \GP(0,k_3), \hspace{5mm} k_3(t,t') = \alpha_3 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/7}{\ell_3^2}\right). 
 \end{equation*}
 % which means the function values $\bm{f}_3=\{f_3(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_3$, where $K_{3_{t,s}}=k_3(t,s)$, with $t,s=1,\dots,T$.
 
@@ -711,7 +711,7 @@ We use $J=10$ cosine terms. The lengthscales estimates $\hat{\ell}_2$ and $\hat{
 
 Figure~\ref{ch5_fig27_posteriors_birthday} shows the posterior means of the long-term trend $f_1(t)$ and yearly pattern $f_2(t)$ for the whole period, jointly with the observed data. Figure \ref{ch5_fig27_posteriors_oneyear_birthday} shows the model for one year (1972) only. In this figure, the special days effects $f_4(t)$ in the year can be clearly represented. The posterior means of the the function $\mu(t)$ and the components $f_1(t)$ (long-term trend) and $f_2(t)$ (year pattern) are also plotted in this Figure \ref{ch5_fig27_posteriors_oneyear_birthday}. Figure \ref{ch5_fig27_posteriors_onemonth_birthday} show the process in the month of January of 1972 only, where the week pattern $f_3(t)$ can be clearly represented. The mean of the the function $\mu(t)$ and components $f_1(t)$ (long-term trend), $f_2(t)$ (year pattern) and $f_4(t)$ (special-days effects) are also plotted in this Figure \ref{ch5_fig27_posteriors_onemonth_birthday}. 
 
-The Stan model code for the approximate GP model of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Birthday-data}}.
+The Stan model code for the approximate GP model of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Birthday-data}}\,.
 
 \begin{figure}
 \centering
@@ -812,7 +812,7 @@ Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density \
   \label{ch5_fig22_elpd_leukemia}
 \end{figure}
 
-The Stan model code for the exact GP and the approximate GP models of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Leukemia-data}}.
+The Stan model code for the exact GP and the approximate GP models of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Leukemia-data}}\,.
 %
 
 \section{Conclusion}\label{ch5_sec_conclusion}
