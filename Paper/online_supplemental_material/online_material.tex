@@ -58,7 +58,7 @@
 \usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-%\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
+\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
 
 %\bibliographystyle{authordate1}
 % TODO macro
@@ -96,7 +96,7 @@ This data set relates the proportion of support for same-sex marriage to the age
 y_i \sim \mathrm{Binomial}(p_i, n_i).
 \end{equation*}
 
-\noindent The population per age group $n_i$ is a known quantity and the goal is to estimate the same-sex support probability $p_i$ or mean number of support people per age group. Probabilities $\bm{p}=(p_1,\dots,p_{74})$ are modeled by a Gaussian process (GP) function $f:{\rm I\!R} \to {\rm I\!R}$ with a squared exponential covariance function $k$, as a function of age input values $\bm{x}=(x_1,\dots,x_{74})$, and through the {\it logit} function as a link function,
+\noindent The population per age group $n_i$ is a known quantity and the goal is to estimate the same-sex support probability $p_i$ or mean number of support people per age group. Probabilities $\bm{p}=(p_1,\dots,p_{74})$ are modeled by a Gaussian process (GP) function $f:{\rm I\!R} \to {\rm I\!R}$ with a squared exponential covariance function $k$, as a function of age input values $\bm{x}=(x_1,\dots,x_{74})$, and through the {\it logit} function as a link function:
 %
 \begin{align*} \label{ch5_eq_gpprior_gay}
 p_i &= \mathrm{logit}(f(x_i)) \nonumber \\
@@ -174,13 +174,15 @@ f(\bm{x}) &\sim \mathcal{GP}(0, k(\bm{x}, \bm{x}', \theta)),
 \end{split}
 \end{eqnarray*}
 
-\noindent where $\bm{f}=\{f(\bm{x}_i)\}_{i=1}^{120}$ represents the underlying function at the input values $\bm{x_i}\in {\rm I\!R}^{2}$, $\bm{\epsilon}$ is the Gaussian noise term with variance $\sigma^2$, and $I$ represents the identity matrix. The function $f:{\rm I\!R}^2 \to {\rm I\!R}$ is a GP prior with a multivariate squared exponential covariance function $k(\bm{x}_i,\bm{x}_j,\theta)$, which depends on the inputs $\bm{x}$ and hyperparameters $\theta=\{\alpha,\ell_1,\ell_2\}$. The hyperparameters $\alpha$, $\ell_1$ and $\ell_2$ represent the marginal variance and lengthscales for first and second input dimensions, respectively, of the GP process. Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ is multivariate Gaussian distributed with covariance matrix $\bm{K}$, where $K_{ij}=k(\bm{x}_i,\bm{x}_j,\theta)$, with $i,j=1,\dots,120$.
+\noindent where $\bm{f}=\{f(\bm{x}_i)\}_{i=1}^{120}$ represents the underlying function at the input values $\bm{x_i}\in {\rm I\!R}^{2}$, $\bm{\epsilon}$ is the Gaussian noise term with variance $\sigma^2$, and $I$ represents the identity matrix. The function $f:{\rm I\!R}^2 \to {\rm I\!R}$ is a GP prior with a multivariate squared exponential covariance function $k$, which depends on the inputs $\bm{x}$ and hyperparameters $\theta=\{\alpha,\ell_1,\ell_2\}$. The hyperparameters $\alpha$, $\ell_1$ and $\ell_2$ represent the marginal variance and lengthscales for first and second input dimensions, respectively, of the GP process.
 
 The marginalized form, by integrating out the latent values $\bm{f}$, of the previous latent GP model results:
 %
 \begin{equation*}\label{ch5_eq_marginalizedgp_simudata2}
-\bm{y} \sim \Normal(0, \bm{K} + \sigma^2 I ).
+\bm{y} \sim \Normal(0, \bm{K} + \sigma^2 I ),
 \end{equation*}
+%
+where $\bm{K} \in {\rm I\!R}^{n\times n}$ if the covariance matrix with an element $K_{ij}=k(\bm{x}_i,\bm{x}_j,\theta)$, and $\sigma^2$ is the noise variance.
 
 In the HSGP model with $2$ input dimensions, the latent function $f(\bm{x})$ is approximated as in equation (12)% (\ref{eq_approxf_multi})
 , with the $2$-dimensional squared exponential spectral density $S$ as in equation (1)% (\ref{eq_specdens_inf})
@@ -248,7 +250,7 @@ p_i &= \mathrm{logit}(f(\bm{x}_i)) \nonumber \\
 f(\bm{x}) &\sim \mathcal{GP}(0, k(\bm{x},\bm{x}', \theta).
 \end{align*}
 
-\noindent Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}=\{f(\bm{x}_i)\}_{i=1}^n$ are multivariate Gaussian distributed with covariance matrix $\bm{K}$, where $K_{ij}=k(x_i,x_j,\theta)$, with $i,j=1,\dots,n$. The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. A scalar lengthscale has been considered in the multivariate covariance function $k$.
+\noindent The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. A scalar lengthscale has been considered in the multivariate covariance function $k$.
 
 In the HSGP model with $D$ input dimensions, the function $f(\bm{x})$ evaluated at input vector $\bm{x} \in {\rm I\!R}^D$ is approximated as in equation (12)% (\ref{eq_approxf_multi})
 , with the $D$-dimensional (with a scalar lengthscale) squared exponential spectral density $S$ as in equation (1) %(\ref{eq_specdens_inf}) 
@@ -388,7 +390,7 @@ The marginals of the columns (true classes) represent the percentage of misclass
   \label{ch5_tab_parcels}
 \end{table}
 
-The Stan model code for the approximate GP model of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Land-use-classification}}\,.
+The Stan model code for the approximate GP model of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Land-use-classification}}\,.
 
 
 \bibliography{../manuscript_v2/references}

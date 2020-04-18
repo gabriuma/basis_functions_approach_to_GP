@@ -57,7 +57,7 @@
 %\usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-%\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
+\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
 
 %\bibliographystyle{authordate1}
 % TODO macro
@@ -132,7 +132,7 @@ While \citet{solin2018hilbert} have fully developed the mathematical theory behi
 
 We have implemented the approach in the probabilistic programming language Stan \citep{carpenter2017stan} as well as subsequently in the \textit{brms} package \citep{burkner2017brms} of the R software \citep{R2019R}. Several illustrative examples of the performance and applicability of the method are shown using both simulated and real datasets. All examples are accompanied by the corresponding Stan code. Although there are several GP specific software packages available to date, for example, GPML \citep{rasmussen2010gpml},  GPstuff \citep{vanhatalo2013gpstuff}, GPy \citep{gpy2014}, and GPflow \citep{GPflow2017}, each provide efficient implementations only for a restricted range of GP-based models. In this paper, we do not focus on the fastest possible inference for some specific GP models, but instead are interested in how GPs can be easily used as modular components in probabilistic programming frameworks. 
 
-The remainder of the paper is structured as follows. In Section~\ref{ch4_gp}, we introduce GPs, covariance functions and spectral density functions. In Section~\ref{ch5_sec_method}, the reduced-rank approximation to GPs proposed by \citet{solin2018hilbert} is described. In Section~\ref{ch5_sec_accuracy}, the accuracy of these approximations under several conditions using analytical and numerical methods is analyzed. Several case studies in which we fit exact and approximate GPs to real and simulated data are provided in Section~\ref{ch5_sec_cases}. A brief conclusion of the work is made in Section~\ref{ch5_sec_conclusion}. Appendix~\ref{ch5_app_approx_covfun} includes a brief presentation of the mathematical details behind the Hilbert space approximation of a stationary covariance function, and Appendix \ref{ch5_sec_periodic} presents a low-rank representation of a GP for the particular case of a periodic covariance function. Online supplemental material with more case studies illustrating the performance and applicability of the method can be found at \url{https://github.com/gabriuma/basis_functions_approach_to_GP} in the subfolder \url{Paper/online_supplemental_material}.
+The remainder of the paper is structured as follows. In Section~\ref{ch4_gp}, we introduce GPs, covariance functions and spectral density functions. In Section~\ref{ch5_sec_method}, the reduced-rank approximation to GPs proposed by \citet{solin2018hilbert} is described. In Section~\ref{ch5_sec_accuracy}, the accuracy of these approximations under several conditions using analytical and numerical methods is analyzed. Several case studies in which we fit exact and approximate GPs to real and simulated data are provided in Section~\ref{ch5_sec_cases}. A brief conclusion of the work is made in Section~\ref{ch5_sec_conclusion}. Appendix~\ref{ch5_app_approx_covfun} includes a brief presentation of the mathematical details behind the Hilbert space approximation of a stationary covariance function, and Appendix \ref{ch5_sec_periodic} presents a low-rank representation of a GP for the particular case of a periodic covariance function. Online supplemental material with more case studies illustrating the performance and applicability of the method can be found online at \url{https://github.com/gabriuma/basis_functions_approach_to_GP} in the subfolder \url{Paper/online_supplemental_material}.
 
 
 \section{Gaussian process as a prior}\label{ch4_gp}
@@ -606,7 +606,7 @@ f(x) &\sim \GP(0, k(x, x', \theta)),
 \end{split}
 \end{align*}
 %
-where $\bm{f}=\{f(x_i)\}_{i=1}^n$ represents the underlying function at the input values $x_i$, and $\bm{\epsilon}$ is the Gaussian noise term with variance $\sigma^2$, with $I$ representing the identity matrix. The previous formulation corresponds to the latent form of a GP model. The function $f:{\rm I\!R} \to {\rm I\!R}$ is a GP prior with a Mat{\'e}rn($\nu$=3/2) covariance function $k(x_i,x_j,\theta)$, which depends on the inputs $\bm{x}$ and hyperparameters $\theta=\{\alpha,\ell\}$. The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ is multivariate Gaussian distributed with covariance matrix $\bm{K}$, where $K_{ij}=k(x_i,x_j,\theta)$, with $i,j=1,\dots,n$.
+where $\bm{f}=\{f(x_i)\}_{i=1}^n$ represents the underlying function at the input values $x_i$, and $\bm{\epsilon}$ is the Gaussian noise term with variance $\sigma^2$, with $I$ representing the identity matrix. The previous formulation corresponds to the latent form of a GP model. The function $f:{\rm I\!R} \to {\rm I\!R}$ is a GP prior with the Mat{\'e}rn($\nu$=3/2) covariance function $k$, which depends on the inputs $\bm{x}$ and hyperparameters $\theta=\{\alpha,\ell\}$. The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ is multivariate Gaussian distributed with covariance matrix $\bm{K}$, where $K_{ij}=k(x_i,x_j,\theta)$, with $i,j=1,\dots,n$.
  
 A more computationally efficient formulation of a GP model with Gaussian likelihood, and for probabilistic inference using MCMC sampling methods, would be its marginalized form,
 %
@@ -679,7 +679,7 @@ The component $f_1(t)$ represents the long-term trends modeled by a GP with squa
 f_1(t) \sim \GP(0,k_1), \hspace{5mm} k_1(t,t') = \alpha_1 \exp\!\!\left(\!-\frac{1}{2} \frac{(t-t')^2}{\ell_1^2}\right), 
 \end{equation*}
 %
-which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $\bm{K}_1$, where $K_{1_{t,s}}=k_1(t,s)$, with $t,s=1,\dots,T$. $\ell_1$ and $\alpha_1$ represent the marginal variance and lengthscale, respectively, of this GP prior component.
+which means the function values $\bm{f}_1=\{f_1(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $\bm{K}_1$, where $K_{1_{t,s}}=k_1(t,s)$, with $t,s=1,\dots,T$. $\alpha_1$ and $\ell_1$ represent the marginal variance and lengthscale, respectively, of this GP prior component.
 
 The component $f_2(t)$ represents the yearly smooth seasonal pattern, using a periodic squared exponential covariance function (with period 365.25 to match the average length of the year) in a GP model,
 %
@@ -711,7 +711,7 @@ We use $J=10$ cosine terms. The lengthscales estimates $\hat{\ell}_2$ and $\hat{
 
 Figure~\ref{ch5_fig27_posteriors_birthday} shows the posterior means of the long-term trend $f_1(t)$ and yearly pattern $f_2(t)$ for the whole period, jointly with the observed data. Figure \ref{ch5_fig27_posteriors_oneyear_birthday} shows the model for one year (1972) only. In this figure, the special days effects $f_4(t)$ in the year can be clearly represented. The posterior means of the the function $\mu(t)$ and the components $f_1(t)$ (long-term trend) and $f_2(t)$ (year pattern) are also plotted in this Figure \ref{ch5_fig27_posteriors_oneyear_birthday}. Figure \ref{ch5_fig27_posteriors_onemonth_birthday} show the process in the month of January of 1972 only, where the week pattern $f_3(t)$ can be clearly represented. The mean of the the function $\mu(t)$ and components $f_1(t)$ (long-term trend), $f_2(t)$ (year pattern) and $f_4(t)$ (special-days effects) are also plotted in this Figure \ref{ch5_fig27_posteriors_onemonth_birthday}. 
 
-The Stan model code for the approximate GP model of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Birthday-data}}\,.
+The Stan model code for the approximate GP model of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Birthday-data}}\,.
 
 \begin{figure}
 \centering
@@ -812,7 +812,7 @@ Figure \ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density \
   \label{ch5_fig22_elpd_leukemia}
 \end{figure}
 
-The Stan model code for the exact GP and the approximate GP models of this case study can be found at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Leukemia-data}}\,.
+The Stan model code for the exact GP and the approximate GP models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Leukemia-data}}\,.
 %
 
 \section{Conclusion}\label{ch5_sec_conclusion}
