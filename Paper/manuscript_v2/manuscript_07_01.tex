@@ -661,13 +661,13 @@ Roughly similar or even worse behavior was found for splines where serious diffi
 %
 This example is an analysis of patterns in birthday frequencies in a dataset containing records of all births in the United States on each day during the period 1969–1988. The model decomposes the number of births along all the period in longer-term trend effects, patterns during the year, day-of-week effects, and special days effects. The special days effects cover patterns such as possible fewer births on Halloween, Christmas or new year, and excess of births on Valentine’s Day or the days after Christmas (due, presumably, to choices involved in scheduled deliveries, along with decisions of whether to induce a birth for health reasons). \citet{gelman2013bayesian} presented an analysis using exact GP and maximum a posteriori inference. As the total number of days within the period is $T=7305$ ($t=1,2,\dots,T$), a full Bayesian inference with MCMC for a exact GP model is memory and time consuming. We will use the HSGP method as well as the low-rank GP model with a periodic covariance function described in Appendix~\ref{ch5_sec_periodic} which is based on expanding the periodic covariance function into a series of stochastic resonators \citep{solin2014explicit}.
 
-Let us denote $y_t$ as the number of births of day $t$. The observational model is a normal model with parameters the mean function $\mu(t)$ and noise variance $\sigma^2$,
+Let $y_t$ denote the number of births on the $t$'th day. The observation model is a normal distribution with mean function $\mu(t)$ and noise variance $\sigma^2$,
 %
 \begin{equation*}
 y_{t} \sim \Normal(\mu(t),\sigma^2).
 \end{equation*}
 %
-The mean function $\mu(t)$ will be defined as an additive model in the form: 
+The mean function $\mu(t)$ will be defined as an additive model in the form
 %
 \begin{equation} \label{ch5_eq_mean_brithday}
 \mu(t) = f_1(t) + f_2(t) + f_3(t) + f_4(t).
@@ -700,13 +700,13 @@ The component $f_4(t)$ represents the special days effects, modeled as a horse-s
 f_4(t) \sim \Normal(0,\lambda^2_t \tau^2), \hspace{5mm} \lambda^2_t \sim \mathcal{C}^{+}(0,1).
 \end{equation*}
 %
-A horse-shoe prior allows for sparse distributed effects. Its global parameter $\tau$ pulls all the weights (effects) globally towards zero, while the thick half-Cauchy tails for the local scales $\lambda_t$ allow some of the weights to escape the shrinkage. Different levels of sparsity can be accommodated by changing the value of $\tau$: with large $\tau$ all the variables have very diffuse priors with very little shrinkage towards zero, but letting $\tau \rightarrow 0$ will shrink all the weights $f_4(t)$ to zero \citep{piironen2016hyperprior}. 
+A horse-shoe prior allows for sparse distributed effects. Its global parameter $\tau$ pulls all the weights (effects) globally towards zero, while the thick half-Cauchy tails for the local scales $\lambda_t$ allow some of the weights to escape the shrinkage. Different levels of sparsity can be accommodated by changing the value of $\tau$: for large $\tau$ all the variables have very diffuse prior distributions with very little shrinkage towards zero, but letting $\tau \rightarrow 0$ will shrink all the weights $f_4(t)$ to zero \citep{piironen2016hyperprior}. 
 %More details about the specified priors for $\tau$ and $\lambda_t$ have been included in Appendix \ref{app_horse_shoe}.
 
 The component $f_1(t)$ will be approximated using the HSGP model and the function values $f_1(t)$ are approximated as in equation (\ref{eq_approxf}), with the squared exponential spectral density $S$ as in equation (\ref{eq_specdens_inf}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}). We use $m=30$ basis functions and a boundary factor $c=1.5$. The lengthscale estimate $\hat{\ell}_1$, for this component, normalized by half of the range of the input $x_1$, is bigger than the minimum lengthscale reported by Figure \ref{fig6_lscale_vs_J_vs_c} as a function of $m$ and $c$. This means that the chosen number of basis functions and the boundary factor are suitable values for modeling the input effects sufficiently accurate. 
 
 The year effects $f_2(t)$ and week effects $f_3(t)$ use a periodic covariance function  and thus do no fit under the main framework of the HSGP approximation covered in this paper. However, they do have a representation based on expanding periodic covariance functions into a series of stochastic resonators (Appendix~\ref{ch5_sec_periodic}). Thus, the functions $f_2(t)$ and $f_3(t)$ are approximated as in equation (\ref{ch5_eq_f_period}), with variance coefficients $\tilde{q}_j^2$ as in equation (\ref{ch5_eq_q_2}).
-We use $J=10$ cosine terms. The lengthscales estimates $\hat{\ell}_2$ and $\hat{\ell}_3$, for the GP components $f_2(t)$ and $f_3(t)$, respectively, are bigger than the minimum lengthscale reported by Figure \ref{ch5_fig28_m_lscale_periodic} as function of the number of cosine terms $J$, which means that the approximations are good.
+We use $J=10$ cosine terms. The lengthscale estimates $\hat{\ell}_2$ and $\hat{\ell}_3$ for the GP components $f_2(t)$ and $f_3(t)$, respectively, are bigger than the minimum lengthscale reported by Figure \ref{ch5_fig28_m_lscale_periodic} as function of the number of cosine terms $J$, which means that the approximations are good.
 
 Figure~\ref{ch5_fig27_posteriors_birthday} shows the posterior means of the long-term trend $f_1(t)$ and yearly pattern $f_2(t)$ for the whole period, jointly with the observed data. Figure \ref{ch5_fig27_posteriors_oneyear_birthday} shows the model for one year (1972) only. In this figure, the special days effects $f_4(t)$ in the year can be clearly represented. The posterior means of the the function $\mu(t)$ and the components $f_1(t)$ (long-term trend) and $f_2(t)$ (year pattern) are also plotted in this Figure \ref{ch5_fig27_posteriors_oneyear_birthday}. Figure \ref{ch5_fig27_posteriors_onemonth_birthday} show the process in the month of January of 1972 only, where the week pattern $f_3(t)$ can be clearly represented. The mean of the the function $\mu(t)$ and components $f_1(t)$ (long-term trend), $f_2(t)$ (year pattern) and $f_4(t)$ (special-days effects) are also plotted in this Figure \ref{ch5_fig27_posteriors_onemonth_birthday}. 
 
