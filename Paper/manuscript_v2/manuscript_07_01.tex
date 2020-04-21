@@ -57,7 +57,7 @@
 %\usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
+%\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
 
 %\bibliographystyle{authordate1}
 % TODO macro
@@ -744,46 +744,39 @@ As the WBC predictor values were strictly positive and highly skewed, a logarith
 We assume a log-normal observation model for the observed survival time, $t_i$, with a function of the predictors, $f(\bm{x}_i):{\rm I\!R}^4 \to {\rm I\!R}$, as the location parameter, and $\sigma$ as the Gaussian noise: 
 %
 \begin{equation*}
-  p(t_i|f_i)= \LogNormal(t_i \mid f(\bm{x}_i),\sigma^2).
+  p(t_i \mid f_i)= \LogNormal(t_i \mid f(\bm{x}_i),\sigma^2).
 \end{equation*}
 
 We do not have a full observation model, as we do not have a model for the censoring process. We use the complementary cumulative log-normal probability distribution for the censored data conditionally on the censoring time $t_i$:
 %
 \begin{equation*}
-p(y_i > t_i|f)= \int_{t_i}^{\infty} \LogNormal(y_i \mid f(\bm{x}_i),\sigma^2) \,\mathrm{d}y_i=  1 - \Phi\! \left( \frac{\log(y_i)-f(\bm{x}_i)}{\sigma} \right),
+p(y_i > t_i \mid f)= \int_{t_i}^{\infty} \LogNormal(y_i \mid f(\bm{x}_i),\sigma^2) \,\mathrm{d}y_i=  1 - \Phi\! \left( \frac{\log(y_i)-f(\bm{x}_i)}{\sigma} \right),
 \end{equation*}
 %
 where $y_i>t_i$ denotes the unobserved survival time.
-The latent function $f(\cdot)$ is modeled as a Gaussian process, centered around a linear model of the predictors $\bm{x}$, and with a squared exponential covariance function $k$ depending on predictors $x$ and hyperparameters $\theta=(\alpha,\ell)$,
+The latent function $f(\cdot)$ is modeled as a Gaussian process, centered around a linear model of the predictors $\bm{x}$, and with a squared exponential covariance function $k$. Due to the predictor \textit{sex} ($x_2$) being a categorical variable (`1' for female and `2' for male), we apply indicator variable coding for the GP functions, in a similar way such coding is applied in linear models \citep{Gelman+Hill+Vehtari:2020:ROS}. The latent function $f(\bm{x})$, besides of being centered around a linear model, is composed of a general mean GP function, $h(\bm{x})$, defined for all observations, plus a second GP function, $g(\bm{x})$, that only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise:
 %
-\begin{equation*} 
-f(\bm{x}) \sim \GP(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta)),
-\end{equation*}
-where $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model.
-% Saying that the function $f(\cdot)$ follows a GP model is equivalent to say that $\bm{f}$ are multivariate Gaussian distributed with mean function $\mu(\cdot)$ and covariance matrix $K$, where $\mu(\bm{x}_i)=c + \bm{\beta}\bm{x}_i$ and $K_{rs}=k(\bm{x}_r,\bm{x}_s,\theta)$, with $r,s=1,\dots,n$.
-The hyperparameters $\alpha$ and $\ell$ represent the marginal variance and lengthscale, respectively, of the GP process. A scalar lengthscale is used in the multivariate covariance function assuming an isotropic function.
+\begin{align*}
+h(\bm{x}) &\sim \GP\left(\bm{0}, \, k(\bm{x},\bm{x}', \theta_0) \right),  \\[1pt] 
+%
+g(\bm{x}) &\sim \GP\left(\bm{0}, \, k(\bm{x},\bm{x}', \theta_1) \mid x_2=2 \right),\\[1pt] 
+%
+f(\bm{x}) &= c + \bm{\beta} \bm{x} + h(\bm{x}) + g(\bm{x}). 
+\end{align*}
+%
+Above, $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model. $\theta_0$ contains the hyperparameters $\alpha_0$ and $\ell_0$ which are the marginal variance and lengthscale of the general mean GP function, and $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale, respectively, of a GP function specific to the male sex ($x_2=2$). Scalar lengthscales, $l_0$ and $l_1$, are used in both multivariate covariance functions, assuming isotropic functions.
 
-Due to the predictor \textit{sex} ($x_2$) being a categorical variable (`1' for female and `2' for male), we apply indicator variable coding for the GP functions, in a similar way such coding is applied in linear models \citep{Gelman+Hill+Vehtari:2020:ROS}. A general mean GP function is defined for all observations, while a second GP function only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise:
-%
-\begin{align} 
-f(\bm{x}) &\sim \GP\left(c + \bm{\beta}\bm{x},\, k(\bm{x},\bm{x}', \theta_1)\right) + g(\bm{x}), \label{ch5_eq_gpml1}
-\end{align}
-with
-%
-\begin{align} \label{ch5_eq_gpml2}
-g(\bm{x}) =
-\left\{
-	\begin{array}{ll}
-		0, & \;\; \mbox{if } \;\; x_2=1,  \\
-		\GP\left(0, k(\bm{x},\bm{x}', \theta_2)\right),  & \;\; \mbox{if } \;\; x_2=2 \,.
-	\end{array}
-\right. 
-\end{align}
 
-%\begin{align} 
-%f(\bm{x}) &\sim \GP(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_1)) \label{ch5_eq_gpml1} \\
-%g(\bm{x}) &\sim \GP(c + \bm{\beta}\bm{x}, k(\bm{x},\bm{x}', \theta_2 \,|\, x_2\!=\!2)) \label{ch5_eq_gpml2} \\ 
-%f(\bm{x} \, |\, x_2\!=\!2) &= f(\bm{x} \,|\, x_2\!=\!1) + g(\bm{x}). \nonumber
+%with
+%%
+%\begin{align} \label{ch5_eq_gpml2}
+%g(\bm{x}) =
+%\left\{
+%	\begin{array}{ll}
+%		0, & \;\; \mbox{if } \;\; x_2=1,  \\
+%		\GP\left(0, k(\bm{x},\bm{x}', \theta_2)\right),  & \;\; \mbox{if } \;\; x_2=2 \,.
+%	\end{array}
+%\right. 
 %\end{align}
 
 
@@ -793,9 +786,8 @@ g(\bm{x}) =
 \caption{Expected lifetime conditional comparison for each predictor with other predictors fixed to their mean values. The thick line in each graph is the posterior mean estimated using a HSGP model, and the thin lines represent pointwise 95\% credible intervals.}
   \label{ch5_fig21_posteriors_leukemia}
 \end{figure}
-Above, $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale of the general mean GP function, and $\theta_2$ contains the hyperparameters $\alpha_2$ and $\ell_2$ which are the marginal variance and lengthscale, respectively, of a GP function specific to the male sex ($x_2=2$).
 
-Using the HSGP approximation, the functions $f(\bm{x})$ and $g(\bm{x})$ are approximated as in equation (\ref{eq_approxf_multi}), with the $D$-dimensional (with a scalar lengthscale) squared exponential spectral density $S$ as in equation (\ref{eq_specdens_inf}), and the multivariate eigenfunctions $\phi_j$ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ as in equations (\ref{eq_eigenfunction_multi}) and  (\ref{eq_eigenvalue_multi}), respectively.
+Using the HSGP approximation, the functions $h(\bm{x})$ and $g(\bm{x})$ are approximated as in equation (\ref{eq_approxf_multi}), with the $D$-dimensional (with a scalar lengthscale) squared exponential spectral density $S$ as in equation (\ref{eq_specdens_inf}), and the multivariate eigenfunctions $\phi_j$ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ as in equations (\ref{eq_eigenfunction_multi}) and  (\ref{eq_eigenvalue_multi}), respectively.
 
 Figure \ref{ch5_fig21_posteriors_leukemia} shows estimated conditional functions of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. There are clear  non-linear patterns and the right bottom subplot also shows that the conditional function associated with WBC has an interaction with TDI.
 Figure~\ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density \citep[ELPD; ][]{vehtari_2012,Vehtari+Gelman+Gabry:2017_practical} and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in equation (\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{ch5_fig22_elpd_leukemia}-left); Small boundary factors are not appropriate for models for large lengthscales, as can be seen in Figure \ref{fig6_lscale_vs_J_vs_c}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{ch5_fig22_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
