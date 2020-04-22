@@ -761,12 +761,11 @@ The latent function $f(\cdot)$ is modeled as a Gaussian process, centered around
 \begin{align*}
 h(\bm{x}) &\sim \GP\left(\bm{0}, \, k(\bm{x},\bm{x}', \theta_0) \right),  \\[1pt] 
 %
-g(\bm{x}) &\sim \GP\left(\bm{0}, \, k(\bm{x},\bm{x}', \theta_1) \mid x_2=2 \right),\\[1pt] 
+g(\bm{x}) &\sim \GP\left(\bm{0}, \, k(\bm{x},\bm{x}', \theta_1)\right),\\[1pt] 
 %
-f(\bm{x}) &= c + \bm{\beta} \bm{x} + h(\bm{x}) + g(\bm{x}). 
+f(\bm{x}) &= c + \bm{\beta} \bm{x} + h(\bm{x}) + \mathbb{I}\!\left[x_2=2\right]g(\bm{x}),
 \end{align*}
-%
-Above, $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model. $\theta_0$ contains the hyperparameters $\alpha_0$ and $\ell_0$ which are the marginal variance and lengthscale of the general mean GP function, and $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale, respectively, of a GP function specific to the male sex ($x_2=2$). Scalar lengthscales, $l_0$ and $l_1$, are used in both multivariate covariance functions, assuming isotropic functions.
+where $\mathbb{I}\left[\cdot\right]$ is an indicator function. Above, $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model. $\theta_0$ contains the hyperparameters $\alpha_0$ and $\ell_0$ which are the marginal variance and lengthscale of the general mean GP function, and $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale, respectively, of a GP function specific to the male sex ($x_2=2$). Scalar lengthscales, $l_0$ and $l_1$, are used in both multivariate covariance functions, assuming isotropic functions.
 
 
 %with
