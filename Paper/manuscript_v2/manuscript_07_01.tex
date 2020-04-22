@@ -594,9 +594,9 @@ In this section, we will present several simulated and real case studies in whic
 
 \subsection{Simulated data for a univariate function}\label{ch5_sec_univariate_simu}
 
-In this experiment, we analyze a synthetic dataset with $n = 250$ observations, where the true data generating process is a Gaussian process with additive noise. The data points are simulated from the model $y_i = f(x_i) + \epsilon_i$, where $f$ is a sample from a Gaussian process using the Mat{\'e}rn($\nu$=3/2) covariance function with marginal variance $\alpha=1$ and lengthscale $\ell=0.15$ at inputs values $\bm{x}=(x_1,x_2,\dots,x_n)$ with $x_i \in [-1,1]$. $\epsilon_i$ is additive Gaussian noise with standard deviation $\sigma=0.2$.
+In this experiment, we analyze a synthetic dataset with $n = 250$ observations, where the true data generating process is a Gaussian process with additive noise. The data points are simulated from the model $y_i = f(x_i) + \epsilon_i$, where $f$ is a sample from a Gaussian process using the Mat{\'e}rn($\nu$=3/2) covariance function with marginal variance $\alpha=1$ and lengthscale $\ell=0.15$ at inputs values $\bm{x}=(x_1,x_2,\dots,x_n)$ with $x_i \in [-1,1]$. $\epsilon_i$ is additive Gaussian noise with standard deviation $\sigma=0.2$. From this synthetic dataset, $155$ data points are used as sample data, $45$ as interpolation out-of-sample test data, and $50$ as extrapolation out-of-sample test data.
 
-The exact GP model for fitting this simulated dataset $\bm{y}$ can be written as follows,
+The exact GP model for fitting and predicting this simulated dataset $\bm{y}$ can be written as follows,
 %
 \begin{align*}\label{ch5_eq_latentgp_simudata1}
 \begin{split}
