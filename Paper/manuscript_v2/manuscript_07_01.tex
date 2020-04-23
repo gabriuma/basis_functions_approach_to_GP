@@ -57,12 +57,13 @@
 %\usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-%\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
+\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
 
 %\bibliographystyle{authordate1}
 % TODO macro
 \newcommand{\todo}[1]{\textcolor{blue}{\textbf{[#1]}}}
 \newcommand{\resp}[1]{\textcolor{red}{\textbf{[#1]}}}
+
 
 
 \title{Practical Hilbert space approximate Bayesian Gaussian processes for probabilistic programming}
@@ -402,24 +403,26 @@ We start by illustrating how the number of basis functions $m$ and boundary fact
 Figures~\ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function as well as on the covariance function itself. For $c$ fixed to a large enough value, Figure \ref{fig1_Post_J} shows clearly how $m$ affects the accuracy on the approximation, either in mean or uncertainty, and the non-linearity of the estimated function, in the sense that fewer basis functions inaccurately imply larger lengthscales and consequently less wiggly functional forms. The higher the wigglyness of the function to be estimated, the more basis functions will be required. If $m$ is fixed to a large enough value, Figure~\ref{fig2_Post_L} shows that $c$ affects the approximation mainly near the boundaries in mean, although along the whole domain in the uncertainty. The approximation error for the variance tends to be bigger for the variance than for the mean.
 
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 %\subfigure{\includegraphics[scale=0.38, trim = 10mm 100mm 5mm 30mm, clip]{ch5_fig1_legend_01.pdf}}\\
 %\vspace{-9mm}
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 10mm 0mm, clip]{ch5_fig1_Post_J.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig1_Sigma_J.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 3mm 0mm, clip]{ch5_fig1_Cov_J.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 10mm 0mm, clip]{ch5_fig1_Post_J.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 0mm 5mm 10mm 0mm, clip]{ch5_fig1_Sigma_J.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{ch5_fig1_Cov_J.pdf}}
 %\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig1_legend.pdf}}
+\vspace{-1mm}
 \caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model (dashed red line) and the HSGP model for different number of basis functions $m$, with the boundary factor fixed to a large enough value.}
   \label{fig1_Post_J}
 \end{figure}
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 10mm 0mm, clip]{ch5_fig2_Post_L.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig2_Sigma_L.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 0mm 3mm 0mm, clip]{ch5_fig2_Cov_L.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 10mm 0mm, clip]{ch5_fig2_Post_L.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 0mm 5mm 10mm 0mm, clip]{ch5_fig2_Sigma_L.pdf}}
+\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{ch5_fig2_Cov_L.pdf}}
 %\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig2_legend.pdf}}
+\vspace{-1mm}
 \caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model (dashed red line) and the HSGP model for different values of the boundary factor $c$, with a large enough fixed number of basis functions.}
   \label{fig2_Post_L}
 \end{figure}
@@ -475,19 +478,19 @@ c = 2.5 &
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 0mm 0mm, clip]{ch5_fig4_MSE_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig4_MSE_vs_c.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{ch5_fig4_MSE_vs_J.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 10mm 0mm, clip]{ch5_fig4_MSE_vs_c.pdf}}
 \caption{Root mean square error (RMSE) of the proposed HSGP models computed against the exact GP model. RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$ (left). RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$ (right). }
   \label{fig4_MSE_vs_J}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig5_lscale_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig5_magnitud_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 28mm 28mm 119mm 0mm, clip]{ch5_fig5_legend.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 5mm 0mm, clip]{ch5_fig5_lscale_vs_J.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 10mm 0mm, clip]{ch5_fig5_magnitud_vs_J.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 28mm 35mm 119mm 0mm, clip]{ch5_fig5_legend.pdf}}
 \caption{Estimated lengthscale (left) and marginal variance (right) parameters of both exact GP and HSGP models, plotted versus the number of basis functions $m$ and for different values of the boundary factor $c$.}
   \label{fig5_lscale_vs_J}
 \end{figure}
@@ -542,7 +545,10 @@ For this analysis, we will use various datasets consisting of noisy draws from a
 
 Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions of both exact GP and HSGP models fitted to those datasets. The lengthscale estimates as obtained by exact GP and HSGP models are depicted in Figure \ref{fig8_Tlscale_vs_Elscale}. As noted previously, an accurate estimate of the lengthscale can be a good indicator of a close approximation of the HSGP model to the exact GP model. Further, Figure \ref{fig9_MSE_varing_lscale} shows the root mean square error (RMSE) of the HSGP models, computed against the exact GP models, as a function of the lengthscale and number of basis functions.
 
-\begin{figure}
+Comparing the accuracy of the lengthscale in Figure~\ref{fig8_Tlscale_vs_Elscale} to the RMSE in Figure~\ref{fig9_MSE_varing_lscale}, we see that they agree closely with each other for medium lengthscales. That is, a good estimation of the lengthscale implies a small RMSE. This is no longer true for very small or large lengthscales. In small lengthscales, even very small inaccuracies  may have a strong influence on the posteriors predictions and thus on the RMSE. In large lengthscales, larger inaccuracies change the posterior predictions only little and may thus not yield large RMSEs. The dashed black line in Figure \ref{fig8_Tlscale_vs_Elscale} represents the  minimum lengthscale that can be closely approximated under the given condition, according to the results presented in Figure \ref{fig6_lscale_vs_J_vs_c}.  We observe that whenever the estimated lengthscale exceeds the minimally estimable lengthscale, the RMSE of the posterior predictions is small
+(see Figure \ref{fig9_MSE_varing_lscale}). Conversely, when the estimated lengthscale is smaller than the minimally estimable one, the RMSE becomes very large.
+
+\begin{figure}[H]
 \centering
 \subfigure{\includegraphics[scale=0.42, trim = 10mm 100mm 5mm 30mm, clip]{ch5_fig7_legend.pdf}}\\
 \vspace{-3mm}
@@ -557,7 +563,6 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
 \subfigure{\includegraphics[scale=0.31, trim = 1mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part7.pdf}}
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part8.pdf}}
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part9.pdf}}\\
-\vspace{-3mm}
 \caption{Mean posterior predictions of both exact GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). %The dashed red line of the exact GP can hardly be seen in the plots because it is almost perfectly overlayed by the blue lines.
 }
   \label{fig7_posterior_varing_lscale_part1}
@@ -569,7 +574,7 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
 \multicolumn{3}{c}{ \includegraphics[scale=0.42, trim = 25mm 117mm 90mm 45mm, clip]{ch5_fig8_legend.pdf}}\\
 \includegraphics[scale=0.31, trim = 0mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part1.pdf} & \hspace{-4mm}
 \includegraphics[scale=0.31, trim = 25mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part2.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 24mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part3.pdf} \\ 
-\includegraphics[scale=0.31, trim = 0mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part4.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part5.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 0mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part6.pdf}
+\includegraphics[scale=0.31, trim = 0mm 2mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part4.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 2mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part5.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 2mm 7mm 10mm, clip]{ch5_fig8_Tlscale_vs_Elscale_part6.pdf}
 \end{tabular}
 \end{flushleft}
 \caption{Data-generating functional lengthscales ($\ell$), of the various datasets illustrated in Figure \ref{fig7_posterior_varing_lscale_part1}, versus the corresponding lengthscale estimates $(\hat{\ell})$ from the exact GP and HSGP models. 95\% confident intervals of the lengthscale estimates are plotted as dot lines. The different plots represent the use of different number of basis functions $m$ in the HSGP model. The dashed black line represents the recommended minimum lengthscales provided by Figure \ref{fig6_lscale_vs_J_vs_c} that can be closely approximated by the HSGP model in every case.}
@@ -579,15 +584,13 @@ Figure \ref{fig7_posterior_varing_lscale_part1} shows the posterior predictions 
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.38]{ch5_fig9_MSE_varing_lscale.pdf}
+\includegraphics[scale=0.38, trim = 0mm 9mm 0mm 0mm, clip]{ch5_fig9_MSE_varing_lscale.pdf}
 \caption{RMSE of the HSGP models with different number of basis functions $m$, for the various datasets with different wiggly effects ($\ell$).}
   \label{fig9_MSE_varing_lscale}
 \end{figure}
 
-Comparing the accuracy of the lengthscale in Figure~\ref{fig8_Tlscale_vs_Elscale} to the RMSE in Figure~\ref{fig9_MSE_varing_lscale}, we see that they agree closely with each other for medium lengthscales. That is, a good estimation of the lengthscale implies a small RMSE. This is no longer true for very small or large lengthscales. In small lengthscales, even very small inaccuracies  may have a strong influence on the posteriors predictions and thus on the RMSE. In large lengthscales, larger inaccuracies change the posterior predictions only little and may thus not yield large RMSEs. The dashed black line in Figure \ref{fig8_Tlscale_vs_Elscale} represents the  minimum lengthscale that can be closely approximated under the given condition, according to the results presented in Figure \ref{fig6_lscale_vs_J_vs_c}.  We observe that whenever the estimated lengthscale exceeds the minimally estimable lengthscale, the RMSE of the posterior predictions is small
-(see Figure \ref{fig9_MSE_varing_lscale}). Conversely, when the estimated lengthscale is smaller than the minimally estimable one, the RMSE becomes very large.
 
-
+\newpage
 \section{Case studies}\label{ch5_sec_cases}
 
 In this section, we will present several simulated and real case studies in which we apply the developed HSGP models. More case studies are presented in the online supplemental materials.
@@ -636,18 +639,18 @@ Figure~\ref{ch5_fig11_time_exI} shows computational times, in seconds per iterat
 The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}\,.
 %
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig11_MSE_exI_inter.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig11_MSE_exI_extra.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 5mm 5mm 0mm, clip]{ch5_fig11_MSE_exI_inter.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 5mm 10mm 0mm, clip]{ch5_fig11_MSE_exI_extra.pdf}}
 \subfigure{\includegraphics[scale=0.40, trim = 29mm 55mm 110mm 0mm, clip]{ch5_fig11_MSE_exI_legend.pdf}}
 \caption{Standardized root mean square error (SRMSE) of the different methods against the data-generating function. SRMSE for interpolation (left) and SRMSE for extrapolation (right). The standard deviation of the mean of the SRMSE is plotted as dashed lines.}
   \label{ch5_fig11_MSE_exI_inter}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig11_time_exI.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 5mm 10mm 0mm, clip]{ch5_fig11_time_exI.pdf}}
 \caption{Computational time (y-axis), in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The y-axis is on a logarithmic scale. The standard deviation of the computational time is plotted as dashed lines.}
   \label{ch5_fig11_time_exI}
 \end{figure}
@@ -721,21 +724,21 @@ The Stan model code for the approximate GP model of this case study can be found
   \label{ch5_fig27_posteriors_birthday}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!t]
 \centering
 \subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{ch5_fig27_posteriors_oneyear_birthday.pdf}}
 \caption{Posterior means of the function $\mu(\cdot)$ for the year 1972 of the series. The special days effects pattern ($f_4(\cdot)$) in the year is also represented, as well as the long-term trend ($f_1(\cdot)$) and year effects pattern ($f_2(\cdot)$). }
   \label{ch5_fig27_posteriors_oneyear_birthday}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{ch5_fig27_posteriors_onemonth_birthday.pdf}}
 \caption{Posterior means of the function $\mu(\cdot)$ for the month of January of 1972. The week effects pattern ($f_3(\cdot)$) in the month is also represented, as well as the long-term trend ($f_1(\cdot)$), year effects pattern ($f_2(\cdot)$) and special days effects pattern ($f_4(\cdot)$). }
   \label{ch5_fig27_posteriors_onemonth_birthday}
 \end{figure}
 
- 
+\newpage 
 \subsection{Leukemia data}\label{ch5_sec_bf_caseVI}
 
 The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival and censoring times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnosis with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
@@ -783,7 +786,7 @@ where $\mathbb{I}\left[\cdot\right]$ is an indicator function. Above, $c$ and $\
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.70, trim = 0mm 0mm 0mm 0mm, clip]{ch5_fig21_posteriors_leukemia_02.pdf}
+\includegraphics[scale=0.70, trim = 0mm 5mm 0mm 0mm, clip]{ch5_fig21_posteriors_leukemia_02.pdf}
 \caption{Expected lifetime conditional comparison for each predictor with other predictors fixed to their mean values. The thick line in each graph is the posterior mean estimated using a HSGP model, and the thin lines represent pointwise 95\% credible intervals.}
   \label{ch5_fig21_posteriors_leukemia}
 \end{figure}
@@ -795,9 +798,9 @@ Figure~\ref{ch5_fig22_elpd_leukemia} shows the expected log predictive density \
 %
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 0mm 0mm, clip]{ch5_fig22_elpd_leukemia.pdf}} 
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig23_time_leukemia.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 28mm 45mm 120mm 0mm, clip]{ch5_fig24_legend_leukemia.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{ch5_fig22_elpd_leukemia.pdf}} 
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 10mm 0mm, clip]{ch5_fig23_time_leukemia.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 28mm 50mm 120mm 0mm, clip]{ch5_fig24_legend_leukemia.pdf}}
 \caption{Expected log predictive density (ELPD; left) and time of computation in seconds per iteration (iteration of the HMC sampling method; right) as a function of the number of basis functions $m$ and boundary factor $c$.}
   \label{ch5_fig22_elpd_leukemia}
 \end{figure}
@@ -977,9 +980,9 @@ In order to assess the accuracy of this representation as a function of the numb
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.40, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig28_m_lscale_periodic_appendix.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 0mm 8mm 5mm 0mm, clip]{ch5_fig28_m_lscale_periodic_appendix.pdf}}
 \hspace{3mm}
-\subfigure{\includegraphics[scale=0.40, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig28_m_lscale_periodic_appendix_zoom.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 0mm 8mm 5mm 0mm, clip]{ch5_fig28_m_lscale_periodic_appendix_zoom.pdf}}
 \caption{Relation among the minimum number of terms $J$ in the approximation and the lengthscale ($\ell$) of the periodic squared exponential covariance function. The right-side plot is a zoom in of the left-side plot.}
   \label{ch5_fig28_m_lscale_periodic}
 \end{figure}
@@ -993,7 +996,7 @@ The function values of a GP model with this low-rank representation of the perio
 the covariance $k(\tau)$ in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) can be written as
 %
 \begin{equation} \label{ch5_eq_cov_periodic_taylor_approx_2}
-k(x,x')= \alpha \left( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \right).
+k(x,x')\approx \alpha \left( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \right).
 \end{equation}
 With this approximation for the periodic squared exponential covariance function $k(x,x')$, the approximate GP model $f(x) \sim \GP\left(0,k(x,x')\right)$ equivalently leads to a linear representation of $f(\cdot)$ via
 %
