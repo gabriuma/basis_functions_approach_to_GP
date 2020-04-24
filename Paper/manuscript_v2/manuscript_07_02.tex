@@ -54,15 +54,9 @@
 \renewcommand\bibfont{\fontsize{10}{12}\selectfont}
 
 \usepackage{listings}
-%\usepackage{slashbox}
 \usepackage{caption}
 \captionsetup{font=footnotesize}
-\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black]{hyperref}
-
-%\bibliographystyle{authordate1}
-% TODO macro
-\newcommand{\todo}[1]{\textcolor{blue}{\textbf{[#1]}}}
-\newcommand{\resp}[1]{\textcolor{red}{\textbf{[#1]}}}
+\usepackage[colorlinks=true,citecolor=black,linkcolor=black,urlcolor=black,breaklinks=true]{hyperref}
 
 
 
@@ -92,7 +86,6 @@ Gaussian processes are powerful non-parametric probabilistic models for stochast
 
 \keywords{Gaussian process; Low-rank Gaussian process; Hilbert space methods; Sparse Gaussian process; Bayesian statistics; Stan.}
 
-%\tableofcontents
 
 \section{Introduction}\label{sec_bf_intro}
 
@@ -101,35 +94,13 @@ Gaussian processes (GPs) are flexible statistical models for specifying probabil
 The key element of a GP is the covariance function that defines the dependence structure between function values at different inputs. However, computing the posterior distribution of a GP comes with a computational issue because of the need of inverting the covariance matrix. Given $n$ observations in the data, the computational complexity and memory requirements of computing the posterior distribution for a GP in general scale as $O(n^3)$ and $O(n^2)$, respectively. This limits their application to rather small data sets of a few tens of thousands observations at most. The problem becomes more severe when performing full Bayesian inference via sampling methods, where in each sampling step we need $O(n^3)$ computations when inverting the Gram matrix of the covariance function, usually through Cholesky factorization. To alleviate these computational demands, several approximate methods have been proposed. 
 
 Sparse GPs are based on low-rank approximations of the covariance matrix. The low-rank approximation with $m \ll n$ {\it inducing points} implies reduced memory requirements of $O(nm)$ and corresponding computational complexity of $O(nm^2)$. A unifying view on sparse GPs based on approximate generative methods is provided by \citet{quinonero2005unifying}, while a general review is provided by \citet{rasmussen2006gaussian}. \citet{Burt+Rasmussen+vanderWilk:2019} show that for regression with normally distributed covariates in $D$ dimensions and using the squared exponential covariance function, $M=O(\log^DN)$ is sufficient for an accurate approximation.
-% More recent developments in the context of sparse GPs include a structured kernel interpolation method \citep{wilson2015kernel}. More recently, \citep{bui2017unifying} proposed to use inducing points-based sparse approximation methods to perform GP approximations at inference time rather than at modeling time.
 An alternative class of low-rank approximations is based on forming a basis function approximation with $m \ll n$ basis functions. The basis functions are usually presented explicitly, but can also be used to form a low-rank covariance matrix approximation. Common basis function approximations rest on the spectral analysis and series expansions of GPs \citep{loeve1977probability,trees1968detection,adler1981geometry,cramer2013stationary}. Sparse spectrum GPs are based on a sparse approximation to the frequency domain representation of a GP \citep{lazaro2010sparse,quia2010sparse,gal2015improving}. Recently, \citet{hensman2017variational} presented a variational Fourier feature approximation for GPs that was derived for the Mat{\'e}rn class of kernels. Another related method for approximating kernels relies on random Fourier features  \citep{rahimi2008random,rahimi2009weighted}. Certain spline smoothing basis functions are equivalent to GPs with certain covariance functions \citep{wahba1990spline,Furrer+Nychka:2007}. Recent related work based on a spectral representation of GPs as an infinite series expansion with the Karhunen-Loève representation \citep[see, e.g.,][]{grenander1981abstract} is presented by \citet{JSSv090i10}.
-% , but not all spline models are GPs (e.g., some spline models are not marginalization consistent).
-
-%{\color{blue} Paul: Can we clarify how our discussed method relates to the former paragraph,
-%which introduces all sorts of basis function approximations. I.e. is our method
-%just one out of many or what makes it special? Perhaps we can somehow use the information provided
-%in: While Sparse Spectrum GP is based on a sparse spectrum, the reduced-rank method proposed in this paper aims to make the spectrum as ‘full’ as possible at a given rank. Recent Splines models can reproduce the Matern family of covariance functions (see, e.g., \cite{wood2003thin}), however our approach can reproduce basically all of the stationary covariance functions.}
 
 In this paper, we focus on a recent framework for fast and accurate inference for fully Bayesian GPs using basis function approximations based on approximation via Laplace eigenfunctions for stationary covariance functions proposed by \citet{solin2018hilbert}. Using a basis function expansion, a GP is approximated with a linear model which makes inference considerably faster. The linear model structure makes GPs easy to implement as a building block in more complicated models in modular probabilistic programming frameworks, where there is a big benefit if the approximation specific computation is simple. Furthermore, a linear representation of a GP makes it easier to be used as latent function in non-Gaussian observational models allowing for more modelling flexibility. The basis function approximation via Laplace eigenfunctions can be made arbitrary accurate and the trade-off between computational complexity and approximation accuracy can easily be controlled.
 
 The Laplace eigenfunctions can be computed analytically and they are independent of the particular choice of the covariance function including the hyperparameters. While the pre-computation cost of the basis functions is $O(m^2n)$, the computational cost of learning the covariance function parameters is $O(mn+m)$ in every step of the optimizer or sampler. This is a big advantage in terms of speed for iterative algorithms such as Markov chain Monte Carlo (MCMC). Another advantage is the reduced memory requirements of automatic differentiation methods used in modern probabilistic programming frameworks, such as Stan \citep{carpenter2017stan} and others. This is because the memory requirements of automatic differentiation scale with the size of the autodiff expression tree which in direct implementations is simpler for basis function than covariance matrix based approach. The basis function approach also provides an easy way to apply a non-centered parameterization of GPs, which reduces the posterior dependency between parameters representing the estimated function and the hyperparameters of the covariance function, which further improves MCMC efficiency.
 
-%\textcolor{red}{Aki: I moved this from section 2, needs to be combined with other intro}
-%We propose an approximate framework for fast and accurate inference
-%for GPs. Using a basis function expansion, we
-%approximate the GPs with a linear model. This
-%representation has three main advantages: 1) it makes inference
-%considerably faster due to the linear structure, 2) it is simple to
-%implement, which makes it easy to use GPs as building
-%blocks in more complicated models and can be used as latent function
-%in non-Gaussian observational models allowing modelling flexibility,
-%3) it can be made arbitrary accurate and the trade-off between
-%computational complexity and approximation accuracy can easily be
-%controlled.
-
 While \citet{solin2018hilbert} have fully developed the mathematical theory behind this specific approximation of GPs, further work is needed for its practical implementation in probabilistic programming frameworks. In this paper, the interactions among the key factors of the method such as the number of basis functions, domain of the prediction space, and properties of the true functional relationship between covariates and response variable, are investigated and analyzed in detail in relation to the computational performance and accuracy of the method. Practical recommendations are given for the values of the key factors based on intuitive graphical summaries that encode the recognized relationships. Our recommendations will help users to choose valid and optimized values for these factors, improving computational performance without sacrificing modeling accuracy. We also propose  diagnostics to indicate whether the chosen values for the number of basis functions and the domain of the prediction space are adequate to model the data well.
-
-%In this paper, we analyze in detail the performance and accuracy of the method in relation to key factors such as the number of basis functions, desired prediction space, or properties of the true functional relationship between covariates and response variable. We provide intuitive visualizations and practical recommendations for the choice of these factors, which will help users to improve computational performance while maintaining close approximation to exact GPs.
 
 We have implemented the approach in the probabilistic programming language Stan \citep{carpenter2017stan} as well as subsequently in the \textit{brms} package \citep{burkner2017brms} of the R software \citep{R2019R}. Several illustrative examples of the performance and applicability of the method are shown using both simulated and real datasets. All examples are accompanied by the corresponding Stan code. Although there are several GP specific software packages available to date, for example, GPML \citep{rasmussen2010gpml},  GPstuff \citep{vanhatalo2013gpstuff}, GPy \citep{gpy2014}, and GPflow \citep{GPflow2017}, each provide efficient implementations only for a restricted range of GP-based models. In this paper, we do not focus on the fastest possible inference for some specific GP models, but instead are interested in how GPs can be easily used as modular components in probabilistic programming frameworks. 
 
@@ -141,7 +112,6 @@ The remainder of the paper is structured as follows. In Section~\ref{ch4_gp}, we
 A GP is a stochastic process which defines the distribution over a collection of random variables indexed by a continuous variable, that is, $\left\lbrace f(t): t \in \mathcal{T}\right\rbrace$ for some index set $\mathcal{T}$. GPs have the defining property that the marginal distribution of any finite subset of random variables, $\left\lbrace f(t_1), f(t_2), \hdots, f(t_N) \right\rbrace$, is a multivariate Gaussian distribution.
 
 In this work, GPs will take the role of a prior distribution over function spaces for non-parametric latent functions in a Bayesian setting. Consider a data set $\mathcal{D} = \left\lbrace \bm{x}_n, y_n \right\rbrace_{n=1}^N$, where $y_n$ is modelled conditionally as $p(y_n \mid f(\bm{x}_n),\phi)$, where $p$ is some parametric distribution with parameters  $\phi$, and $f$ is an unknown function with GP prior, which depends on an input $\bm{x}_n\in {\rm I\!R}^D$. This generalizes readily to more complex models depending on several unknown functions, for example such as $p(y_n \mid f(\bm{x}_n),g(\bm{x}_n))$ or multilevel models. Our goal is to obtain the posterior distribution for the value of the function $\tilde{f}=f(\tilde{\bm{x}})$  evaluated at a new input point $\tilde{\bm{x}}$.
-% That is, we want to obtain the predictive distribution $p(f^* \mid \mathcal{D})$ of $f^*$ conditioned on the data $\mathcal{D}$.\\
 
 We assume a GP prior for $f \sim \GP(\mu(\bm{x}), k(\bm{x}, \bm{x}'))$, where $\mu: {\rm I\!R}^D \to {\rm I\!R}$ and $k: {\rm I\!R}^D \times {\rm I\!R}^D \to {\rm I\!R}$ are the mean and covariance functions, respectively,
 %
@@ -162,34 +132,7 @@ f^*
 \end{array} \right] \right),
 \end{align*}
 %
-where $\bm{k}_{\bm{f},\tilde{f}}$ is the covariance between $\bm{f}$ and $\tilde{f}$, and $k_{\tilde{f},\tilde{f}}$ is the prior variance of $\tilde{f}$. %By using the conditioning properties of multivariate Gaussian distributions, we can derive the predictive distribution for $f^*$  given $\bm{f}$ analytically,
-% \begin{align*}
-	% p(f^*| \bm{f}) = \Normal(f^*| \bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} \bm{K}_{\bm{f},\bm{f}}^{-1} \bm{k}_{\bm{f},f^*}  )
-% \end{align*}
-
-% {\color{red} Aki: the following until ``While Gaussian'' seems too basic to be in the paper:}
-
-% The joint distribution of the observations $\bm{y} = \left\lbrace y_n \right\rbrace_{n=1}^N$ and function values $\bm{f}$ and $f^*$, $p(\bm{y}, \bm{f}, f^*)$, is the product of the conditional distribution for $\bm{y}$ given $\bm{f}$ and the joint distribution for $\bm{f}$ and $f^*$,
-% \begin{align*}
-% 	p(\bm{y}, \bm{f}, f^*) = p(\bm{y}|\bm{f})p(\bm{f}, f^*)
-% \end{align*}
- 
-% By marginalizing over $\bm{f}$ and conditioning on vector of observations $\bm{y}$, we obtain the posterior distribution of interest
-% %
-% \begin{align}\label{eq:posterior}
-% 	p(f^*|\bm{y}) = \frac{\int p(\bm{y}|\bm{f})p(\bm{f}, f^*)\mathrm{d}\bm{f}}{p(\bm{y})},
-% \end{align}
-% where $p(\bm{y})$ is the marginal likelihood and is given by
-% %
-% \begin{align}\label{eq:evidence}
-% 	p(\textbf{y}) = \int p(\bm{y}|\bm{f})p(\bm{f}, f^*) \mathrm{d}\bm{f}\mathrm{d}f^*.
-% \end{align}
-% %
-% If the observation model $p(\bm{y}|\bm{f})$ is Gaussian, both integrals in eq. \eqref{eq:posterior} and \eqref{eq:evidence} can be solved analytically conditioned on the hyperparameters. For example, an isotropic Gaussian likelihood yields the following closed-form solution
-% \begin{align*}
-% 	p(f^*| \bm{y}) = \Normal(f^*| \textbf{k}_{f^*,\bm{f}} (\textbf{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{f},  k_{f^*,f^*}-\bm{k}_{f^*,\bm{f}} (\bm{K}_{\bm{f},\bm{f}} + \sigma^2 \bm{I})^{-1} \bm{k}_{\bm{f},f^*}  ),
-% \end{align*}
-% where $\sigma^2$ is the noise variance.
+where $\bm{k}_{\bm{f},\tilde{f}}$ is the covariance between $\bm{f}$ and $\tilde{f}$, and $k_{\tilde{f},\tilde{f}}$ is the prior variance of $\tilde{f}$. 
 
 If $p(y_n \mid f(\bm{x}_n),\phi)=\Normal(y_n \mid f(\bm{x}_n),\sigma)$ then $\bm{f}$ can be integrated out analytically (with a computational cost of $O(n^3)$ for exact GPs and $O(nm^2)$ for sparse GPs). If $p(y_n \mid f(\bm{x}_n),g(\bm{x}_n))=\Normal(y_n \mid f(\bm{x}_n),g(\bm{x}_n))$ or $p(y_n \mid f(\bm{x}_n),\phi)$ is non-Gaussian, the marginalization does not have a closed-form solution. Furthermore, if a prior distribution is imposed on $\phi$ and $\bm{\theta}$ to form a joint posterior for $\phi$, $\bm{\theta}$ and $\bm{f}$, approximate inference such as Markov chain Monte Carlo \citep[MCMC; ][]{brooks_2011}, Laplace approximation \citep{williams1998bayesian,rasmussen2006gaussian}, expectation propagation \citep{minka2001expectation}, or variational inference methods \citep{gibbs2000variational,csato2000efficient} are required. In this paper, we focus on the use of MCMC for integrating over the joint posterior. MCMC is usually not the fastest approach, but it is flexible and allows accurate inference and uncertainty estimates for general models in probabilistic programming settings. We consider the computational costs of GPs specifically from this point of view.
 
@@ -405,12 +348,9 @@ Figures~\ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effect
 
 \begin{figure}[!t]
 \centering
-%\subfigure{\includegraphics[scale=0.38, trim = 10mm 100mm 5mm 30mm, clip]{ch5_fig1_legend_01.pdf}}\\
-%\vspace{-9mm}
 \subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 10mm 0mm, clip]{ch5_fig1_Post_J.pdf}}
 \subfigure{\includegraphics[scale=0.29, trim = 0mm 5mm 10mm 0mm, clip]{ch5_fig1_Sigma_J.pdf}}
 \subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{ch5_fig1_Cov_J.pdf}}
-%\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig1_legend.pdf}}
 \vspace{-1mm}
 \caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model (dashed red line) and the HSGP model for different number of basis functions $m$, with the boundary factor fixed to a large enough value.}
   \label{fig1_Post_J}
@@ -421,7 +361,6 @@ Figures~\ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effect
 \subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 10mm 0mm, clip]{ch5_fig2_Post_L.pdf}}
 \subfigure{\includegraphics[scale=0.29, trim = 0mm 5mm 10mm 0mm, clip]{ch5_fig2_Sigma_L.pdf}}
 \subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{ch5_fig2_Cov_L.pdf}}
-%\subfigure{\includegraphics[scale=0.38, trim = 29mm 48mm 124mm 10mm, clip]{ch5_fig2_legend.pdf}}
 \vspace{-1mm}
 \caption{Mean posterior predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model (dashed red line) and the HSGP model for different values of the boundary factor $c$, with a large enough fixed number of basis functions.}
   \label{fig2_Post_L}
@@ -472,8 +411,7 @@ c = 2.5 &
 \includegraphics[scale=0.215, trim = 0mm 4mm 5mm 14mm, clip]{ch5_fig3_Cov_part6.pdf} &\\
 \arrayrulecolor{darkgray}\hline
 \end{tabular}
-\caption{Posterior mean predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$. %The dashed red line of the exact GP can hardly be seen in the some of the plots because it is under the blue lines.
-}
+\caption{Posterior mean predictive functions (left), covariance functions (center) and posterior standard deviations (right) of both the exact GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$.}
   \label{fig3_Post_part1}
 \end{figure}
 
@@ -563,8 +501,7 @@ Comparing the accuracy of the lengthscale in Figure~\ref{fig8_Tlscale_vs_Elscale
 \subfigure{\includegraphics[scale=0.31, trim = 1mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part7.pdf}}
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part8.pdf}}
 \subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{ch5_fig7_posterior_varing_lscale_part9.pdf}}\\
-\caption{Mean posterior predictions of both exact GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). %The dashed red line of the exact GP can hardly be seen in the plots because it is almost perfectly overlayed by the blue lines.
-}
+\caption{Mean posterior predictions of both exact GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic lengthscales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). }
   \label{fig7_posterior_varing_lscale_part1}
 \end{figure}
 
@@ -657,8 +594,6 @@ The Stan model code for the exact GP, the approximate GP and the spline models o
 
 In the online supplemental material, additional case studies are presented. From those examples, it can be seen how the computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})). Even though, for a bivariate input space, the computation time increases significantly with $D$, the HSGP model works significantly faster than the exact GP for most of the non-linear $2D$ functions (even highly wiggly functions; see Figures B.3-right and C.3 in the online material). For moderate sized datasets, HSGPs tend to be slower than exact GPs for $D>3$ with a relatively low number of basis functions ($m \gtrsim 5$), as well as even for $D=3$ with a moderate high number of basis functions ($m \gtrsim 20$; see Figure~C.3 in the online material). However, the HSGP method will be computationally faster than the exact GP for larger datasets due the cubic scaling of the exact GP. In all of the investigated cases, choosing the optimal boundary factor in the HSGP approximation reduces the number of required basis functions noticeably (see Figures~A.3, B.3-left and C.2 in the online material) and therefore also reduces computational time drastically in particular in multivariate input spaces.
 
-%This fact reveals that choosing optimal values for the number of basis functions and boundary factor, looking at the recommendations and diagnosis provided by Figure \ref{fig6_lscale_vs_J_vs_c}, is essential to avoid a excessive computational time, especially in multivariate input spaces.
-
 Roughly similar or even worse behavior was found for splines where serious difficulties with computation time were encountered in building spline models for $D=3$ and with more than 10 knots, or even for $D=2$ and more than 40 knots (see Figures~B.3-right and C.3 in the online material).
 
 
@@ -690,14 +625,12 @@ The component $f_2(t)$ represents the yearly smooth seasonal pattern, using a pe
 \begin{equation*}
 f_2(t) \sim \GP(0,k_2), \hspace{5mm} k_2(t,t') = \alpha_2 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/365.25}{\ell_2^2}\right).
 \end{equation*}
-% which means the function values $\bm{f}_2=\{f_2(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_2$, where $K_{2_{t,s}}=k_2(t,s)$, with $t,s=1,\dots,T$.
 
 The component $f_3(t)$ represents the weekly smooth pattern using a periodic squared exponential covariance function (with period 7 of length of the week) in a GP model,
 %
 \begin{equation*}
 f_3(t) \sim \GP(0,k_3), \hspace{5mm} k_3(t,t') = \alpha_3 \exp\!\!\left(\!-\frac{2\,\sin^{\!2}\!(\pi(t-t')/7}{\ell_3^2}\right). 
 \end{equation*}
-% which means the function values $\bm{f}_3=\{f_3(t)\}_{t=1}^T$ are multivariate Gaussian distributed with covariance matrix $K_3$, where $K_{3_{t,s}}=k_3(t,s)$, with $t,s=1,\dots,T$.
 
 The component $f_4(t)$ represents the special days effects, modeled as a horse-shoe prior model \citep{carvalho2010,piironen2017sparsity}:
 %
@@ -706,7 +639,6 @@ f_4(t) \sim \Normal(0,\lambda^2_t \tau^2), \hspace{5mm} \lambda^2_t \sim \mathca
 \end{equation*}
 %
 A horse-shoe prior allows for sparse distributed effects. Its global parameter $\tau$ pulls all the weights (effects) globally towards zero, while the thick half-Cauchy tails for the local scales $\lambda_t$ allow some of the weights to escape the shrinkage. Different levels of sparsity can be accommodated by changing the value of $\tau$: for large $\tau$ all the variables have very diffuse prior distributions with very little shrinkage towards zero, but letting $\tau \rightarrow 0$ will shrink all the weights $f_4(t)$ to zero \citep{piironen2016hyperprior}. 
-%More details about the specified priors for $\tau$ and $\lambda_t$ have been included in Appendix \ref{app_horse_shoe}.
 
 The component $f_1(t)$ will be approximated using the HSGP model and the function values $f_1(t)$ are approximated as in equation (\ref{eq_approxf}), with the squared exponential spectral density $S$ as in equation (\ref{eq_specdens_inf}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}). We use $m=30$ basis functions and a boundary factor $c=1.5$. The lengthscale estimate $\hat{\ell}_1$, for this component, normalized by half of the range of the input $x_1$, is bigger than the minimum lengthscale reported by Figure \ref{fig6_lscale_vs_J_vs_c} as a function of $m$ and $c$. This means that the chosen number of basis functions and the boundary factor are suitable values for modeling the input effects sufficiently accurate. 
 
@@ -743,9 +675,7 @@ The Stan model code for the approximate GP model of this case study can be found
 
 The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival and censoring times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnosis with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
 
-%We denote the matrix $X=[\bm{x}_1\, \cdots \bm{x}_i\, \cdots \bm{x}_n] \in {\rm I\!R}^{n\times 4}$ where $\bm{x}_i=(x_1,x_2,x_3,x_4) \in {\rm I\!R}^{4}$ the vector of predictor values for observations $i$
-
-As the WBC predictor values were strictly positive and highly skewed, a logarithm transformation is used. Continuous predictors were normalized to have zero mean and unit standard deviation. %Survival time was normalized to have zero mean for the logarithm of time. 
+As the WBC predictor values were strictly positive and highly skewed, a logarithm transformation is used. Continuous predictors were normalized to have zero mean and unit standard deviation.  
 We assume a log-normal observation model for the observed survival time, $t_i$, with a function of the predictors, $f(\bm{x}_i):{\rm I\!R}^4 \to {\rm I\!R}$, as the location parameter, and $\sigma$ as the Gaussian noise: 
 %
 \begin{equation*}
@@ -768,25 +698,12 @@ g(\bm{x}) &\sim \GP\left(\bm{0}, \, k(\bm{x},\bm{x}', \theta_1)\right),\\[1pt]
 %
 f(\bm{x}) &= c + \bm{\beta} \bm{x} + h(\bm{x}) + \mathbb{I}\!\left[x_2=2\right]g(\bm{x}),
 \end{align*}
+%
 where $\mathbb{I}\left[\cdot\right]$ is an indicator function. Above, $c$ and $\bm{\beta}$ are the intercept and vector of coefficients, respectively, of the linear model. $\theta_0$ contains the hyperparameters $\alpha_0$ and $\ell_0$ which are the marginal variance and lengthscale of the general mean GP function, and $\theta_1$ contains the hyperparameters $\alpha_1$ and $\ell_1$ which are the marginal variance and lengthscale, respectively, of a GP function specific to the male sex ($x_2=2$). Scalar lengthscales, $l_0$ and $l_1$, are used in both multivariate covariance functions, assuming isotropic functions.
-
-
-%with
-%%
-%\begin{align} \label{ch5_eq_gpml2}
-%g(\bm{x}) =
-%\left\{
-%	\begin{array}{ll}
-%		0, & \;\; \mbox{if } \;\; x_2=1,  \\
-%		\GP\left(0, k(\bm{x},\bm{x}', \theta_2)\right),  & \;\; \mbox{if } \;\; x_2=2 \,.
-%	\end{array}
-%\right. 
-%\end{align}
-
-
+%
 \begin{figure}
 \centering
-\includegraphics[scale=0.70, trim = 0mm 5mm 0mm 0mm, clip]{ch5_fig21_posteriors_leukemia_02.pdf}
+\includegraphics[scale=0.70, trim = 0mm 5mm 0mm 0mm, clip]{ch5_fig21_posteriors_leukemia.pdf}
 \caption{Expected lifetime conditional comparison for each predictor with other predictors fixed to their mean values. The thick line in each graph is the posterior mean estimated using a HSGP model, and the thin lines represent pointwise 95\% credible intervals.}
   \label{ch5_fig21_posteriors_leukemia}
 \end{figure}
@@ -812,8 +729,6 @@ The Stan model code for the exact GP and the approximate GP models of this case 
 
 Modeling unknown functions using exact GPs is computationally intractable for a lot of applications. This problem becomes especially severe when performing full Bayesian inference using sampling-based methods. In this paper, a recent approach for a low-rank representation of stationary GPs, originally proposed by \citet{solin2018hilbert}, has been implemented and analyzed in detail. The method is based on a basis function approximation via Laplace eigenfunctions. The method has an attractive computational cost as it effectively approximates GPs by linear models, which is also an attractive property in modular probabilistic programming programming frameworks. The dominating cost per log density evaluation (during sampling) is $O(nm+m)$, which is a big benefit in comparison to $O(n^3)$ of a exact GP model. The obtained design matrix is independent of hyperparameters and therefore only needs to be constructed once, at cost $O(nm)$. All dependencies on the kernel and the hyperparameters are through the prior distribution of the regression weights. The parameters' posterior distribution is $m$-dimensional, where $m$ is usually much smaller than the number of observations $n$. 
 
-%In terms of scaling, one main drawback of the method is the scaling with respect to the number of input dimensions, as the number of basis functions $m$ scales exponentially with the number of dimensions.
-
 The main contribution of this paper is an in-depth analysis and diagnosis of the performance and accuracy of the approximation in relation to the key factors of the method, that is, the number of basis functions, the boundary condition of the Laplace eigenfunctions, and the non-linearity of the function to be learned. Recommendations for the values of these key factors based on the recognized relations among them have been provided along with illustrations of these relations. These illustrations will not only help users to improve performance and save computation time, but also serve as a powerful diagnosis tool whether the chosen values for the number of basis functions and the boundary condition are adequate to fit to the data at hand with sufficient accuracy.
 
 The developed approximate GPs can be easily applied as modular components in probabilistic programming frameworks such as Stan in both Gaussian and non-Gaussian observation models. Using several simulated and real datasets, we have demonstrated the practical applicability and improved sampling efficiency, as compared to exact GPs, of the developed method. The main drawback of the approach is that its computational complexity scales exponentially with the number of input dimensions. Hence, choosing optimal values for the number of basis functions and the boundary factor, using the recommendations and diagnostics provided in Figures~\ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern}, is essential to avoid a excessive computational time especially in multivariate input spaces. However, in practice, input dimensionalities larger than three start to be quite computationally demanding even for moderately wiggly functions and few basis functions per input dimension. In these high dimensional cases, the proposed approximate GP methods may still be used for low-dimensional components in an additive modeling scheme but without modeling very high dimensional interactions.
@@ -822,10 +737,6 @@ The obtained functional relationships between the key factors influencing the ap
 but can also serve an automatic diagnostic tool, if appropriately implemented.
 In this paper, we primarily studied the functional relationships for univariate inputs. Accordingly, investigating the functional relationships more thoroughly for multivariate inputs remains a topic for future research. 
 
-%Future research will focus on constructing analytical models for the relationships between the key factors of the number of basis functions, the boundary factor and the lengthscale of the function, depicted in Figures \ref{fig6_lscale_vs_J_vs_c}, \ref{fig6_lscale_vs_J_vs_c_Matern} and \ref{ch5_fig28_m_lscale_periodic}, on which ultimately depend the performance of the approximation. This analytical models can be useful to automatize the diagnosis of the performance of the approximation. These relationships have been obtained, in the present study, for the unidimensional case only. So, another future research line will be focused on analyzing these relationships in the multidimensional case, building useful graphs or analytical models that encode these relationships in multidimensional cases.
-
-
-
 
 \appendix
 
@@ -833,7 +744,6 @@ In this paper, we primarily studied the functional relationships for univariate 
 \numberwithin{figure}{section}
 
 \section{Approximation of the covariance function using Hilbert space methods} \label{ch5_app_approx_covfun}
-
 
 In this section, we briefly present a summary of the mathematical details of the approximation of a stationary covariance function as a series expansion of eigenvalues and eigenfunctions of the Laplacian operator. This statement is based on the work by \citet{solin2018hilbert}, who developed the mathematical theory behind the Hilbert Space approximation for stationary covariance functions.
 
@@ -849,13 +759,6 @@ From the Bochner’s and Wiener-Khintchine theorems, the spectral density of a s
 S(\bm{w}) = \int k(\bm{\tau}) e^{-2\pi i \bm{w} \bm{\tau}} \,\mathrm{d}\bm{\tau}, \nonumber
 \end{equation*}
 where $\bm{w}$ is in the frequency domain. The operator $\mathcal{K}$ will be translation invariant if the covariance function is stationary. This allows for a Fourier representation of the operator $\mathcal{K}$ as a transfer function which is the spectral density of the Gaussian process. 
-%When the covariance function is homogeneous, the corresponding operator $\mathcal{K}$ will be translation invariant thus allowing for Fourier-representation as a transfer function. This transfer function is the spectral density of the Gaussian process
-%%
-%\begin{eqnarray*}
-%S(\bm{w}) = \mathcal{F}(\mathcal{K}). \nonumber
-%\end{eqnarray*}
-%
-%\noindent 
 Thus, the spectral density $S(\bm{w})$ also gives the approximate eigenvalues of the operator $\mathcal{K}$.
 
 In the isotropic case $S(\bm{w}) = S(||\bm{w}||)$ and assuming that the spectral density function $S(\cdot)$ is regular enough, then it can be represented as a polynomial expansion:
@@ -914,7 +817,6 @@ This implies that we also have
 [a_0+a_1(-\nabla^2)+a_2(-\nabla^2)^2+\cdots] f(\bm{x}) = \int [a_0+a_1l^1(\bm{x},\bm{x}')+a_2l^2(\bm{x},\bm{x}')+\cdots] f(\bm{x}')  \,\mathrm{d}\bm{x}'.
 \end{equation*} 
 
-
 Then, looking at equations (\ref{ch5_eq_K}) and (\ref{ch5_eq_formalkernel}), it can be concluded 
 %
 \begin{equation}\label{ch5_eq_k}
@@ -931,7 +833,6 @@ and substituting in equation (\ref{ch5_eq_k}) then leads to the final form
 k(\bm{x},\bm{x}')= \sum_j S(\sqrt{\lambda_j}) \phi_j(\bm{x}) \phi_j(\bm{x}'),
 \end{equation} 
 where $S(\cdot)$ is the spectral density of the covariance function, $\lambda_j$ is the $j$th eigenvalue and $\phi_j(\cdot)$ the eigenfunction of the Laplace operator in a given domain.
-
 
 
 \section{Low-rank Gaussian process with a periodic covariance function}\label{ch5_sec_periodic}
@@ -962,7 +863,6 @@ where $j=1,2,\cdots,J$, and $\lfloor \cdot \rfloor$ denotes the floor round-off 
 \end{equation}
 The covariance in equation (\ref{ch5_eq_cov_periodic_taylor_approx}) is a $J$th order truncation of a Taylor series representation. This approximation converges to equation (\ref{ch5_eq_cov_periodic}) when $J \rightarrow \infty$.
 
-%If the requirement of a valid covariance function is relaxed and only an optimal series approximation is required, taking the limit $J \rightarrow \infty$ in the sub-sums in equation (\ref{ch5_eq_q}) gives the following variance coefficients
 An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q}_0^2$ can be obtained by taking the limit $J \rightarrow \infty$ in the sub-sums in the corresponding equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}), and thus leading to the following variance coefficients:
 %
 \begin{equation}\label{ch5_eq_q_2}
@@ -972,9 +872,6 @@ An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q
 \end{split}
 \end{equation} 
 for $j=1,2,\cdots,J$, and where the $\mathrm{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
-
-%Note that the terms in equations (\ref{ch5_eq_q}) and (\ref{ch5_eq_q0}) are underneath bounded approximations for any $J$. 
-
 
 In order to assess the accuracy of this representation as a function of the number of cosine terms $J$ considered in the approximation, an empirical evaluation is carried out in a similar way than that in Section \ref{ch5_sec_accuracy} of this work. Thus, Figure \ref{ch5_fig28_m_lscale_periodic} shows the minimum number of terms $J$ required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the lengthscale of the kernel. We have considered an approximation to be close enough in terms of satisfying equation (\ref{eq_diff_covs}) with $\varepsilon=0.5\%$. Since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition.
 
@@ -1018,8 +915,3 @@ We thank Academy of Finland (grants 298742, 308640, and 313122), Finnish Center 
 
 
 \end{document}
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
