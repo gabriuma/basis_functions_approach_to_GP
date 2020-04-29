@@ -14,7 +14,7 @@ data {
   
   int N_train;
   int vv_train[N_train];
-  vector[N] f_true;
+  # vector[N] f_true;
 } 
 transformed data { 
   int Kc; 
@@ -66,7 +66,7 @@ generated quantities {
   
 	for(i in 1:N){
 		logdens_y[i] = normal_lpdf(Y[i] | mu_pred[i], sigma);
-		logdens_f[i] = normal_lpdf(f_true[i] | mu_pred[i], sigma);
+		# logdens_f[i] = normal_lpdf(f_true[i] | mu_pred[i], sigma);
 	}
 
 } 
