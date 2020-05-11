@@ -138,7 +138,7 @@ If $p(y_n \mid f(\bm{x}_n),\phi)=\Normal(y_n \mid f(\bm{x}_n),\sigma)$ then $\bm
 
 \subsection{Covariance functions and spectral density}\label{ch4_sec_cov}
 
-The covariance function is the crucial ingredient in a GP as it encodes our prior assumptions about the function, and defines a correlation structure which characterizes the correlations between function values at different inputs. A covariance function needs to be symmetric and positive semi-definite \citep{rasmussen2006gaussian}. A stationary covariance function is a function of $\bm{\tau}=\bm{x}-\bm{x}' \in {\rm I\!R}^D$, such that it can be written $k(\bm{x},\bm{x}') = k(\bm{\tau})$, which means that the covariance is invariant to translations. Isotropic covariance functions depend only on the input points through the norm of the difference, $k(\bm{x},\bm{x}') = k(|\bm{x}-\bm{x}'|) = k(r), r\in {\rm I\!R}$, which means that the covariance is both translation and rotation invariant. The most commonly used distance between observations is the L2-norm $(|\bm{x}-\bm{x}'|_{L2})$, also known as Euclidean distance, although other types of distances can be considered. 
+The covariance function is the crucial ingredient in a GP as it encodes our prior assumptions about the function, and characterizes the correlations between function values at different locations in the input space. A covariance function needs to be symmetric and positive semi-definite \citep{rasmussen2006gaussian}. A stationary covariance function is a function of $\bm{\tau}=\bm{x}-\bm{x}' \in {\rm I\!R}^D$, such that it can be written $k(\bm{x},\bm{x}') = k(\bm{\tau})$, which means that the covariance is invariant to translations. Isotropic covariance functions depend only on the input points through the norm of the difference, $k(\bm{x},\bm{x}') = k(|\bm{x}-\bm{x}'|) = k(r), r\in {\rm I\!R}$, which means that the covariance is both translation and rotation invariant. The most commonly used distance between observations is the L2-norm $(|\bm{x}-\bm{x}'|_{L2})$, also known as Euclidean distance, although other types of distances can be considered. 
 
 The Mat\'ern class of isotropic covariance functions is given by, 
 %
@@ -288,7 +288,7 @@ where $m_d$ is the number of basis function for the dimension $d$. Let $\mathbb{
 \end{array} } \right].
 \end{align} 
 
-Each multivariate eigenfunction $\phi^{\ast}_j$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$, and each multivariate eigenvalue $\bm{\lambda}^{\ast}_j$ is a $D$-vector with elements that are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\bm{\cdotp}}$. Thus, for $\bm{x}=\{x_d\}_{d=1}^D \in \Omega$ and $j=1,2,\ldots,m^{\ast}$, we have 
+Each multivariate eigenfunction $\phi^{\ast}_j:\Omega \rightarrow {\rm I\!R}$ corresponds to the product of the univariate eigenfunctions whose indices corresponds to the elements of the $D$-tuple $\mathbb{S}_{j\cdotp}$, and each multivariate eigenvalue $\bm{\lambda}^{\ast}_j$ is a $D$-vector with elements that are the univariate eigenvalues whose indices correspond to the elements of the $D$-tuple $\mathbb{S}_{j\bm{\cdotp}}$. Thus, for $\bm{x}=\{x_d\}_{d=1}^D \in \Omega$ and $j=1,2,\ldots,m^{\ast}$, we have 
 %
 \begin{align}
 \bm{\lambda}^{\ast}_j &= \left\{ \lambda_{\mathbb{S}_{jd}} \right\}_{d=1}^D =  \left\{ \left(\frac{\pi \mathbb{S}_{jd}}{2L_d}\right)^{\!2} \right\}_{d=1}^D, \label{eq_eigenvalue_multi} \\
@@ -318,7 +318,7 @@ where, again, $\beta_j \sim \Normal(0,1)$. The computational cost of evaluating 
 
 The accuracy and speed of the HSGP model depends on several interrelated factors, most notably on the number of basis functions and on the boundary condition of the Laplace eigenfunctions. Furthermore, appropriate values for these factors will depend on the degree of non-linearity of the estimated function, which is in turn is characterized by the lengthscale of the covariance function. In this section, we analyze the effects of the number of basis functions and the boundary condition on the approximation accuracy. We present recommendations on how they should be chosen and diagnostics to check the accuracy of the obtained approximation. 
 
-Ultimately, these recommendations are based on the relationships among the number of basis functions, the boundary condition and the lengthscale of the function, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the square exponential covariance function and Mat{\'e}rn ($\nu$=3/2) covariance function in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{ch5_sec_periodic}. For other kernels, the relationships will be slightly different, in function of mainly the smoothness or wigglyness of the kernel effects on the posterior function.
+Ultimately, these recommendations are based on the relationships among the number of basis functions, the boundary condition and the lengthscale of the function, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the square exponential covariance function and Mat{\'e}rn ($\nu$=3/2) covariance function in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{ch5_sec_periodic}. For other kernels, the relationships will be slightly different depending on the smoothness or wigglyness of the covariance function.
 
 \subsection{Dependency on the number of basis functions and the boundary condition} \label{ch5_subsec_dependency}
 
@@ -842,7 +842,7 @@ A GP model with a periodic covariance function does no fit in the framework of t
 The periodic squared exponential covariance function takes the form
 %
 \begin{equation} \label{ch5_eq_cov_periodic}
-k(\bm{\tau})= \alpha \exp\left( -\frac{2\sin^{2}(\omega_0\frac{\bm{\tau}}{2})}{\ell^2}\right),
+k(\tau)= \alpha \exp\left( -\frac{2\sin^{2}(\omega_0\frac{\tau}{2})}{\ell^2}\right),
 \end{equation}
 where $\alpha$ is the magnitude scale of the covariance, $\ell$ is the characteristic lengthscale of the covariance, and $\omega_0$ is the angular frequency defining the periodicity. 
 
