@@ -201,7 +201,7 @@ where $S_{\theta}$ is the spectral density of the stationary covariance function
 %
 \begin{align}\label{eq_eigenproblem}
 \begin{split}
--\nabla^2 \phi_j(x)&=\lambda \phi_j(x), \hspace{1cm}  x \in \Omega \\ 
+-\nabla^2 \phi_j(x)&=\lambda_j \phi_j(x), \hspace{1cm}  x \in \Omega \\ 
 \phi_j(x)&= 0, \hspace{1.85cm}   x \notin \Omega.
 \end{split}
 \end{align} 
@@ -261,7 +261,7 @@ The parameterization in eq.~\eqref{eq_approxf} is naturally in the non-centered 
 
 \subsection{Generalization to multidimensional GPs} \label{ch5_sec_method_multi}
 
-The results from the previous section can be generalized to a multidimensional input space with compact support, $\Omega=[-L_1,L_1] \times \dots \times [-L_d,L_d]$ and Dirichlet boundary conditions. 
+The results from the previous section can be generalized to a multidimensional input space with compact support, $\Omega=[-L_1,L_1] \times \dots \times [-L_D,L_D]$ and Dirichlet boundary conditions. 
 In a $D$-dimensional input space, the total number of eigenfunctions and eigenvalues in the approximation is equal to the number of $D$-tuples, that is, possible combinations of univariate eigenfunctions over all dimensions. The number of $D$-tuples is given by 
 %
 \begin{align} \label{eq_m_multi}
