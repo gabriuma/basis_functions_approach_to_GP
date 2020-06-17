@@ -1,0 +1,163 @@
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\beamer@sectionpages {1}{1}}
+\headcommand {\beamer@subsectionpages {1}{1}}
+\headcommand {\sectionentry {1}{Introduction}{2}{Introduction}{0}}
+\headcommand {\slideentry {1}{0}{1}{2/2}{}{0}}
+\headcommand {\beamer@framepages {2}{2}}
+\headcommand {\beamer@subsectionpages {2}{2}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{3}{Motivation}}
+\headcommand {\slideentry {1}{1}{1}{3/10}{Motivation}{0}}
+\headcommand {\beamer@framepages {3}{10}}
+\headcommand {\slideentry {1}{1}{2}{11/11}{Motivation}{0}}
+\headcommand {\beamer@framepages {11}{11}}
+\headcommand {\slideentry {1}{1}{3}{12/12}{Motivation}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\beamer@subsectionpages {3}{12}}
+\headcommand {\beamer@subsectionentry {0}{1}{2}{13}{Contribution}}
+\headcommand {\slideentry {1}{2}{1}{13/13}{Contribution}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\beamer@sectionpages {2}{13}}
+\headcommand {\beamer@subsectionpages {13}{13}}
+\headcommand {\sectionentry {2}{Gaussian process as a prior}{14}{Gaussian process as a prior}{0}}
+\headcommand {\slideentry {2}{0}{1}{14/14}{}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\beamer@subsectionpages {14}{14}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{15}{Gaussian process prior model}}
+\headcommand {\slideentry {2}{1}{1}{15/15}{Gaussian process prior model}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\slideentry {2}{1}{2}{16/20}{Gaussian process prior model}{0}}
+\headcommand {\beamer@framepages {16}{20}}
+\headcommand {\slideentry {2}{1}{3}{21/21}{Gaussian process prior model}{0}}
+\headcommand {\beamer@framepages {21}{21}}
+\headcommand {\beamer@subsectionpages {15}{21}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{22}{Covariance function}}
+\headcommand {\slideentry {2}{2}{1}{22/22}{Covariance function}{0}}
+\headcommand {\beamer@framepages {22}{22}}
+\headcommand {\slideentry {2}{2}{2}{23/23}{Covariance function}{0}}
+\headcommand {\beamer@framepages {23}{23}}
+\headcommand {\slideentry {2}{2}{3}{24/24}{Covariance function}{0}}
+\headcommand {\beamer@framepages {24}{24}}
+\headcommand {\beamer@subsectionpages {22}{24}}
+\headcommand {\beamer@subsectionentry {0}{2}{3}{25}{Computation requirements}}
+\headcommand {\slideentry {2}{3}{1}{25/25}{Computation requirements}{0}}
+\headcommand {\beamer@framepages {25}{25}}
+\headcommand {\slideentry {2}{3}{2}{26/26}{Computation requirements}{0}}
+\headcommand {\beamer@framepages {26}{26}}
+\headcommand {\slideentry {2}{3}{3}{27/27}{Computation requirements}{0}}
+\headcommand {\beamer@framepages {27}{27}}
+\headcommand {\slideentry {2}{3}{4}{28/28}{Computation requirements}{0}}
+\headcommand {\beamer@framepages {28}{28}}
+\headcommand {\beamer@subsectionpages {25}{28}}
+\headcommand {\beamer@subsectionentry {0}{2}{4}{29}{Related low-rank GP methods}}
+\headcommand {\slideentry {2}{4}{1}{29/29}{Related low-rank GP methods}{0}}
+\headcommand {\beamer@framepages {29}{29}}
+\headcommand {\beamer@subsectionpages {29}{29}}
+\headcommand {\beamer@subsectionentry {0}{2}{5}{30}{Spectral density function}}
+\headcommand {\slideentry {2}{5}{1}{30/30}{Spectral density function}{0}}
+\headcommand {\beamer@framepages {30}{30}}
+\headcommand {\beamer@sectionpages {14}{30}}
+\headcommand {\beamer@subsectionpages {30}{30}}
+\headcommand {\sectionentry {3}{Hilbert space approximate GP model (HSGP)}{31}{Hilbert space approximate Gaussian process model (HSGP)}{0}}
+\headcommand {\slideentry {3}{0}{1}{31/31}{}{0}}
+\headcommand {\beamer@framepages {31}{31}}
+\headcommand {\beamer@subsectionpages {31}{31}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{32}{HSGP model}}
+\headcommand {\slideentry {3}{1}{1}{32/32}{HSGP model}{0}}
+\headcommand {\beamer@framepages {32}{32}}
+\headcommand {\slideentry {3}{1}{2}{33/38}{HSGP model}{0}}
+\headcommand {\beamer@framepages {33}{38}}
+\headcommand {\slideentry {3}{1}{3}{39/39}{HSGP model}{0}}
+\headcommand {\beamer@framepages {39}{39}}
+\headcommand {\beamer@subsectionpages {32}{39}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{40}{Aim of the study}}
+\headcommand {\slideentry {3}{2}{1}{40/40}{Aim of the study}{0}}
+\headcommand {\beamer@framepages {40}{40}}
+\headcommand {\beamer@subsectionpages {40}{40}}
+\headcommand {\beamer@subsectionentry {0}{3}{3}{41}{Generalization to multidimensional input space}}
+\headcommand {\slideentry {3}{3}{1}{41/41}{Generalization to multidimensional input space}{0}}
+\headcommand {\beamer@framepages {41}{41}}
+\headcommand {\slideentry {3}{3}{2}{42/42}{Generalization to multidimensional input space}{0}}
+\headcommand {\beamer@framepages {42}{42}}
+\headcommand {\beamer@sectionpages {31}{42}}
+\headcommand {\beamer@subsectionpages {41}{42}}
+\headcommand {\sectionentry {4}{Performance analysis of HSGP}{43}{Performance analysis of HSGP}{0}}
+\headcommand {\slideentry {4}{0}{1}{43/43}{}{0}}
+\headcommand {\beamer@framepages {43}{43}}
+\headcommand {\slideentry {4}{0}{2}{44/44}{}{0}}
+\headcommand {\beamer@framepages {44}{44}}
+\headcommand {\beamer@subsectionpages {43}{44}}
+\headcommand {\beamer@subsectionentry {0}{4}{1}{45}{Effects of $m$ and $L$}}
+\headcommand {\slideentry {4}{1}{1}{45/48}{Effects of $m$ and $L$}{0}}
+\headcommand {\beamer@framepages {45}{48}}
+\headcommand {\slideentry {4}{1}{2}{49/50}{Effects of $m$ and $L$}{0}}
+\headcommand {\beamer@framepages {49}{50}}
+\headcommand {\slideentry {4}{1}{3}{51/51}{Effects of $m$ and $L$}{0}}
+\headcommand {\beamer@framepages {51}{51}}
+\headcommand {\slideentry {4}{1}{4}{52/52}{Effects of $m$ and $L$}{0}}
+\headcommand {\beamer@framepages {52}{52}}
+\headcommand {\slideentry {4}{1}{5}{53/57}{Effects of $m$ and $L$}{0}}
+\headcommand {\beamer@framepages {53}{57}}
+\headcommand {\beamer@subsectionpages {45}{57}}
+\headcommand {\beamer@subsectionentry {0}{4}{2}{58}{Model of relationships among $m$, $L$ and $\ell $}}
+\headcommand {\slideentry {4}{2}{1}{58/58}{Model of relationships among $m$, $L$ and $\ell $}{0}}
+\headcommand {\beamer@framepages {58}{58}}
+\headcommand {\slideentry {4}{2}{2}{59/59}{Model of relationships among $m$, $L$ and $\ell $}{0}}
+\headcommand {\beamer@framepages {59}{59}}
+\headcommand {\slideentry {4}{2}{3}{60/60}{Model of relationships among $m$, $L$ and $\ell $}{0}}
+\headcommand {\beamer@framepages {60}{60}}
+\headcommand {\slideentry {4}{2}{4}{61/65}{Model of relationships among $m$, $L$ and $\ell $}{0}}
+\headcommand {\beamer@framepages {61}{65}}
+\headcommand {\beamer@subsectionpages {58}{65}}
+\headcommand {\beamer@subsectionentry {0}{4}{3}{66}{Future research}}
+\headcommand {\slideentry {4}{3}{1}{66/66}{Future research}{0}}
+\headcommand {\beamer@framepages {66}{66}}
+\headcommand {\beamer@sectionpages {43}{66}}
+\headcommand {\beamer@subsectionpages {66}{66}}
+\headcommand {\sectionentry {5}{Case studies}{67}{Case studies}{0}}
+\headcommand {\slideentry {5}{0}{1}{67/67}{}{0}}
+\headcommand {\beamer@framepages {67}{67}}
+\headcommand {\beamer@subsectionpages {67}{67}}
+\headcommand {\beamer@subsectionentry {0}{5}{1}{68}{Univariate synthetic case study}}
+\headcommand {\slideentry {5}{1}{1}{68/72}{Univariate synthetic case study}{0}}
+\headcommand {\beamer@framepages {68}{72}}
+\headcommand {\slideentry {5}{1}{2}{73/73}{Univariate synthetic case study}{0}}
+\headcommand {\beamer@framepages {73}{73}}
+\headcommand {\slideentry {5}{1}{3}{74/89}{Univariate synthetic case study}{0}}
+\headcommand {\beamer@framepages {74}{89}}
+\headcommand {\beamer@subsectionpages {68}{89}}
+\headcommand {\beamer@subsectionentry {0}{5}{2}{90}{Bivariate synthetic case study}}
+\headcommand {\slideentry {5}{2}{1}{90/90}{Bivariate synthetic case study}{0}}
+\headcommand {\beamer@framepages {90}{90}}
+\headcommand {\slideentry {5}{2}{2}{91/91}{Bivariate synthetic case study}{0}}
+\headcommand {\beamer@framepages {91}{91}}
+\headcommand {\beamer@subsectionpages {90}{91}}
+\headcommand {\beamer@subsectionentry {0}{5}{3}{92}{Diabetes disease case study}}
+\headcommand {\slideentry {5}{3}{1}{92/92}{Diabetes disease case study}{0}}
+\headcommand {\beamer@framepages {92}{92}}
+\headcommand {\slideentry {5}{3}{2}{93/93}{Diabetes disease case study}{0}}
+\headcommand {\beamer@framepages {93}{93}}
+\headcommand {\beamer@subsectionpages {92}{93}}
+\headcommand {\beamer@subsectionentry {0}{5}{4}{94}{Spatio-temporal land-use classification}}
+\headcommand {\slideentry {5}{4}{1}{94/94}{Spatio-temporal land-use classification}{0}}
+\headcommand {\beamer@framepages {94}{94}}
+\headcommand {\slideentry {5}{4}{2}{95/95}{Spatio-temporal land-use classification}{0}}
+\headcommand {\beamer@framepages {95}{95}}
+\headcommand {\slideentry {5}{4}{3}{96/96}{Spatio-temporal land-use classification}{0}}
+\headcommand {\beamer@framepages {96}{96}}
+\headcommand {\slideentry {5}{4}{4}{97/97}{Spatio-temporal land-use classification}{0}}
+\headcommand {\beamer@framepages {97}{97}}
+\headcommand {\beamer@sectionpages {67}{97}}
+\headcommand {\beamer@subsectionpages {94}{97}}
+\headcommand {\sectionentry {6}{Conclusions}{98}{Conclusions}{0}}
+\headcommand {\slideentry {6}{0}{1}{98/98}{}{0}}
+\headcommand {\beamer@framepages {98}{98}}
+\headcommand {\slideentry {6}{0}{2}{99/99}{}{0}}
+\headcommand {\beamer@framepages {99}{99}}
+\headcommand {\slideentry {6}{0}{3}{100/100}{}{0}}
+\headcommand {\beamer@framepages {100}{100}}
+\headcommand {\beamer@partpages {1}{100}}
+\headcommand {\beamer@subsectionpages {98}{100}}
+\headcommand {\beamer@sectionpages {98}{100}}
+\headcommand {\beamer@documentpages {100}}
+\headcommand {\gdef \inserttotalframenumber {53}}
