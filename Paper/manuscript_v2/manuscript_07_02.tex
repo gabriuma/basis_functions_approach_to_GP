@@ -143,44 +143,46 @@ The covariance function is the crucial ingredient in a GP as it encodes our prio
 The Mat\'ern class of isotropic covariance functions is given by, 
 %
 \begin{align*}
-k_{\nu}(r)&=\alpha \, \frac{2^{1-\nu}}{\Gamma(\nu)}\left(\frac{\sqrt{2\nu}r}{\ell}\right)^{\!\nu} \! K_{\nu} \left(\frac{\sqrt{2\nu}r}{\ell}\right),
+k_{\nu}(\bm{\tau})&=\alpha \, \frac{2^{1-\nu}}{\Gamma(\nu)}\left(\frac{\sqrt{2\nu}\bm{\tau}}{\ell}\right)^{\!\nu} \! K_{\nu} \left(\frac{\sqrt{2\nu}\bm{\tau}}{\ell}\right),
 \end{align*}
 %
 where $\nu > 0$ is the order the kernel, $K_{\nu}$ the modified Bessel function of the second kind, and the $\ell > 0$ and $\alpha > 0$ are the length-scale and magnitude (marginal variance), respectively, of the kernel. The particular case where $\nu=\infty$ and $\nu=3/2$ are probably the most commonly used kernels \citep{rasmussen2006gaussian}, 
 %
 \begin{align*}
-k_{\infty}(r)&=\alpha \exp \left( -\frac{1}{2} \frac{r^2}{\ell^2}\right),  \\
-k_{\frac{3}{2}}(r)&=\alpha\left(1+\frac{\sqrt{3}r}{\ell}\right) \exp\! \left( -\frac{\sqrt{3}r}{\ell}\right). 
+k_{\infty}(\bm{\tau})&=\alpha \exp \left( -\frac{1}{2} \frac{\bm{\tau}^2}{\ell^2}\right),  \\
+k_{\frac{3}{2}}(\bm{\tau})&=\alpha\left(1+\frac{\sqrt{3}\bm{\tau}}{\ell}\right) \exp\! \left( -\frac{\sqrt{3}\bm{\tau}}{\ell}\right). 
 \end{align*}
 %
 The former is commonly known as the squared exponential or exponentiated quadratic covariance function. Assuming the Euclidean distance between observations, $r=|\bm{x}-\bm{x}'|_{L2}=\sqrt{\sum_{i=1}^{D}(x_i-x_i')^2}$, the kernels written above take the form
 %
 \begin{align*}
-k_{\infty}(|\bm{x}-\bm{x}'|_{L2})&=\alpha \exp \left( -\frac{1}{2} \sum_{i=1}^{D}\frac{(x_i-x_i')^2}{\ell_i^2}\right),\\
-k_{\frac{3}{2}}(|\bm{x}-\bm{x}'|_{L2})&=\alpha \left(1+\sqrt{\sum_{i=1}^{D}\frac{3(x_i-x_i')^2}{\ell_i^2}}\;\right) \exp\! \left( - \sqrt{\sum_{i=1}^{D}\frac{3(x_i-x_i')^2}{\ell_i^2}}\;\right).
+k_{\infty}(r) &= \alpha \exp \left( -\frac{1}{2} \sum_{i=1}^{D}\frac{(x_i-x_i')^2}{\ell_i^2}\right),\\
+k_{\frac{3}{2}}(r) &= \alpha \left(1+\sqrt{\sum_{i=1}^{D}\frac{3(x_i-x_i')^2}{\ell_i^2}}\;\right) \exp\! \left( - \sqrt{\sum_{i=1}^{D}\frac{3(x_i-x_i')^2}{\ell_i^2}}\;\right).
 \end{align*}
 %
-The previous expressions can be easily generalized to using a multidimensional length-scale $\bm{\ell}\in {\rm I\!R}^D$. Using individual length-scales for each dimension turns the isotropic covariance function into a non-isotropic covariance function. That is, for a non-isotropic covariance function, the smoothness may vary across different input dimensions. 
+Notice that the previous expressions, $k_{\infty}(r)$ and $k_{\frac{3}{2}}(r)$, have been easily generalized to using a multidimensional length-scale $\bm{\ell}\in {\rm I\!R}^D$. Using individual length-scales for each dimension turns the isotropic covariance function into a non-isotropic covariance function. That is, for a non-isotropic covariance function, the smoothness may vary across different input dimensions. 
 
 Stationary covariance functions can be represented in terms of their spectral densities \citep[see, e.g.,][]{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure \citep[\textit{Bochner's theorem}; see, e.g., ][]{akhiezer1993theory}. If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern class of covariance functions are given by
 %
 \begin{align*}
-S_{\nu}(\omega)&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\, l^{2\nu}}\left(\frac{2\nu}{l^2}+4\pi^2\omega^2 \right)^{(\nu+D/2)}
+S_{\nu}(\bm{\omega})&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\, \ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+4\pi^2\bm{\omega}^2 \right)^{(\nu+D/2)}
 \end{align*}
 %
-in $D$ dimensions, where variable $\omega\in {\rm I\!R}$ denotes the frequency, and $\ell$ and $\alpha$ are the lengthscale and magnitude (marginal variance), respectively, of the kernel. The particular cases, where $\nu=\infty$ and $\nu=3/2$, take the form
+in $D$ dimensions, where vector $\bm{\omega}\in {\rm I\!R^D}$ is in the frequency domain, and $\ell$ and $\alpha$ are the length-scale and magnitude (marginal variance), respectively, of the kernel. The particular cases, where $\nu=\infty$ and $\nu=3/2$, take the form
 %
 \begin{align}
-S_{\infty}(\omega)&= \alpha\,(\sqrt{2\pi})^D  \ell^D \exp(-\ell^2 \omega^2 / 2), \label{eq_specdens_inf}  \\
-S_{\frac{3}{2}}(\omega)&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2}){3}^{3/2}}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\omega^2 \right)^{-\frac{D+3}{2}}. \label{eq_specdens_32} 
+S_{\infty}(\bm{\omega})&= \alpha\,(\sqrt{2\pi})^D  \ell^D \exp(-\ell^2 \bm{\omega}^2 / 2), \label{eq_specdens_inf}  \\
+S_{\frac{3}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2}){3}^{3/2}}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\bm{\omega}^2 \right)^{-\frac{D+3}{2}}. \label{eq_specdens_32} 
 \end{align}
 %
-For input dimension $D=3$ and Euclidean distance $\omega=\sqrt{\sum_{i=1}^{3}s_i^2}$, and considering a multidimensional lengthscale $\bm{\ell} \in {\rm I\!R}^{3}$, the spectral densities written above take the form
+For instance, with input dimensionality $D=3$ and $\bm{\omega}=(\omega_1,\omega_2,\omega_3)$, the spectral densities written above take the form
 %
 \begin{align*}
-S_{\infty}(\omega)&= \alpha \, (2\pi)^{3/2}  \prod_{i=1}^{3} \ell_i  \exp\!\left(-\frac{1}{2} \sum_{i=1}^{3} \ell_i^2 s_i^2 \right),   \\
-S_{\frac{3}{2}}(\omega)&= \alpha \, 32\,\pi {3}^{3/2}\prod_{i=1}^{3}\ell_i\left(3+\sum_{i=1}^{3}\ell_i^2 s_i^2 \right)^{-3}.
+S_{\infty}(\bm{\omega})&= \alpha \, (2\pi)^{3/2}  \prod_{i=1}^{3} \ell_i  \exp\!\left(-\frac{1}{2} \sum_{i=1}^{3} \ell_i^2 \omega_i^2 \right),   \\
+S_{\frac{3}{2}}(\bm{\omega})&= \alpha \, 32\,\pi {3}^{3/2}\prod_{i=1}^{3}\ell_i\left(3+\sum_{i=1}^{3}\ell_i^2 \omega_i^2 \right)^{-3},
 \end{align*}
+%
+where individual length-scales $\ell_i$ for each frequency dimension $\omega_i$ have been used.
 
 
 \section{Hilbert space approximate Gaussian process model}\label{ch5_sec_method}
@@ -304,7 +306,7 @@ S^{\ast}_{\theta}\left(\sqrt{\bm{\lambda}^{\ast}_j}\right)
 \phi^{\ast}_j(\bm{x}) \phi^{\ast}_j(\bm{x}'),
 \end{equation}
 %
-where $S^{\ast}_{\theta}$ is the spectral density of the $D$-dimensional covariance function (see Section \ref{ch4_sec_cov}). We can now write the approximate series expansion of the multivariate function $f$ as
+where $S^{\ast}_{\theta}$ is the spectral density of the $D$-dimensional covariance function (see Section \ref{ch4_sec_cov}) as a function of $\sqrt{\bm{\lambda}^{\ast}_j}$ that denotes the element-wise square root of the vector $\bm{\lambda}^{\ast}_j$. We can now write the approximate series expansion of the multivariate function $f$ as
 %
 \begin{equation}\label{eq_approxf_multi}
 f(\bm{x}) \approx \sum_{j=1}^{m^{\ast}} 
