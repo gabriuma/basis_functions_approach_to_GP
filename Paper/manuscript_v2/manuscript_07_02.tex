@@ -143,14 +143,14 @@ The covariance function is the crucial ingredient in a GP as it encodes our prio
 The Mat\'ern class of isotropic covariance functions is given by, 
 %
 \begin{align*}
-k_{\nu}(\bm{\tau})&=\alpha \, \frac{2^{1-\nu}}{\Gamma(\nu)}\left(\frac{\sqrt{2\nu}\bm{\tau}}{\ell}\right)^{\!\nu} \! K_{\nu} \left(\frac{\sqrt{2\nu}\bm{\tau}}{\ell}\right),
+k_{\nu}(r)&=\alpha \, \frac{2^{1-\nu}}{\Gamma(\nu)}\left(\frac{\sqrt{2\nu}r}{\ell}\right)^{\!\nu} \! K_{\nu} \left(\frac{\sqrt{2\nu}r}{\ell}\right),
 \end{align*}
 %
 where $\nu > 0$ is the order the kernel, $K_{\nu}$ the modified Bessel function of the second kind, and the $\ell > 0$ and $\alpha > 0$ are the length-scale and magnitude (marginal variance), respectively, of the kernel. The particular case where $\nu=\infty$ and $\nu=3/2$ are probably the most commonly used kernels \citep{rasmussen2006gaussian}, 
 %
 \begin{align*}
-k_{\infty}(\bm{\tau})&=\alpha \exp \left( -\frac{1}{2} \frac{\bm{\tau}^2}{\ell^2}\right),  \\
-k_{\frac{3}{2}}(\bm{\tau})&=\alpha\left(1+\frac{\sqrt{3}\bm{\tau}}{\ell}\right) \exp\! \left( -\frac{\sqrt{3}\bm{\tau}}{\ell}\right). 
+k_{\infty}(r)&=\alpha \exp \left( -\frac{1}{2} \frac{r^2}{\ell^2}\right),  \\
+k_{\frac{3}{2}}(r)&=\alpha\left(1+\frac{\sqrt{3}r}{\ell}\right) \exp\! \left( -\frac{\sqrt{3}r}{\ell}\right). 
 \end{align*}
 %
 The former is commonly known as the squared exponential or exponentiated quadratic covariance function. Assuming the Euclidean distance between observations, $r=|\bm{x}-\bm{x}'|_{L2}=\sqrt{\sum_{i=1}^{D}(x_i-x_i')^2}$, the kernels written above take the form
@@ -165,17 +165,17 @@ Notice that the previous expressions, $k_{\infty}(r)$ and $k_{\frac{3}{2}}(r)$, 
 Stationary covariance functions can be represented in terms of their spectral densities \citep[see, e.g.,][]{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure \citep[\textit{Bochner's theorem}; see, e.g., ][]{akhiezer1993theory}. If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern class of covariance functions are given by
 %
 \begin{align*}
-S_{\nu}(\bm{\omega})&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\, \ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+4\pi^2\bm{\omega}^2 \right)^{(\nu+D/2)}
+S_{\nu}(\bm{\omega})&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\, \ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+4\pi^2\bm{\omega}^\intercal \bm{\omega} \right)^{(\nu+D/2)}
 \end{align*}
 %
 in $D$ dimensions, where vector $\bm{\omega}\in {\rm I\!R^D}$ is in the frequency domain, and $\ell$ and $\alpha$ are the length-scale and magnitude (marginal variance), respectively, of the kernel. The particular cases, where $\nu=\infty$ and $\nu=3/2$, take the form
 %
 \begin{align}
-S_{\infty}(\bm{\omega})&= \alpha\,(\sqrt{2\pi})^D  \ell^D \exp(-\ell^2 \bm{\omega}^2 / 2), \label{eq_specdens_inf}  \\
-S_{\frac{3}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2}){3}^{3/2}}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\bm{\omega}^2 \right)^{-\frac{D+3}{2}}. \label{eq_specdens_32} 
+S_{\infty}(\bm{\omega})&= \alpha\,(\sqrt{2\pi})^D  \ell^D \exp(-\frac{1}{2}\ell^2 \bm{\omega}^\intercal \bm{\omega}), \label{eq_specdens_inf}  \\
+S_{\frac{3}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2}){3}^{3/2}}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\bm{\omega}^\intercal \bm{\omega} \right)^{-\frac{D+3}{2}}. \label{eq_specdens_32} 
 \end{align}
 %
-For instance, with input dimensionality $D=3$ and $\bm{\omega}=(\omega_1,\omega_2,\omega_3)$, the spectral densities written above take the form
+For instance, with input dimensionality $D=3$ and $\bm{\omega}=(\omega_1,\omega_2,\omega_3)^\intercal$, the spectral densities written above take the form
 %
 \begin{align*}
 S_{\infty}(\bm{\omega})&= \alpha \, (2\pi)^{3/2}  \prod_{i=1}^{3} \ell_i  \exp\!\left(-\frac{1}{2} \sum_{i=1}^{3} \ell_i^2 \omega_i^2 \right),   \\
