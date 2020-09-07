@@ -22,6 +22,7 @@
 \bibpunct{(}{)}{;}{a}{,}{,}
 \usepackage{subfigure}
 \usepackage{multirow}
+\usepackage{multicol}
 \usepackage{float}
 \usepackage{soul}
 \usepackage{xcolor}
@@ -34,6 +35,7 @@
 \usepackage{bm}
 \usepackage{url}
 \usepackage{parskip}
+\usepackage{pbox}
 
 \usepackage[titletoc]{appendix}
 \usepackage{booktabs}
@@ -563,7 +565,7 @@ In the HSGP model, the latent function values $f(x)$ are approximated as in eq.~
 
 The joint posterior parameter distributions are estimated by sampling using the dynamic HMC algorithm implemented in Stan \citep{carpenter2017stan,betancourt2017conceptual}. A $\mathrm{Gamma}(1,1)$ prior distribution has been used for both observation noise $\sigma$ and covariance function marginal variance $\alpha$, and a $\mathrm{Gamma}(3.75,25)$ prior distribution for length-scale $\ell$. We use the same prior distributions for the exact GP model as for the HSGP models.
 
-Figure~\ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributions of the three models, the exact GP, the HSGP with $m=80$ basis functions and boundary factor $c=1.2$ ($L=c\cdot 1= 1.2$; see equation (\ref{eq_boundary})), and the spline model with 80 knots. The true data-generating function and the noisy observations are also plotted. The sample observations are plotted as circles and the out-of-sample or test data are plotted as crosses. The test data located at the extremes of the plot are used for assessing model extrapolation, and the test data located in the middle are used for assessing model interpolation. The posteriors of the three models, exact GP, HSGP and spline, are similar in the interpolation regions of the input space. However, when extrapolating the spline model solution clearly differs from the exact GP and HSGP models as well as the actual observations. 
+Figure~\ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributions of the three models, the exact GP, the HSGP with $m=60$ basis functions and boundary factor $c=1.2$ ($L=c\cdot 1= 1.2$; see equation (\ref{eq_boundary})), and the spline model with 80 knots. The true data-generating function and the noisy observations are also plotted. The sample observations are plotted as circles and the out-of-sample or test data are plotted as crosses. The test data located at the extremes of the plot are used for assessing model extrapolation, and the test data located in the middle are used for assessing model interpolation. The posteriors of the three models, exact GP, HSGP and spline, are similar in the interpolation regions of the input space. However, when extrapolating the spline model solution clearly differs from the exact GP and HSGP models as well as the actual observations. 
 
 \begin{figure}
 \centering
@@ -572,12 +574,9 @@ Figure~\ref{ch5_fig10_Posteriors_exI} shows the posteriors predictive distributi
   \label{ch5_fig10_Posteriors_exI}
 \end{figure}
 
-In order to assess the performance of the models as a function of the number of basis functions and number of knots, different models with different number of basis functions for the HSGP model, and different number of knots for the spline model, have been fitted. Figure \ref{ch5_fig11_MSE_exI_inter} shows the standardized root mean squared error (SRMSE) for interpolation and extrapolating data as a function of the number of basis functions and knots. The SRMSE is computed against the data-generating model. From Figures \ref{ch5_fig10_Posteriors_exI} and \ref{ch5_fig11_MSE_exI_inter}, it is seen that the HSGP method yield a good approximation of the exact GP model for both interpolation and extrapolation. However, the spline model does not extrapolate data properly. Both models show roughly similar interpolating performance. 
+In order to assess the performance of the models as a function of the number of basis functions and number of knots, different models with different number of basis functions for the HSGP model, and different number of knots for the spline model, have been fitted. Figure \ref{ch5_fig11_MSE_exI_inter} shows the standardized root mean squared error (SRMSE) for interpolation and extrapolating data as a function of the number of basis functions and knots. The SRMSE is computed against the data-generating model. From Figures \ref{ch5_fig10_Posteriors_exI} and \ref{ch5_fig11_MSE_exI_inter}, it is seen that the HSGP method yield a good approximation of the exact GP model for both interpolation and extrapolation. However, the spline model does not extrapolate data properly. Both models show roughly similar interpolating performance.  
 
-Figure~\ref{ch5_fig11_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model for this particular model and data. Also, it is seen that the computation time increases slowly as a function of the number of basis functions. 
-
-The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}\,.
-%
+In practice, as the high computational demands in some cases of exact GPs prevents their use, to diagnose the approximation as a function of $m$, as proposed in section \ref{ch5_subsec_dependency} by using the model of relationships in Figures \ref{fig6_lscale_vs_J_vs_c} and \ref{fig6_lscale_vs_J_vs_c_Matern}, is a need. The diagnosis consists in comparing the estimated length-scale $\hat{\ell}$, for a given $m$ and $c$, with that minimum length-scale $\ell^*$ brought by the model of relationships and that can be accurately approximated for those given $m$ and $c$. Thus, if $\hat{\ell} < \ell^*$, $m$ needs to increased or $c$ decreased, and this can be iteratively until we get $\hat{\ell} \geq \ell^*$. Figure \ref{ch5_fig12_diagnosis} depicts the diagnosis for this case study. In a first iteration we choose $m=20$ and $c=1.5$, which is not a feasible combination of values as $c=1.5$ is too small for $m=20$ or $m=20$ is too small for $c=1.5$. In a second iteration we increase up to $m=30$, the HSGP estimates a length-scale as $\hat{\ell}=0.12$, and the approachable minimum length-scale that the model of relationships brings is $\ell^*=0.19$. As $\hat{\ell} < \ell^*$, the approximation should not be accurate enough (see the higher interpolation error of HSGP that GP in Figure \ref{ch5_fig11_MSE_exI_inter}-left), and $m$ needs to be increased. In a third iteration we increase up to $m=40$, the HSGP model estimates a length-scale of $\hat{\ell}=0.14$, and the model of relationships brings a approachable minimum length-scale of $\ell^*=0.15$. As $\hat{\ell}$ is still less than $\ell^*$ but both are very closed, the approximation should be almost accurate enough (see Figure \ref{ch5_fig11_MSE_exI_inter}-left where the HSGP error is approaching that of the exact GP. In a fourth iteration we increase up to $m=60$, the estimated length-scale is $\hat{\ell}=0.14$ and the minimum length-scale brought by the model of relationships is $\ell^*=0.11$, then the approximation should be accurate (The error is the same than the exact GP in Figure \ref{ch5_fig11_MSE_exI_inter}-left).
 
 \begin{figure}[!t]
 \centering
@@ -588,12 +587,32 @@ The Stan model code for the exact GP, the approximate GP and the spline models o
   \label{ch5_fig11_MSE_exI_inter}
 \end{figure}
 
+
+\begin{figure}
+\begin{tabular}{c c c c}
+{\Large 1}\, \pbox{2cm}{\footnotesize $m=20$\\ $c=1.5$}\, \pbox{1cm}{$\underset{\longrightarrow}{\text{\tiny HSGP}}$\\[-1mm]}\,  {\footnotesize$\hat{\ell}=0.09$} & {\Large 2}\, \pbox{2cm}{\footnotesize $m=30$\\ $c=1.5$}\, \pbox{1cm}{$\underset{\longrightarrow}{\text{\tiny HSGP}}$\\[-1mm]}\, {\footnotesize$\hat{\ell}=0.12$} & {\Large 3}\, \pbox{2cm}{\footnotesize $m=40$\\ $c=1.5$}\, \pbox{1cm}{$\underset{\longrightarrow}{\text{\tiny HSGP}}$\\[-1mm]}\, {\footnotesize$\hat{\ell}=0.14$} & {\Large 4}\, \pbox{2cm}{\footnotesize $m=60$\\ $c=1.5$}\, \pbox{1cm}{$\underset{\longrightarrow}{\text{\tiny HSGP}}$\\[-1mm]}\, {\footnotesize$\hat{\ell}=0.14$} \\[3mm]
+\includegraphics[scale=0.21, trim = 0mm 0mm 4mm 10mm, clip]{caseI_fig6_1_1_vposter.pdf} &
+\includegraphics[scale=0.21, trim = 14mm 0mm 4mm 10mm, clip]{caseI_fig6_2_1_vposter.pdf} &
+\includegraphics[scale=0.21, trim = 14mm 0mm 4mm 10mm, clip]{caseI_fig6_3_1_vposter.pdf} &
+\includegraphics[scale=0.21, trim = 14mm 0mm 4mm 10mm, clip]{caseI_fig6_4_1_vposter.pdf} \\[1mm]
+	& $\hat{\ell} < \ell^*$ & $\hat{\ell} < \ell^*$ & $\hat{\ell} > \ell^*$
+\end{tabular}
+\caption{Diagnosis.}
+	\label{ch5_fig12_diagnosis}
+\end{figure}
+
+
+Figure~\ref{ch5_fig11_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model for this particular model and data. Also, it is seen that the computation time increases slowly as a function of the number of basis functions.
+
 \begin{figure}[!h]
 \centering
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 5mm 10mm 0mm, clip]{ch5_fig11_time_exI.pdf}}
 \caption{Computational time (y-axis), in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The y-axis is on a logarithmic scale. The standard deviation of the computational time is plotted as dashed lines.}
   \label{ch5_fig11_time_exI}
 \end{figure}
+
+
+The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}\,.
 
 In the online supplemental material, additional case studies are presented. From those examples, it can be seen how the computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})). Even though, for a bivariate input space, the computation time increases significantly with $D$, the HSGP model works significantly faster than the exact GP for most of the non-linear $2D$ functions (even highly wiggly functions; see Figures B.3-right and C.3 in the online material). For moderate sized datasets, HSGPs tend to be slower than exact GPs for $D>3$ with a relatively low number of basis functions ($m \gtrsim 5$), as well as even for $D=3$ with a moderate high number of basis functions ($m \gtrsim 20$; see Figure~C.3 in the online material). However, the HSGP method will be computationally faster than the exact GP for larger datasets due the cubic scaling of the exact GP. In all of the investigated cases, choosing the optimal boundary factor in the HSGP approximation reduces the number of required basis functions noticeably (see Figures~A.3, B.3-left and C.2 in the online material) and therefore also reduces computational time drastically in particular in multivariate input spaces.
 
