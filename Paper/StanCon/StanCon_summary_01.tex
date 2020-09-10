@@ -1,0 +1,41 @@
+\documentclass[onecolumn,a4paper,11pt]{article}
+\voffset -1cm
+\hoffset -1cm
+\textheight 22.3cm
+\textwidth 15.0cm
+
+\usepackage{times}
+\usepackage{parskip}
+
+
+
+\title{Practical implementation of a Hilbert space reduced-rank approximate Bayesian Gaussian process}
+
+\author{Gabriel Riutort-Mayol$^{1}$, Paul-Christian Bürkner$^2$, Michael R.\ Andersen$^{3}$,\\
+  Arno Solin$^{2}$, Aki Vehtari$^{2}$}
+
+\date{\small Summary for StanCon 2020}
+
+\begin{document}
+
+
+\maketitle
+
+
+Gaussian processes are powerful non-parametric probabilistic models for stochastic functions. However, when they are implemented using covariance matrices, the computation cost of evaluating the log posterior density is $O(n^3)$ for $n$ observations, which makes them computationally intractable with moderate or large datasets. In this talk, we focus on a novel approach for reduced-rank approximate Gaussian processes, based on a basis function approximation via Laplace eigenfunctions for stationary covariance functions. This reduced-rank approximation is simple and exhibits an attractive computational complexity due to its linear structure. The Laplace eigenfunctions can be pre-computed analytically with cost $O(m^2n)$ for $m$ basis functions, and the computational cost of evaluating the log posterior density is $O(mn + m)$. An additional advantage is the reduced memory requirements of automatic differentiation methods used in modern probabilistic programming frameworks, such as Stan. The main contribution of this work is a detailed analysis of the performance and practical implementation of the method in relation to key factors such as the number of basis functions, domain of the prediction space, and wiggliness of the latent function. We provide intuitive visualizations and recommendations for choosing the values of these factors based on the recognized relationships, which make it easier for users to improve approximation accuracy and computational performance. We also propose diagnostics for checking that the number of basis functions and the domain of the prediction space are adequate given the data.  Trade-off between accuracy and computation can also be carried out. However, the number of basis function in multi-dimensional input spaces grows exponentially with dimensions, which makes looking at the recommendations and the diagnosis tool proposed in this work essential to avoid excessive computation time in multivariate cases. In high dimensional cases, this method may still be used for low-dimensional components in an additive modeling scheme as complexity is linear with the number of additive components. Several illustrative examples of the performance and applicability of the method in the probabilistic programming language Stan are presented together with the underlying Stan model code.
+
+---------------------
+\vspace{-2mm}
+\begin{flushleft}
+\scriptsize
+$^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain 
+\break
+$^2$ Department of Computer Science, Aalto University, Finland
+\break
+$^3$ Department of Applied Mathematics and Computer Science, Technical University of Denmark, Denmark
+\end{flushleft}
+
+
+%\bibliography{references}
+
+\end{document}

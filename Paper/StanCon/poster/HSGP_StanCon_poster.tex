@@ -1,0 +1,728 @@
+\documentclass[portrait,a1,final]{a0poster} % a0poster class sets the paper size
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage[SCI]{aaltologo} % RGB, Coated, Uncoated
+%\usepackage{times}
+%\usepackage{lastpage}
+\usepackage[center]{titlesec} % For changing the font on chapters, sections, etc.
+\usepackage{amsmath,amsfonts,amssymb,amsbsy}
+\usepackage{soul}
+\usepackage{booktabs}
+\usepackage{verbatim}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+%\usepackage{sectsty}
+\usepackage{natbib}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{bm}
+\usepackage[colorlinks,linkcolor=black,citecolor=black, urlcolor=blue,filecolor=blue]{hyperref}
+\usepackage[left=0.5cm,right=0.5cm,bottom=1cm,top=1.5cm]{geometry} 
+\usepackage{changepage}
+\usepackage{amsthm}
+\usepackage{tcolorbox}
+\usepackage{pbox}
+\usepackage{multicol}
+\usepackage{nicefrac}
+\usepackage{setspace}
+
+\newtheorem*{remark}{Remark}
+
+
+%%%%%%titleformat
+\newcommand{\cajados}[1]{\fcolorbox{aaltoLightGreen!30}{aaltoLightGreen!30}
+{\parbox[c][8mm][c]{0.95\textwidth}
+{\centering\normalsize\sc\bfseries\sffamily\color{black} \thesection. #1}}}
+
+\titleformat{\section}[block]
+{\normalfont\filcenter\color{aaltoGray}}{}{1em}{\cajados}
+
+%\titleformat{\section}{\centering\normalsize\sc\bfseries\sffamily\color{aaltoPurple}}{\textcolor{aaltoPurple}{\thesection}}{1em}{} 
+
+\titleformat{\subsection}{\centering\normalsize\sc\bfseries\sffamily\color{aaltoPurple}}{\textcolor{aaltoPurple}{\thesubsection}}{1em}{} % Text size for a1 posters
+
+
+\renewcommand{\emph}[1]{\sffamily{\textcolor{aaltoPurple}{#1}}}
+
+
+
+% Beamer-style math font
+%\usepackage{fouriernc}
+\usepackage{sfmath}
+
+% redefine the bullet symbol 
+\renewcommand\labelitemi{\textcolor{aaltoPurple}{$\blacktriangleright$}\,}
+
+% reduce the space between bullets
+\let\tempone\itemize
+\let\temptwo\enditemize
+\renewenvironment{itemize}{\tempone\addtolength{\itemsep}{-0.3\baselineskip}}{\temptwo}
+
+
+%%%%%%%%%%%%%%%%%%% for tikz figures %%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{ifthen}
+\usepackage{tikz}
+\usepackage{pgfplots}  
+\usetikzlibrary{positioning} 
+% \usepgfplotslibrary{external}
+%\tikzexternalize
+
+
+%\usetikzlibrary{matrix}
+%\usetikzlibrary{calc}
+\newlength{\figurewidth}
+\newlength{\figureheight}
+
+
+\def\figpdfdir{fig/} % directory for pdf-figures
+\def\figtikzdir{tikz/} % directory for tikz-figures 
+
+% this is replacement for the \input command used in the figure-environment which
+% takes into account whether pdf is forced
+\newcommand{\minput}[2][]{
+\ifthenelse{\equal{#1}{pdf}}
+	{ \includegraphics{\figpdfdir #2} }
+	{ \tikzset{external/remake next} \tikzsetnextfilename{#2} \input{\figtikzdir #2} }
+}
+
+% for externalization
+% \usetikzlibrary{external}
+% \tikzexternalize[prefix=\figpdfdir]
+% \tikzset{external/system call={lualatex
+% 	\tikzexternalcheckshellescape -halt-on-error -interaction=batchmode
+% 	-jobname "\image" "\texsource"}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\newcommand{\vc}[1] { #1 } %
+\newcommand{\vs}[1] { #1 }
+\newcommand{\tp}{\mathsf{T}}
+\newcommand{\ti}[1] { \tilde{#1} }
+\newcommand{\mc}[1] { \mathcal{#1} } 
+\newcommand{\tx}[1] { \text{#1} } 
+\newcommand{\given} { \,|\, }
+\newcommand{\data} {D}
+\newcommand{\subjto}{ \, \tx{s.t.} }
+\newcommand{\tr}{^{\text{T}} }
+\newcommand{\mb}[1]{\mathbf{#1}}
+\newcommand{\mbb}[1]{\mathbb{#1}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+
+%
+\newcommand{\pr}[1]{ \Pr {\left[#1\right]} }
+\newcommand{\partiald}[2]{\frac{\partial {#1}}{\partial {#2}}}
+\newcommand{\mean}[2][] { \mathrm{E}_{#1} {\left[#2\right]} }
+\newcommand{\Var}[1] { \mathrm{Var} {\left[#1\right]} }
+\newcommand{\var}[1] { \mathrm{var} {\left(#1\right)} }
+\newcommand{\Cov}[1] { \mathrm{Cov} {\left[#1\right]} }
+%\newcommand{\cov}[1] { \mathrm{cov} {\left({#1}\right)}}
+\newcommand{\Tr}[1] { \mathrm{Tr} {\left[#1\right]} }
+\newcommand{\KL}[2] { \mathrm{KL} {\left(#1 \, \| \, #2\right)} }
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\cx}{\mathbf{c}}
+\newcommand{\f}{\mathbf{f}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\F}{\mathbf{F}}
+\newcommand{\Y}{\mathbf{Y}}
+\newcommand{\id}{\text{d}}
+%
+%\newcommand{\Normal}[1] { \mathrm{N} {\left(#1\right)}  } 
+\newcommand{\Student}[2][] { t_{#1} {\left(#2\right)} }
+\newcommand{\halfStudent}[2][] { t_{#1}^+ {\left(#2\right)} }
+\newcommand{\SInvchi}[1] { \mathrm{Scale\text{-}Inv\text{-}}\chi^2 {\left(#1\right)} }
+\newcommand{\InvGamma}[1] { \mathrm{Inv\text{-}Gamma} {\left(#1\right)} }
+\newcommand{\Cauchy}[1] { \mathrm{C} {\left(#1\right)} }
+\newcommand{\halfCauchy}[1] { \mathrm{C}^+ {\left(#1\right)} }
+\newcommand{\Beta}[1] {\mathrm{Beta}{\left(#1\right)} }
+\newcommand{\Ber}[1] {\mathrm{Ber}{\left(#1\right)} }
+
+%
+\newcommand{\NormalNP} { \mathrm{N} } 
+\newcommand{\StudentNP}[1][] { t_{#1} }
+\newcommand{\halfStudentNP}[1][] { t_{#1}^+ }
+\newcommand{\SInvchiNP} { \mathrm{Scale\text{-}Inv\text{-}}\chi^2  }
+\newcommand{\InvGammaNP} { \mathrm{Inv\text{-}Gamma} }
+\newcommand{\CauchyNP} { \mathrm{C}  }
+\newcommand{\halfCauchyNP} { \mathrm{C}^+ }
+\newcommand{\BetaNP} {\mathrm{Beta} }
+\newcommand{\BerNP} {\mathrm{Ber} }
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\GP}{GP}
+%\DeclareMathOperator{\Normal}{Normal}
+\DeclareMathOperator{\cov}{cov}
+
+% --- Acronyms
+\usepackage{xspace}
+\newcommand{\acr}[1]{\textsc{#1}\xspace}
+\newcommand{\gp}{\acr{gp}}
+\newcommand{\ep}{\acr{ep}}
+\newcommand{\gps}{\acr{gp}{\!\,}s }
+\newcommand{\abc}{\acr{abc}}
+\newcommand{\bo}{\acr{bo}}
+% optimization
+
+\definecolor{navyblue}{rgb}{0,0,0.55}
+\definecolor{lightblue}{rgb}{0.91,0.91,0.97}
+
+
+\newcommand{\sectionspace}{0em} % Free space before each section inside a minipage
+\newcommand{\figurespace}{0.5em} % Free space around figures inside a minipage (where floats are not allowed)
+
+
+% Reduce the vertical space taken by the equations
+\setlength{\abovedisplayskip}{10pt}
+\setlength{\belowdisplayskip}{10pt}
+%\setlength{\abovedisplayshortskip}{10pt}
+%\setlength{\belowdisplayshortskip}{10pt}
+
+
+
+%% Font sizes for a0poster are
+%\tiny
+%\scriptsize
+%\footnotesize
+%\small
+%\normalsize
+%\large
+%\Large
+%\LARGE
+%\huge
+%\Huge
+%\veryHuge
+%\VeryHuge
+%\VERYHuge
+
+%% Official colors from aaltologo-package (visual-identity guideline)
+% aaltoBlack
+% aaltoGray
+% aaltoGrayScale (for b&w prints)
+% aaltoYellow
+% aaltoOrange
+% aaltoRed
+% aaltoFuchsia
+% aaltoPurple
+% aaltoBlue
+% aaltoTurquoise
+% aaltoGreen
+% aaltoLightGreen
+% You can use \textcolor{<aaltocolor>}{<your text>) to change the colors of text, or
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{document}
+\thispagestyle{empty} % Removes the page number
+
+
+
+%------------ minipage for the logo & title ------------%
+\begin{minipage}[t]{0.98\linewidth} 
+\vspace{0pt} % A trick to align the parallel minipages on top
+
+\centering
+
+\vspace{-0.015\linewidth}
+
+%-- minipage for the logo at left side --%
+\begin{minipage}[t]{0.17\linewidth} % logo
+\vspace{1.3cm}
+
+\begin{adjustwidth}{-0.3cm}{-0cm}
+\includegraphics[scale=0.35]{\figpdfdir StanCon_logo.png}
+\end{adjustwidth}
+
+\end{minipage} % no empty line before the next begin
+%-- minipage for title and authors --%
+\begin{minipage}[t]{0.76\linewidth}
+\vspace{0pt}
+
+\centering
+{\renewcommand{\baselinestretch}{0.6} 
+\textcolor{aaltoGreen}{\huge{\bfseries{\textsf{Practical implementation of Hilbert space reduced-rank approximate Gaussian processes} }}}
+\par}
+
+\vspace{0.015\linewidth}
+
+\normalsize{\textsf{\bfseries{Gabriel Riutort-Mayol$^{1}$ \;\;\; Paul-Christian Bürkner$^2$ \;\;\; Michael Riis Andersen$^{3}$ \;\;\; Arno Solin$^{2}$ \;\;\; Aki Vehtari$^{2}$}}}\\[2mm]
+
+%\setstretch{1.2}
+\textcolor{aaltoGray}{\textsf{\bfseries{\small
+$^1$ Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain 
+\\
+$^2$ Department of Computer Science, Aalto University, Finland
+\\
+$^3$ Department of Applied Mathematics and Computer Science, Technical University of Denmark, Denmark
+\\[-2mm]
+\footnotesize Contact: gabriuma@gmail.com, aki.vehtari@aalto.fi}}}
+				
+\end{minipage}
+%-- minipage for the logo at rigth side --%
+\begin{minipage}[t]{0.06\linewidth}
+\vspace{0.7cm}
+
+%\begin{adjustwidth}{-1cm}{-0cm}
+{\centering \includegraphics[scale=0.8]{\figpdfdir aaltologo}}\\[0.5cm]
+\includegraphics[scale=0.7]{\figpdfdir marca_UPV_secundaria_negro300.png}
+%\end{adjustwidth}
+\end{minipage}
+
+\end{minipage}
+
+
+% Space according to the visual identity guidelines...
+\vspace{0.02\linewidth}
+
+% Centering helps in placement
+\centering
+
+% Default font for text
+\sffamily
+%\small % Text size for a1 posters
+\footnotesize % Text size for a1 posters
+
+
+%------------ minipage for the main text ------------%
+\begin{minipage}{1\linewidth} 
+%------------ minipage for first column ------------%
+%\hspace{0.001\textwidth}
+\centering
+\begin{minipage}[t]{0.48\linewidth}
+\vspace{0pt}
+\setlength{\parindent}{10mm} % Paragraph indent
+
+\vspace{-0.5cm}
+This poster is based on the pre-print publication at \url{https://arxiv.org/abs/2004.11408}
+
+\vspace{-1cm}
+\section{Introduction}
+\vspace{-0.2cm}
+
+\begin{itemize}
+	\setlength{\itemsep}{3mm}
+	\item Gaussian processes (GPs) are powerful non-parametric probabilistic models for stochastic functions.
+	\item However, when they are implemented using covariance matrices, the computation cost of evaluating the log posterior density is\, $O(n^3)$\, for\, $n$\, observations, which makes them computationally intractable with moderate or large datasets.
+	\item We focus on a novel approach for reduced-rank approximate GPs, based on a basis function approximation via Laplace eigenfunctions
+for stationary covariance functions {\color{darkgray} \citep{solin2018hilbert}}. We call this reduced-rank GP as {\color{navyblue} Hilbert space approximate Gaussian process} (HSGP).
+	\item This reduced-rank approximation is simple and exhibits an attractive computational complexity due to its linear structure\; $\to$\; Improves sampling efficiency and makes inference considerably faster.
+	
+%	\begin{itemize}
+%		\setlength{\itemsep}{1mm}
+%		\item Improves sampling efficiency and makes inference considerably faster
+%		\item Big benefit to be implemented in modular probabilistic programming frameworks
+%		\item Easier to be used as latent functions in non-Gaussian observational models
+%	\end{itemize}
+%\item While {\color{darkgray} \cite{solin2018hilbert}} fully developed the mathematical theory behind this low-rank GP, further work is needed for its practical implementation:
+
+\end{itemize}
+
+\vspace{-5mm}
+\hspace{1mm}
+\centering  %%blue!20; ligthblue
+\begin{tcolorbox}[colframe=blue!20, colback=white, title={\scriptsize \color{black!80} Our contribution:}\; A performance analysis for the practical implementation of this reduce-rank GP (HSGP), colbacktitle=lightblue, coltitle=black, boxrule=0.5pt, width=0.98\textwidth]
+	\begin{itemize}\setlength\itemsep{2mm}
+	\item {\color{navyblue} Discover the relationships} among the key factors of the method such as the number of basis functions, domain of the prediction space, and wiggliness of the function to be learned.
+	\item {\color{navyblue} Practical recommendations} for choosing the values of these key factors based on these relationships. %to improve performance and save computation time
+	\item {\color{navyblue} Diagnosis} for checking that the number of basis functions and the domain of the prediction space are adequate given the data.
+	\end{itemize}
+\end{tcolorbox}
+
+
+
+%\subsection{Our contributions}
+%
+%\begin{itemize}
+%	\setlength{\itemsep}{4mm}
+%	\item A detailed analysis of the performance and implementation of the method in relation to key factors such as the number of basis functions, domain of the prediction space, and wiggliness of the latent function.
+%	\item We provide recommendations for choosing the values of these key factors based on the recognized relationships, which make it easier for users to improve approximation accuracy and computational performance. 
+%	\item We also propose diagnostics for checking that the number of basis functions and the domain of the prediction space are adequate given the data.
+%\end{itemize}
+%
+%\subsection{Drawback of the method}
+%
+%\begin{itemize}
+%	\setlength{\itemsep}{4mm}
+%	\item The number of basis function in multi-dimensional input spaces grows exponentially with dimensions, which makes looking at the recommendations and the diagnosis tool proposed in this work essential to avoid excessive computation time in multivariate cases. 
+%	\item In high dimensional cases, this method may still be used for low-dimensional components in an additive modeling scheme as complexity is linear with the number of additive components.
+%\end{itemize}
+
+
+\vspace{-0.7cm}
+\section{Gaussian process as a prior for latent functions}
+\vspace{-0.2cm}
+
+\begin{itemize}\setlength\itemsep{3mm}
+\item GP is a {\color{navyblue} stochastic process} which defines the distribution over a collection of random variables, $\left\lbrace  f(\bm{x}): \bm{x} \in \mathcal{X}\right\rbrace$ of a function\, $f:{\rm I\!R}^D \to {\rm I\!R}$\, and some input domain\, $\mathcal{X} \subset {\rm I\!R}^D$:
+%
+\begin{align*}
+f \sim \GP(m(\bm{x}), k(\bm{x}, \bm{x}'))
+\end{align*}
+%
+\item The {\color{navyblue}mean}\, $m: {\rm I\!R}^D \to {\rm I\!R}$\, and {\color{navyblue}covariance function}\, $k: {\rm I\!R}^D \times {\rm I\!R}^D \to {\rm I\!R}$\, completely characterize the GP prior and control the a priori behavior of\, $f$\, \cite{rasmussen2006gaussian}.
+
+\item Function values\, $\bm{f}=\left\lbrace  f(\bm{x}_1), f(\bm{x}_2), \hdots, f(\bm{x}_n) \right\rbrace$\, following a GP model has the defining property:
+%
+\begin{align*}
+p(\bm{f}) &= \mathcal{N}(\bm{f} \mid \bm{\mu}, K),\\[1mm]
+\mu_i &= m(\bm{x}_i),\\
+\hspace{27mm} K_{i,j} &=\cov( f(\bm{x}_i),f(\bm{x}_j))=k(\bm{x}_i,\bm{x}_j).
+\end{align*}
+
+
+%\item GP functions $\bm{f}$ can be used as {\color{navyblue} latent functions} for observational models $p(\bm{y}|\bm{f},\phi)$ for noisy observations $\bm{y}$
+%
+%\item The joint distribution of observations $\bm{y}$ and latent function values $\bm{f}$ is
+%%
+%\begin{align*}
+%p(\bm{y}, \bm{f}) = p(\bm{y}|\bm{f},\phi)p(\bm{f}) = p(\bm{y}|\bm{f},\phi) \, \mathcal{N}\left(\bm{f}|\bm{\mu}, \bm{K}\right),
+%\end{align*}
+%where $\phi$ represents the parameters of a specific observation model.
+%\end{comment}
+%
+%\begin{comment}
+%\item A covariance function is said to be {\color{navyblue} stationary} (invariant to translations) if 
+%%
+%\begin{align*}
+%	k(\bm{x},\bm{x}')= {\color{navyblue} k(\bm{x}-\bm{x}')}= k(\bm{\tau}), \;\; \bm{\tau} \in {\rm I\!R}^D
+%\end{align*}
+
+%\item The most widely used family of covariance functions is the {\color{navyblue} Mat\'ern class} of stationary covariance functions.
+
+
+%\item Figure:  Function samples from different covariance function from the {\color{navyblue} Mat\'ern class} of stationary covariance functions:
+%
+%\begin{tabular}{c c c c}
+%\scriptsize Squared exponential & \scriptsize Matern52 & \scriptsize Matern32 & \scriptsize Matern12\\[-1mm]
+%%
+%\includegraphics[width=0.23\linewidth, trim = 0mm 0mm 0mm 5mm, clip]{\figpdfdir covfun_fig1.pdf} & \includegraphics[width=0.23\linewidth, trim = 0mm 0mm 0mm 5mm, clip]{\figpdfdir covfun_fig2.pdf} & \includegraphics[width=0.23\linewidth, trim = 0mm 0mm 0mm 5mm, clip]{\figpdfdir covfun_fig3.pdf} & \includegraphics[width=0.23\linewidth, trim = 0mm 0mm 0mm 5mm, clip]{\figpdfdir covfun_fig4.pdf}
+%\end{tabular}
+%
+% {\scriptsize *These images belong to Nicolas Durrande, \textit{Course presentation in Gaussian Process Summer School 2019}, University of Sheffield.}
+ 
+
+\item The covariance function encodes our prior assumptions about the variation of the function and defines the {\color{navyblue} correlation structure} of function values.
+
+\item The main parameter of covariance functions from the Matern class is the {\color{navyblue} length-scale}\, $\ell > 0$, which controls the {\color{navyblue} smoothness/wigglyness} of the function samples.
+
+\item Function samples {\scriptsize(from a squared exponential covariance function)} for different lengthscale\, $\ell$:\: 
+
+\hspace{45mm} $\ell=0.1$ \hspace{63mm} $\ell=0.3$ \hspace{64mm} $\ell=0.6$\\
+\includegraphics[scale=0.57, trim = 0mm 10mm 7mm 18mm, clip]{\figpdfdir func_samples_1.pdf}
+\includegraphics[scale=0.57, trim = 25.5mm 10mm 7mm 18mm, clip]{\figpdfdir func_samples_2.pdf}
+\includegraphics[scale=0.57, trim = 25.5mm 10mm 7mm 18mm, clip]{\figpdfdir func_samples_3.pdf}
+
+\end{itemize}
+
+\vspace{-0.6cm}
+\section{Hilbert space approximate Gaussian process (HSGP)}
+\vspace{-0.2cm}
+
+\begin{itemize}\setlength\itemsep{3mm}
+
+\item The covariance function is represented as a {\color{navyblue} infinite series expansion} of eigenfunctions\, $\phi_j(x)$\, scaled by the spectral density\, $S_{\theta}(\sqrt{\lambda_j})$\, {\color{darkgray} \citep{solin2018hilbert}}, and {\color{navyblue} approximated by the first $m$ terms}:
+%
+\begin{align*}
+k(x,x') = \sum_{j=1}^m S(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'), \hspace{10mm} x,x' \in [-L,L]
+\end{align*} 
+
+\item where $S(\cdot)$ is the {\color{navyblue}spectral density} of the covariance function $k(\cdot,\cdot)$.
+
+\begin{remark}
+Any stationary covariance function\, $k:\bm{x} \in {\rm I\!R}^{D} \to {\rm I\!R}$\, and its {\color{navyblue} spectral density}\, $S:\bm{w} \in {\rm I\!R}^{D} \to {\rm I\!R}$\, are Fourier duals, where\, $\bm{w}$\, is a frequency. So, stationary covariance functions can be represented in terms of their spectral density functions.
+\end{remark}
+
+\item We choose the {\color{navyblue} eigenvalues}\, $\lambda_j$\, and {\color{navyblue} eigenfunctions}\, $\phi_j(x)$\, of the Laplacian operator $-\nabla^2$:
+%
+\begin{align*}
+\left. \begin{array}{cc}
+ -\nabla^2 \phi_j(x) = \lambda_j \phi_j(x), \hspace{0.8cm}  x \in [-L,L] \\
+\hspace{6mm} \phi_j(x) = 0, \hspace{2cm} x \notin [-L,L] 
+\end{array} \right\} \; \Rightarrow \hspace{5mm} \lambda_j=\left(\frac{j\pi}{2L}\right)^2 \hspace{5mm} \text{and} \hspace{5mm}
+\phi_j(x)=\sqrt{\frac{1}{L}} \text{sin}\left(\sqrt{\lambda_j}(x+L)\right)
+\end{align*} 
+
+%\begin{minipage}{0.35\textwidth}
+%%
+%\begin{align*}
+%-\nabla^2 \phi_j(x)&=\lambda_j \phi_j(x), \hspace{0.8cm}  x \in [-L,L] \\ 
+%\hspace{6mm}\phi_j(x)&=0, \hspace{1.6cm} x \notin [-L,L]
+%\end{align*}
+%
+%\end{minipage}
+%\begin{minipage}{0.65\textwidth}
+%%
+%\begin{gather*}
+%\text{given by:} \hspace{5mm} \lambda_j=\left(\frac{j\pi}{2L}\right)^2 \hspace{5mm} \text{and} \hspace{5mm}
+%\phi_j(x)=\sqrt{\frac{1}{L}} \text{sin}\left(\sqrt{\lambda_j}(x+L)\right)
+%\end{gather*}
+%\end{minipage}
+
+\item $L > 0$\, represents the {\color{navyblue} boundaries} where this representation is valid.
+
+\item $S(\sqrt{\lambda_j})$\, is monotonically decreasing with\, $j$, and decays rapidly to zero, and this rate of decay depends on the lenghtscale of\, $k$\, (smoothness of the function to be learned) \; $\rightarrow$ \; This points to {\color{navyblue} a finite number}\, $m$\, {\color{navyblue} of terms for an accurate approximation}, as long as\, $x_i$\, are not too close to the boundaries\, $-L$\, and\, $L$\, of\, $\Omega$.
+
+\item This representation of the covariance function\, $k(x,x')$\, leads to the {\color{navyblue} linear representation} of the function\, $f$:
+%
+\begin{align*}
+f(x) \approx \sum_{j}^m \phi_j(x) \beta_j, \hspace{10mm} \beta_j \sim \mathcal{N}(0,S(\sqrt{\lambda_j})).
+\end{align*}
+\end{itemize}
+
+\vspace{-0.5cm}
+\begin{tcolorbox}[colframe=blue!20, colback=white, title=\scriptsize Properties of the HSGP method, colbacktitle=lightblue, coltitle=black, boxrule=0.5pt]
+\begin{itemize}\setlength\itemsep{2mm}
+\item[+] The basis functions\, $\phi_j(x)$\, do not depend on the hyperparameters, so they just need to be computed once with cost\, $O(m^2n)$.
+
+\item[+]  All dependencies on the hyperparameters is through the variance of the weights\, $\beta_j$. The computational cost of evaluating the log posterior density is\, $O(mn+m)$, which contrasts with\, $O(n^3)$\, of exact GPs.
+
+%\item[+] $f(x)$ is naturally in the {\color{navyblue} non-centered parameterization form} with independent prior distribution on $\beta_j$ which makes posterior inference easier. \citep[see, e.g., ][]{Betancourt+Girolami:2019} 
+
+\item[+] The parameter posterior\, $p(\bm{\beta}|\bm{y})$\, is\, $m$-dimensional ($m\ll n$), which makes posterior inference easier.
+
+\item[+] Reduced memory requirements of automatic differentiation methods used in Stan  software.
+
+\item[+] Trade-off between accuracy and computation can also be carried out.
+
+\item[-] The number of multivariate basis functions,\, $m^{\ast} = \prod_{d=1}^{D} m_d$,\, grows exponentially with respect to\, $D$.
+
+\item[-] In practice,\, $D>3$\, starts to be too computationally demanding, even for smooth functions.
+
+\end{itemize}
+\end{tcolorbox}
+
+
+
+\end{minipage}% end minipage first column
+\hspace{0.015\linewidth} 
+%------------ minipage for second column ------------%
+\begin{minipage}[t]{0.48\textwidth}
+\vspace{0pt}
+\setlength{\parindent}{10mm}
+
+
+\vspace{0.3cm}
+\section{Performance analysis of HSGP}
+\vspace{-0.2cm}
+
+\begin{itemize}\setlength\itemsep{2mm}
+\item Determine the minimum\, $m$\, ({\color{navyblue} basis functions}) and valid\, $L$\, ({\color{navyblue} boundary}) to obtain accurate approximations, as a function of the {\color{navyblue} lengthscale}\, $\ell$.
+
+%\item How many basis functions $m$ are needed for a good approximation?
+%
+%\item Which is the effect of the boundary box $L$ on the approximation?
+%
+%\item Which are valid values for the boundary box $L$?
+
+%\item How $m$ and $L$ relate to each other and to the wigglyness $\ell$ of the function to be learned, in terms of an accurate approximation?
+\end{itemize}
+
+\vspace{0.2cm}
+\begin{remark}
+\pbox{10cm}{Boundary box\, $\Omega \in [-L,L]$ \\ Desired input domain\, $\Phi \in [-S,S]$}\;\;  $\to$\;\;  $L=c \cdot S$, \hspace{3mm} $c \geqslant 1$, \hspace{1mm} $c \equiv$ {\color{navyblue} Boundary factor}
+\end{remark}
+\vspace{0.2cm}
+
+\begin{enumerate}
+\item \fcolorbox{aaltoLightGreen!10}{aaltoLightGreen!10}{\textsc{\textbf{Analysis of the effects of $m$ and $L$ on the approximation}}}
+
+\vspace{-2mm}
+\hspace{-1cm}
+\begin{minipage}{0.70\textwidth}
+{\scriptsize \hspace{20mm} Covariance \hspace{35mm} Mean function \hspace{25mm} Standard deviation}\\[-6mm]
+%
+\includegraphics[width=0.32\textwidth, trim = 3mm 26mm 0mm 0mm, clip]{\figpdfdir ch5_fig1_Cov_J.pdf}
+\includegraphics[width=0.32\textwidth, trim = 2mm 26mm 0mm 0mm, clip]{\figpdfdir ch5_fig1_Post_J.pdf}
+\includegraphics[width=0.32\textwidth, trim = 3mm 26mm 0mm 0mm, clip]{\figpdfdir ch5_fig1_Sigma_J.pdf}\\
+\includegraphics[width=0.32\textwidth, trim = 3mm 0mm 0mm 17mm, clip]{\figpdfdir ch5_fig2_Cov_L.pdf}
+\includegraphics[width=0.32\textwidth, trim = 2mm 0mm 0mm 17mm, clip]{\figpdfdir ch5_fig2_Post_L.pdf}
+\includegraphics[width=0.32\textwidth, trim = 3mm 0mm 0mm 17mm, clip]{\figpdfdir ch5_fig2_Sigma_L.pdf}
+
+\end{minipage}
+\begin{minipage}{0.29\textwidth}
+
+\includegraphics[width=1\linewidth, trim = 0mm 8mm 5mm 0mm, clip]{\figpdfdir performance_fig3_vposter.pdf}\\
+For this example, a optimal choice would be\, $m=10$\, and\, $c=1.5$.\, And a bit more conservative choice would\, $m=15$\, and\, $c=1.5$.\\
+\end{minipage}
+
+\vspace{-3mm}
+\item \fcolorbox{aaltoLightGreen!10}{aaltoLightGreen!10}{\textsc{\textbf{Model gathering the relationships among $m$, $L$ and $\ell$ in terms of an accurate approximation}}}
+\end{enumerate}
+
+\vspace{3mm}
+\hspace{-1cm}
+\begin{minipage}{0.35\textwidth}
+\hspace{0.25\textwidth} \scriptsize Squared exponential kernel\\
+% \hspace{0.3\textwidth}  \scriptsize Mattern($\nu$=3/2) kernel\\
+\includegraphics[width=0.98\textwidth, trim = 0mm 0mm 5mm 10mm, clip]{\figpdfdir ch5_fig6_lscale_vs_J_vs_c_zoomin.pdf} \;\;
+%\includegraphics[width=1\textwidth, trim = 0mm 0mm 5mm 10mm, clip]{\figpdfdir ch5_fig6_lscale_vs_J_vs_c_zoomin_Matern.pdf}
+
+\end{minipage}
+\begin{minipage}{0.65\textwidth}
+
+\centering
+\begin{tcolorbox}[colframe=blue!20, colback=white, title={\scriptsize This model says...}, colbacktitle=lightblue, coltitle=black, boxrule=0.5pt, width=0.975\textwidth]
+\begin{itemize}\setlength\itemsep{1mm}
+\item For a given\, $m$\, and\, $c$,\, the minimum\, $\ell$\, that can be accurately approximated.
+\item For a given\, $\ell$\, and\, $c$,\, the minimum\, $m$\, required for an accurate approximation.
+\item For a given\, $\ell$\, and\, $m$,\, the highest\, $c$\, allowed for an accurate approximation.
+\item The minimum valid\, $c$\, for a given\, $\ell$.
+\end{itemize}
+\end{tcolorbox}
+\end{minipage}
+
+\vspace{-3mm}
+{\centering
+\begin{tcolorbox}[colframe=blue!20, colback=white, title={\scriptsize This model serves as a \textsc{\textbf{diagnosis tool}} of the approximation:}, colbacktitle=lightblue, coltitle=black, boxrule=0.5pt, width=0.98\textwidth]
+\begin{remark}
+As the lengthscale is the parameter that ultimately characterizes the non-linearity of the posterior functions, we assume we can look at the {\color{navyblue} estimate lengthscale}\, $\hat{\ell}$\, to diagnose the approximation.
+\end{remark}
+
+\begin{itemize}\setlength\itemsep{1mm}
+\item Given $m$ and $c$
+
+\item If\, $\hat{\ell}$\, {\color{navyblue} is below} the minimum\, $\ell$\, that can be accurately approximated (for those given\, $m$\, and\, $c$), then the approximation {\color{navyblue} is not sufficiently accurate}, and\, $m$\, must be increased or\, $c$\, decreased.
+
+\item If\, $\hat{\ell}$\, {\color{navyblue} is above} the minimum\, $\ell$,\, then the approximation should be {\color{navyblue} sufficiently accurate}.
+
+\item This can be done iteratively.
+
+%\item $c$\, can not be decreased as much as desired because it is restricted to\, $\ell$.
+\end{itemize}
+\end{tcolorbox}
+} 
+
+\vspace{-0.7cm}
+\section{Univariate synthetic case study}
+\vspace{-0.2cm}
+
+%\hspace{-1.1cm}
+\begin{minipage}{0.33\textwidth}
+\begin{itemize}\setlength\itemsep{4mm}
+\item \textit{\scriptsize Samples draws from}:%\\ $x \in [-1,1] \subset {\rm I\!R}$,
+\\ GP Mattern($\nu$=3/2, $\ell$=0.15, $\alpha$=1)\\ + $\bm{\epsilon} \sim \mathcal{N}(0, 0.2^2)$
+
+\item \textit{\scriptsize Observation model}: \pbox{6cm}{$\bm{y} = \bm{f} + \bm{\epsilon}$ \\
+$\bm{\epsilon} \sim \mathcal{N}(\bm{0}, \sigma^2 \bm{I})$}
+
+\item \pbox{8cm}{\textit{\scriptsize Exact GP prior for $\bm{f}$}:\\ $f(x) \sim \GP(0, k_{\nicefrac{3}{2}}(x, x'))$}
+
+\item \pbox{11cm}{\textit{\scriptsize HSGP prior for $\bm{f}$}:\\ $f(x) \approx \sum_{j=1}^m \phi_j(x) \beta_j$,\\ 
+$\beta_j \sim \mathcal{N}(0,S_{\nicefrac{3}{2}}(\sqrt{\lambda_j}))$}
+%\\ $m=60$, $c=1.5$}
+\end{itemize}
+
+\end{minipage}
+\begin{minipage}{0.67\textwidth}
+\centering
+\includegraphics[width=1\textwidth, trim = 0mm 0mm 5mm 10mm, clip]{\figpdfdir ch5_fig10_Posteriors_exI_vposter.pdf}
+\end{minipage}
+
+\vspace{6mm}
+\hspace{-7mm} \textsc{\textbf{\small Diagnosis}}:\\[-4mm]
+
+\begin{minipage}[t]{0.49\textwidth}
+
+\begin{minipage}[t]{0.45\textwidth}
+{\large 1}\hspace{0.7cm} \pbox{1.7cm}{\scriptsize $m=20$\\ $c=1.5$} $\to$\, {\scriptsize$\hat{\ell}=0.09$}
+
+\vspace{0.3cm}
+%{\hspace{2.2cm} \scriptsize Error}\\[-3mm]
+\includegraphics[width=0.90\textwidth, trim = 0mm 0mm 10mm 10mm, clip]{\figpdfdir caseI_fig2_vposter.pdf}
+
+\end{minipage}
+\begin{minipage}[t]{0.50\textwidth}
+\vspace{-0.5cm}
+\hspace{0.25\textwidth}  \tiny Mattern($\nu$=3/2) kernel\\
+\includegraphics[width=1\textwidth, trim = 0mm 0mm 5mm 10mm, clip]{\figpdfdir caseI_fig6_1_1_vposter.pdf}
+
+\end{minipage}
+
+\end{minipage}
+\begin{minipage}[t]{0.49\textwidth}
+
+\begin{minipage}[t]{0.45\textwidth}
+{\large 2}\hspace{0.7cm} \pbox{1.7cm}{\scriptsize $m=30$\\ $c=1.5$} $\to$\, {\scriptsize$\hat{\ell}=0.12$}
+
+\vspace{0.3cm}
+\includegraphics[width=0.90\textwidth, trim = 0mm 0mm 10mm 10mm, clip]{\figpdfdir caseI_fig3_vposter.pdf}
+
+\end{minipage}
+\begin{minipage}[t]{0.50\textwidth}
+\vspace{-0.5cm}
+\hspace{0.25\textwidth}  \tiny Mattern($\nu$=3/2) kernel\\
+\includegraphics[width=1\textwidth, trim = 0mm 0mm 5mm 10mm, clip]{\figpdfdir caseI_fig6_2_1_vposter.pdf}
+
+\end{minipage}
+
+\end{minipage}
+
+
+\vspace{5mm}
+\begin{minipage}[t]{0.49\textwidth}
+
+\begin{minipage}[t]{0.45\textwidth}
+{\large 3}\hspace{0.7cm} \pbox{1.7cm}{\scriptsize $m=40$\\ $c=1.5$} $\to$\, {\scriptsize$\hat{\ell}=0.14$}
+
+\vspace{0.3cm}
+\includegraphics[width=0.90\textwidth, trim = 0mm 0mm 10mm 10mm, clip]{\figpdfdir caseI_fig4_vposter.pdf}
+
+\end{minipage}
+\begin{minipage}[t]{0.50\textwidth}
+\vspace{-0.5cm}
+\hspace{0.25\textwidth}  \tiny Mattern($\nu$=3/2) kernel\\
+\includegraphics[width=1\textwidth, trim = 0mm 0mm 5mm 10mm, clip]{\figpdfdir caseI_fig6_3_1_vposter.pdf}
+
+\end{minipage}
+
+\end{minipage}
+\begin{minipage}[t]{0.49\textwidth}
+
+\begin{minipage}[t]{0.45\textwidth}
+{\large 4}\hspace{0.7cm} \pbox{1.7cm}{\scriptsize $m=60$\\ $c=1.5$} $\to$\, {\scriptsize$\hat{\ell}=0.14$}
+
+\vspace{0.3cm}
+\includegraphics[width=0.90\textwidth, trim = 0mm 0mm 10mm 10mm, clip]{\figpdfdir caseI_fig5_vposter.pdf}
+
+\end{minipage}
+\begin{minipage}[t]{0.50\textwidth}
+\vspace{-0.5cm}
+\hspace{0.25\textwidth}  {\tiny Mattern($\nu$=3/2) kernel}\\
+\includegraphics[width=1\textwidth, trim = 0mm 0mm 5mm 10mm, clip]{\figpdfdir caseI_fig6_4_1_vposter.pdf}
+
+\end{minipage}
+
+\end{minipage}
+
+% bibliography
+\vspace*{3mm}
+{\centering\textbf{References}}
+\renewcommand{\bibsection}{}
+{\tiny % % Bibliography text size begins...
+\bibliographystyle{unsrt}
+\bibliography{references}
+} % <- bibliography text size ends
+
+
+\end{minipage} % End minipage second column
+\hspace{0.02\linewidth} 
+\end{minipage} % end minipage main text
+
+
+%%------------ minipage for third column ------------%
+%\begin{minipage}[t]{0.48\textwidth} % minipage for the latter two columns
+%\setlength{\parindent}{10mm} % Paragraph indent
+%
+%\end{minipage} % End minipage third column
+%\hspace{0.03\linewidth}
+
+
+
+%\vspace*{0.03\linewidth} % Increase the bottom margins
+
+
+\end{document}
