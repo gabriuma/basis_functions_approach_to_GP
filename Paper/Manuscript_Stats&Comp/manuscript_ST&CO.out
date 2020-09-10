@@ -1,0 +1,16 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Gaussian process as a prior}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Covariance functions and spectral density}{section.2}% 3
+\BOOKMARK [1][-]{section.3}{Hilbert space approximate Gaussian process model}{}% 4
+\BOOKMARK [2][-]{subsection.3.1}{Unidimensional GPs}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.2}{Generalization to multidimensional GPs}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{The accuracy of the approximation}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Dependency on the number of basis functions and the boundary condition}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Comparing length-scale estimates}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Case studies}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Simulated data for a univariate function}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{Birthday data}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.3}{Leukemia data}{section.5}% 13
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 14
+\BOOKMARK [1][-]{appendix.A}{Approximation of the covariance function using Hilbert space methods}{}% 15
+\BOOKMARK [1][-]{appendix.B}{Low-rank Gaussian process with a periodic covariance function}{}% 16
