@@ -120,22 +120,22 @@ In the HSGP model, the function $f(x)$ is approximated as in equation (7)%(\ref{
 and (6)%(\ref{eq_eigenfunction})
 . 
 
-In order to do model comparison, in addition to the exact GP model and HSGP model, an spline-based model is also fitted using the Thin Plate Regression Splines approach in \cite{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}.
+In order to do model comparison, in addition to the exact GP and HSGP models, an spline-based model is also fitted using the Thin Plate Regression Splines approach in \cite{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}.
 
-Figure \ref{ch5_fig12_Posteriors_gaydata} shows the posterior mean predictive distributions of the three models, the exact GP, the HSGP model with $m=20$ basis functions and boundary factor $c=1.5$, and the spline-based model with 20 knots. Sample observations are plotted as circles in the figure, and the out-of-sample observations, which have been used for testing, are plotted as crosses.
+Figure \ref{ch5_fig12_Posteriors_gaydata} shows the posterior mean predictive distributions of the three models, the exact GP, the HSGP with $m=20$ basis functions and boundary factor $c=1.5$, and the spline-based model with 20 knots. Sample observations are plotted as circles in the figure, and the out-of-sample (test) observations, which have been used for testing, are plotted as crosses.
 
 \begin{figure}
 \centering
 \includegraphics[scale=0.50]{ch5_fig12_Posteriors_gaydata.pdf}
-\caption{Posterior predictive means of the proposed HSGP model, the exact GP model, and the Splines model. 95\% confident intervals are plotted as dashed lines.}
+\caption{Posterior predictive means of the proposed HSGP, the exact GP, and the spline-based models. 95\% confident intervals are plotted as dashed lines.}
   \label{ch5_fig12_Posteriors_gaydata}
 \end{figure}
 
-For the HSGP model, different models with different number of basis functions and boundary factor have been fitted. The root mean square errors (RMSE) for every one of these models have been computed against the exact GP model, and plotted as a function of the number of basis functions $m$ and boundary factor $c$ in Figure \ref{ch5_fig13_MSE_train_BF_gaydata}, for sample (left) and test (right) data. The expected patterns of the approximation as a function of the number of basis functions and boundary factor are recognized: as the boundary factor increases, more basis functions are needed.
+For the HSGP, different models with different number of basis functions and boundary factor have been fitted. The root mean square errors (RMSE) for every one of these models have been computed against the exact GP, and plotted as a function of the number of basis functions $m$ and boundary factor $c$ in Figure \ref{ch5_fig13_MSE_train_BF_gaydata}, for sample (left) and test (right) data. The expected patterns of the approximation as a function of the number of basis functions and boundary factor are recognized: as the boundary factor increases, more basis functions are needed.
 
-Figure \ref{ch5_fig14_MSE_train_gaydata} shows the RMSE of the exact GP, HSGP and spline-based models computed against the actual data, for training and test data, as a function of the number of basis functions $m$ and boundary factor $c$ for the HSGP model, and  knots for the spline-based model. We can see how the spline-based model does not extrapolate data properly (Figure \ref{ch5_fig14_MSE_train_gaydata}-right). 
+Figure \ref{ch5_fig14_MSE_train_gaydata} shows the RMSE of the exact GP, HSGP and spline-based models computed against the actual data, for training and test data, as a function of the number of basis functions $m$ and boundary factor $c$, for the HSGP, and knots for the spline-based model. We can see how the spline-based model does not extrapolate data properly (Figure \ref{ch5_fig14_MSE_train_gaydata}-right). 
 
-Figure \ref{ch5_fig14_1_time_gaydata} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline-based model. The computational times is represented in the y-axis which is on a logarithmic scale. The HSGP model is on average roughly 15 times faster than the exact GP and 5 times faster than the spline-based model, for this particular case and univariate input space. Computation time increases relatively slight with the number of basis functions in a univariate input space, as can be seen in the figure.
+Figure \ref{ch5_fig14_1_time_gaydata} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP, and knots, for the spline-based model. The computational times is represented in the y-axis which is on a logarithmic scale. The HSGP is on average roughly 15 times faster than the exact GP and 5 times faster than the spline-based model, for this particular case and univariate input space. It can be appreciated that the computational time increases relatively slightly with the number of basis functions in a univariate input space.
 
 The Stan model codes for the exact GP, the HSGP and the spline-based models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Same-sex-marriage-data}}\,.
 
@@ -148,7 +148,7 @@ The Stan model codes for the exact GP, the HSGP and the spline-based models of t
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig13_MSE_train_BF_gaydata.pdf}}
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig13_MSE_pred_BF_gaydata.pdf}}
 \subfigure{\includegraphics[scale=0.40, trim = 28mm 45mm 119mm 0mm, clip]{ch5_fig13_legend_gaydata.pdf}}
-\caption{Root mean square error (RMSE) of the HSGP model, computed against the exact GP model, as a function of the number of basis functions $m$ and boundary factor $c$. RMSE for sample data (left) and RMSE for out-of-sample data (right).}
+\caption{Root mean square error (RMSE) of the HSGP, computed against the exact GP, as a function of the number of basis functions $m$ and boundary factor $c$. RMSE for sample (left) and test (right) data.}
   \label{ch5_fig13_MSE_train_BF_gaydata}
 \end{figure}
 
@@ -157,14 +157,14 @@ The Stan model codes for the exact GP, the HSGP and the spline-based models of t
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig14_MSE_train_gaydata.pdf}}
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig14_MSE_pred_gaydata.pdf}}
 \subfigure{\includegraphics[scale=0.40, trim = 27mm 35mm 112mm 0mm, clip]{ch5_fig14_legend_gaydata.pdf}}
-\caption{Root mean square error (RMSE) of the different methods, exact GP, HSGP and spline-based models, computed against the actual data, as a function of the number of basis functions $m$ and boundary factor $c$ for the HSGP model, and knots, for the spline-based model. RMSE for sample data (left) and RMSE for out-of-sample data (right).}
+\caption{Root mean square error (RMSE) of the different methods, exact GP, HSGP and spline-based models, computed against the actual data, as a function of the number of basis functions $m$ and boundary factor $c$, for the HSGP, and knots, for the spline-based model. RMSE for sample (left) and test (right) data.}
   \label{ch5_fig14_MSE_train_gaydata}
 \end{figure}
 
 \begin{figure}
 \centering
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig14_1_time_gaydata.pdf}}
-\caption{Computational time (y-axis), in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$ and knots. The y-axis is in a logarithmic scale.}
+\caption{Computational time (y-axis), in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP, and knots, for the spline-based model. The y-axis is in a logarithmic scale.}
   \label{ch5_fig14_1_time_gaydata}
 \end{figure}
 
@@ -194,15 +194,15 @@ The marginalized form, by integrating out the latent values $\bm{f}$, of the pre
 where $\bm{K} \in {\rm I\!R}^{n\times n}$ if the covariance matrix with an element $K_{ij}=k(\bm{x}_i,\bm{x}_j,\theta)$, and $\sigma^2$ is the noise variance.
 
 In the HSGP model with $2$ input dimensions, the latent function $f(\bm{x})$ is approximated as in equation (13)% (\ref{eq_approxf_multi})
-, with the $2$-dimensional squared exponential spectral density $S$ as in equation (1)% (\ref{eq_specdens_inf})
+, with the $2$D squared exponential spectral density $S$ as in equation (1)% (\ref{eq_specdens_inf})
 , and the $2$-vector of eigenvalues $\bm{\lambda}_j$ and the multivariate eigenfunctions $\phi_j$ as in equations (10) %(\ref{eq_eigenfunction_multi})
  and (11)% (\ref{eq_eigenvalue_multi})
  , respectively.
 
 
-In order to do model comparison, in addition to the exact GP and HSGP models, a two-dimensional splines-based model is also fitted using a cubic spline basis, penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}.
+In order to do model comparison, in addition to the exact GP and HSGP models, a $2$D splines-based model is also fitted using a cubic spline basis, penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}.
 
-Figure \ref{ch5_fig15_Posteriors_exII} shows the data-generating GP function, from where the dataset was drawn, and the mean posterior predictive functions of the three models, exact GP, HSGP, and splines, fitted over the dataset. Sample observations are also plotted as circles. For the HSGP model, $m_1=40$ and $m_2=40$ basis functions for each dimension, respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension, $c_1=1.5$ and $c_2=1.5$, respectively, were used. For the spline-based model, 40 knots in each dimension were used.
+Figure \ref{ch5_fig15_Posteriors_exII} shows the data-generating GP function, from where the dataset was drawn, and the mean posterior predictive functions of the three models, exact GP, HSGP, and splines, fitted over the dataset. Sample observations are also plotted as circles. For the HSGP, $m_1=40$ and $m_2=40$ basis functions for each dimension, respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension, $c_1=1.5$ and $c_2=1.5$, were used. For the spline-based model, 40 knots in each dimension were used.
 
 Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the data-generating function and the GP, HSGP and spline-based models, respectively.
 
@@ -213,7 +213,7 @@ Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the da
 \includegraphics[scale=0.40, trim = 0mm 18mm 35mm 20mm, clip]{ch5_fig15_bffun_exII.pdf}  & \hspace{-5mm} \includegraphics[scale=0.40, trim = 19mm 18mm 35mm 20mm, clip]{ch5_fig15_spfun_exII.pdf}
 \end{tabular}
 \end{center}
-\caption{Data-generating function (a) and posterior predictive mean functions of the GP (b), HSGP (c) and spline (d) models. Sample points are plotted as circles}
+\caption{Data-generating function (a) and posterior predictive mean functions of the GP (b), HSGP (c) and spline-based (d) models. Sample points are plotted as circles}
   \label{ch5_fig15_Posteriors_exII}
 \end{figure}
 
@@ -224,13 +224,13 @@ Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the da
 \subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorHSGP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorSP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.30, trim = 150mm 5mm 0mm 20mm, clip]{ch5_fig16_error_colorbar_exII.pdf}}
-\caption{Error between the data-generating function and posterior mean functions of the GP (a), HSGP (b) and spline (c) models. Sample points are plotted as circles.}
+\caption{Error between the data-generating function and posterior mean functions of the GP (a), HSGP (b) and spline-based (c) models. Sample points are plotted as circles.}
   \label{ch5_fig16_errors_exII}
 \end{figure}
 
-In order to assess performance of the models as a function of the number of basis functions and knots, different models with different number of basis functions, for the HSGP model, and different number of knots, for the spline-based model, have been fitted. In each of these models, the same boundary factor, number of basis functions and knots per dimension were used. Figure \ref{ch5_fig17_RMSE_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and the number of univariate basis functions $m$, for the HSGP model, and knots, for the spline-based model. From Figures \ref{ch5_fig16_errors_exII} and \ref{ch5_fig17_RMSE_exII}-left, it can be seen an accurate approximation of the HSGP model to the exact GP model. However, the performance of the spline-based model is significantly worse. 
+In order to assess performance of the models as a function of the number of basis functions, boundary factor and knots, different models with different number of basis functions, for the HSGP, and different number of knots, for the spline-based model, have been fitted. In each of these models, the same boundary factor, number of basis functions and knots per dimension were used. Figure \ref{ch5_fig17_RMSE_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP, and knots, for the spline-based model. From Figures \ref{ch5_fig16_errors_exII} and \ref{ch5_fig17_RMSE_exII}-left, it can be seen an accurate approximation of the HSGP to the exact GP. However, the performance of the spline-based model is significantly worse. 
 
-Figure \ref{ch5_fig17_RMSE_exII}-right shows the computational times of the different models as a function of the boundary factor, number of basis functions and knots. Figure \ref{ch5_fig17_RMSE_exII} reveals that choosing the optimal boundary factor allows for less number of basis functions and less computation time. Even though in a bivariate input space the computational demands increase significantly with the number of dimensions or knots, either the HSGP or spline-based models work significantly better than exact GP, even for highly wiggly functions that require a high number of basis functions or knots for an accurate approximation. It is interesting to be noticed that just the computation of the input data for the spline model in a 2D input space and considering more than 50 knots per dimension is computationally very expensive.
+Figure \ref{ch5_fig17_RMSE_exII}-right shows the computation times of the different models as a function of the boundary factor, number of basis functions and knots. Figure \ref{ch5_fig17_RMSE_exII} reveals that choosing the optimal boundary factor allows for less number of basis functions and less computation time. Even though in a bivariate input space the computational demands increase significantly with the number of dimensions or knots, either the HSGP or spline-based models work significantly better than exact GP, even for highly wiggly functions that require a high number of basis functions or knots for an accurate approximation. It is interesting to be noticed that just the computation of the input data for the spline model in a 2D input space and considering more than 50 knots per dimension is computationally very expensive.
 
 The Stan model codes for the exact GP, the HSGP and the spline-based models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_2D-Simulated-data}}\,.
 
@@ -240,7 +240,7 @@ The Stan model codes for the exact GP, the HSGP and the spline-based models of t
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig17_RMSE_exII.pdf}}
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig17_time_exII.pdf}}
 \subfigure{\includegraphics[scale=0.40, trim = 28mm 35mm 112mm 0mm, clip]{ch5_fig17_legend_exII.pdf}}
-\caption{Root mean square error (RMSE) (left) and computational time (right) in seconds per iteration (iteration of the HMC sampling method) of the different methods computed against the data-generating function, and plotted as a function of the boundary factor $c$, number of basis functions $m$ and knots.}
+\caption{Root mean square error (RMSE) (left) and computational time (right) in seconds per iteration (iteration of the HMC sampling method) of the different methods, and plotted as a function of the boundary factor $c$, number of basis functions $m$ and knots.}
   \label{ch5_fig17_RMSE_exII}
 \end{figure}
 
@@ -252,7 +252,7 @@ The next example presents an epidemiological study of diabetes disease. The stud
 y_i \sim \mathrm{Bernoulli}(p_i).
 \end{equation*}
 
-\noindent The goal is to estimate the probability $p_i$ as a function $f$ of the risk factors. Which function $f(\cdot):{\rm I\!R}^{4} \to {\rm I\!R}$ is modeled as a GP with a multivariate squared exponential covariance function $k$ depending on the risk factors $\bm{x}$ and hyperparameters $\theta=\{\alpha,\ell\}$, and related to the probabilities $p_i$ through the {\it logit} link function,
+\noindent The goal is to estimate the probability $p_i$ as a function ($f$) of the risk factors. Which function $f(\cdot):{\rm I\!R}^{4} \to {\rm I\!R}$ is modeled as a GP with a multivariate squared exponential covariance function $k$ depending on the risk factors $\bm{x}$ and hyperparameters $\theta=\{\alpha,\ell\}$, and related to the probabilities $p_i$ through the {\it logit} link function,
 %
 \begin{align*} \label{ch5_eq_gpprior_gay}
 p_i &= \mathrm{logit}(f(\bm{x}_i)) \nonumber \\
@@ -270,7 +270,7 @@ and (11)% (\ref{eq_eigenfunction_multi})
 
 In order to do model comparison, in addition to the exact GP and HSGP models, a $D$-dimensional spline-based model is also fitted using a cubic spline basis penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}.
 
-Figure \ref{ch5_fig18_gpfun_diabetes} shows the posterior mean predictions of probabilities ($p_i$) of the three models, exact GP, HSGP and splines, fitted over the dataset with the two input dimensions \textit{Glucose} and \textit{Pregnancy} ($D=2$). The binary observations $y_i$ are also plotted in the plots as colored points. For the HSGP model, $m_1=20$ and $m_2=20$ basis functions for each dimension, respectively, were used, which lead to a total of 400 multivariate basis functions. A boundary factor for each dimension, $c_1=4$ and $c_2=4$, respectively, were used. For the spline-based model, 20 knots per dimension were used.
+Figure \ref{ch5_fig18_gpfun_diabetes} shows the posterior mean predictions of probabilities ($p_i$) of the three models, exact GP, HSGP and splines, fitted over the dataset with the two input dimensions \textit{Glucose} and \textit{Pregnancy} ($D=2$). The binary observations $y_i$ are also plotted in the plots as colored points. For the HSGP, $m_1=20$ and $m_2=20$ basis functions for each dimension, respectively, were used, which lead to a total of 400 multivariate basis functions. A boundary factor for each dimension, $c_1=4$ and $c_2=4$, were used. For the spline-based model, 20 knots per dimension were used.
 %
 \begin{figure}
 \centering
@@ -278,17 +278,17 @@ Figure \ref{ch5_fig18_gpfun_diabetes} shows the posterior mean predictions of pr
 \subfigure{\includegraphics[scale=0.37, trim = 20mm 23mm 39mm 20mm, clip]{ch5_fig18_bffun_diabetes.pdf}}
 \subfigure{\includegraphics[scale=0.37, trim = 20mm 23mm 39mm 20mm, clip]{ch5_fig18_spfun_diabetes.pdf}}
 \subfigure{\includegraphics[scale=0.30, trim = 150mm 4mm 2mm 15mm, clip]{ch5_fig18_legend_diabetes.pdf}}
-\caption{Posterior predictive mean functions of the GP (a), HSGP (b) and spline (c) models. Sample observations of suffering (red points) and not suffering (blue points) from the disease are plotted.}
+\caption{Posterior predictive mean functions of the GP (a), HSGP (b) and spline-based (c) models. Sample observations of suffering (red points) and not suffering (blue points) from the disease are plotted.}
   \label{ch5_fig18_gpfun_diabetes}
 \end{figure}
 
-In order to assess the performance of the models as a function of the boundary factor, the number of basis functions and knots, different models with different number of basis functions and boundary factors, for the HSGP model, and different number of knots, for the spline model, have been fitted. In each of these models, the same boundary factor, number of basis functions and knots per dimension were used. Figure \ref{ch5_fig19_ELPD_diabetes} shows the expected log predictive density (ELPD; see \cite{vehtari_2012}) as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP model, and knots, for the spline-based model. The ELPD is computed over the actual observations by cross-validation. With slightly differences, all models show similar performances due to the fact that the process is very smooth with a relatively very large length-scale estimate $\ell=4.51$. Even though, a slight improvement can be appreciated as the boundary factor $c$ increases, because small boundary factors are not allowed when large length-scales (Figure 6% \ref{fig6_lscale_vs_J_vs_c}
+In order to assess the performance of the models as a function of the boundary factor, the number of basis functions and knots, different models with different number of basis functions and boundary factors, for the HSGP, and different number of knots, for the spline-based model, have been fitted. In each of these models, the same boundary factor, number of basis functions and knots per dimension were used. Figure \ref{ch5_fig19_ELPD_diabetes} shows the expected log predictive density (ELPD; see \cite{vehtari_2012}) as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP, and knots, for the spline-based model. The ELPD is computed over the actual observations by cross-validation. With slightly differences, all models show similar performances due to the fact that the process is very smooth with a relatively very large length-scale estimate $\ell=4.51$. Even though, a slight improvement can be appreciated with larger boundary factor $c$, since small boundary factors are not allowed when large length-scales (Figure 6% \ref{fig6_lscale_vs_J_vs_c}
 ).
 %
 \begin{figure}
 \centering
 \subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig19_ELPD_diabetes.pdf}}
-\caption{Expected log predictive density (ELPD) of the different methods as a function of the boundary factor $c$ and the number of basis functions $m$, for the HSGP model, and knots, for the spline model.}
+\caption{Expected log predictive density (ELPD) of the different methods as a function of the boundary factor $c$ and the number of basis functions $m$, for the HSGP model, and knots, for the spline-based model.}
   \label{ch5_fig19_ELPD_diabetes}
 \end{figure}
 
@@ -309,7 +309,7 @@ The Stan model codes for the exact GP, the HSGP and the spline-based models of t
 \subfigure{\includegraphics[scale=0.29, trim = 30.2mm 0mm 10mm 0mm, clip]{ch5_fig20_time3D_diabetes_2.pdf}}
 \subfigure{\includegraphics[scale=0.29, trim = 30.2mm 0mm 10mm 0mm, clip]{ch5_fig20_time4D_diabetes_2.pdf}}
 \subfigure{\includegraphics[scale=0.35, trim = 28mm 50mm 112mm 10mm, clip]{ch5_fig20_legend_diabetes_2.pdf}}
-\caption{Time of computation in seconds per iteration (iteration of the HMC sampling method) of the different models fitted over the dataset, with 2 input dimensions (left) and 3 input dimensions (center) and 4 input dimensions (right), as a function of the boundary factor $c$ and number of basis functions $m$, for the HSGP model, and knots, for the spline model. The y-axis is on a logarithmic scale.}
+\caption{Time of computation in seconds per iteration (iteration of the HMC sampling method) of the different models fitted over the dataset, with 2 (left), 3 (center) and 4 (right) input dimensions, as a function of the boundary factor $c$ and number of basis functions $m$, for the HSGP model, and knots, for the spline model. The y-axis is on a logarithmic scale.}
   \label{ch5_fig20_time2D_diabetes}
 \end{figure}
 
@@ -321,7 +321,7 @@ The next example presents an spatio-temporal classification in land-use of plots
 
 A bunch of 52 characteristic variables was available for every parcel and time. These variables were computed from satellite color images and cadastral map by using the software FETEX for automatic descriptive feature extraction from image-objects \citep{ruiz2011feature}. These variables concern spectral intensities and empirical semivariogram of the pixels within a plot, as well as descriptive statistics of the shape of the plots.
 
-Due to the fact that 52 input variables are too high-dimensional for a multivariate HSGP model, which computational cost scales as $O(n m^D+m^D)$ for $m$ basis functions and $D$ input variables, the multivariate HSGP model will be formulated as an additive HSGP model. 
+Due to the fact that 52 input variables are too high-dimensional for a multivariate HSGP model, since computation scales as $O(n m^D+m^D)$ for $m$ basis functions and $D$ input variables, the multivariate HSGP model will be formulated as an additive HSGP model, where computational complexity is linear with the number of additive components. 
 
 As it is known, the computational demand of a multivariate HSGP model component increases quickly with the number of dimensions, so we should avoid high-dimensional HSGP components in the additive model. Original input variables are highly correlated, which would imply the use of high-order interaction components in the additive model. Therefore, instead of using the original variables as inputs, we use their principal components (PCs), which are expect to be linearly uncorrelated. %Using the principal components as inputs helps, in principle, not to have to use as many high-order interaction components in the additive model.  
 
@@ -371,16 +371,16 @@ h_{d,D}(x^d,x^D) \sim \mathcal{HSGP}(x^d,x^D, S, \theta_{d,D}).
 
 \noindent In the HSGP model, a second-order component $h_{d,D}(x^d,x^D)$, evaluated at inputs $x^d \in {\rm I\!R}$ and $x^D \in {\rm I\!R}$, is approximated as in equation (13), % (\ref{eq_approxf_multi})
  with the two-dimensional (with a scalar length-scale) squared exponential spectral density $S$ as in equation (1) % (\ref{eq_specdens_inf}) 
- and the $D$-vector of eigenvalues $\bm{\lambda}_j$ and the multivariate eigenfunctions $\phi_j$ as in equations (10) % (\ref{eq_eigenvalue_multi}) 
+ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ and multivariate eigenfunctions $\phi_j$ as in equations (10) % (\ref{eq_eigenvalue_multi}) 
  and (11)% (\ref{eq_eigenfunction_multi})
  , respectively. 
 
 The vector of hyperparameters $\theta_{d,1}=(\alpha_{d,1},\ell_{d,1})$ contains the marginal variance $\alpha_{d,1}$ and length-scale $\ell_{d,1}$ of the $g_d(x^d)$ model component. And, the vector of hyperparameters $\theta_{d,D}=(\alpha_{d,D},\ell_{d,D})$ contains the marginal variance $\alpha_{d,D}$ and length-scale $\ell_{d,D}$ of the $h_{d,D}(x^d,x^D)$ model component.
  
 
-For the first-order components $g_d(x^d)$, $m=15$ basis functions and a boundary factor $c=2.5$ were used. For the second-order components $h_{d,D}(x^d,x^D)$, $m_1=15$ and $m_2=15$ basis functions for each dimension, respectively, were used, which lead to a total of 225 multivariate basis functions. A boundary factor for each dimension, $c_1=2.5$ and $c_2=2.5$, respectively, were used. All the input variables were previously standardized.
+For the first-order components $g_d(x^d)$, $m=15$ basis functions and a boundary factor $c=2.5$ were used. For the second-order components $h_{d,D}(x^d,x^D)$, $m_1=15$ and $m_2=15$ basis functions for each dimension, respectively, were used, which lead to a total of 225 multivariate basis functions. A boundary factor for each dimension, $c_1=2.5$ and $c_2=2.5$, respectively, were used. All the input variables were previously standardised.
 
-In the case of the first-order components, the normalized length-scale estimates $\left(\frac{2\cdot \hat{\ell}_{d,1}}{|x^d_{max}-x^d_{min}|}\right)$ are all bigger than the minimum approachable length-scale reported by Figure (6) % \ref{fig6_lscale_vs_J_vs_c} 
+In the case of the first-order components, the normalized length-scale estimates $\left(\frac{2\cdot \hat{\ell}_{d,1}}{|x^d_{max}-x^d_{min}|}\right)$ are all bigger than the minimum length-scale reported by Figure (6) % \ref{fig6_lscale_vs_J_vs_c} 
 as a function of $m$ and $c$. Which means that the used number of basis functions ($m=15$) and boundary factor ($c=2.5$) are suitable values for modeling accurately the input effects.
 
 For the second-order components, the relationships between the number of basis functions, the boundary factor and the length-scale is not available for the multivariate case. However, we can approximately diagnose the length-scale estimates of the second-order HSGP components analyzing each dimension separately as unidimensional HSGP models.
