@@ -3,7 +3,7 @@ Approximate eigendecomposition of the covariance function of a Gaussian process 
 
 We denote this reduced rank GP model as the Hilbert space approximate Gaussian process (HSGP).
 
-# Contents in the repository
+# Contents
 This repo contains three folders:
 ## 1. Paper
 This contains the main manuscript of the work, the supplemental material associated to the main manuscript and a poster presentated at StanCon 2020 conference. Additionally, this folder contains the Stan codes for every case study developed in the paper.
