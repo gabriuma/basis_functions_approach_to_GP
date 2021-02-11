@@ -4,8 +4,7 @@ data {
 	int<lower=1> N_pred;		# Number of observations	
 	
 	real x_pred[N_pred];		# Input values	
-	vector[N_pred] y;			# Observations
-	vector[N_pred] f_true;		# Generating function values	
+	vector[N_pred] y_pred;		# Observations	
 
 	int vv_train[N_train];		# Training observation indices  	
 }
@@ -35,7 +34,7 @@ model{
 	magnitud ~ gamma(5, 5);
 	
 	# Likelihood
-	y[vv_train] ~ normal(f, sigma); 
+	y_pred[vv_train] ~ normal(f, sigma); 
 }
 
 generated quantities{
