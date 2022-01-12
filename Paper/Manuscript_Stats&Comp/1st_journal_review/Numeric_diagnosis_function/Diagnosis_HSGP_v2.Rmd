@@ -87,6 +87,7 @@ library(reshape2)
 library(ggplot2)
 library(latex2exp)
 library(gridExtra)
+library(mgcv)
 ```
 
 As said before, this notebook addresses the task of automatizing diagnosis required by the reviewers in **comments 1), 2), 3)**.
@@ -228,6 +229,66 @@ p2 <- ggplot(max_l, aes(l, c)) +
   labs(y = "c", x = "l", title = TeX(c("$c \\, \\geq \\, 0.97 + 1.45 \\, l")))
 
 grid.arrange(p1, p2, ncol = 2)
+```
+
+### Relationship between allowed $m$ depending on $c$ and vice versa
+
+As a function of $c$ there is a minimum $m$ valid for HSGP approach and, the other way around, as a function of $m$ there is a minimum $c$ valid for HSGP approach.
+
+* Data of this relationship:
+
+```{r eval=TRUE, echo=FALSE}
+min_m_ind <- apply(as.matrix(obsM[,!(names(obsM) %in% c("l","5","6"))]), 2, function(x) min(x, na.rm = TRUE))
+min_m <- data.frame(c=c[!(c %in% c("5","6"))], m=as.vector(min_m_ind))
+
+min_m <- data.frame(c=c(4,aggregate(min_m, by=list(min_m$m), min)[, c("c")]), m=c(3,aggregate(min_m, by=list(min_m$m), min)[, c("m")]))
+min_m
+```
+
+* Functions for this relationship: 
+
+```{r eval=TRUE, fig.height=6, fig.width=10, echo=FALSE}
+min_m$log_c2 <- log(min_m$c) * log(min_m$c)
+model_1 <- lm(log(m) ~ log(c) + log_c2, data=min_m)
+# summary(model_1)
+
+p1 <- ggplot(min_m, aes(log(c), log(m))) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(log(c), (model_1$fitted.values)), col="red", size=1) +
+  theme_classic() +
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "log(m)", x = "log(c)", title = TeX(c("$log(m) \\, \\geq \\, 3.730 - 4.711 \\, log(c) + 2.047 \\, log(c)^2")))
+
+min_m$m[min_m$c==2.5] <- 3.5
+min_m$log_m2 <- log(min_m$m) * log(min_m$m)
+min_m$log_m3 <- log(min_m$m) * log(min_m$m) * log(min_m$m)
+model_2 <- lm(log(c) ~ log(m) + log_m2 + log_m3, data=min_m)
+# summary(model_2)
+
+p2 <- ggplot(min_m, aes(log(m), log(c))) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(log(m), model_2$fitted.values), col="red", size=1) +
+  theme_classic() + 
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "log(c)", x = "log(m)", title = TeX(c("$log(c) \\, \\geq \\, 5.456 - 6.008 \\, log(m) + 2.370 \\, log(m)^2 - 0.316 \\, log(m)^3")))
+
+#exp(3.7304 - 4.71*log(c) + 2.05*log(c)^2))
+p3 <- ggplot(min_m, aes(c, m)) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(c, 41.6958*c^(2.047*log(c)-4.711)), col="red", size=1) +
+  theme_classic() +
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "m", x = "c", title = TeX(c("$m \\, \\geq \\, \\41.696 \\, c^{2.047 \\, log(c) \\, - \\, 4.711}")))
+
+#exp(5.456 - 6.008*log(m) + 2.370*log(m)^2 - 0.316*log(m)^3)
+p4 <- ggplot(min_m, aes(m, c)) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(m, 234.159*m^(-0.316 * log(m)^2 + 2.370*log(m) - 6.008)), col="red", size=1) +
+  theme_classic() + 
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "c", x = "m", title = TeX(c("$c \\, \\geq \\, 234.159 \\, m^{-0.316 \\, log(m)^2 \\, + \\,  2.370 \\, log(m) \\,  - \\, 6.008}")))
+
+grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
 ## Adjusted function for the empirical relationships {#sec-model}
@@ -452,6 +513,66 @@ p2 <- ggplot(max_l, aes(l, c)) +
 grid.arrange(p1, p2, ncol = 2)
 ```
 
+### Relationship between allowed $m$ depending on $c$ and vice versa
+
+As a function of $c$ there is a minimum $m$ valid for HSGP approach and, the other way around, as a function of $m$ there is a minimum $c$ valid for HSGP approach.
+
+* Data of this relationship:
+
+```{r eval=TRUE, echo=FALSE}
+min_m_ind <- apply(as.matrix(obsM[,!(names(obsM) %in% c("l","5","6"))]), 2, function(x) min(x, na.rm = TRUE))
+min_m <- data.frame(c=c[!(c %in% c("5","6"))], m=as.vector(min_m_ind))
+
+min_m <- data.frame(c=c(4,aggregate(min_m, by=list(min_m$m), min)[, c("c")]), m=c(9,aggregate(min_m, by=list(min_m$m), min)[, c("m")]))
+min_m
+```
+
+* Functions for this relationship: 
+
+```{r eval=TRUE, fig.height=6, fig.width=10, echo=FALSE}
+min_m$log_c2 <- log(min_m$c) * log(min_m$c)
+model_1 <- lm(log(m) ~ log(c) + log_c2, data=min_m)
+# summary(model_1)
+
+p1 <- ggplot(min_m, aes(log(c), log(m))) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(log(c), (model_1$fitted.values)), col="red", size=1) +
+  theme_classic() +
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "log(m)", x = "log(c)", title = TeX(c("$log(m) \\, \\geq \\, 4.742 - 4.239 \\, log(c) + 1.767 \\, log(c)^2")))
+
+min_m$m[min_m$c==3] <- 9.5
+min_m$log_m2 <- log(min_m$m) * log(min_m$m)
+min_m$log_m3 <- log(min_m$m) * log(min_m$m) * log(min_m$m)
+model_2 <- lm(log(c) ~ log(m) + log_m2 + log_m3, data=min_m)
+# summary(model_2)
+
+p2 <- ggplot(min_m, aes(log(m), log(c))) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(log(m), model_2$fitted.values), col="red", size=1) +
+  theme_classic() + 
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "log(c)", x = "log(m)", title = TeX(c("$log(c) \\, \\geq \\, 10.369 - 7.634 \\, log(m) + 1.963 \\, log(m)^2 - 0.172 \\, log(m)^3")))
+
+#exp(4.742 - 4.239 * log(c) + 1.767 * log(c)^2)
+p3 <- ggplot(min_m, aes(c, m)) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(c, 114.6633*c^(1.7667*log(c)-4.2385)), col="red", size=1) +
+  theme_classic() +
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "m", x = "c", title = TeX(c("$m \\, \\geq \\, \\114.663 \\, c^{1.767 \\, log(c) \\, - \\, 4.239}")))
+
+#exp(10.369 - 7.634 * log(m) + 1.963 * log(m)^2 - 0.172 * log(m)^3)
+p4 <- ggplot(min_m, aes(m, c)) +
+  geom_point(size=2) + 
+  geom_line(data= min_m, aes(m, 31868.07*m^(-0.1722*log(m)^2 + 1.9633*log(m) - 7.6338)), col="red", size=1) +
+  theme_classic() + 
+  theme(axis.title.y = element_text(angle = 0, vjust=0.5), plot.title = element_text(hjust = 0.5, size=11), axis.title = element_text(size=12), axis.text = element_text(size=10)) +
+  labs(y = "c", x = "m", title = TeX(c("$c \\, \\geq \\, 31868.07 \\, m^{-0.172 \\, log(m)^2 \\, + \\,  1.963 \\, log(m) \\,  - \\, 7.634}")))
+
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
 ## Adjusted function for the empirical relationships {#sec-model-Mattern}
 
 Due to the number of basis functions $m$ is an integer variable and $l$ is a continuous variable, the relationship between $m$ and $l$ has a part that looks like stairs (see \@ref(fig:empirical-relationships-Mattern32). In order to fit a function on these relationships it is better not to include this stairs like part in the fitting data set.
@@ -602,7 +723,7 @@ p4 <- ggplot(obsM_melt[!is.na(obsM_melt$m),], aes(x=l, y=m - exp(pred2$pred), co
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
-# Periodic covariance function: Empirical relationship among $m$ and $l$
+# Squared exponential periodic covariance function: Empirical relationship among $m$ and $l$
 
 ## Setting parameters values
 
