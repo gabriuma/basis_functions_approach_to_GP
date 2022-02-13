@@ -1,0 +1,54 @@
+
+%New thing
+There is a overestimating effect on the HSGP lengthscale relative to the exact GP lenghscale estimate for large lengthscales and using large number of basis functions $m$. This is because for very smooth functions where the correlation is close to one for all the observations and the estimated lengthscale becomes much bigger than the input domain and in order to obtain a full reconstruction of the exact GP function the boundary needs to increase significantly. To this, using larger number of basis functions causes overestimating the underlying function and so of the lengthscale, effect that is can also be alliviated increasing the boundary. The relation between the magnitudes of the smoothness and the boundary factor, equations (\ref{eq_c_vs_l_QE}, \ref{eq_c_vs_l_mat32} and \ref{eq_c_vs_l_mat52}), has been obtained guaranteeing a perfect match between approximate covariance function and exact covariance function until a distances of between 3.5 to 5 (depending on the kernel) times the lengthscale. Here it comes out a possible weaknesses of the approach that when we want to fit very smooth functions we should try not to use too many basis functions than necessary because we will run into overestimating problems using the actual values for $c$ provided by equations (\ref{eq_c_vs_l_QE}, \ref{eq_c_vs_l_mat32} and \ref{eq_c_vs_l_mat52}).
+
+%Old text
+In this example, we make a comparison of the length-scale estimates
+obtained from the exact GP and HSGP models. We also have a look at those recommended minimum length-scales provided by Figure \ref{fig6_7_relationships}.
+For this analysis, we will use various datasets consisting of noisy draws from a GP prior model with a squared exponential covariance function and varying length-scale values. Different values of the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case. 
+
+Figure \ref{fig8_posterior_varing_lscale_part1} shows the posterior predictions of both exact GP and HSGP models fitted to those datasets. The length-scale estimates as obtained by exact GP and HSGP models are depicted in Figure \ref{fig8_Tlscale_vs_Elscale}. As noted previously, an accurate estimate of the length-scale can be a good indicator of a close approximation of the HSGP model to the exact GP model. Further, Figure \ref{fig10_MSE_varing_lscale} shows the root mean square error (RMSE) of the HSGP models, computed against the exact GP models, as a function of the length-scale and number of basis functions.
+
+Comparing the accuracy of the length-scale in Figure~\ref{fig8_Tlscale_vs_Elscale} to the RMSE in Figure~\ref{fig10_MSE_varing_lscale}, we see that they agree closely with each other for medium length-scales. That is, a good estimation of the length-scale implies a small RMSE. This is no longer true for very small or large length-scales. In small length-scales, even very small inaccuracies  may have a strong influence on the posteriors predictions and thus on the RMSE. In large length-scales, larger inaccuracies change the posterior predictions only little and may thus not yield large RMSEs. The dashed black line in Figure \ref{fig8_Tlscale_vs_Elscale} represents the  minimum length-scale that can be closely approximated under the given condition, according to the results presented in Figure \ref{fig6_7_relationships}.  We observe that whenever the estimated length-scale exceeds the minimally estimable length-scale, the RMSE of the posterior predictions is small
+(see Figure \ref{fig10_MSE_varing_lscale}). Conversely, when the estimated length-scale is smaller than the minimally estimable one, the RMSE becomes very large.
+
+\begin{figure*}
+\centering
+\subfigure{\includegraphics[scale=0.42, trim = 10mm 100mm 5mm 30mm, clip]{fig8_legend.pdf}}\\
+\vspace{-3mm}
+\subfigure{\includegraphics[scale=0.31, trim = 1mm 25.5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part1.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part2.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part3.pdf}}\\
+\vspace{-3mm}
+\subfigure{\includegraphics[scale=0.31, trim = 1mm 25.5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part4.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part5.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 25.5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part6.pdf}}\\
+\vspace{-3mm}
+\subfigure{\includegraphics[scale=0.31, trim = 1mm 5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part7.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part8.pdf}}
+\subfigure{\includegraphics[scale=0.31, trim = 21mm 5mm 10mm 19mm, clip]{fig8_posterior_varing_lscale_part9.pdf}}\\
+\caption{Mean posterior predictions of both exact GP and HSGP models, fitted over various datasets drawn from square exponential GP models with different characteristic length-scales ($\ell$) and same marginal variance ($\alpha$) as the data-generating functions (\textit{true function}). }
+  \label{fig8_posterior_varing_lscale_part1}
+\end{figure*}
+
+\begin{figure*}
+%\begin{flushleft}
+\centering
+\begin{tabular}{ccc}
+\multicolumn{3}{c}{ \includegraphics[scale=0.42, trim = 25mm 117mm 90mm 45mm, clip]{fig9_legend.pdf}}\\
+\includegraphics[scale=0.31, trim = 0mm 24mm 7mm 10mm, clip]{fig9_Tlscale_vs_Elscale_part1.pdf} & \hspace{-4mm}
+\includegraphics[scale=0.31, trim = 25mm 24mm 7mm 10mm, clip]{fig9_Tlscale_vs_Elscale_part2.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 24mm 7mm 10mm, clip]{fig9_Tlscale_vs_Elscale_part3.pdf} \\ 
+\includegraphics[scale=0.31, trim = 0mm 2mm 7mm 10mm, clip]{fig9_Tlscale_vs_Elscale_part4.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 2mm 7mm 10mm, clip]{fig9_Tlscale_vs_Elscale_part5.pdf} & \hspace{-4mm} \includegraphics[scale=0.31, trim = 25mm 2mm 7mm 10mm, clip]{fig9_Tlscale_vs_Elscale_part6.pdf}
+\end{tabular}
+%\end{flushleft}
+\caption{Data-generating functional length-scales ($\ell$), of the various datasets illustrated in Figure \ref{fig8_posterior_varing_lscale_part1}, versus the corresponding length-scale estimates $(\hat{\ell})$ from the exact GP and HSGP models. 95\% confident intervals of the length-scale estimates are plotted as dot lines. The different plots represent the use of different number of basis functions $m$ in the HSGP model. The dashed black line represents the recommended minimum length-scales provided by Figure \ref{fig6_7_relationships} that can be closely approximated by the HSGP model in every case.}
+  \label{fig8_Tlscale_vs_Elscale}
+\end{figure*}
+
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.38, trim = 0mm 9mm 0mm 0mm, clip]{fig10_MSE_varing_lscale.pdf}
+\caption{RMSE of the HSGP models with different number of basis functions $m$, for the various datasets with different wiggly effects ($\ell$).}
+  \label{fig10_MSE_varing_lscale}
+\end{figure}
