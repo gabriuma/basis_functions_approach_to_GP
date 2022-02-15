@@ -546,9 +546,9 @@ functions are needed. So we have proportionality c/l. }
 
 Figure \ref{fig6_7_relationships} depicts how these three factors interact and affect the accuracy of the HSGP approximation for a GP with square exponential covariance function, Mat\'ern ($\nu$=3/2) and Mat\'ern ($\nu$=5/2) covariance functions and a single input dimension. More precisely, for a given GP model (with a particular covariance function) with length-scale $\ell$ and given a boundary factor $c$, Figure \ref{fig6_7_relationships} shows the minimum number of basis functions $m$ required to obtain an accurate approximation in the sense of satisfying eq. (\ref{eq_diff_covs}). We considered an approximation to be a sufficiently accurate when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in eq. (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$ such that
 %
-\begin{equation*}
+\begin{equation} \label{eq:rel_total_distance}
  \int | k(\tau) - \tilde{k}_m(\tau)|  \,\mathrm{d}\tau  < 0.01 \int k(\tau) \,\mathrm{d}\tau,
-\end{equation*}
+\end{equation}
 where $\tilde{k}_m$ is the approximate covariance function with $m$ basis functions. Alternatively, these figures can be understood as providing the minimum $c$ that we should use for given $\ell$ and $m$. Of course, we may also read it as providing the minimum $\ell$ that can be approximated with high accuracy given $m$ and $c$. We obtain the following main conclusions:
 
 \begin{itemize}
@@ -680,6 +680,10 @@ Using large number of basis functions in smooth datasets (with length-scales gre
 Next we apply the diagnosis procedure over all the datasets of Figure \ref{fig_sec45_comparing_lscale}-left and we show that following our recomendations and the diagnosis we get the optimum solution with minimum requirements.
 
 
+
+\subsection{Other covariance functions}
+
+In Section \ref{sec_accuracy}, we thoroughly studied the relationship between the number of basis functions in the approximation and the approximation accuracy across different configurations. We specifically focused on the Matérn and squared exponential families of covariance functions, yet there exists other families of stationary covariance functions. The basis function approximation can easily be implemented for any stationary covariance function, where the spectral density function is available. The assess the accuracy of a basis function approximation for a kernel, where the diagnostic plots like Figure \ref{fig6_7_relationships} is not available, we suggest to use the relative total variational distance between the true covariance function and the approximate covariance function as given in eq. \eqref{eq:rel_total_distance}. Ensuring that the relative distance is bounded by a small constant for the relevant lengthscale implies a high quality approximation.
 
 
 \section{Case studies}\label{sec_cases}
