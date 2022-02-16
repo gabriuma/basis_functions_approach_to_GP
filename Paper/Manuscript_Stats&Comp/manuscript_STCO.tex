@@ -512,28 +512,37 @@ Next, we analyze how the interaction effects between $m$ and $c$ affects the qua
 \end{itemize}
 
 
-\subsection{Theoretical evidence of linear proportionality between $m$, $c$ and $l$} \label{subsec_theoretic_linearity}
+\subsection{Near linear proportionality between $m$, $c$, and $l$} \label{subsec_theoretic_linearity}
 
-There is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the length-scale $\ell$ of the approximated function. In this section we discuss about the existing theoretical evidence that the minimum number of basis functions $m$ needed for an accurate approximation is linearly proportional to the the boundary factor $c$ and inversely proportional to the lengthscale $l$. In the next Section \ref{subsec_empiric_relations} we conduct an empirical analysis through simulations to prove this expected linear proportionality between $m$, $c$ and $l$ and compute the specific coefficients of proportionality for every kernel.
+A priori the terms in the series expansion \eqref{eq_approxf_multi} with very small spectral density are unlikely to contribute to the approximation. Given the boundary factor $c$ and the length-scale $\ell$, we can compute cumulative sum of the spectral densities and find out how many basis functions are a priori explaining almost 100\% of the variation. Thus, given $c$ and $\ell$, we can estimate a good choice for the number of basis functions $m$ for any covariance function.
 
-{\color{blue}Aki: We can also look at the mean zero-level upcrossings, which for QE is
-proportional to 1/l which gives as that part, and the effect of c should also
-be quite linear when c is not very close to 1 and m is not very small as it
-linearly makes the interval shorter so that the there are less zero-level
-upcrossings available in the basis functions. You can visualize this using
-{\small \url{https://avehtari.github.io/casestudies/Motorcycle/motorcycle_gpcourse.html}} and
-look how the plot of 6 basis functions change when you set c=1, c=1.5, c=2.25
-(ie $1.5^2$). Instead of looking at mean zero-level crossings, we can look at the
-spectral densities and when they go to zero. This is illustrated in the same
-notebook after that figure. E.g. with lengthscale l=1,l=1/2, l=1/4, l=1/8 to
-explain 99\% of the prior variance we need 4, 8, 16, and 32 basis functions
-(linear in l) and to explain 80\% of the prior variance we need 2, 4, 8, 16
-basis functions. These spectral densities don't depend on c. When c increaes
-the basis functions are truncated and for example going from c=1.5 to c=2.25,
-basis function 9 has the flexibility basis function 6 had, so 1.5 more basis
-functions are needed. So we have proportionality c/l. }
+When considering exponentiated quadratic and Mat{\'e}rn covariance functions, we can show with simple algebra that when when $c$ is larger than the minimal value recommendation (see TODO ADD REF HERE), the $m$ first terms needed to explain almost 100\% of the variation has near linear relationship with $\ell$ and $c$. With decreasing $\ell$, the $m$ should grow near linearly with $1/\ell$ and with increasing $c$, the $m$ should grow near linearly with $c$.
+%
+This is natural as with decreasing $\ell$, more higher frequency basis functions are needed. With increasing $c$, the smaller range of the basis functions are used in the approximation, the expected number of zero up-crossings goes down linearly with $c$, and thus more higher frequency basis functions are needed to compensate this.
+%
+When $c$ is below our recommendations given $\ell$, the effect of $\ell$ and $c$ to the recommended $m$ is more non-linear, but as long as we stay in the recommended range the linearity assumption is useful thumb rule for how to change $m$ if $\ell$ or $c$ is changed.
 
-{\color{red} Gabi: The spectral densities do depend on $c$, see equations (\ref{eq_approxf}) and (\ref{eq_eigenvalue}).}
+% There is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the length-scale $\ell$ of the approximated function. In this section we discuss about the existing theoretical evidence that the minimum number of basis functions $m$ needed for an accurate approximation is linearly proportional to the the boundary factor $c$ and inversely proportional to the lengthscale $l$.
+% In the next Section \ref{subsec_empiric_relations} we conduct an empirical analysis through simulations to prove this expected linear proportionality between $m$, $c$ and $l$ and compute the specific coefficients of proportionality for every kernel.
+
+% {\color{blue}Aki: We can also look at the mean zero-level upcrossings, which for QE is
+% proportional to 1/l which gives as that part, and the effect of c should also
+% be quite linear when c is not very close to 1 and m is not very small as it
+% linearly makes the interval shorter so that the there are less zero-level
+% upcrossings available in the basis functions. You can visualize this using
+% {\small \url{https://avehtari.github.io/casestudies/Motorcycle/motorcycle_gpcourse.html}} and
+% look how the plot of 6 basis functions change when you set c=1, c=1.5, c=2.25
+% (ie $1.5^2$). Instead of looking at mean zero-level crossings, we can look at the
+% spectral densities and when they go to zero. This is illustrated in the same
+% notebook after that figure. E.g. with lengthscale l=1,l=1/2, l=1/4, l=1/8 to
+% explain 99\% of the prior variance we need 4, 8, 16, and 32 basis functions
+% (linear in l) and to explain 80\% of the prior variance we need 2, 4, 8, 16
+% basis functions. These spectral densities don't depend on c. When c increaes
+% the basis functions are truncated and for example going from c=1.5 to c=2.25,
+% basis function 9 has the flexibility basis function 6 had, so 1.5 more basis
+% functions are needed. So we have proportionality c/l. }
+
+% {\color{red} Gabi: The spectral densities do depend on $c$, see equations (\ref{eq_approxf}) and (\ref{eq_eigenvalue}).}
 
 \subsection{Empirical discovering of the functional form of the relationships between $m$, $c$ and $l$} \label{subsec_empiric_relations}
 
