@@ -563,7 +563,9 @@ where $\tilde{k}_m$ is the approximate covariance function with $m$ basis functi
 \begin{itemize}
 \item As $\ell$ increases, $m$ required for an accurate approximation decrease.
 \item The lower $c$, the smaller $m$ can and $\ell$ must be to achieve an accurate approximation.
-\item For a given $\ell$ there exist a minimum $c$ under which a accurate approximation is never going to be achieved regardless of $m$. This fact can be seen in Figures~\ref{fig6_7_relationships} and \ref{fig6_7_relationships} as the contour lines which represent $c$ have an end in function of $\ell$ (Valid $c$ are restricted in function of $\ell$). As $\ell$ increases, the minimum valid $c$ also increases.
+\item For a given $\ell$ there exist a minimum $c$ under which a accurate approximation is never going to be achieved regardless of $m$. This fact can be seen in Figures~\ref{fig6_7_relationships} and \ref{fig6_7_relationships}
+% TODO FIX the figure reference!
+as the contour lines which represent $c$ have an end in function of $\ell$ (Valid $c$ are restricted in function of $\ell$). As $\ell$ increases, the minimum valid $c$ also increases.
 \end{itemize}
 
 \subsubsection{Numerical equations}
@@ -620,11 +622,13 @@ Figure~\ref{fig6_7_relationships} was build for a GP with a unidimensional covar
 
 As stated above, Figure~\ref{fig6_7_relationships} provides the minimum length-scale that can be closely approximated given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of obtaining accurate inference about the function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
 
-Having obtained an estimate $\hat{\ell}$ of $\ell$ from the HSGP model based on prespecified $m$ and $c$, we can check whether or not $\hat{\ell}$ exceeds the minimum length-scale provided in Figure~\ref{fig6_7_relationships} (depending on which kernel is used). If $\hat{\ell}$ exceeds this recommended minimum length-scale, the approximation is assumed to be good. If, however, $\hat{\ell}$ does not exceed recommended minimum length-scale, the approximation may be inaccurate and $m$ should be increased or $c$ decreased. We may also use this diagnostic in an iterative procedure by starting from some initial guess of $\ell$ and initial values for $m$ and $c$, and if the estimated $\hat{\ell}$ is below the minimum length-scale, repeat the process while increasing $m$ or decreasing $c$. As mentioned earlier, $c$ cannot be decreased too much as the lowest useful value of $c$ is restricted by the length-scale. Thus, increasing $m$ may usually the preferred approach.
+Having obtained an estimate $\hat{\ell}$ of $\ell$ from the HSGP model based on prespecified $m$ and $c$, we can check whether or not $\hat{\ell}$ exceeds the minimum length-scale provided in Figure~\ref{fig6_7_relationships} (depending on which kernel is used). If $\hat{\ell}$ exceeds this recommended minimum length-scale, the approximation is assumed to be good. If, however, $\hat{\ell}$ does not exceed recommended minimum length-scale, the approximation may be inaccurate and $m$ should be increased or $c$ decreased. We may also use this diagnostic in an iterative procedure by starting from some initial guess of $\ell$ and initial values for $m$ and $c$, and if the estimated $\hat{\ell}$ is below the minimum length-scale, repeat the process while increasing $m$ or decreasing $c$. As mentioned earlier, $c$ cannot be decreased too much as the lowest useful value of $c$ is restricted by the length-scale. Thus, increasing $m$ is usually the preferred approach.
 
-If we look back to the conclusions drawn from Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, where $m = 10$ basis functions and a boundary factor of $c = 1.5$ were sufficient to obtain an accurate approximation of a function with $\ell = 0.3$, we can recognize that these conclusions also matches those obtained from Figure~\ref{fig6_7_relationships}.
+If we look back to the conclusions drawn from Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, where $m = 10$ basis functions and a boundary factor of $c = 1.5$ were sufficient to obtain an accurate approximation of a function with $\ell = 0.3$, we can recognize that these conclusions also match those obtained from Figure~\ref{fig6_7_relationships}.
 
 \subsubsection{A step-by-step user-guide to apply the diagnostics}
+
+If the initial lengthscale is not far from the optimal, and larger than minimal $c$ and $m$ are used in the first fitting, it is likely that the result is sufficiently accurate. The following iterative approach works as safety approach and allows also finding a smaller sufficient $m$ which can be useful if the user wants to optimized the computational speed for repeated fitting (e.g. in cross-validation or simulation based calibration).
 
 Based on the above proposed diagnostics, we obtain a simple step-by-step procedure that users can follow in order to obtain an accurate HSGP approximation. The procedure is split into two phases, Phase A and B, which have to be completed consequtively.
 %In the following, we will refer to the Equations from Section XXX for the double-exponential kernel, but the same procedure works for other kernels by using the corresponding Equations provided in the same Section.
@@ -632,9 +636,9 @@ Based on the above proposed diagnostics, we obtain a simple step-by-step procedu
 \paragraph*{Phase A:}
 
 \begin{enumerate}
-\item[Step A1.] Make an initial guess on true the lengthscale $l_1$ of the function to be learned. We recommend a large lengthscale, about $l_1 \approx 1$. Set the iteration index to $i=1$.
+\item[Step A1.] Make an initial guess on the lengthscale $l_1$. If there is no useful information available, we recommend to start with a large lengthscale, about $l_1 \approx 1$. Set the iteration index to $i=1$.
 %\item[] \hspace{-1cm} \textit{(Initial iteration, $i=1$)}
-\item[Step A2.] Obtain the minimum valid boundary factor $c_i$ determined by $l = l_i$ for the given kernel as per Section \ref{num_equations} 
+\item[Step A2.] Obtain the minimum valid boundary factor $c_i$ determined by $l = l_i$ for the given kernel as per Section \ref{num_equations} .
 \item[Step A3.] Obtain the mimimum valid number of basis functions $m_i$ determined by $l = l_i$ and $c = c_i$ for the given kernel as per Section \ref{num_equations}. 
 \item[Step A4.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
 \item[Step A5.] Perform the lengthscale diagnostic by checking if $\hat{l}_i \pm 0.02 \geq l_i$. 
