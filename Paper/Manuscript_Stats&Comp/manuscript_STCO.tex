@@ -516,7 +516,7 @@ Next, we analyze how the interaction effects between $m$ and $c$ affects the qua
 
 A priori the terms in the series expansion \eqref{eq_approxf_multi} with very small spectral density are unlikely to contribute to the approximation. Given the boundary factor $c$ and the length-scale $\ell$, we can compute cumulative sum of the spectral densities and find out how many basis functions are a priori explaining almost 100\% of the variation. Thus, given $c$ and $\ell$, we can estimate a good choice for the number of basis functions $m$ for any covariance function.
 
-When considering exponentiated quadratic and Mat{\'e}rn covariance functions, we can show with simple algebra that when when $c$ is larger than the minimal value recommendation (see TODO ADD REF HERE), the $m$ first terms needed to explain almost 100\% of the variation has near linear relationship with $\ell$ and $c$. With decreasing $\ell$, the $m$ should grow near linearly with $1/\ell$ and with increasing $c$, the $m$ should grow near linearly with $c$.
+When considering squared exponential and Mat{\'e}rn covariance functions, we can show with simple algebra that when when $c$ is larger than the minimal value recommendation (see TODO ADD REF HERE), the $m$ first terms needed to explain almost 100\% of the variation has near linear relationship with $\ell$ and $c$. With decreasing $\ell$, the $m$ should grow near linearly with $1/\ell$ and with increasing $c$, the $m$ should grow near linearly with $c$.
 %
 This is natural as with decreasing $\ell$, more higher frequency basis functions are needed. With increasing $c$, the smaller range of the basis functions are used in the approximation, the expected number of zero up-crossings goes down linearly with $c$, and thus more higher frequency basis functions are needed to compensate this.
 %
@@ -569,7 +569,10 @@ where $\tilde{k}_m$ is the approximate covariance function with $m$ basis functi
 \subsubsection{Numerical equations}
 \label{num_equations}
 
-From the empirical observations the hypothesis of linear proportionality between $m$, $\frac{l}{S}$ (lenghscale $l$ relative to the half range of the input domain $S$) and $c$ has been proved. Following we show the numerical functions governing these relationships for every kernel.
+When $c$ is large enough, there is near
+linear proportionality between $m$, $\frac{l}{S}$ (lenghscale $l$ relative to the half range of the input domain $S$) and $c$ (see Section~\ref{subsec_theoretic_linearity}). To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically derived the needed constant terms. We establish a lower bound for $c$ set to 1.2.
+
+% From the empirical observations the hypothesis of linear proportionality between $m$, $\frac{l}{S}$ (lenghscale $l$ relative to the half range of the input domain $S$) and $c$ has been proved. Following we show the numerical functions governing these relationships for every kernel.
 
 \paragraph*{Squared exponential}:
 %
@@ -581,18 +584,6 @@ with
 %
 \begin{align}\label{eq_c_vs_l_QE}
 &c \geq \, 3.2 \, \nicefrac{l}{S} \;\; \& \;\, c \geq \, 1.2      
-\end{align}
-
-\paragraph*{Mat\'ern ($\nu$=3/2)}:
-%
-\begin{align}\label{eq_m_l_mat32}
-&m= 3.42 \, \frac{c}{\nicefrac{l}{S}} \;\; \Leftrightarrow \;\; \nicefrac{l}{S}= 3.42 \, \frac{c}{m},
-\end{align}
-%
-with
-%
-\begin{align}\label{eq_c_vs_l_mat32}
-&c \, \geq \, 4.5 \, \nicefrac{l}{S} \;\; \& \;\, c \geq \, 1.2        
 \end{align}
 
 \paragraph*{Mat\'ern ($\nu$=5/2)}:
@@ -607,7 +598,19 @@ with
 &c \, \geq \, 4.1 \, \nicefrac{l}{S} \;\; \& \;\, c \geq \, 1.2       
 \end{align}
 
-Notice that we establish a lower bound for $c$ set to 1.2.
+\paragraph*{Mat\'ern ($\nu$=3/2)}:
+%
+\begin{align}\label{eq_m_l_mat32}
+&m= 3.42 \, \frac{c}{\nicefrac{l}{S}} \;\; \Leftrightarrow \;\; \nicefrac{l}{S}= 3.42 \, \frac{c}{m},
+\end{align}
+%
+with
+%
+\begin{align}\label{eq_c_vs_l_mat32}
+&c \, \geq \, 4.5 \, \nicefrac{l}{S} \;\; \& \;\, c \geq \, 1.2        
+\end{align}
+
+These constants vary monotonically with respect to $\nu$ (squared exponential corresponding to Mat\'ern with $\nu \rightarrow \infty$). Using the formula for Mat\'ern ($\nu$=3/2) provides the largest $m$ and $c$, and thus this formula alone could be used as a conservative choice for all Mat\'ern covariance functions with $\nu \geq 3/2$ and likely as a good initial guess for many other covariance functions. If the aim is to find minimal $m$ to speedup the computation, a further refined formula can be obtained for new covariance functions.
 
 Figure~\ref{fig6_7_relationships} was build for a GP with a unidimensional covariance function, which result in a surface depending on three variables, $m$, $c$ and $\ell$. An equivalent figure for a GP model with a two-dimensional covariance function would result in a surface depending on four variables, $m$, $c$, $\ell_1$ and $\ell_2$, which is more difficult to be graphically represented. More precisely, in the multi-dimensional case, whether the approximation is close enough might depend only on the ratio between wigglyness in every dimensions. For instance, in the two-dimensional case, it would depend on the ratio between $\ell_1$ and $\ell_2$ and could be graphically represented. Future research will focus on building useful graphs or analytical models that provide these relations in multi-dimensional cases. However, as an approximation, we can use the unidimensional GP conclusions in Figures \ref{fig6_7_relationships} and \ref{fig6_7_relationships} to check the accuracy by analyzing individually the different dimensions of a multidimensional GP model.
 
