@@ -1,0 +1,1419 @@
+---
+title: 'Section 4.2 of the paper'
+date: "`r format(Sys.Date())`."
+output:
+  bookdown::html_document2:
+  # html_document:
+    theme: readable
+    toc: yes
+    toc_depth: 4
+    toc_float: 
+      collapsed: true
+    code_download: yes
+    number_sections: true
+    df_print: kable # paged # 
+---
+  
+<style type="text/css">
+  body, td{ font-size: 14px; }
+code.r{ font-size: 12px; }
+pre{ font-size: 12px }
+h1.title {
+  font-size: 24px;
+  color: Black;
+}
+h1 { /* Header 1 */
+    font-size: 22px;
+  color: Black;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+  color: Black;
+}
+h3 { /* Header 3 */
+    font-size: 16px;
+  color: Black;
+}
+h4 { /* Header 4 */
+    font-size: 14px;
+  color: Black;
+}
+#TOC {
+color: DarkBlue;
+font-size: 16px;
+}
+</style>
+  
+```{r eval=TRUE, echo=FALSE}
+knitr::opts_chunk$set(echo=TRUE, comment="", eval=TRUE, include=FALSE)
+```
+
+```{r message=FALSE, eval=TRUE, warning=FALSE, include=TRUE}
+library(rstan)
+library(cmdstanr)
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = FALSE)
+library(posterior)
+library(bayesplot)
+library(ggplot2)
+library(gridExtra)
+library(RColorBrewer)
+library(latex2exp)
+library(reshape2)
+SEED <- 4945 #Seed for reproducibility
+```
+
+# Relationships among $m$, $l$ and $c$
+
+
+The relationship among the number of basis functions $m$, the lengthscale $l$, and the boundary factor $c$, for a quadratic exponentiated kernel adjusted on the empirical observations are:
+
+$$ m= 1.73 \, \frac{c}{\left(\frac{l}{S}\right)^{1.05}} \;\; \Leftrightarrow \;\; \frac{l}{S}= 1.68 \, \frac{c^{0.95}}{m^{0.95}}$$
+
+where $S$ is the half range of the input domain. Assuming linear proportionality between $m$ and $c/l$ and between $l$ and $c/m$, the adjusted coefficients of this relationship become:
+
+$$\begin{align*}
+m= 1.97 \, \frac{c}{\frac{l}{S}} \;\; \Leftrightarrow \;\; \frac{l}{S}= 1.97 \, \frac{c}{m}        (\#eq:m-l-QE)
+\end{align*}$$
+
+```{r eval=TRUE, include=TRUE}
+m_QE <- function(c,l,S){ #ceiling(1.73 * c / (l/S)^1.05)
+                        ceiling(1.97 * c / (l/S)) }
+
+l_QE <- function(c,m,S){ #round(S * 1.68 * c / m, 3)
+                        round(S * 1.97 * c / m, 3) }
+```
+
+In the above equations, the boundary factor $c$ has to fulfill \@ref(eq:c-vs-l-QE), as a function of $l$, and \@ref(eq:c-vs-m-QE), as a function of $m$.
+
+$$\begin{align*}
+\, c = c(l) \, \geq \, 0.97 + 1.45 \, \frac{l}{S}         (\#eq:c-vs-l-QE)
+\end{align*}$$
+
+```{r eval=TRUE, include=TRUE}
+c_vs_l_QE <- function(l,S){  #,m,m_max
+    c = 0.97+1.45*l/S #+(1*(l/S)^2)*(m-5)/(m_max-5)
+    if(c < 1.25){
+      c = 1.5
+    }else{
+      if(c >= 1.25 & c < 1.45){
+        c = 1.5
+      }else{
+        if(c >= 1.45 & c < 1.95){
+          c = 2
+        }else{
+          if(c >= 1.95 & c < 2.45){
+            c = 2.5
+          }else{
+            if(c >= 2.45 & c < 2.95){
+              c = 3
+            }else{
+              c = ceiling(c)
+            } } } } }
+  c
+}
+```
+
+$$\begin{align*}
+\, c = c(m) \, \geq \, 234.159 \, m^{-0.316 \, \text{log}^2m \, + \,  2.370 \, \text{log}m \,  - \, 6.008}       (\#eq:c-vs-m-QE)  
+\end{align*}$$
+
+```{r eval=TRUE, include=TRUE}
+c_vs_m_QE <- function(m){
+  c = 234.159*m^(-0.316*log(m)^2+2.370*log(m)-6.008)
+  if(c < 1.25 | m > 30){
+    c = 1.5
+  }else{
+    if(c >= 1.25 & c < 1.45){
+      c = 1.5
+    }else{
+      if(c >= 1.45 & c < 1.95){
+        c = 2
+      }else{
+        if(c >= 1.95 & c < 2.45){
+          c = 2.5
+        }else{
+          if(c >= 2.45 & c < 2.95){
+            c = 3
+          }else{
+            c = ceiling(c)
+          } } } } }
+  c
+}
+```
+
+When $c$ can be determined either by a function of $l$ and $m$, the maximum between both has to be selected:
+
+$$\begin{align*}
+\text{max}\left(c(l), c(m)\right)        (\#eq:max-c)
+\end{align*}$$
+
+```{r eval=TRUE, include=TRUE}
+c_vs_l_m_QE <- function(l,m,S) max(c_vs_l_QE(l,S), c_vs_m_QE(m))  #,m_max
+```
+
+# Diagnostic function
+
+The diagnostic to evaluate whether the approximation is sufficiently accurate is: 
+
+$$\begin{align*}
+\, \hat{l} \pm 0.02 \geq l          (\#eq:diagnostic)
+\end{align*}$$
+
+where $\hat{l}$ is the lengthscale estimate in the HSGP approximation and $l$ is the minimum lengthscale determined by the $m$ and $c$ used in the HSGP approximation by using equation \@ref(eq:m-l-QE). Notice the threshold $\,\pm 0.02$ in the diagnostic.
+
+```{r eval=TRUE, include=TRUE}
+diagnostic <- function(l,l_hat) l_hat + 0.02 >= l | l_hat - 0.02 >= l
+```
+
+# User-guide for diagnosis
+
+**Assumption of the diagnosis tool:**
+
+- Under inaccurate HSGP approximation, the estimated lengthscale $\hat{l}$ is smaller than the exact GP lengthscale estimate $l$.
+
+**User-guide with the steps to perform diagnosis:**
+
+0. Make a first guess on the lengthscale $l_1$ of the function to be learned.
+
+*Initial iteration*, $i=1$
+
+1. Obtain the valid minimum boundary factor $c_1$ determined by $l_1$ by using \@ref(eq:c-vs-l-QE).
+
+2. Obtain the valid mimimum number of basis functions $m_1$ determined by $l_1$ and $c_1$ by using \@ref(eq:m-l-QE). Notice that $l_1$ can also be read as the minimum lengthscale that can be accurately fitted determined by $m_1$ and $c_1$ by using \@ref(eq:m-l-QE).
+
+3. Fit the HSGP model and assess residuals: check any residual trends, compute *rmse* (Root mean square error), $R^2$ (Coefficient of variation) and *elpd* (Expected log predicitve density).
+
+4. Check the diagnostic of whether $\, \hat{l_1} \pm 0.02 \geq l_1$ (eq. \@ref(eq:diagnostic)).
+
+    4.1. If the diagnostic is TRUE, the HSGP model approximation must be sufficiently accurate or, at least, very close to be sufficiently accurate. Then user can continue with step 5.
+  
+    4.2. If the diagnostic is FALSE, the HSGP model approximation can not be sufficiently accurate. Then user has to move to step 10.
+
+*Next iterations*, $i>1$
+
+- If the diagnostic in step 4 is TRUE
+
+    5. Set $\, m_i = m_{i-1} + 10$.
+
+    6. Obtain the valid minimum boundary factor $c_i$ by using \@ref(eq:max-c), with $c(\hat{l}_{i-1})$ and $c(m_i)$.
+
+    7. Obtain the mimimum lengthscale $l_i$ that can be accurately fitted determined by $m_i$ and $c_i$ by using \@ref(eq:m-l-QE).
+
+    8. Fit the HSGP model and
+
+        8.1. Check whether $\, \hat{l}_i \pm 0.02 \geq l_i$ (eq. \@ref(eq:diagnostic)),
+  
+        8.2. Check stability in $\hat{l}_i$, *rmse*, $R^2$ and *elpd* relative to previous iteration.
+  
+    9. If the verifications in steps 8.1 and 8.2 are TRUE, the HSGP model approximation should be sufficiently accurate, and diagnosis ends here. Otherwise, repeat steps 5-9 and update parameters.
+
+- If the diagnostic in step 4 is FALSE
+
+    10. Set $\, l_i = \hat{l}_{i-1}$.
+
+    11. Repeat steps 1-4 and update parameters.
+
+# Synthetic datasets
+
+Draw various Gaussian process (GP) functions with different lengthscales. For each one of those GP functions, various noisy datasets are generated.
+
+Synthetic datasets $\boldsymbol{y}$ with a true data generating function $f$ which is a GP with a squared exponential kernel. Errors $\boldsymbol{\epsilon}$ with noise $\sigma$ are added to $f$ to form the final synthetic noisy dataset $\boldsymbol{y}$.
+
+\begin{align*}
+\begin{split}
+\boldsymbol{y} &= \boldsymbol{f} + \boldsymbol{\epsilon} \\
+\boldsymbol{\epsilon} &\sim \text{Normal}(\boldsymbol{0}, \sigma^2 \boldsymbol{I}) \\
+f(x) &\sim \text{GP}(0, k(x, x', \theta)),
+\end{split}
+\end{align*}
+
+where $k(x, x', \theta)$ is a squared exponential kernel as a function of input values $x$ and parameters $\theta$ (marginal variance of $f$ and lengthscale of the kernel).
+
+## Input space
+
+Vector of predictive input points `x_pred`, length of `x_pred` (`N_pred`) and vector of indices of `x_pred` (`vv_pred`).
+
+```{r eval=TRUE}
+x_pred <- seq(-1,1,0.001)
+N_pred <- length(x_pred)  
+vv_pred <- 1:length(x_pred)
+```
+
+Half range of the input domain.
+
+```{r eval=TRUE}
+S <- abs((max(x_pred) - min(x_pred))/2)
+S
+```
+
+## Draw the true data generative functions $f$ from GPs varying the lengthscale
+
+Initializing programming objects.
+
+```{r eval=TRUE}
+standata_SIMU <- list()
+fit_SIMU <- list()
+```
+
+Marginal variance `gpscale` and lengthscale `lscale`.
+
+```{r eval=TRUE, include=TRUE}
+gpscale <- 1
+lscale <- c(0.05,0.1,0.15,0.2,0.4,0.6,0.5,0.55,0.8,1.1)
+lscale
+```
+
+Random variables `eta` to simulate from the different GPs with different lengthscales.
+
+```{r eval=TRUE}
+set.seed(SEED)
+SEED_l <- sample(1:9999,length(lscale))
+
+eta <- list()
+for(l in 1:length(lscale)){
+  set.seed(SEED_l[l])
+  eta[[l]] <- rnorm(N_pred, 0, 1)
+}
+```
+
+Data to be passed to Stan.
+
+```{r eval=TRUE}
+for(l in 1:length(lscale))
+  standata_SIMU[[l]] <- list(x= x_pred, 
+                              N= N_pred, 
+                              gpscale= gpscale, 
+                              lscale= lscale[l], 
+                              eta= eta[[l]])
+```
+
+Model sampling.
+
+```{r eval=TRUE}
+load("fit_SIMU.rData")
+```
+
+```{r eval=TRUE}
+# simuGP_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_SIMU.stan")
+# for(l in 10){
+#   fit_SIMU[[l]] <- simuGP_mod$sample(data= standata_SIMU[[l]],
+#                                   iter_warmup=100,
+#                                   iter_sampling=100,
+#                                   chains=1, thin=1, init=0.5,
+#                                   fixed_param=TRUE)
+#   fit_SIMU[[l]] <- read_stan_csv(fit_SIMU[[l]]$output_files())
+# }
+```
+
+Drawn true data generative functions $f$ from the different GPs with different lengthscales.
+
+```{r eval=TRUE}
+f_true <- list()
+for(l in 1:length(lscale))
+  f_true[[l]] <- summary(fit_SIMU[[l]], pars = "f", probs = c(0.025, 0.5, 0.975))$summary[,1]
+names(f_true) <- lscale
+# str(f_true)
+```
+
+```{r eval=TRUE, fig.height=7, fig.width=15, include=TRUE, echo=FALSE}
+f_true_plt <- as.data.frame(f_true)
+f_true_plt$x <- x_pred
+f_true_plt <- melt(f_true_plt, id.vars = "x")
+levels(f_true_plt$variable) <- as.character(lscale)
+f_true_plt$variable <- as.numeric(as.character(f_true_plt$variable))
+ggplot(f_true_plt, aes(x=x, y=value))  +
+  geom_line(color = 'black', size=1) +
+  facet_wrap(~ variable, ncol=5) +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5), axis.title=element_text(size=18), axis.text=element_text(size=16), strip.text = element_text(size = 18)) +
+  labs(y="y")
+```
+
+## Sample points
+
+```{r eval=TRUE}
+vv_sample <- list()
+x_sample <- list()
+N_sample <- list()
+n <- c(200,170,140,110,90,100,100,120,90,100)
+for(l in 1:length(lscale)){
+	set.seed(SEED_l[l])
+	vv_sample[[l]] <- sort(sample(vv_pred, n[l]))
+	x_sample[[l]] <- x_pred[vv_sample[[l]]]
+	N_sample[[l]] <- length(x_sample[[l]])
+}
+```
+
+## Adding noise to $f$
+
+Five different noisy datasets $\boldsymbol{y}$ over each one of the true data generative functions $f$.
+
+```{r eval=TRUE, fig.height=5, fig.width=15}
+set.seed(SEED)
+SEED_l_i <- t(matrix(sample(1:9999,length(lscale)*5), 5, length(lscale)))
+
+noise <- rep(0.3,length(lscale))
+y <- list()
+for(l in 1:length(lscale)){
+  y[[l]] <- list()
+  for(i in 1:5){
+  	set.seed(SEED_l_i[l,i])
+  	y[[l]][[i]] <- as.vector(f_true[[l]][vv_sample[[l]]]) + rnorm(N_sample[[l]], 0, noise[l])
+  }
+}
+
+names(y) <- lscale  
+for(l in 1:length(lscale)){
+  names(y[[l]]) <-c("dataset1","dataset2","dataset3","dataset4","dataset5")
+}
+# str(y)
+```
+
+Plot of the noisy datasets.
+
+```{r eval=TRUE, fig.height=20, fig.width=15}
+y_plt<-list()
+for(l in 1:length(lscale)){
+  y_plt[[l]] <- as.data.frame(y[[l]])
+  y_plt[[l]]$lscale <- lscale[l]
+  y_plt[[l]]$x <- x_sample[[l]]
+}
+y_plt <- rbind(y_plt[[1]],y_plt[[2]],y_plt[[3]],y_plt[[4]],y_plt[[5]],y_plt[[6]],y_plt[[7]],y_plt[[8]],y_plt[[9]],y_plt[[10]])
+y_plt <- melt(y_plt, id.vars=c("lscale","x"), measure.vars=c("dataset1","dataset2","dataset3","dataset4","dataset5"), variable.name = "dataset")
+
+ggplot(y_plt[,], aes(x=x, y=value))  +
+  geom_point(color = 'black', size=1) +
+  facet_grid(rows=vars(lscale), cols=vars(dataset)) +
+  # facet_wrap(~ lscale + dataset, ncol=5) +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5), axis.title=element_text(size=20), axis.text=element_text(size=16), strip.text = element_text(size = 18)) +
+  labs(y="y")
+```
+
+# GP model fit
+
+Initializing programming objects.
+
+```{r eval=TRUE}
+standata_GP <- list()
+fit_GP <- list()
+```
+
+Data to be passed to Stan.
+
+```{r eval=TRUE}
+for(l in 1:length(lscale)){
+	standata_GP[[l]] <- list()
+	for(i in 1:5){
+		standata_GP[[l]][[i]] <- list(x= x_sample[[l]], 
+		                              y= y[[l]][[i]], 
+		                              N= N_sample[[l]], 
+		                              param_v= 99)
+	}
+}
+# str(standata_GP)
+```
+
+Model fitting.
+
+```{r eval=TRUE}
+load("fit_GP.rData")
+```
+
+```{r eval=TRUE}
+# gp_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_GP_marginalized.stan")
+# for(l in 10){
+# 	# fit_GP[[l]] <- list()
+# 	for(i in 1){
+#     fit_GP[[l]][[i]] <- gp_mod$sample(data= standata_GP[[l]][[i]],
+#                                     iter_warmup=400,
+#                                     iter_sampling=400,
+#                                     chains=4, thin=5, init=0.5,
+#                                     save_warmup = FALSE)
+#     fit_GP[[l]][[i]] <- rstan::read_stan_csv(fit_GP[[l]][[i]]$output_files())
+# 	}
+# }
+```
+
+Summaries of variable estimates.
+
+```{r eval=TRUE}
+param = c("lscale","gpscale","noise")
+for(l in 1){
+	for(i in 1){
+	  print(paste("dataset: lengthscale =", lscale[l], "dataset =", i), quote = FALSE)
+    print(round(summary(fit_GP[[l]][[i]], pars = param, probs = c(0.025, 0.5, 0.975))$summary,4))
+	}
+}
+```
+
+Simulation chains for the variables after warmup.
+
+```{r eval=TRUE, fig.height=3, fig.width=15}
+for(l in 1){
+	for(i in 1){
+	  print(paste("dataset: lengthscale =", lscale[l], "dataset =", i), quote = FALSE)
+    print(traceplot(fit_GP[[l]][[i]], pars= param, include= TRUE, unconstrain= FALSE, window= NULL, nrow= NULL, ncol= NULL))
+	}
+}
+```
+
+## Posterior GP mean functions
+
+```{r eval=TRUE}
+f_GP <- array(NA,c(N_sample[[1]],length(lscale),5,3))
+for(l in 1:length(lscale)){
+	for(i in 1:5){
+		f_GP[1:N_sample[[l]],l,i,1:3] <- summary(fit_GP[[l]][[i]], pars = c("f"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+	}
+}
+dimnames(f_GP)[[1]] <- 1:N_sample[[1]]
+dimnames(f_GP)[[2]] <- lscale
+dimnames(f_GP)[[3]] <- 1:5
+dimnames(f_GP)[[4]] <- c("mean","X2.5","X97.5")
+names(dimnames(f_GP)) <- c("id","lscale","dataset","percentil")
+# str(f_GP)
+```
+
+```{r eval=TRUE, fig.height=25, fig.width=15, include=TRUE, echo=FALSE}
+f_GP_plt <- melt(f_GP, na.rm=TRUE)
+f_GP_plt$x <- unlist(x_sample)
+f_GP_plt <- dcast(f_GP_plt, id + lscale + dataset + x ~ percentil)
+
+y_plt$dataset <- as.numeric(y_plt$dataset)
+
+ggplot(y_plt[,], aes(x=x, y=value))  +
+  geom_point(color = 'black', size=1) +
+  geom_line(data=f_GP_plt[,], mapping=aes(x=x, y=mean), size=1, color="red") +
+  geom_ribbon(mapping=aes(x=x, y=mean, ymin=X2.5, ymax=X97.5), data=f_GP_plt, alpha=0.2, color=NA, fill="red", inherit.aes=FALSE) +
+  # facet_wrap(~ lscale, ncol=3) +
+  facet_grid(rows=vars(lscale), cols=vars(dataset)) +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5), axis.title=element_text(size=20), axis.text=element_text(size=16), strip.text = element_text(size = 18)) +
+  labs(y="y")
+```
+
+## GP-lengthscale estimates
+
+```{r eval=TRUE}
+lscale_GP <- array(NA,c(length(lscale),5,3))
+for(l in 1:length(lscale)){
+	for(i in 1:5){
+		lscale_GP[l,i,] <- summary(fit_GP[[l]][[i]], pars = c("lscale"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+	}
+}
+
+dimnames(lscale_GP)[[1]] <- lscale
+dimnames(lscale_GP)[[2]] <- 1:5
+dimnames(lscale_GP)[[3]] <- c("mean","X2.5","X97.5")
+names(dimnames(lscale_GP)) <- c("lscale","dataset","percentil")
+str(lscale_GP)
+```
+
+## rmse
+
+```{r eval=TRUE}
+mse_GP <- matrix(NA,length(lscale),5)
+for(l in 1:length(lscale)){
+	for(i in 1:5){
+    mse_GP[l,i] <- sqrt(sum((f_true[[l]][vv_sample[[l]]] - f_GP[1:N_sample[[l]],l,i,1])^2)/N_sample[[l]])
+	}
+}
+
+dimnames(mse_GP)[[1]] <- lscale
+dimnames(mse_GP)[[2]] <- 1:5
+names(dimnames(mse_GP)) <- c("lscale","dataset")
+str(mse_GP)
+```
+
+# HSGP model fit
+
+```{r eval=TRUE}
+standata_HSGP <- list()
+fit_HSGP <- list()
+```
+
+Number of basis functions.
+
+```{r eval=TRUE}
+M <- c(5,10,15,20,30,40,60,80,100)
+M
+```
+
+Boundary factor $c$ as a function of $l$ and $m$, by using equation \@ref(eq:max-c)
+ 
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+c <- matrix(NA, length(lscale), length(M))
+for(l in 1:length(lscale)){
+  for(m in 1:length(M)){
+    c[l,m] <- c_vs_l_m_QE(apply(lscale_GP[,,1], 1, max)[l], M[m], S)
+  }
+}
+dimnames(c)[[1]] <- round(apply(lscale_GP[,,1], 1, max),2)
+dimnames(c)[[2]] <- M
+names(dimnames(c)) <- c("GP-lengthscale","m")
+c
+
+# c[4,6:9] <- c(2,2,2.5,2.5)
+# c[5,7:9] <- c(3,3.5,4.5)
+# c[6,7:9] <- c(3.5,4,5)
+# c
+```
+
+Boundary
+
+```{r eval=TRUE, include=TRUE}
+L <- c * S
+L
+```
+
+Data to be passed to Stan.
+
+```{r eval=TRUE}
+for(m in 1:length(M)){
+	standata_HSGP[[m]] <- list()
+	for(l in 1:length(lscale)){
+		standata_HSGP[[m]][[l]] <- list()
+		for(i in 1:5){
+			standata_HSGP[[m]][[l]][[i]] <- list(y= y[[l]][[i]], 
+			                                   x= x_sample[[l]], 
+			                                   N= N_sample[[l]], 
+			                                   L= L[l,m], M= M[m])
+		}
+	}
+}
+# str(standata_HSGP)
+```
+
+Model fitting.
+
+```{r eval=TRUE}
+load("fit_HSGP.rData")
+```
+
+```{r eval=TRUE}
+# hsgp_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_HSGP.stan")
+# for(m in c(3)){
+# 	# fit_HSGP[[m]] <- list()
+# 	for(l in c(10)){
+# 		# fit_HSGP[[m]][[l]] <- list()
+# 		for(i in c(5)){
+# 			fit_HSGP[[m]][[l]][[i]] <- hsgp_mod$sample(data= standata_HSGP[[m]][[l]][[i]],
+#                                                 iter_warmup=2000,
+#                                                 iter_sampling=2000,
+#                                                 chains=4, thin=10, init=2) #
+#       fit_HSGP[[m]][[l]][[i]] <- rstan::read_stan_csv(fit_HSGP[[m]][[l]][[i]]$output_files())
+# 		}
+# 	}
+# }
+```
+
+Summaries of variable estimates.
+
+```{r eval=TRUE}
+param = c("lscale","gpscale","noise")
+for(m in 1){
+	for(l in 1){
+		for(i in 1){
+		  print(paste("m =", M[m], "; dataset: lengthscale =", lscale[l], "dataset =", i), quote = FALSE)
+		  print(summary(fit_HSGP[[m]][[l]][[i]], pars = param, probs = c(0.025, 0.5, 0.975))$summary)
+		}
+	}
+}
+```
+
+Simulation chains for the variables after warmup.
+
+```{r eval=TRUE, fig.height=3, fig.width=15}
+for(m in 1){
+	for(l in 1){
+		for(i in 1){
+		  print(paste("m =", M[m], "; dataset: lengthscale =", lscale[l], "dataset =", i), quote = FALSE)
+  	  print(traceplot(fit_HSGP[[m]][[l]][[i]], pars = param, include = TRUE, unconstrain = FALSE, window = NULL, nrow = NULL, ncol = NULL))
+		}
+	}
+}
+```
+
+## Posterior HSGP mean functions
+
+```{r eval=TRUE}
+f_HSGP <-array(NA,c(N_sample[[1]],length(lscale),length(M),5,3))
+for(m in 1:length(M)){
+	for(l in 1:length(lscale)){
+		for(i in 1:5){
+			f_HSGP[1:N_sample[[l]],l,m,i,] <- summary(fit_HSGP[[m]][[l]][[i]], pars = c("f"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+		}
+	}
+}
+dimnames(f_HSGP)[[1]] <- 1:N_sample[[1]]
+dimnames(f_HSGP)[[2]] <- lscale
+dimnames(f_HSGP)[[3]] <- M
+dimnames(f_HSGP)[[4]] <- 1:5
+dimnames(f_HSGP)[[5]] <- c("mean","X2.5","X97.5")
+names(dimnames(f_HSGP)) <- c("id","lscale","m","dataset","percentil")
+# str(f_HSGP)
+```
+
+```{r eval=TRUE, fig.height=30, fig.width=20, include=TRUE, echo=FALSE}
+f_HSGP_plt <- melt(f_HSGP, na.rm=TRUE)
+f_HSGP_plt$x <- unlist(x_sample)
+f_HSGP_plt <- dcast(f_HSGP_plt, id + lscale + m + dataset + x ~ percentil)
+# str(f_HSGP_plt)
+
+ggplot(f_HSGP_plt[,], aes(x=x, y=mean, ymin=X2.5, ymax=X97.5, fill=as.factor(m), color=as.factor(m)))  +
+  geom_line(size=1.5) +
+  # geom_ribbon(alpha=0.2, color=NA) +
+  scale_fill_brewer(palette="Set1") +
+  scale_color_brewer(palette="Set1") +
+  geom_line(mapping=aes(x=x, y=mean), data=f_GP_plt[,], size=1, color='red', linetype=2, inherit.aes=FALSE) +
+  # geom_ribbon(mapping=aes(x=x, y=mean, ymin=X2.5, ymax=X97.5), data=f_GP_plt[,], alpha=0.2, color=NA, fill="blue", inherit.aes=FALSE) +
+  geom_point(mapping=aes(x=x, y=value), data=y_plt[,], size=0.7, color='black', inherit.aes=FALSE) +
+  labs(y="y", x="x", title="HSGP vs GP") +
+  theme_classic() +
+  theme(legend.position="top", title=element_text(size=22), axis.title.y=element_text(angle=0, vjust=0.5), axis.title=element_text(size=26), axis.text=element_text(size=22), strip.text = element_text(size = 26), legend.title = element_text(size=24), legend.text = element_text(size=22), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm')) +
+  coord_cartesian(ylim = c(-3,3)) +
+  facet_grid(rows=vars(lscale), cols=vars(dataset))
+```
+
+## HSGP-lengthscale estimates
+
+```{r eval=TRUE}
+lscale_HSGP <- array(NA,c(length(M),length(lscale),5,3))
+for(m in 1:length(M)){
+	for(l in 1:length(lscale)){
+		for(i in 1:5){
+			lscale_HSGP[m,l,i,] <- summary(fit_HSGP[[m]][[l]][[i]], pars = c("lscale"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary[,c(1,4,6)]
+		}
+	}
+}
+
+dimnames(lscale_HSGP)[[1]] <- M
+dimnames(lscale_HSGP)[[2]] <- lscale
+dimnames(lscale_HSGP)[[3]] <- 1:5
+dimnames(lscale_HSGP)[[4]] <- c("mean","X2.5","X97.5")
+names(dimnames(lscale_HSGP)) <- c("m","lscale","dataset","percentil")
+str(lscale_HSGP)
+```
+
+## HSGP-marginal variance estimates
+
+```{r eval=TRUE}
+gpscale_HSGP <- array(NA,c(length(M),length(lscale),5,3))
+for(m in 1:length(M)){
+	for(l in 1:length(lscale)){
+		for(i in 1:5){
+			gpscale_HSGP[m,l,i,] <- summary(fit_HSGP[[m]][[l]][[i]], pars = c("gpscale"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+		}
+	}
+}
+
+dimnames(gpscale_HSGP)[[1]] <- M
+dimnames(gpscale_HSGP)[[2]] <- lscale
+dimnames(gpscale_HSGP)[[3]] <- 1:5
+dimnames(gpscale_HSGP)[[4]] <- c("mean","X2.5","X97.5")
+names(dimnames(gpscale_HSGP)) <- c("m","lscale","dataset","percentil")
+str(gpscale_HSGP)
+```
+
+## rmse
+
+```{r eval=TRUE}
+mse_HSGP <- array(NA,c(length(M),length(lscale),5))
+for(m in 1:length(M)){
+	for(l in 1:length(lscale)){
+		for(i in 1:5){
+			mse_HSGP[m,l,i] <- sqrt(sum((f_GP[1:N_sample[[l]],l,i,1] - f_HSGP[1:N_sample[[l]],l,m,i,1])^2)/N_sample[[l]])
+		}
+	}
+}
+
+dimnames(mse_HSGP)[[1]] <- M
+dimnames(mse_HSGP)[[2]] <- lscale
+dimnames(mse_HSGP)[[3]] <- 1:5
+names(dimnames(mse_HSGP)) <- c("m","lscale","dataset")
+str(mse_HSGP)
+```
+
+# HSGP-lengthscale vs GP-lengthscale and HSGP-rmse vs GP-lengthscale
+
+```{r eval=TRUE, fig.height=15, fig.width=15}
+lscale_HSGP_melt <- melt(lscale_HSGP)
+lscale_GP_melt <- melt(lscale_GP)
+
+lscale_GP_HSGP_2 <- merge(lscale_HSGP_melt[lscale_HSGP_melt$lscale %in% lscale[c(1:10)],], 
+                          lscale_GP_melt[lscale_GP_melt$lscale %in% lscale[c(1:10)],], 
+                          by=c("lscale","percentil","dataset"), 
+                          suffixes = c(".HSGP",".GP"))
+
+p1 <- ggplot(lscale_GP_HSGP_2[lscale_GP_HSGP_2$percentil=="mean" ,], aes(x=value.GP, y=value.HSGP, color=as.factor(m))) +
+  geom_abline(linetype=2) +
+  geom_vline(aes(xintercept = value.GP), data=lscale_GP_HSGP_2[lscale_GP_HSGP_2$percentil=="mean" ,], linetype=2, color="grey") +
+  geom_line(size=1.2) +
+  scale_color_manual(values = RColorBrewer::brewer.pal(9, "Set1")) +
+  geom_point(data=lscale_GP_HSGP_2[lscale_GP_HSGP_2$percentil=="mean" ,], mapping=aes(x=value.GP, y=value.HSGP), size=3) +
+  labs(y="lscale_HSGP", x="lscale_GP") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm')) +
+  facet_wrap(~ dataset, ncol=2, scales = "free_x") + 
+  scale_x_continuous(limits=c(0,4)) 
+```
+
+<!-- Mean of all datasets -->
+
+```{r eval=TRUE, fig.height=8, fig.width=15}
+lscale_HSGP_melt_aggr <- aggregate(value ~ m + lscale + percentil, data= lscale_HSGP_melt[lscale_HSGP_melt$lscale %in% lscale[c(1:10)],], mean)
+
+lscale_GP_melt_aggr <- aggregate(value ~ lscale + percentil, data= lscale_GP_melt[lscale_GP_melt$lscale %in% lscale[c(1:10)],], mean)
+
+lscale_GP_HSGP <- merge(lscale_HSGP_melt_aggr, 
+                        lscale_GP_melt_aggr, 
+                        by=c("lscale","percentil"), 
+                        suffixes = c(".HSGP",".GP"))
+
+p2 <- ggplot(lscale_GP_HSGP[lscale_GP_HSGP$percentil=="mean",], aes(x=value.GP, y=value.HSGP, fill=as.factor(m), color=as.factor(m))) +
+  geom_abline(linetype=2) +
+  geom_vline(aes(xintercept = value.GP), data=lscale_GP_HSGP[lscale_GP_HSGP$percentil=="mean",], linetype=2, color="grey") +
+  geom_line(size=1.2) +
+  scale_color_manual(values = RColorBrewer::brewer.pal(9, "Set1")) +
+  # scale_colour_gradient2() +
+  geom_point(data=lscale_GP_HSGP[lscale_GP_HSGP$percentil=="mean",], mapping=aes(x=value.GP, y=value.HSGP), size=3) +
+  labs(y="lscale_HSGP", x="lscale_GP") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm'))
+```
+
+<!-- # HSGP-rmse vs GP-lengthscale -->
+
+```{r eval=TRUE, fig.height=8, fig.width=15}
+mse_HSGP_melt <- melt(mse_HSGP)
+mse_HSGP_melt2 <- merge(mse_HSGP_melt[mse_HSGP_melt$lscale %in% lscale[c(1:10)],], 
+                        lscale_GP_melt[lscale_GP_melt$percentil=="mean" & lscale_GP_melt$lscale %in% lscale[c(1:10)], c("lscale","value","dataset")], 
+                        by=c("lscale","dataset"))
+names(mse_HSGP_melt2) <- c("lscale","dataset","m","value","lscale_GP")
+
+p3 <- ggplot(mse_HSGP_melt2[,], aes(x=lscale_GP, y=value, fill=as.factor(m), color=as.factor(m))) +
+  geom_line(size=1.2) +
+  geom_vline(aes(xintercept = lscale_GP), linetype=2, color="grey") +
+  geom_hline(yintercept = 0, linetype=2) +
+  scale_color_manual(values = RColorBrewer::brewer.pal(9, "Set1")) +
+  labs(y="RMSE", x="lscale") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm')) +
+  geom_point(size=3) +
+  coord_cartesian(ylim = c(0,0.15)) +
+  facet_wrap(~ dataset, ncol=2, scales = "free_x") + 
+  scale_x_continuous(limits=c(0,4))
+```
+
+Mean of all data realizations for each function $f$.
+
+```{r eval=TRUE, fig.height=8, fig.width=15}
+mse_HSGP_melt3 <- merge(mse_HSGP_melt[mse_HSGP_melt$lscale %in% lscale[c(1:10)],], 
+                        lscale_GP_melt_aggr[lscale_GP_melt_aggr$percentil=="mean" & lscale_GP_melt_aggr$lscale %in% lscale[c(1:10)], c("lscale","value")], 
+                        by="lscale")
+names(mse_HSGP_melt3) <- c("lscale","m","dataset","value","lscale_GP")
+
+mse_HSGP_plt <- aggregate(value ~ m + lscale_GP, data = mse_HSGP_melt3, mean)
+mse_HSGP_plt$X33 <- mse_HSGP_plt$value - aggregate(value ~ m + lscale_GP, data = mse_HSGP_melt3, sd)$value #/sqrt(5)
+mse_HSGP_plt$X67 <- mse_HSGP_plt$value + aggregate(value ~ m + lscale_GP, data = mse_HSGP_melt3, sd)$value #/sqrt(5)
+
+p4 <- ggplot(mse_HSGP_plt[,], aes(x=lscale_GP, y=value, ymin=X33, ymax=X67, fill=as.factor(m), color=as.factor(m))) +
+  geom_vline(aes(xintercept = lscale_GP), linetype=2, color="grey") +
+  geom_ribbon(alpha=0.1, color=NA) +
+  geom_hline(yintercept = 0, linetype=2) +
+  geom_line(size=1.2) +
+  geom_point(size=3) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1")) +
+  # scale_fill_gradient2() +
+  scale_color_manual(values = RColorBrewer::brewer.pal(9, "Set1")) +
+  # scale_colour_gradient2() +
+  labs(y="rmse", x="lscale_GP") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm')) +
+  coord_cartesian(ylim = c(0,0.20))
+```
+
+```{r eval=TRUE, fig.height=8, fig.width=15, include=TRUE, echo=FALSE}
+grid.arrange(p2 + scale_x_continuous(breaks=c(0.1,0.5,1,2,3), trans="sqrt") + scale_y_continuous(breaks=c(0.1,0.5,1,2,3), trans="sqrt"), 
+             p4 + scale_x_continuous(breaks=c(0.1,0.5,1,2,3), trans="sqrt"), 
+             ncol=2)
+```
+
+HSGP-lengthscale estimates tend to be overestimated in both very large lengthscales and high number of basis functions. Which is also slightly reflected in the accuracy of the approximation with slightly bigger errors. This overestimation of the lengthscale estimate can be reversed by increasing the boundary factor.
+
+<!-- ## Increasing $c$ -->
+
+<!-- Boundary factor $c$ as a function of $l$ and $m$, by using equation \@ref(eq:max-c) -->
+
+<!-- ```{r eval=TRUE, include=TRUE, echo=FALSE} -->
+<!-- c <- matrix(NA, length(lscale), length(M)) -->
+<!-- for(l in 1:length(lscale)){ -->
+<!--   for(m in 1:length(M)){ -->
+<!--     c[l,m] <- c_vs_l_m_QE(apply(lscale_GP[,,1], 1, max)[l], M[m], S, max(M)) -->
+<!--   } -->
+<!-- } -->
+<!-- dimnames(c)[[1]] <- round(apply(lscale_GP[,,1], 1, max),2) -->
+<!-- dimnames(c)[[2]] <- M -->
+<!-- names(dimnames(c)) <- c("GP-lengthscale","m") -->
+<!-- c -->
+
+<!-- # c[4,6:9] <- c(2,2,2.5,2.5) -->
+<!-- # c[5,7:9] <- c(3,3.5,4.5) -->
+<!-- # c[5:10,9] <- c(3,4,5,6,9,12) -->
+<!-- # c -->
+<!-- ``` -->
+
+<!-- Boundary -->
+
+<!-- ```{r eval=TRUE, include=TRUE} -->
+<!-- L <- c * S -->
+<!-- L -->
+<!-- ``` -->
+
+<!-- Data to be passed to Stan. -->
+
+<!-- ```{r eval=TRUE} -->
+<!-- for(m in 1:length(M)){ -->
+<!-- 	standata_HSGP[[m]] <- list() -->
+<!-- 	for(l in 1:length(lscale)){ -->
+<!-- 		standata_HSGP[[m]][[l]] <- list() -->
+<!-- 		for(i in 1:5){ -->
+<!-- 			standata_HSGP[[m]][[l]][[i]] <- list(y= y[[l]][[i]],  -->
+<!-- 			                                   x= x_sample[[l]],  -->
+<!-- 			                                   N= N_sample[[l]],  -->
+<!-- 			                                   L= L[l,m], M= M[m]) -->
+<!-- 		} -->
+<!-- 	} -->
+<!-- } -->
+<!-- # str(standata_HSGP) -->
+<!-- ``` -->
+
+<!-- Model fitting. -->
+
+<!-- ```{r eval=TRUE} -->
+<!-- load("fit_HSGP_modifying_c.rData") -->
+<!-- ``` -->
+
+<!-- ```{r eval=TRUE} -->
+<!-- # hsgp_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_HSGP.stan") -->
+<!-- # for(m in 9){ -->
+<!-- # 	# fit_HSGP[[m]] <- list() -->
+<!-- # 	for(l in c(9)){ -->
+<!-- # 		# fit_HSGP[[m]][[l]] <- list() -->
+<!-- # 		for(i in c(2)){ -->
+<!-- # 			fit_HSGP[[m]][[l]][[i]] <- hsgp_mod$sample(data= standata_HSGP[[m]][[l]][[i]], -->
+<!-- #                                                 iter_warmup=2000, -->
+<!-- #                                                 iter_sampling=2000, -->
+<!-- #                                                 chains=4, thin=10, init=2) # -->
+<!-- #       fit_HSGP[[m]][[l]][[i]] <- rstan::read_stan_csv(fit_HSGP[[m]][[l]][[i]]$output_files()) -->
+<!-- # 		} -->
+<!-- # 	} -->
+<!-- # } -->
+<!-- # save(fit_HSGP, file="fit_HSGP_modifying_c.rData") -->
+<!-- ``` -->
+
+<!-- Simulation chains for the variables after warmup. -->
+
+<!-- ```{r eval=TRUE, fig.height=3, fig.width=15} -->
+<!-- for(m in 9){ -->
+<!-- 	for(l in 10){ -->
+<!-- 		for(i in 1:5){ -->
+<!-- 		  print(paste("m =", M[m], "; dataset: lengthscale =", lscale[l], "dataset =", i), quote = FALSE) -->
+<!--   	  print(traceplot(fit_HSGP[[m]][[l]][[i]], pars = param, include = TRUE, unconstrain = FALSE, window = NULL, nrow = NULL, ncol = NULL)) -->
+<!-- 		} -->
+<!-- 	} -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ### Posterior HSGP mean functions -->
+
+<!-- ```{r eval=TRUE} -->
+<!-- f_HSGP <-array(NA,c(N_sample[[1]],length(lscale),length(M),5,3)) -->
+<!-- for(m in 1:length(M)){ -->
+<!-- 	for(l in 1:length(lscale)){ -->
+<!-- 		for(i in 1:5){ -->
+<!-- 			f_HSGP[1:N_sample[[l]],l,m,i,] <- summary(fit_HSGP[[m]][[l]][[i]], pars = c("f"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)] -->
+<!-- 		} -->
+<!-- 	} -->
+<!-- } -->
+<!-- dimnames(f_HSGP)[[1]] <- 1:N_sample[[1]] -->
+<!-- dimnames(f_HSGP)[[2]] <- lscale -->
+<!-- dimnames(f_HSGP)[[3]] <- M -->
+<!-- dimnames(f_HSGP)[[4]] <- 1:5 -->
+<!-- dimnames(f_HSGP)[[5]] <- c("mean","X2.5","X97.5") -->
+<!-- names(dimnames(f_HSGP)) <- c("id","lscale","m","dataset","percentil") -->
+<!-- # str(f_HSGP) -->
+<!-- ``` -->
+
+<!-- ### HSGP-lengthscale estimates -->
+
+<!-- ```{r eval=TRUE} -->
+<!-- lscale_HSGP <- array(NA,c(length(M),length(lscale),5,3)) -->
+<!-- for(m in 1:length(M)){ -->
+<!-- 	for(l in 1:length(lscale)){ -->
+<!-- 		for(i in 1:5){ -->
+<!-- 			lscale_HSGP[m,l,i,] <- summary(fit_HSGP[[m]][[l]][[i]], pars = c("lscale"), probs = c(0.025, 0.5, 0.975), digits_summary = 4)$summary[,c(1,4,6)] -->
+<!-- 		} -->
+<!-- 	} -->
+<!-- } -->
+
+<!-- dimnames(lscale_HSGP)[[1]] <- M -->
+<!-- dimnames(lscale_HSGP)[[2]] <- lscale -->
+<!-- dimnames(lscale_HSGP)[[3]] <- 1:5 -->
+<!-- dimnames(lscale_HSGP)[[4]] <- c("mean","X2.5","X97.5") -->
+<!-- names(dimnames(lscale_HSGP)) <- c("m","lscale","dataset","percentil") -->
+<!-- str(lscale_HSGP) -->
+<!-- ``` -->
+
+<!-- ### rmse -->
+
+<!-- ```{r eval=TRUE} -->
+<!-- mse_HSGP <- array(NA,c(length(M),length(lscale),5)) -->
+<!-- for(m in 1:length(M)){ -->
+<!-- 	for(l in 1:length(lscale)){ -->
+<!-- 		for(i in 1:5){ -->
+<!-- 			mse_HSGP[m,l,i] <- sqrt(sum((f_GP[1:N_sample[[l]],l,i,1] - f_HSGP[1:N_sample[[l]],l,m,i,1])^2)/N_sample[[l]]) -->
+<!-- 		} -->
+<!-- 	} -->
+<!-- } -->
+
+<!-- dimnames(mse_HSGP)[[1]] <- M -->
+<!-- dimnames(mse_HSGP)[[2]] <- lscale -->
+<!-- dimnames(mse_HSGP)[[3]] <- 1:5 -->
+<!-- names(dimnames(mse_HSGP)) <- c("m","lscale","dataset") -->
+<!-- str(mse_HSGP) -->
+<!-- ``` -->
+
+<!-- ### HSGP-lengthscale vs GP-lengthscale and HSGP-rmse vs GP-lengthscale -->
+
+<!-- <!-- Mean of all datasets --> -->
+
+<!-- ```{r eval=TRUE, fig.height=8, fig.width=15} -->
+<!-- lscale_HSGP_melt <- melt(lscale_HSGP) -->
+<!-- lscale_GP_melt <- melt(lscale_GP) -->
+<!-- lscale_HSGP_melt_aggr <- aggregate(value ~ m + lscale + percentil, data= lscale_HSGP_melt[lscale_HSGP_melt$lscale %in% lscale[c(1:10)],], mean) -->
+
+<!-- lscale_GP_melt_aggr <- aggregate(value ~ lscale + percentil, data= lscale_GP_melt[lscale_GP_melt$lscale %in% lscale[c(1:10)],], mean) -->
+
+<!-- lscale_GP_HSGP <- merge(lscale_HSGP_melt_aggr,  -->
+<!--                         lscale_GP_melt_aggr,  -->
+<!--                         by=c("lscale","percentil"),  -->
+<!--                         suffixes = c(".HSGP",".GP")) -->
+
+<!-- p2 <- ggplot(lscale_GP_HSGP[lscale_GP_HSGP$percentil=="mean",], aes(x=value.GP, y=value.HSGP, color=as.factor(m))) + -->
+<!--   geom_abline(linetype=2) + -->
+<!--   geom_vline(aes(xintercept = value.GP), data=lscale_GP_HSGP[lscale_GP_HSGP$percentil=="mean",], linetype=2, color="grey") + -->
+<!--   geom_line(size=1.2) + -->
+<!--   scale_color_manual(values = RColorBrewer::brewer.pal(9, "Set1")) + #[c(1:4,8:11)] -->
+<!--   geom_point(data=lscale_GP_HSGP[lscale_GP_HSGP$percentil=="mean",], mapping=aes(x=value.GP, y=value.HSGP), size=3) + -->
+<!--   labs(y="lscale_HSGP", x="lscale_GP") + -->
+<!--   theme_classic() + -->
+<!--   theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm')) -->
+<!-- ``` -->
+
+<!-- <!-- # HSGP-rmse vs GP-lengthscale --> -->
+
+<!-- Mean of all data realizations for each function $f$. -->
+
+<!-- ```{r eval=TRUE, fig.height=8, fig.width=15} -->
+<!-- mse_HSGP_melt <- melt(mse_HSGP) -->
+<!-- mse_HSGP_melt3 <- merge(mse_HSGP_melt[mse_HSGP_melt$lscale %in% lscale[c(1:10)],],  -->
+<!--                         lscale_GP_melt_aggr[lscale_GP_melt_aggr$percentil=="mean" & lscale_GP_melt_aggr$lscale %in% lscale[c(1:10)], c("lscale","value")],  -->
+<!--                         by="lscale") -->
+<!-- names(mse_HSGP_melt3) <- c("lscale","m","dataset","value","lscale_GP") -->
+
+<!-- mse_HSGP_plt <- aggregate(value ~ m + lscale_GP, data = mse_HSGP_melt3, mean) -->
+<!-- mse_HSGP_plt$X33 <- mse_HSGP_plt$value - aggregate(value ~ m + lscale_GP, data = mse_HSGP_melt3, sd)$value #/sqrt(5) -->
+<!-- mse_HSGP_plt$X67 <- mse_HSGP_plt$value + aggregate(value ~ m + lscale_GP, data = mse_HSGP_melt3, sd)$value #/sqrt(5) -->
+
+<!-- p4 <- ggplot(mse_HSGP_plt[,], aes(x=lscale_GP, y=value, ymin=X33, ymax=X67, fill=as.factor(m), color=as.factor(m))) + -->
+<!--   geom_line(size=1.2) + -->
+<!--   geom_vline(aes(xintercept = lscale_GP), linetype=2, color="grey") + -->
+<!--   geom_ribbon(alpha=0.1, color=NA) + -->
+<!--   geom_hline(yintercept = 0, linetype=2) + -->
+<!--   scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1")) + #[c(1:4,8:11)] -->
+<!--   scale_color_manual(values = RColorBrewer::brewer.pal(9, "Set1")) + #[c(1:4,8:11)] -->
+<!--   labs(y="rmse", x="lscale_GP") + -->
+<!--   theme_classic() + -->
+<!--   theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm')) + -->
+<!--   geom_point(size=3) + -->
+<!--   coord_cartesian(ylim = c(0,0.10)) -->
+<!-- ``` -->
+
+<!-- ```{r eval=TRUE, fig.height=8, fig.width=15, include=TRUE, echo=FALSE} -->
+<!-- grid.arrange(p2, p4, nrow=1) -->
+<!-- ``` -->
+
+# Diagnosis
+
+Initializing programming objects.
+
+```{r eval=TRUE}
+standata <- list()
+for(i in 1:length(lscale)) standata[[i]] <- list()
+
+fit_diagnosis <- list()
+for(i in 1:length(lscale)) fit_diagnosis[[i]] <- list()
+
+diagnosis <- list()
+for(i in 1:length(lscale)) diagnosis[[i]] <- list()
+
+niter <- 10
+ndata <- 5
+l <- array(NA,c(length(lscale),niter,ndata))
+dimnames(l)[[1]] <- lscale
+dimnames(l)[[2]] <- 1:niter
+dimnames(l)[[3]] <- 1:ndata
+
+c <- array(NA,c(length(lscale),niter,ndata))
+dimnames(c)[[1]] <- lscale
+dimnames(c)[[2]] <- 1:niter
+dimnames(c)[[3]] <- 1:ndata
+
+m <- array(NA,c(length(lscale),niter,ndata))
+dimnames(m)[[1]] <- lscale
+dimnames(m)[[2]] <- 1:niter
+dimnames(m)[[3]] <- 1:ndata
+
+l_hat <- array(NA,c(length(lscale),niter,ndata))
+dimnames(l_hat)[[1]] <- lscale
+dimnames(l_hat)[[2]] <- 1:niter
+dimnames(l_hat)[[3]] <- 1:ndata
+
+check <- array(NA,c(length(lscale),niter,ndata))
+dimnames(check)[[1]] <- lscale
+dimnames(check)[[2]] <- 1:niter
+dimnames(check)[[3]] <- 1:ndata
+
+rmse <- array(NA,c(length(lscale),niter,ndata))
+dimnames(rmse)[[1]] <- lscale
+dimnames(rmse)[[2]] <- 1:niter
+dimnames(rmse)[[3]] <- 1:ndata
+
+rmse_gp <- array(NA,c(length(lscale),niter,ndata))
+dimnames(rmse_gp)[[1]] <- lscale
+dimnames(rmse_gp)[[2]] <- 1:niter
+dimnames(rmse_gp)[[3]] <- 1:ndata
+
+eR2 <- array(NA,c(length(lscale),niter,ndata))
+dimnames(eR2)[[1]] <- lscale
+dimnames(eR2)[[2]] <- 1:niter
+dimnames(eR2)[[3]] <- 1:ndata
+
+elpd <- array(NA,c(length(lscale),niter,ndata))
+dimnames(elpd)[[1]] <- lscale
+dimnames(elpd)[[2]] <- 1:niter
+dimnames(elpd)[[3]] <- 1:ndata
+
+f <- array(NA,c(N_sample[[1]],length(lscale),niter,3,ndata))
+dimnames(f)[[1]] <- 1:N_sample[[1]]
+dimnames(f)[[2]] <- lscale
+dimnames(f)[[3]] <- 1:niter
+dimnames(f)[[4]] <- c("mean","X2.5","X97.5")
+dimnames(f)[[5]] <- 1:ndata
+```
+
+## Select data realization 
+
+```{r eval=TRUE, include=TRUE, results='hold'}
+i_data <- 1
+print(paste("Data realization =", i_data), quote = FALSE)
+```
+
+## Select function $f$
+
+```{r eval=TRUE, include=TRUE, results='hold'}
+r <- 1
+print(paste("True data generative function-lengthcale =", round(lscale[r],2), ", GP-Lengthcale =", round(lscale_GP[r,i_data,1],2)), quote = FALSE)
+```
+
+## Iteration index
+
+```{r eval=TRUE, include=TRUE, results='hold'}
+i <- 1
+print(paste("Iteration =", i), quote = FALSE)
+```
+
+## Setting $m$, $l$ and $c$
+
+**If it is the first iteration, $i=1$**
+
+```{r eval=TRUE, include=TRUE}
+if(i==1){
+  print("It is the first iteration", quote = FALSE)
+}else{
+  print("It is NOT the first iteration", quote = FALSE)
+}
+```
+
+1. Making the first guess of $m_1$ being equal to 5
+
+```{r eval=TRUE, include=TRUE}
+if(i==1){
+  m[r,i,i_data] <- 5
+  print(paste("m[r,i] =", m[r,i,i_data]), quote = FALSE)
+}else{
+  print("It is NOT the first iteration", quote = FALSE)
+}
+```
+
+2. The boundary factor $c_1$ has to fulfill equation \@ref(eq:c-vs-m-QE)
+
+```{r eval=TRUE, include=TRUE}
+if(i==1){
+  c[r,i,i_data] <- c_vs_m_QE(m=m[r,i,i_data])
+  print(paste("c[r,i] =", c[r,i,i_data]), quote = FALSE)
+}else{
+  print("It is NOT the first iteration", quote = FALSE)
+}
+```
+
+**If it is the second iteration or further, $i>1$**
+
+```{r eval=TRUE, include=TRUE}
+if(i==1){
+  print("It is NOT the second iteration or further", quote = FALSE)
+}else{
+  print("It is the second iteration or further", quote = FALSE)
+}
+```
+
+1. If the diagnostic $\hat{l}_{i-1} \geq l_{i-1}$ is TRUE:
+
+    2.1. Update $m_i = m_{i-1} + 10$
+    
+    2.2. The boundary factor $c_i$ has to fulfill \@ref(eq:max-c) where $c(l)$ is evaluated as a function of $\hat{l}_{i-1}$ and $c(m)$ is obtained as a function of $m_{i}$.
+
+2. If the diagnostic $\hat{l}_{i-1} \geq l_{i-1}$ is FALSE: 
+
+    2.1. Update $l_i = \hat{l}_{i-1}$
+    
+    2.2. The boundary factor $c_i$ has to fulfill \@ref(eq:c-vs-l-QE)
+    
+    2.3. The number of basis functions $m_i$ as a function of $l_i$ and $c_i$ by using \@ref(eq:m-l-QE)
+    
+    2.4. Update the boundary factor $c_i$ obtained in step 2.3 by equation \@ref(eq:max-c) where $c(l)$ is evaluated as a function of $l_i$ and $c(m)$ is obtained as a function of $m_i$.
+    
+```{r eval=TRUE, include=TRUE, results='hold'}
+if(i!=1){
+  if(diagnostic(l[r,i-1,i_data], l_hat[r,i-1,i_data])){
+    print("Diagnostic is TRUE", quote = FALSE)
+    m[r,i,i_data] <- m[r,i-1,i_data] + 10
+    c[r,i,i_data] <- c_vs_l_m_QE(l=l_hat[r,i-1,i_data], m=m[r,i,i_data], S=S)
+    print(paste("m[r,i] =", m[r,i,i_data]), quote = FALSE) 
+    print(paste("c[r,i] =", c[r,i,i_data]), quote = FALSE)
+  }else{
+    print("Diagnostic is FALSE", quote = FALSE)
+    l[r,i,i_data] <- l_hat[r,i-1,i_data]
+    c[r,i,i_data] <- c_vs_l_QE(l=l[r,i,i_data], S=S)
+    m[r,i,i_data] <- m_QE(c=c[r,i,i_data], l=l[r,i,i_data], S=S)
+    c[r,i,i_data] <- c_vs_l_m_QE(l=l[r,i,i_data], m=m[r,i,i_data], S=S)
+    print(paste("l[r,i] =", l[r,i,i_data]), quote = FALSE)
+    print(paste("c[r,i] =", c[r,i,i_data]), quote = FALSE)
+    print(paste("m[r,i] =", m[r,i,i_data]), quote = FALSE)
+    print(paste("c[r,i] =", c[r,i,i_data]), quote = FALSE)
+  }
+}else{
+  print("It is NOT the second iteration or further", quote = FALSE)
+}
+```
+
+## Data to be passed to Stan
+
+```{r eval=TRUE, include=TRUE}
+standata[[r]][[i]] <- list(y= y[[r]][[i_data]],
+                      x= x_sample[[r]],
+                      N= N_sample[[r]],
+                      L= c[r,i,i_data]*S,
+                      M= m[r,i,i_data])
+str(standata[[r]][[i]])
+```
+
+## Model fitting
+
+Model fitting.
+
+```{r eval=TRUE, include=FALSE}
+hsgp_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_HSGP.stan")
+fit_diagnosis[[r]][[i]] <- hsgp_mod$sample(data= standata[[r]][[i]], 
+                                iter_warmup=1000, 
+                                iter_sampling=1000, 
+                                chains=4, thin=10, init=2)
+fit_diagnosis[[r]][[i]] <- rstan::read_stan_csv(fit_diagnosis[[r]][[i]]$output_files())
+```
+
+Summaries of variable estimates and simulation chains for the variables after warmup.
+
+```{r fig.height=3, fig.width=15, eval=TRUE, include=TRUE, results='hold', collapse=TRUE}
+param = c("lscale","gpscale","noise")
+print(paste("m =", m[r,i,i_data], "; True data generative function-lengthcale =", round(lscale[r],2), "(r =", r, ")"), quote = FALSE)
+summary(fit_diagnosis[[r]][[i]], pars = param, probs = c(0.025, 0.5, 0.975))$summary
+traceplot(fit_diagnosis[[r]][[i]], pars = param, include = TRUE, unconstrain = FALSE, inc_warmup = FALSE, window = NULL, nrow = NULL, ncol = NULL)
+```
+
+Plot of the posterior mean functions.
+
+```{r fig.height=4, fig.width=10, eval=TRUE, include=TRUE, echo=FALSE}
+f[1:N_sample[[r]],r,i,1:3,i_data] <- summary(fit_diagnosis[[r]][[i]], pars = c("f"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+dimnames(f)[[1]] <- 1:N_sample[[1]]
+dimnames(f)[[2]] <- lscale
+dimnames(f)[[3]] <- 1:niter
+dimnames(f)[[4]] <- c("mean","X2.5","X97.5")
+
+f_GP_diag <- data.frame(as.data.frame(f_GP[1:N_sample[[r]],r,i_data,1:3]), x=x_sample[[r]], type="GP")
+f_HSGP <- data.frame(as.data.frame(f[1:N_sample[[r]],r,i,1:3,i_data]), x=x_sample[[r]], type="HSGP")
+f_HSGP_GP <- rbind(f_GP_diag, f_HSGP)
+
+ggplot(f_HSGP_GP, aes(x=x, y=mean, ymin=X2.5, ymax=X97.5, fill=type, color=type))  +
+  geom_line(size=1.3) +
+  geom_ribbon(alpha=0.5, color=NA) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[[r]][[i_data]], x=x_sample[[r]]), size=1, color='black', inherit.aes=FALSE) +
+  labs(y="y", x="x") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5, size=12)) 
+```
+
+## Model evaluation
+
+Root mean square error `rmse`, Bayesian $R^2$ (Coefficient of determination), and expected log predictive density `elpd`.
+
+```{r eval=TRUE, include=TRUE}
+# rmse
+residual <- y[[r]][[i_data]] - f[1:N_sample[[r]],r,i,1,i_data]
+rmse[r,i,i_data] <- round(sqrt(mean(residual^2)), 3)
+
+residual_gp <- f_GP[1:N_sample[[r]],r,i_data,1] - f[1:N_sample[[r]],r,i,1,i_data]
+rmse_gp[r,i,i_data] <- round(sqrt(mean(residual_gp^2)), 3)
+
+# Coefficient of determination R^2
+noise <- as.matrix(fit_diagnosis[[r]][[i]], pars = c("noise"))
+sd_f <- apply(as.matrix(fit_diagnosis[[r]][[i]], pars = c("f")), 1, sd)
+eR2[r,i,i_data] <- round(median(sd_f^2/(sd_f^2 + noise^2)), 3)
+
+# elpd
+elpd[r,i,i_data] <- round(median(summary(fit_diagnosis[[r]][[i]], pars = c("lpd"))$summary[,1]), 3)
+```
+
+## Diagnosis
+
+1. If it is the first iteration (i.e. $i=1$) or the diagnostic $\, \hat{l}_{i-1} \pm 0.02 \geq l_{i-1}$ is true, the minimum lengthscale $l_{i}$ determined by $m_{i}$ and $c_{i}$ used in the HSGP approximation has to be computed by using \@ref(eq:m-l-QE)
+
+```{r eval=TRUE, include=TRUE}
+if(i==1){
+  l[r,i,i_data] <- l_QE(c=c[r,i,i_data], m=m[r,i,i_data], S=S)
+}else{
+  if(diagnostic(l[r,i-1,i_data], l_hat[r,i-1,i_data]))
+    l[r,i,i_data] <- l_QE(c=c[r,i,i_data], m=m[r,i,i_data], S=S)
+}
+print(paste("l[r,i] =", l[r,i,i_data]), quote = FALSE)
+```
+
+2. Lengthscale estimate $\hat{l_i}$ in the HSGP approximation
+
+```{r eval=TRUE, include=TRUE}
+l_hat[r,i,i_data] <- round(summary(fit_diagnosis[[r]][[i]], pars = "lscale")$summary[,1], 3)
+print(paste("l_hat[r,i] =", l_hat[r,i,i_data]), quote = FALSE)
+```
+
+3. Check the diagnostic of whether $\, \hat{l_i} \pm 0.02 \geq l_i$ 
+
+```{r eval=TRUE, include=TRUE}
+check[r,i,i_data] <- diagnostic(l[r,i,i_data], l_hat[r,i,i_data])
+
+diagnosis[[r]][[i]] <- data.frame(iter= i,
+                              l= l[r,i,i_data],
+                              c= c[r,i,i_data],
+                              m= m[r,i,i_data],
+                              l_hat= l_hat[r,i,i_data],
+                              'l_hat > l' = check[r,i,i_data],
+                              rsme = rmse[r,i,i_data],
+                              rsme_gp = rmse_gp[r,i,i_data],
+                              R2 = eR2[r,i,i_data],
+                              elpd = elpd[r,i,i_data])
+names(diagnosis[[r]][[i]]) <- c("iter", "l", "c", "m", "l_hat", "l_hat > l", "rmse", "rmse_gp", "R2", "elpd")
+
+if(i==1){ 
+  diagnosis[[r]][[i]]
+}else{
+  diagnosis[[r]][[i]] <- rbind(diagnosis[[r]][[i-1]],diagnosis[[r]][[i]])
+  diagnosis[[r]][[i]]
+}
+```
+
+```{r eval=TRUE}
+# save(l, file = "l.rData")
+# save(c, file = "c.rData")
+# save(m, file = "m.rData")
+# save(l_hat, file = "l_hat.rData")
+# save(check, file = "check.rData")
+# save(rmse, file = "rmse.rData")
+# save(rmse_gp, file = "rmse_gp.rData")
+# save(eR2, file = "eR2.rData")
+# save(elpd, file = "elpd.rData")
+# save(f, file = "f.rData")
+```
+
+# Diagnosis for the different functions $f$
+
+```{r eval=TRUE, include=TRUE}
+load("l.rData")
+load("c.rData")
+load("m.rData")
+load("l_hat.rData")
+load("check.rData")
+load("rmse.rData")
+load("rmse_gp.rData")
+load("eR2.rData")
+load("elpd.rData")
+load("f.rData")
+```
+
+```{r eval=TRUE, include=TRUE, echo=FALSE}
+diagnosis_all <- merge(melt(l, value.name="l", na.rm=TRUE), melt(c, value.name="c", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+diagnosis_all <- merge(diagnosis_all, melt(m, value.name="m", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+diagnosis_all <- merge(diagnosis_all, melt(l_hat, value.name="l_hat", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+diagnosis_all <- merge(diagnosis_all, melt(check, value.name="check", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+diagnosis_all <- merge(diagnosis_all, melt(rmse, value.name="rmse", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+diagnosis_all <- merge(diagnosis_all, melt(rmse_gp, value.name="rmse_gp", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+diagnosis_all <- merge(diagnosis_all, melt(eR2, value.name="eR2", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+diagnosis_all <- merge(diagnosis_all, melt(elpd, value.name="elpd", na.rm=TRUE), by=c("Var1","Var2","Var3"))
+names(diagnosis_all) <- c("f","iter", "i_data", "l", "c", "m", "l_hat", "l_hat > l", "rmse", "rmse_gp", "R2", "elpd")
+diagnosis_all <- merge(diagnosis_all, round(lscale_GP_melt[lscale_GP_melt$percentil=="mean",c("value","lscale","dataset")],3), by.x=c("f","i_data"), by.y=c("lscale","dataset"))
+names(diagnosis_all) <- c("f","i_data","iter", "l", "c", "m", "l_hat", "l_hat > l", "rmse", "rmse_gp", "R2", "elpd","lscale_GP")
+diagnosis_all <- diagnosis_all[,c("f","i_data","lscale_GP","iter", "l", "c", "m", "l_hat", "l_hat > l", "rmse", "rmse_gp", "R2", "elpd")]
+diagnosis_all <- diagnosis_all[with(diagnosis_all, order(f,i_data, iter)), ]
+diagnosis_all[diagnosis_all$i_data==1,]
+```
+
+```{r eval=TRUE, fig.height=8, fig.width=15, include=TRUE, echo=FALSE}
+# diagnosis_all_plt <- aggregate( . ~ f + iter, data= diagnosis_all, mean)
+diagnosis_all_plt <- diagnosis_all[diagnosis_all$i_data==1,]
+
+p10 <- ggplot(diagnosis_all_plt, aes(x=lscale_GP, y=l_hat, color=m)) +
+  geom_vline(aes(xintercept = lscale_GP), linetype=2, color="grey") +
+  geom_abline(linetype=2) +
+  scale_colour_gradient2() +
+  # scale_colour_continuous(type = "viridis", direction = -1) +
+  geom_point(size=4) +
+  labs(y="lscale_HSGP", x="lscale_GP") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm'))
+
+p11 <- ggplot(diagnosis_all_plt, aes(x=lscale_GP, y=rmse_gp, color=m)) +
+  geom_hline(yintercept = 0, linetype=2) +
+  geom_vline(aes(xintercept = lscale_GP), linetype=2, color="grey") +
+  scale_colour_gradient2() +
+  # scale_colour_continuous(type = "viridis", direction = -1) +
+  geom_point(size=4) +
+  labs(y="rmse", x="lscale_GP") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=90, vjust=0.5, size=18), legend.position="top", axis.title = element_text(size=18), axis.text = element_text(size=16), legend.title = element_text(size=18), legend.text = element_text(size=16), legend.key.size = unit(1, 'cm'), legend.key.height = unit(1, 'cm'), legend.key.width = unit(1, 'cm')) +
+  coord_cartesian(ylim = c(0,0.2))
+
+grid.arrange(p10 + scale_x_continuous(breaks=c(0.1,0.5,1,2,3),trans="sqrt") + scale_y_continuous(breaks=c(0.1,0.5,1,2,3),trans="sqrt"),
+             p11 + scale_x_continuous(breaks=c(0.1,0.5,1,2,3),trans="sqrt"),
+             ncol=2)
+```
+
