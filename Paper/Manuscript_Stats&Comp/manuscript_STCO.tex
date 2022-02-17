@@ -400,7 +400,7 @@ A GP model with a periodic covariance function does no fit in the framework of t
 
 The accuracy and speed of the HSGP model depends on several interrelated factors, most notably on the number of basis functions and on the boundary condition of the Laplace eigenfunctions. Furthermore, appropriate values for these factors will depend on the degree of non-linearity of the function to be estimated, which is in turn characterized by the length-scale of the covariance function. In this section, we analyze the effects of the number of basis functions and the boundary condition on the approximation accuracy. We present recommendations on how they should be chosen and diagnostics to check the accuracy of the obtained approximation. 
 
-Ultimately, these recommendations are based on the relationships among the number of basis functions $m$, the boundary condition $c$, and the length-scale $\ell$, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the square exponential and the Mat{\'e}rn ($\nu=3/2$ and $\nu=5/2$) covariance functions in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{sec_periodic}. For other kernels, the relationships will be slightly different depending on the smoothness or wigglyness of the covariance function.
+Ultimately, these recommendations are based on the relationships among the number of basis functions $m$, the boundary condition $L$, and the length-scale $\ell$, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the square exponential and the Mat{\'e}rn ($\nu=3/2$ and $\nu=5/2$) covariance functions in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{sec_periodic}. For other kernels, the relationships will be slightly different depending on the smoothness or wigglyness of the covariance function.
 
 \subsection{Dependency on the number of basis functions and the boundary condition} \label{subsec_dependency}
 
@@ -447,7 +447,7 @@ where $S > 0$ represents the half-range of the input space, and $c \geq 1$ is th
 \end{figure*}
 
 We start by illustrating how the number of basis functions $m$ and boundary factor $c$ influence the accuracy of the HSGP approximations individually. For this purpose, a set of noisy observations are drawn from an exact GP model with a squared exponential covariance function of length-scale $\ell=0.3$ and marginal variance $\alpha=1$, using input values from the zero-mean input domain with half-range $S=1$. Several HSGP models with varying $m$ and $c$ are fitted to this data. In this example, the length-scale and marginal variance parameters used in the HSGPs are fixed to the true values of the data-generating model. 
-Figures~\ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function as well as on the covariance function itself. For a sufficiently large fixed value of $c$, Figure \ref{fig1_Post_J} shows clearly how $m$ affects the accuracy on the approximation for both the posterior mean or uncertainty. It is seen that if the number of basis functions $m$ is too small, the estimated function tend to be overly smooth because the necessary high frequency components are missing. In general, the higher the degree of wigglyness of the function to be estimated, the larger number of  basis functions will be required. If $m$ is fixed to a sufficiently large value, Figure~\ref{fig2_Post_L} shows that $c$ affects the approximation mainly near the boundaries in mean, but along the whole domain in the standard deviation. The approximation error for the variance tends to be bigger for the variance than for the mean.
+Figures~\ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function as well as on the covariance function itself. For a sufficiently large fixed value of $c$, Figure \ref{fig1_Post_J} shows clearly how $m$ affects the accuracy on the approximation for both the posterior mean or uncertainty. It is seen that if the number of basis functions $m$ is too small, the estimated function tend to be overly smooth because the necessary high frequency components are missing. In general, the higher the degree of wigglyness of the function to be estimated, the larger number of  basis functions will be required. If $m$ is fixed to a sufficiently large value, Figure~\ref{fig2_Post_L} shows that $c$ affects the approximation of the mean mainly near the boundaries, while the approximation of the standard deviation is affected across the whole domain. What is more, the approximation error tends to be bigger for the standard deviation than for the mean.
 
 \begin{figure*}
 \centering
@@ -505,7 +505,7 @@ c = 2.5 &
   \label{fig5_lscale_vs_J}
 \end{figure*}
 
-Next, we analyze how the interaction effects between $m$ and $c$ affects the quality of the approximation. The length-scale and marginal variance of the covariance function will no longer be fixed but instead we compute the joint posterior distribution of the function values and the hyperparameters using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021} for both the exact GP and the HSGP models. Figure~\ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the model for varying $m$ and $c$. Figure \ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the exact GP model. Figure \ref{fig5_lscale_vs_J} shows the estimated length-scale and marginal variance for the exact GP model and the HSGP models. Looking at the RMSEs in Figure \ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computation time for this example would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$  could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure~\ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
+Next, we analyze how the interaction between $m$ and $c$ affects the quality of the approximation. The length-scale and marginal variance of the covariance function will no longer be fixed but instead we compute the joint posterior distribution of the function values and the hyperparameters using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021} for both the exact GP and the HSGP models. Figure~\ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the model for varying $m$ and $c$. Figure \ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the exact GP model. Figure \ref{fig5_lscale_vs_J} shows the estimated length-scale and marginal variance for the exact GP model and the HSGP models. Looking at the RMSEs in Figure \ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computation time for this example would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$  could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure~\ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
 
 \begin{itemize}
 \item As $c$ increases, $m$ has to increase as well (and vice versa). This is consistent with the expression for the eigenvalues in eq.~\eqref{eq_eigenvalue}, where $L$ appears in the denominator.
@@ -514,13 +514,13 @@ Next, we analyze how the interaction effects between $m$ and $c$ affects the qua
 
 \subsection{Near linear proportionality between $m$, $c$, and $l$} \label{subsec_theoretic_linearity}
 
-A priori, the terms in the series expansion \eqref{eq_approxf_multi} with very small spectral density are unlikely to contribute to the approximation. Given the boundary factor $c$ and the length-scale $\ell$, we can compute cumulative sum of the spectral densities and find out how many basis functions are, a priori, explaining almost 100\% of the variation. Thus, given $c$ and $\ell$, we can estimate a good choice for the number of basis functions $m$ for any covariance function.
+A priori, the terms in the series expansion \eqref{eq_approxf_multi} with very small spectral density are unlikely to contribute to the approximation. Given the boundary factor $c$ and the length-scale $\ell$, we can compute the cumulative sum of the spectral densities and find out how many basis functions are, a priori, explaining almost 100\% of the variation. Thus, given $c$ and $\ell$, we can estimate a good choice for the number of basis functions $m$ for any covariance function.
 
-When considering squared exponential and Mat{\'e}rn covariance functions, we can show with simple algebra that when when $c$ is larger than the minimal value recommendation, the $m$ first terms needed to explain almost 100\% of the variation has near linear relationship with $\ell$ and $c$. With decreasing $\ell$, the $m$ should grow near linearly with $1/\ell$, and with increasing $c$, the $m$ should grow near linearly with $c$.
+When considering squared exponential and Mat{\'e}rn covariance functions, we can show with simple algebra that when when $c$ is larger than the minimal value recommendation, the number of $m$ first terms needed to explain almost 100\% of the variation has a near linear relationship with $\ell$ and $c$. With decreasing $\ell$, the $m$ should grow near linearly with $1/\ell$, and with increasing $c$, the $m$ should grow near linearly with $c$.
 %
 This is natural as with decreasing $\ell$, more higher frequency basis functions are needed. With increasing $c$, as a smaller range of the basis functions are used in the approximation, the expected number of zero up-crossings goes down linearly with $c$, and thus more higher frequency basis functions are needed to compensate this.
 %
-When $c$ is below our recommendations given $\ell$, the effect of $\ell$ and $c$ to the recommended $m$ is more non-linear, but as long as we stay in the recommended range the linearity assumption is useful thumb rule for how to change $m$, if $\ell$ or $c$ is changed.
+When $c$ is below our recommendations given $\ell$, the effect of $\ell$ and $c$ to the recommended $m$ is more non-linear, but as long as we stay in the recommended range the linearity assumption is useful thumb rule for how to change $m$, if $\ell$ or $c$ are changed.
 
 % There is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the length-scale $\ell$ of the approximated function. In this section we discuss about the existing theoretical evidence that the minimum number of basis functions $m$ needed for an accurate approximation is linearly proportional to the the boundary factor $c$ and inversely proportional to the lengthscale $l$.
 % In the next Section \ref{subsec_empiric_relations} we conduct an empirical analysis through simulations to prove this expected linear proportionality between $m$, $c$ and $l$ and compute the specific coefficients of proportionality for every kernel.
@@ -569,14 +569,16 @@ where $\tilde{k}_m$ is the approximate covariance function with $m$ basis functi
 
 \subsubsection{Relationships between $J$ and $\ell$ for a periodic squared exponential covariance function} \label{subsec_empiric_relations_periodic}
 
+TODO: Is $J$ equal to $m$ or is this something else?
+
 In Appendix~\ref{sec_periodic}, we analyze the accuracy of the linear representation of a periodic squared exponential covariance function and derive the minimum number of terms $J$ in the approximation required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the length-scale $\ell$ of the kernel. Since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition. This relationship between $J$ and $\ell$ is gathered in Figure~\ref{figB1_m_lscale_periodic}.
 
 
 \subsubsection{Numerical equations}
 \label{sec_num_equations}
 
-When $c$ is large enough, there is near
-linear proportionality between $m$, $\frac{l}{S}$ (lenghscale $l$ relative to the half range of the input domain $S$) and $c$ (see Section~\ref{subsec_theoretic_linearity}). To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically derived the practically useful constant terms. We establish a lower bound for $c$ set to 1.2.
+As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enough, there is a near
+linear proportionality between $m$, $\frac{l}{S}$ (lengthscale $l$ relative to the half range of the input domain $S$) and $c$. To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically derived the practically useful constant terms. We require a lower bound for $c$ of $c \geq 1.2$ such that the equations below are precise enough for practical application.
 
 % From the empirical observations the hypothesis of linear proportionality between $m$, $\frac{l}{S}$ (lenghscale $l$ relative to the half range of the input domain $S$) and $c$ has been proved. Following we show the numerical functions governing these relationships for every kernel.
 
@@ -630,45 +632,45 @@ The numerical equation governing the relationships between $J$ and $\ell$ for a 
 
 \subsection{Diagnostics of the approximation} \label{subsec_diagnostics}
 
-As stated above, equations (\ref{eq_m_l_QE}), (\ref{eq_m_l_mat32}) and (\ref{eq_m_l_mat52}) (depending on which kernel is used) in previous Section~\ref{sec_num_equations} provide the minimum length-scale that can be closely approximated given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of obtaining accurate inference about the function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
+As stated above, equations (\ref{eq_m_l_QE}), (\ref{eq_m_l_mat32}) and (\ref{eq_m_l_mat52}) (depending on which kernel is used) provide the minimum length-scale that can be closely approximated given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of obtaining accurate inference about the function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
 
-Having obtained an estimate $\hat{\ell}$ of $\ell$ from the HSGP model based on prespecified $m$ and $c$, we can check whether or not $\hat{\ell}$ exceeds the minimum length-scale provided by equations (\ref{eq_m_l_QE}), (\ref{eq_m_l_mat32}) and (\ref{eq_m_l_mat52}) (depending on which kernel is used). If $\hat{\ell}$ exceeds this recommended minimum length-scale, the approximation is assumed to be good. If, however, $\hat{\ell}$ does not exceed recommended minimum length-scale, the approximation may be inaccurate and $m$ and/or $c$ need to be updated. If we look back to the conclusions drawn from Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, where $m = 10$ basis functions and a boundary factor of $c = 1.5$ were sufficient to obtain an accurate approximation of a function with $\ell = 0.3$, we can recognize that these conclusions also match those obtained from eq. (\ref{eq_m_l_QE}).
+Having obtained an estimate $\hat{\ell}$ of $\ell$ from the HSGP model based on prespecified $m$ and $c$, we can check whether or not $\hat{\ell}$ exceeds the minimum length-scale provided by equations (\ref{eq_m_l_QE}), (\ref{eq_m_l_mat32}) and (\ref{eq_m_l_mat52}) (depending on which kernel is used). If $\hat{\ell}$ exceeds this recommended minimum length-scale, the approximation is assumed to be good. If, however, $\hat{\ell}$ does not exceed the recommended minimum length-scale, the approximation may be inaccurate and $m$ and/or $c$ need to be updated. If we look back to the conclusions drawn from Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, where $m = 10$ basis functions and a boundary factor of $c = 1.5$ were sufficient to obtain an accurate approximation of a function with $\ell = 0.3$, we can recognize that these conclusions also match those obtained from eq. (\ref{eq_m_l_QE}).
 
-Apart from providing a powerful diagnostic tool in determining if the approxiamtion is sufficiently accurate, equations in previous Section~\ref{sec_num_equations} also give the optimal values for $m$ (the minimum $m$ required for an accurate approximation) and $c$ (the minimum $c$ that allows for the minimum $m$) that allow to minimizing the computational cost.
+Apart from providing a powerful diagnostic tool in determining if the approxiamtion is sufficiently accurate, the equations in the previous Section~\ref{sec_num_equations} also give the optimal values for $m$ (the minimum $m$ required for an accurate approximation) and $c$ (the minimum $c$ that allows for the minimum $m$) that allow to minimizing the computational cost.
 
 Guidelines for updating $m$ and/or $c$ are:
  
 \begin{itemize}
-	\item $c$ must be big enough for the length-scale $l$ of the function to be learned and,
-	\item $m$ must be big enough as a function of $\ell$ and $c$. 
+	\item $c$ must be big enough for the given length-scale $l$ of the function to be learned and,
+	\item $m$ must be big enough for the given $\ell$ and $c$. 
 \end{itemize}
 
-We recommend using this diagnostic in an iterative procedure by starting from some initial guess of $\ell$ and obtain the optimum valid values for $c$ and $m$ as a function of this initial guess of $\ell$ by using equations per Section~\ref{sec_num_equations} , and if the estimated $\hat{\ell}$ is below the minimum length-scale determined by $c$ and $m$ provided by equations in Section~\ref{sec_num_equations}, update $\ell$ with $\hat{\ell}$ and repeat the process. 
+We recommend using this diagnostic in an iterative procedure by starting from some initial guess of $\ell$ and obtain the optimum valid values for $c$ and $m$ as a function of this initial guess of $\ell$ by using the equations in Section~\ref{sec_num_equations}; and if the estimated $\hat{\ell}$ is below the minimum length-scale determined by $c$ and $m$, update $\ell$ with $\hat{\ell}$ and repeat the process. 
 
-A detailed guideline with the steps to perform diagnosis, ensuring that a good approximation is achieved with the minimum computational requirements (i.e. minimum number of basis functions $m$) is provided in  next Section~\ref{sec_user_guide}.
+If the initial lengthscale is not far from the optimal, and larger than minimal $c$ and $m$ are used in the initial HSGP model, it is likely that the initial results are already sufficiently accurate. The following iterative procedure works as safety approach and also allows finding a smaller sufficient $m$ which can be useful if the user wants to optimize the computational speed for repeated fitting (e.g., in cross-validation or simulation based calibration).
+
+%A detailed guideline with the steps to perform diagnostic, ensuring that a good approximation is achieved with the minimum computational requirements (i.e. minimum number of basis functions $m$) is provided in  next Section~\ref{sec_user_guide}.
 
 \subsubsection{A step-by-step user-guide to apply the diagnostics} \label{sec_user_guide}
 
-If the initial lengthscale is not far from the optimal, and larger than minimal $c$ and $m$ are used in the first fitting, it is likely that the result is sufficiently accurate. The following iterative approach works as safety approach and allows also finding a smaller sufficient $m$ which can be useful if the user wants to optimized the computational speed for repeated fitting (e.g. in cross-validation or simulation based calibration).
-
-Based on the above proposed diagnostics, we obtain a simple step-by-step procedure that users can follow in order to obtain an accurate HSGP approximation. The procedure is split into two phases, Phase A and B, which have to be completed consecutively.
+Based on the above proposed diagnostics, we obtain a simple, iterative step-by-step procedure that users can follow in order to obtain an accurate HSGP approximation. The procedure is split into two phases, Phase A and B, which have to be completed consecutively.
 %In the following, we will refer to the Equations from Section XXX for the double-exponential kernel, but the same procedure works for other kernels by using the corresponding Equations provided in the same Section.
 
 \paragraph*{Phase A:}
 
 \begin{enumerate}
 
-\item[Step A1.] Make an initial guess on the lengthscale $l_1$. If there is no useful information available, we recommend to start with a large lengthscale, about $\ell_1 \approx [0.5-1]$. Set the iteration index to $i=1$.
+\item[A1.] Make an initial guess on the lengthscale $l_1$. If there is no useful information available, we recommend to start with a large lengthscale, about $\ell_1 \in [0.5, 1]$. Set the iteration index to $i=1$.
 
-\item[Step A2.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \ell_i$ for the given kernel as per Section \ref{sec_num_equations}.
+\item[A2.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \ell_i$ for the given kernel as per Section \ref{sec_num_equations}.
 
-\item[Step A3.] Obtain the mimimum valid number of basis functions $m_i$ determined by $\ell = \ell_i$ and $c = c_i$ for the given kernel as per Section \ref{sec_num_equations}. 
+\item[A3.] Obtain the mimimum valid number of basis functions $m_i$ determined by $\ell = \ell_i$ and $c = c_i$ for the given kernel as per Section \ref{sec_num_equations}. 
 
-\item[Step A4.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
+\item[A4.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
 
-\item[Step A5.] Perform the lengthscale diagnostic by checking if $\hat{\ell}_i + 0.01 \geq \ell_i$. 
+\item[A5.] Perform the lengthscale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
 
-If the diagnostic is FALSE, the HSGP approximation is not yet sufficiently accurate. Set $\ell_{i+1} = \hat{\ell}_{i}$, increase the iteration index $i = i + 1$, and go back to Step A2.
+If the diagnostic is FALSE, the HSGP approximation is not yet sufficiently accurate. Set $\ell_{i+1} = \hat{\ell}_{i}$, increase the iteration index $i = i + 1$, and go back to A2.
 
 If the diagnostic is TRUE, the HSGP approximation is close to be sufficiently accurate. Continue with Phase B.
 
@@ -678,23 +680,23 @@ If the diagnostic is TRUE, the HSGP approximation is close to be sufficiently ac
 
 \begin{enumerate}
 
-\item[Step B1.] For the current HSGP model, compute measures of predictive accuracy, for example, root mean square error (RMSE), coefficient of determination ($R^2$), or expected log predicitve density (ELPD).
+\item[B1.] For the current HSGP model, compute measures of predictive accuracy, for example, root mean square error (RMSE), coefficient of determination ($R^2$), or expected log predicitve density (ELPD).
 
-\item[Step B2.] Set $m_{i+1} = m_{i} + 5$ and increase the iteration index $i = i + 1$.
+\item[B2.] Set $m_{i+1} = m_{i} + 5$ and increase the iteration index $i = i + 1$.
 
-\item[Step B3.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \hat{\ell}_{i-1}$ for the given kernel as per Section \ref{sec_num_equations}.
+\item[B3.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \hat{\ell}_{i-1}$ for the given kernel as per Section \ref{sec_num_equations}.
 
-\item[Step B4.] Obtain the mimimum valid lengthscale $\ell_i$ that can be accurately estimated by $m = m_i$ and $c = c_i$ for the given kernel as per Section \ref{sec_num_equations}.
+\item[B4.] Obtain the mimimum valid lengthscale $\ell_i$ that can be accurately estimated by $m = m_i$ and $c = c_i$ for the given kernel as per Section \ref{sec_num_equations}.
 
-\item[Step B5.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
+\item[B5.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
 
-\item[Step B6.] Perform the lengthscale diagnostic by checking if $\hat{\ell}_i + 0.01 \geq \ell_i$. 
+\item[B6.] Perform the lengthscale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
 
 Check the stability of both $\hat{\ell}_i$ and the measures of predictive accuracy relative to the previous iteration.
 
 If all the stability checks succeeed, the HSGP approximation of the latest model should be sufficiently accurate and the procedure ends here.
 
-Otherwise, go back to Step B1.
+Otherwise, go back to B1.
 \end{enumerate}
 
 \subsection{Performance analysis of the diagnostics}
@@ -706,10 +708,12 @@ Otherwise, go back to Step B1.
   \label{fig7_lscale_comparison}
 \end{figure*}
 
-First of all in this section we illustrate that accurate estimates of the length-scale implies accurate approximations with a small RMSEs. Thus, Figure~\ref{fig7_lscale_comparison}-left shows a comparison of the length-scale estimates
-obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq. (\ref{eq_c_vs_l_QE}). Figure \ref{fig7_lscale_comparison}-right shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale implies small RMSEs.
+In this section, we first illustrate that accurate estimates of the length-scale implies accurate approximations via HSGPs. Figure~\ref{fig7_lscale_comparison} left shows a comparison of the length-scale estimates
+obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq. (\ref{eq_c_vs_l_QE}). Figure \ref{fig7_lscale_comparison} right shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
 
-Furthermore, from Figure~\ref{fig7_lscale_comparison}-left it can be seen that using large number of basis functions relative to the wigglyness of the function to be learned (i.e. true length-scale) causes overestimating the underlying functions (see Figure~\ref{fig8_oversmoothed_posterios} as an illustration of the oversmoothing effect as a function of $m$ in a moderate smooth dataset) and, consequently, on the length-scale estimate too (Figure \ref{fig7_lscale_comparison}-left). Here it comes out a possible weaknesses of the approach which consists in using too many basis functions relative to the true length-scale causes overestimating the posteriors.
+Furthermore, from Figure~\ref{fig7_lscale_comparison} left it can be seen that using large number of basis functions relative to the wigglyness of the function to be learned (i.e., true length-scale) causes overestimating the underlying functions (see Figure~\ref{fig8_oversmoothed_posterios} as an illustration of the oversmoothing effect as a function of $m$ in a moderate smooth dataset) and, consequently, on the length-scale estimate too (Figure \ref{fig7_lscale_comparison} left). Here it comes out a possible weaknesses of the approach which consists in using too many basis functions relative to the true length-scale causes overestimating the posteriors.
+
+TODO: Please clarify the last sentence above. I don't get that is ment here.
 
 \begin{figure}
 \centering
@@ -718,32 +722,44 @@ Furthermore, from Figure~\ref{fig7_lscale_comparison}-left it can be seen that u
   \label{fig8_oversmoothed_posterios}
 \end{figure}
 
-Secondly in this section, Figure~\ref{fig9_diagnosis} shows the iterative steps of applying the diagnosis procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig7_lscale_comparison}-left, showing that by following our recommendations, an optimum solution with minimum computational requirements is achieved. Figure~\ref{fig10_diagnosis_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between 2 and 4 iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length scale and the true length scale, are sufficient to reach the optimal values of $m$ and $c$. Furthermore, as can be seen in Figure~\ref{fig10_diagnosis_lscale_comparison}, following our diagnostic recommendations avoids overestimation.
+Figure~\ref{fig9_diagnostic} shows the iterative steps of applying the diagnostic procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig7_lscale_comparison} left. It is clearly visible that by following our recommendations, an optimum solution with minimum computational requirements is achieved in these cases. Figure~\ref{fig10_diagnostic_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between two and four iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length scale and the true length scale, are sufficient to reach the optimal values of $m$ and $c$. Furthermore, as can be seen in Figure~\ref{fig10_diagnostic_lscale_comparison}, following our diagnostic recommendations avoids overestimation.
 
-As examples, the iterative steps applied to perform diagnosis on two of the data sets in Figure~\ref{fig9_diagnosis} are described next:
+TODO: overestimation of what?
 
-\paragraph*{Data set with the exact GP length-scale $\ell_{\text{GP}} = 0.08$:} 
+TODO: Personally, I think the two examples of the procedure below should go to an appendix, as they take a lot of space and don't add so much additional value.
+
+As concrete examples, the iterative steps applied to perform diagnostic on two of the data sets in Figure~\ref{fig9_diagnostic} are described next:
+
+\paragraph*{Data set with the squared exponential kernel and true length-scale $\ell_{\text{GP}} = 0.08$:} 
 \begin{itemize}
 \item[] Iteration 1:
 	\begin{enumerate}
-	\item Making the initial guess that the length-scale $\ell_1=0.5$.
+	\item Make the initial guess that the length-scale $\ell_1=0.5$.
 	
-	\item Computing the optimal $c_1$ as a function of $\ell_1$ by using eq.~(\ref{eq_c_vs_l_QE}).
+	\item Compute the optimal $c_1$ as a function of $\ell_1$ by using eq.~(\ref{eq_c_vs_l_QE}).
 	
-	\item Computing the minimum $m_1$ as a function of $c_1$ and $\ell_1$ by using eq.~(\ref{eq_m_l_QE}).
+	TODO: name the value of $c_1$ and all the other quantities in the following. Otherwise, what is the purpose of this example?
 	
-	\item Fitting the HSGP model and obtain the estimated $\hat{\ell}_1$.
+	\item Compute the minimum $m_1$ as a function of $c_1$ and $\ell_1$ by using eq.~(\ref{eq_m_l_QE}).
+	
+	\item Fit the HSGP model and obtain the estimated $\hat{\ell}_1$.
+	
+	TODO: provide at least a mean value for the posterior of  $\hat{\ell}_1$ here?
 	
 	\item The diagnostic $\hat{\ell}_1 + 0.01 \geq \ell_1$ gives FALSE.
+	
+	TODO: I think you wanted to use $\hat{\ell}_1 - 0.01 \geq \ell_1$ and I corrected it above. Can you verify whether you want + or -?
 	\end{enumerate}
 	
 \item[] Iteration 2:
 	\begin{enumerate}
-	\item As the diagnostic in previous iteration 1 was FALSE, update $\ell_2$ with $\hat{\ell}_1$.
+	\item As the diagnostic in iteration 1 was FALSE, set $\ell_2 = \hat{\ell}_1$.
 	
-	\item Computing the optimal $c_2$ as a function of $\ell_2$ and $m_1$ as a function of $c_2$ and $\ell_2$ by using equations~(\ref{eq_c_vs_l_QE}) and eq.~(\ref{eq_m_l_QE}), respectively.
+	\item Compute the optimal $c_2$ as a function of $\ell_2$ and $m_1$ as a function of $c_2$ and $\ell_2$ by using equations~(\ref{eq_c_vs_l_QE}) and eq.~(\ref{eq_m_l_QE}), respectively.
 	
-	\item Fitting the HSGP model using $c_2$ and $m_2$ and estimating $\hat{\ell}_2$.
+	TODO: why make this a single step here when it was two steps in Section 4.4.1?
+	
+	\item Fit the HSGP model using $c_2$ and $m_2$ and estimating $\hat{\ell}_2$.
 	
 	\item The diagnostic $\hat{\ell}_2 + 0.01 \geq \ell_2$ gives FALSE.
 	\end{enumerate}
@@ -757,50 +773,50 @@ As examples, the iterative steps applied to perform diagnosis on two of the data
 	
 \item[] Iteration 4:
 	\begin{enumerate}
-	\item As the diagnostic in step 4 in previous iteration 3 was TRUE, increasing $m_4 = m_3 + 5$.
+	\item As the diagnostic in step 4 in previous iteration 3 was TRUE, set $m_4 = m_3 + 5$.
 	
-	\item Computing the optimal $c_4$ as a function of $\ell_3$ by using eq.~(\ref{eq_c_vs_l_QE}).
+	\item Compute the optimal $c_4$ as a function of $\ell_3$ by using eq.~(\ref{eq_c_vs_l_QE}).
 	
-	\item Fitting the HSGP model using $c_4$ and $m_4$ and estimating $\hat{\ell}_4$.
+	\item Fit the HSGP model using $c_4$ and $m_4$ and estimating $\hat{\ell}_4$.
 	
 	\item The diagnostic $\hat{\ell}_4 + 0.01 \geq \ell_4$ gives TRUE.
 	
-	\item As RMSE, $R^2$ and ELPD are stable relative to previous iteration 4 the approximation must be sufficiently accurate.
+	\item As RMSE, $R^2$, and ELPD are stable relative to previous iteration 4, the HSGP approximation is likely sufficiently accurate and the procedure ends here.
 	\end{enumerate}
 	
 \end{itemize} 
 
-\paragraph*{Data set with the exact GP length-scale $\ell_{\text{GP}} = 1.4$:} 
+\paragraph*{Data set with the squared exponential kernel and true length-scale $\ell_{\text{GP}} = 1.4$:} 
 \begin{itemize}
 \item[] Iteration 1:
 	\begin{enumerate}
-	\item Making the initial guess that the length-scale $\ell_1=1$.
+	\item Make the initial guess that the length-scale $\ell_1=1$.
 	
-	\item Computing the optimal $c_1$ as a function of $\ell_1$ by using eq.~(\ref{eq_c_vs_l_QE}).
+	\item Compute the optimal $c_1$ as a function of $\ell_1$ by using eq.~(\ref{eq_c_vs_l_QE}).
 	
-	\item Computing the minimum $m_1$ as a function of $c_1$ and $\ell_1$ by using eq.~(\ref{eq_m_l_QE}).
+	\item Compute the minimum $m_1$ as a function of $c_1$ and $\ell_1$ by using eq.~(\ref{eq_m_l_QE}).
 	
-	\item Fitting the HSGP model and obtain the estimated $\hat{\ell}_1$.
+	\item Fit the HSGP model and obtain the estimated $\hat{\ell}_1$.
 	
 	\item The diagnostic $\hat{\ell}_1 + 0.01 \geq \ell_1$ gives TRUE.
 	\end{enumerate}
 	
 \item[] Iteration 2:
 	\begin{enumerate}
-	\item As the diagnostic in previous iteration 1 was TRUE, increasing $m_2 = m_1 + 5$.
+	\item As the diagnostic in previous iteration 1 was TRUE, set $m_2 = m_1 + 5$.
 	
-	\item Computing the optimal $c_2$ as a function of $\ell_2$ by using eq.~(\ref{eq_c_vs_l_QE}).
+	\item Compute the optimal $c_2$ as a function of $\ell_2$ by using eq.~(\ref{eq_c_vs_l_QE}).
 	
-	\item Fitting the HSGP model using $c_2$ and $m_2$ and estimating $\hat{\ell}_2$.
+	\item Fit the HSGP model using $c_2$ and $m_2$ and estimating $\hat{\ell}_2$.
 	
 	\item The diagnostic $\hat{\ell}_2 + 0.01 \geq \ell_2$ gives TRUE.
 	
-	\item As RMSE, $R^2$ and ELPD are stable relative to previous iteration 2 the approximation must be sufficiently accurate.
+	\item As RMSE, $R^2$, and ELPD are stable relative to previous iteration 2, the HSGP approximation is likely sufficiently accurate and the procedure ends here.
 	\end{enumerate}
 	
 \end{itemize} 
 
-It is worth emphasizing that using the optimum values for $m$ and $c$ that allow for minimum computational requirements can be essential in uni-dimensional cases with very large data sets, and even more in low-dimensional cases ($D \leq 4$; Notice from section~\ref{sec_method_multi} that for $D > 4$ it starts to be unpractical in any case) even with small data sets, since knowing the optimum values for $m$ and $c$ for each individual dimension can reduce significantly the computational requirements in these multi-dimensional cases, otherwise they would be unfeasible to be fitted.
+It is worth emphasizing that using the optimum values for $m$ and $c$ that allow for minimum computational requirements can be essential in uni-dimensional cases with very large data sets. Using such optimal values will be even more essential in multi-dimensional cases ($D \leq 4$; notice from Section~\ref{sec_method_multi} that for $D > 4$ HSGPs start to be unpractical in any case) even with small data sets, since knowing the optimum values for $m$ and $c$ for each individual dimension can significantly reduce the computational requirements in these multi-dimensional cases; otherwise fitting HSGPs would be infeasible here.
 
 \begin{figure*}
 \centering
@@ -809,71 +825,71 @@ It is worth emphasizing that using the optimum values for $m$ and $c$ that allow
 $\ell_{\text{GP}}$ & iter. & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0.01 \geq \ell$ & RMSE & $R^2$ & ELPD & RMSE* & \\ 
 %\arrayrulecolor{lightgray}\hline \\[-1mm]
 %\multirow{5}{*}{ 0.05} 
-% & 1 & 0.50 & 1.60 & 6 & 0.127 & FALSE & 0.800 & 0.264 & -0.980 & 0.748 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnosis_1.png}}\\
+% & 1 & 0.50 & 1.60 & 6 & 0.127 & FALSE & 0.800 & 0.264 & -0.980 & 0.748 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnostic_1.png}}\\
 % & 2 & 0.127 & 1.20 & 17 & 0.061 & FALSE & 0.427 & 0.779 & -0.396 & 0.330 & \\
 % & 3 & 0.061 & 1.20 & 35 & 0.059 & TRUE & 0.264 & 0.908 & 0.008 & 0.063 & \\
 % & 4 & 0.053 & 1.20 & 40 & 0.059 & TRUE & 0.254 & 0.915 & 0.088 & 0.029 & \\
 % \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{5}{*}{ 0.08} 
- & 1 & 0.50 & 1.60 & 6 & 0.169 & FALSE & 0.447 & 0.610 & -0.396 & 0.360 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnosis_2.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 0.169 & FALSE & 0.447 & 0.610 & -0.396 & 0.360 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnostic_2.png}}\\
  & 2 & 0.169 & 1.20 & 13 & 0.068 & FALSE & 0.357 & 0.738 & -0.176 & 0.242 & \\
  & 3 & 0.068 & 1.20 & 31 & 0.080 & TRUE & 0.242 & 0.871 & 0.204 & 0.013 & \\
  & 4 & 0.058 & 1.20 & 36 & 0.081 & TRUE & 0.241 & 0.871 & 0.207 & 0.009 & \\
  \\[1mm]
  \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{3}{*}{ 0.13} 
- & 1 & 0.50 & 1.60 & 6 & 0.250 & FALSE & 0.461 & 0.625 & -0.482 & 0.330 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnosis_3.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 0.250 & FALSE & 0.461 & 0.625 & -0.482 & 0.330 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnostic_3.png}}\\
  & 2 & 0.250 & 1.20 & 9 & 0.148 & FALSE & 0.352 & 0.780 & -0.135 & 0.153 & \\
  & 3 & 0.148 & 1.20 & 15 & 0.144 & TRUE & 0.321 & 0.807 & -0.074 & 0.084 & \\
  & 4 & 0.105 & 1.20 & 20 & 0.117 & TRUE & 0.297 & 0.830 & -0.006 & 0.013 & \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{3}{*}{ 0.25} 
- & 1 & 0.50 & 1.60 & 6 & 0.237 & FALSE & 0.368 & 0.399 & -0.146 & 0.214 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnosis_4.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 0.237 & FALSE & 0.368 & 0.399 & -0.146 & 0.214 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{fig9_diagnostic_4.png}}\\
  & 2 & 0.237 & 1.20 & 9 & 0.263 & TRUE & 0.294 & 0.603 & -0.085 & 0.024 & \\
  & 3 & 0.250 & 1.20 & 14 & 0.257 & TRUE & 0.289 & 0.615 & -0.050 & 0.009 & \\
  \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{3}{*}{ 0.54} 
- & 1 & 0.50 & 1.60 & 6 & 0.376 & FALSE & 0.272 & 0.858 & 0.034 & 0.013 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnosis_5.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 0.376 & FALSE & 0.272 & 0.858 & 0.034 & 0.013 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnostic_5.png}}\\
  & 2 & 0.376 & 1.20 & 6 & 0.469 & TRUE & 0.277 & 0.855 & 0.029 & 0.051 & \\
  & 3 & 0.239 & 1.50 & 11 & 0.525 & TRUE & 0.272 & 0.858 & 0.036 & 0.014 & \\
  \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{3}{*}{ 0.80} 
- & 1 & 1.00 & 3.20 & 6 & 0.516 & FALSE & 0.286 & 0.923 & 0.133 & 0.025 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnosis_6.png}}\\
+ & 1 & 1.00 & 3.20 & 6 & 0.516 & FALSE & 0.286 & 0.923 & 0.133 & 0.025 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnostic_6.png}}\\
  & 2 & 0.516 & 1.65 & 6 & 0.975 & TRUE & 0.286 & 0.923 & 0.107 & 0.030 & \\
  & 3 & 0.496 & 3.12 & 11 & 0.772 & TRUE & 0.283 & 0.924 & 0.109 & 0.005 & \\
  \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{2}{*}{ 1.40} 
- & 1 & 1.00 & 3.20 & 6 & 1.023 & TRUE & 0.283 & 0.561 & 0.139 & 0.010 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnosis_7.png}}\\
+ & 1 & 1.00 & 3.20 & 6 & 1.023 & TRUE & 0.283 & 0.561 & 0.139 & 0.010 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnostic_7.png}}\\
  & 2 & 0.521 & 3.27 & 11 & 1.233 & TRUE & 0.281 & 0.566 & 0.136 & 0.003 & \\
  \\
  \\
  \\[1mm]
  \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{2}{*}{ 2.94} 
- & 1 & 0.50 & 1.60 & 6 & 1.192 & TRUE & 0.343 & 0.449 & -0.104 & 0.058 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnosis_8.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 1.192 & TRUE & 0.343 & 0.449 & -0.104 & 0.058 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{fig9_diagnostic_8.png}}\\
  & 2 & 0.607 & 3.81 & 11 & 2.577 & TRUE & 0.341 & 0.454 & -0.074 & 0.008 & \\
  \\
  \\
  \\[1mm]
 \arrayrulecolor{gray}\hline
 \end{tabular}
-\caption{Diagnosis on various data sets with varying smoothness. RMSE* refers to the root mean squared error computed with the exact GP model as the reference.}
-  \label{fig9_diagnosis}
+\caption{diagnostic on various data sets with varying smoothness. RMSE* refers to the root mean squared error computed with the exact GP model as the reference.}
+  \label{fig9_diagnostic}
 \end{figure*}
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig10_diagnosis_lscale_comparison.png}}
+\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig10_diagnostic_lscale_comparison.png}}
 \caption{Comparison of the true and estimated length-scales in every iteration for the different data sets varying the length-scale.}
-  \label{fig10_diagnosis_lscale_comparison}
+  \label{fig10_diagnostic_lscale_comparison}
 \end{figure}
 
 \subsection{Other covariance functions}
@@ -923,11 +939,11 @@ Figure~\ref{fig11_Posteriors_exI} shows the posteriors predictive distributions 
 
 In order to assess the performance of the models as a function of the number of basis functions and number of knots, different models with different number of basis functions for the HSGP model, and different number of knots for the spline model, have been fitted. Figure \ref{fig12_MSE_exI_inter} shows the standardized root mean squared error (SRMSE) for interpolation and extrapolating data as a function of the number of basis functions and knots. The SRMSE is computed against the data-generating model. From Figures \ref{fig11_Posteriors_exI} and \ref{fig12_MSE_exI_inter}, it is seen that the HSGP method yields a good approximation of the exact GP model for both interpolation and extrapolation. However, the spline model does not extrapolate data properly. Both models show roughly similar interpolating performance.  
 
-%In practice, as the high computational demands of exact GPs prevents their use to assess the performance of the approximation, the diagnosis of the approximation as a function of $m$ and $c$ as proposed in Section \ref{subsec_dependency} is recommended. 
+%In practice, as the high computational demands of exact GPs prevents their use to assess the performance of the approximation, the diagnostic of the approximation as a function of $m$ and $c$ as proposed in Section \ref{subsec_dependency} is recommended. 
 
-%The diagnosis consists in comparing the estimated length-scale $\hat{\ell}$ for a given $m$ and $c$, with that minimum length-scale $\ell^*$ that can be accurately approximated, for those given $m$ and $c$, generated by the model of relationships in Figures \ref{fig6_7_relationships} and \ref{fig6_7_relationships}. Thus, if $\hat{\ell} < \ell^*$, $m$ needs to increased or $c$ decreased, and this can be iteratively until we get $\hat{\ell} \geq \ell^*$. 
+%The diagnostic consists in comparing the estimated length-scale $\hat{\ell}$ for a given $m$ and $c$, with that minimum length-scale $\ell^*$ that can be accurately approximated, for those given $m$ and $c$, generated by the model of relationships in Figures \ref{fig6_7_relationships} and \ref{fig6_7_relationships}. Thus, if $\hat{\ell} < \ell^*$, $m$ needs to increased or $c$ decreased, and this can be iteratively until we get $\hat{\ell} \geq \ell^*$. 
 Next, we demonstrate how to apply the diagnostic for approximation quality as a function of $m$ and $c$ as proposed in Section \ref{subsec_dependency}.
-Figure \ref{fig13_diagnosis} depicts the diagnosis applied to case study. In the first iteration, we choose $m=20$ and $c=1.5$, which turns out to be an invalid combination of $m$ and $c$, as $c=1.5$ is too small for $m=20$ or $m=20$ is too small for $c=1.5$, as can be seen in the corresponding plot of Figure \ref{fig13_diagnosis}. In the second iteration, $m$ is increased to $m=30$, the HSGP estimates a length-scale of $\hat{\ell}=0.12$, and the minimum length-scale that can be accurately approximated, for those $m$ and $c$, generated by the model of relationships in Figure \ref{fig6_7_relationships} is $\ell^*=0.19$. As $\hat{\ell} < \ell^*$, the approximation is diagnosed to be inaccurate (see Figure \ref{fig12_MSE_exI_inter}-left where the interpolation error of HSGP is higher than that of GP). In the third iteration, $m$ is increased to $m=40$, the HSGP model estimates a length-scale of $\hat{\ell}=0.14$, and the model of relationships suggests a minimum length-scale of $\ell^*=0.15$. As $\hat{\ell}$ is still lower than $\ell^*$, the approximation is diagnosed to be inaccurate, but since $\hat{\ell}$ is quite close to $\ell^*$, the error is expected to be small (see errors in Figure \ref{fig12_MSE_exI_inter}-left). In the fourth iteration, $m$ is increased up $m=60$, the estimated length-scale is $\hat{\ell}=0.14$ and the minimum length-scale generated by the model of relationships is $\ell^*=0.11$, and the approximation is finally diagnosed to be accurate as $\hat{\ell} > \ell^*$.
+Figure \ref{fig13_diagnostic} depicts the diagnostic applied to case study. In the first iteration, we choose $m=20$ and $c=1.5$, which turns out to be an invalid combination of $m$ and $c$, as $c=1.5$ is too small for $m=20$ or $m=20$ is too small for $c=1.5$, as can be seen in the corresponding plot of Figure \ref{fig13_diagnostic}. In the second iteration, $m$ is increased to $m=30$, the HSGP estimates a length-scale of $\hat{\ell}=0.12$, and the minimum length-scale that can be accurately approximated, for those $m$ and $c$, generated by the model of relationships in Figure \ref{fig6_7_relationships} is $\ell^*=0.19$. As $\hat{\ell} < \ell^*$, the approximation is diagnosed to be inaccurate (see Figure \ref{fig12_MSE_exI_inter}-left where the interpolation error of HSGP is higher than that of GP). In the third iteration, $m$ is increased to $m=40$, the HSGP model estimates a length-scale of $\hat{\ell}=0.14$, and the model of relationships suggests a minimum length-scale of $\ell^*=0.15$. As $\hat{\ell}$ is still lower than $\ell^*$, the approximation is diagnosed to be inaccurate, but since $\hat{\ell}$ is quite close to $\ell^*$, the error is expected to be small (see errors in Figure \ref{fig12_MSE_exI_inter}-left). In the fourth iteration, $m$ is increased up $m=60$, the estimated length-scale is $\hat{\ell}=0.14$ and the minimum length-scale generated by the model of relationships is $\ell^*=0.11$, and the approximation is finally diagnosed to be accurate as $\hat{\ell} > \ell^*$.
 
 \begin{figure*}[!t]
 \centering
@@ -948,8 +964,8 @@ Figure \ref{fig13_diagnosis} depicts the diagnosis applied to case study. In the
 \includegraphics[scale=0.26, trim = 14mm 0mm 4mm 10mm, clip]{fig13_diag_iter3_exI.pdf} & \hspace{-4mm}
 \includegraphics[scale=0.26, trim = 14mm 0mm 4mm 10mm, clip]{fig13_diag_iter4_exI.pdf} \\[1mm]
 \end{tabular}
-\caption{Iterative diagnosis of the approximation as a function of the number of basis functions $m$ and boundary factor $c$. The iterative steps go from the left side to the right side of the figure.}
-	\label{fig13_diagnosis}
+\caption{Iterative diagnostic of the approximation as a function of the number of basis functions $m$ and boundary factor $c$. The iterative steps go from the left side to the right side of the figure.}
+	\label{fig13_diagnostic}
 \end{figure*}
 
 Figure~\ref{fig14_time_exI} shows computational times, in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model for this particular model and data. Also, it is seen that the computation time increases slowly as a function of the number of basis functions.
@@ -1047,7 +1063,7 @@ The Stan model code for the approximate GP model of this case study can be found
  
 \subsection{Leukemia data}\label{sec_bf_caseVI}
 
-The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival and censoring times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnosis with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
+The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival and censoring times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnostic with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
 
 As the WBC predictor values were strictly positive and highly skewed, a logarithm transformation is used. Continuous predictors were normalized to have zero mean and unit standard deviation.  
 We assume a log-normal observation model for the observed survival time, $t_i$, with a function of the predictors, $f(\bm{x}_i):{\rm I\!R}^4 \to {\rm I\!R}$, as the location parameter, and $\sigma$ as the Gaussian noise: 
@@ -1103,7 +1119,7 @@ The Stan model code for the exact GP and the approximate GP models of this case 
 
 Modeling unknown functions using exact GPs is computationally intractable for a lot of applications. This problem becomes especially severe when performing full Bayesian inference using sampling-based methods. In this paper, a recent approach for a low-rank representation of stationary GPs, originally proposed by \citet{solin2018hilbert}, has been implemented and analyzed in detail. The method is based on a basis function approximation via Laplace eigenfunctions. The method has an attractive computational cost as it effectively approximates GPs by linear models, which is also an attractive property in modular probabilistic programming programming frameworks. The dominating cost per log density evaluation (during sampling) is $O(nm+m)$, which is a big benefit in comparison to $O(n^3)$ of a exact GP model. The obtained design matrix is independent of hyperparameters and therefore only needs to be constructed once, at cost $O(nm)$. All dependencies on the kernel and the hyperparameters are through the prior distribution of the regression weights. The parameters' posterior distribution is $m$-dimensional, where $m$ is usually much smaller than the number of observations $n$. 
 
-The main contribution of this paper is an in-depth analysis and diagnosis of the performance and accuracy of the approximation in relation to the key factors of the method, that is, the number of basis functions, the boundary condition of the Laplace eigenfunctions, and the non-linearity of the function to be learned. Recommendations for the values of these key factors based on the recognized relations among them have been provided along with illustrations of these relations. These illustrations will not only help users to improve performance and save computation time, but also serve as a powerful diagnosis tool whether the chosen values for the number of basis functions and the boundary condition are adequate to fit to the data at hand with sufficient accuracy.
+The main contribution of this paper is an in-depth analysis and diagnostic of the performance and accuracy of the approximation in relation to the key factors of the method, that is, the number of basis functions, the boundary condition of the Laplace eigenfunctions, and the non-linearity of the function to be learned. Recommendations for the values of these key factors based on the recognized relations among them have been provided along with illustrations of these relations. These illustrations will not only help users to improve performance and save computation time, but also serve as a powerful diagnostic tool whether the chosen values for the number of basis functions and the boundary condition are adequate to fit to the data at hand with sufficient accuracy.
 
 The developed approximate GPs can be easily applied as modular components in probabilistic programming frameworks such as Stan in both Gaussian and non-Gaussian observation models. Using several simulated and real datasets, we have demonstrated the practical applicability and improved sampling efficiency, as compared to exact GPs, of the developed method. The main drawback of the approach is that its computational complexity scales exponentially with the number of input dimensions. Hence, choosing optimal values for the number of basis functions and the boundary factor, using the recommendations and diagnostics provided in Figures~\ref{fig6_7_relationships} and \ref{fig6_7_relationships}, is essential to avoid a excessive computational time especially in multivariate input spaces. However, in practice, input dimensionalities larger than three start to be quite computationally demanding even for moderately wiggly functions and few basis functions per input dimension. In these high dimensional cases, the proposed approximate GP methods may still be used for low-dimensional components in an additive modeling scheme but without modeling very high dimensional interactions, as complexity is linear with the number of additive components.
 
