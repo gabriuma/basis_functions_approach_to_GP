@@ -624,7 +624,7 @@ Figure~\ref{fig6_relationships} and previous equations~(\ref{eq_m_l_QE})-(\ref{e
 The numerical equation governing the relationships between $m$ and $\ell$ for a periodic squared exponential covariance function was estimated in eq.~\eqref{eq_J_l_periodic} which is depicted next:
 %
 \begin{align*}
-&m \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{m}
+&m \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{m} .
 \end{align*}
 
 \subsection{Diagnostics of the approximation} \label{subsec_diagnostics}
@@ -706,9 +706,9 @@ Otherwise, go back to B1.
 \end{figure*}
 
 In this section, we first illustrate that accurate estimates of the length-scale implies accurate approximations via HSGPs. Figure~\ref{fig7_lscale_comparison} left shows a comparison of the length-scale estimates
-obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq. (\ref{eq_c_vs_l_QE}). Figure \ref{fig7_lscale_comparison} right shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
+obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq.~(\ref{eq_c_vs_l_QE}). Figure~\ref{fig7_lscale_comparison} (right) shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
 
-Furthermore, from Figure~\ref{fig7_lscale_comparison} left it can be seen that using large number of basis functions relative to the wigglyness of the function to be learned (i.e., true length-scale) causes overestimating the underlying functions (see Figure~\ref{fig8_oversmoothed_posterios} as an illustration of the oversmoothing effect as a function of $m$ in a moderate smooth dataset) and, consequently, on the length-scale estimate too (Figure \ref{fig7_lscale_comparison} left). 
+Furthermore, from Figure~\ref{fig7_lscale_comparison} left it can be seen that using large number of basis functions relative to the wigglyness of the function to be learned (i.e., true length-scale) causes overestimating the underlying functions (see Figure~\ref{fig8_oversmoothed_posterios} as an illustration of the oversmoothing effect as a function of $m$ in a moderate smooth dataset) and, consequently, on the length-scale estimate too (Figure~\ref{fig7_lscale_comparison} left). 
 
 \begin{figure}
 \centering
@@ -717,11 +717,11 @@ Furthermore, from Figure~\ref{fig7_lscale_comparison} left it can be seen that u
   \label{fig8_oversmoothed_posterios}
 \end{figure}
 
-Figure~\ref{fig9_diagnostic} shows the iterative steps of applying the diagnostic procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig7_lscale_comparison} left. It is clearly visible that by following our recommendations, an optimum solution with minimum computational requirements is achieved in these cases. Figure~\ref{fig10_diagnostic_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between two and four iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length scale and the true length scale, are sufficient to reach the optimal values of $m$ and $c$. Furthermore, as can be seen in Figure~\ref{fig10_diagnostic_lscale_comparison}, following our diagnostic recommendations avoids the use of a too large number of basis functions relative to the true length scale that would cause overestimating the underlying function and bias the posterior towards smaller length scale values.
+Figure~\ref{fig9_diagnostic} shows the iterative steps of applying the diagnostic procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig7_lscale_comparison} left. It is clearly visible that by following our recommendations, an optimum solution with minimum computational requirements is achieved in these cases. Figure~\ref{fig10_diagnostic_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between two and four iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length-scale and the true length-scale, are sufficient to reach the optimal values of $m$ and $c$. Furthermore, as can be seen in Figure~\ref{fig10_diagnostic_lscale_comparison}, following our diagnostic recommendations avoids the use of a too large number of basis functions relative to the true length-scale that would cause overestimating the underlying function and bias the posterior towards smaller length-scale values.
 
 TODO: overestimation of what? $\to$ Gabi: Please, see if it's better now.
 
-TODO: Personally, I think the two examples of the procedure below should go to an appendix, as they take a lot of space and don't add so much additional value. $\to$ Gabi: It's fine for me moving them to an appendix. If no-one disagree I'll move them later.
+TODO: Personally, I think the two examples of the procedure below should go to an appendix, as they take a lot of space and don't add so much additional value. $\to$ Gabi: It's fine for me moving them to an appendix. If no-one disagree I'll move them later. $\to$ Arno agrees.
 
 As concrete examples, the iterative steps applied to perform diagnostic on two of the data sets in Figure~\ref{fig9_diagnostic} are described next:
 
@@ -889,7 +889,7 @@ $\ell_{\text{GP}}$ & iter. & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0
 
 \subsection{Other covariance functions}
 
-In Section \ref{sec_accuracy}, we thoroughly studied the relationship between the number of basis functions in the approximation and the approximation accuracy across different configurations. We specifically focused on the Matérn and squared exponential families of covariance functions, yet there exists other families of stationary covariance functions. The basis function approximation can easily be implemented for any stationary covariance function, where the spectral density function is available. The assess the accuracy of a basis function approximation for a kernel, where the diagnostic plots like Figure \ref{fig6_relationships} or equations (\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) are not available, we suggest to use the relative total variational distance between the true covariance function and the approximate covariance function as given in eq. \eqref{eq:rel_total_distance}. Ensuring that the relative distance is bounded by a small constant for the relevant length-scale implies a high quality approximation.
+In Section~\ref{sec_accuracy}, we thoroughly studied the relationship between the number of basis functions in the approximation and the approximation accuracy across different configurations. We specifically focused on the Mat\'ern and squared exponential families of covariance functions, yet there exists other families of stationary covariance functions. The basis function approximation can easily be implemented for any stationary covariance function, where the spectral density function is available. The assess the accuracy of a basis function approximation for a kernel, where the diagnostic plots like Figure~\ref{fig6_relationships} or equations (\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) are not available, we suggest to use the relative total variational distance between the true covariance function and the approximate covariance function as given in eq.~\eqref{eq:rel_total_distance}. Ensuring that the relative distance is bounded by a small constant for the relevant length-scale implies a high quality approximation.
 
 \section{Case studies}\label{sec_cases}
 
