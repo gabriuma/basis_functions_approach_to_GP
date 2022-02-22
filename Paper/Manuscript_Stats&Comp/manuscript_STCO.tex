@@ -512,7 +512,7 @@ Next, we analyze how the interaction between $m$ and $c$ affects the quality of 
 \item There exists a minimum $c$ below which an accurate approximation will never be achieved regardless of the number of basis functions $m$.
 \end{itemize}
 
-\subsection{Near linear proportionality between $m$, $c$, and $\ell$} \label{subsec_theoretic_linearity}
+\subsection{Near linear proportionality between $m$, $c$ and $\ell$} \label{subsec_theoretic_linearity}
 
 A priori, the terms in the series expansion \eqref{eq_approxf_multi} with very small spectral density are unlikely to contribute to the approximation. Given the boundary factor $c$ and the length-scale $\ell$, we can compute the cumulative sum of the spectral densities and find out how many basis functions are, a priori, explaining almost 100\% of the variation. Thus, given $c$ and $\ell$, we can estimate a good choice for the number of basis functions $m$ for any covariance function.
 
@@ -575,7 +575,7 @@ In Appendix~\ref{sec_periodic}, we analyze the accuracy of the linear representa
 \subsubsection{Numerical equations}
 \label{sec_num_equations}
 
-As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enough, there is a near linear proportionality between $m$, $\frac{l}{S}$ (length-scale $l$ relative to the half range of the input domain $S$) and $c$. To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically derived the practically useful constant terms. We require a lower bound for $c$ of $c \geq 1.2$ such that the equations below are precise enough for practical application.
+As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enough, there is a near linear proportionality between $m$, $\frac{\ell}{S}$ (length-scale $\ell$ relative to the half range of the input domain $S$) and $c$. To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically derived the practically useful constant terms. We require a lower bound for $c$ of $c \geq 1.2$ such that the equations below are precise enough for practical application.
 
 % From the empirical observations the hypothesis of linear proportionality between $m$, $\frac{l}{S}$ (lenghscale $l$ relative to the half range of the input domain $S$) and $c$ has been proved. Following we show the numerical functions governing these relationships for every kernel.
 
