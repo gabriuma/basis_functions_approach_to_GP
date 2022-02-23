@@ -1177,7 +1177,7 @@ where $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(\bm{x})\}_{j=1}^{\infty}$ are
 Because $-\nabla^2$ is a positive definite Hermitian operator, the set of eigenfunctions $\phi_j(\cdot)$ are orthonormal with respect to the inner product
 %
 \begin{align*}
-<f,g>=\int_\Omega f(\bm{x}) g(\bm{x}) \,\mathrm{d}(\bm{x})
+\langle f,g \rangle=\int_\Omega f(\bm{x}) g(\bm{x}) \,\mathrm{d}(\bm{x})
 \end{align*} 
 that is,
 %
@@ -1242,7 +1242,7 @@ which comes basically from a Taylor series representation of the periodic covari
 \begin{equation} \label{eq_q}
 \tilde{q}_j^2= \frac{2}{\exp(\frac{1}{\ell^2})} \sum_{j=0}^{\lfloor \frac{J-j}{2} \rfloor} \frac{(2\ell^2)^{-j-2}}{(j+i)!i!},
 \end{equation}
-where $j=1,2,\cdots,J$, and $\lfloor \cdot \rfloor$ denotes the floor round-off operator. For the index $j=0$, the coefficient is 
+where $j=1,2,\ldots,J$, and $\lfloor \cdot \rfloor$ denotes the floor round-off operator. For the index $j=0$, the coefficient is 
 %
 \begin{equation} \label{eq_q0}
 \tilde{q}_0^2= \frac{1}{2} \frac{2}{\exp(\frac{1}{\ell^2})} \sum_{j=0}^{\lfloor \frac{J-j}{2} \rfloor} \frac{(2\ell^2)^{-j-2}}{(j+i)!i!}.
@@ -1261,10 +1261,10 @@ for $j=1,2,\ldots,J$, and where the $\mathrm{I}_{j}(z)$ is the modified Bessel f
 
 In order to assess the accuracy of this representation as a function of the number of cosine terms $J$ considered in the approximation, an empirical evaluation is carried out in a similar way than that in Section \ref{sec_accuracy} of this work. Thus, Figure \ref{figB1_m_lscale_periodic} shows the minimum number of terms $J$ required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the length-scale of the kernel. We have considered an approximation to be close enough in terms of satisfying eq.~(\ref{eq_diff_covs}) with $\varepsilon=0.005 \int k(\tau) \,\mathrm{d}\tau$ (0.5$\%$ of the total area under the curve of the exact covariance function $k$). Since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition.
 
-From the empirical observations, a numerical equation governing the relationships between $J$ and $\ell$ were estimated in equation \ref{eq_J_l_periodic}, which show linear proportionality between $J$ and $\ell$.
+From the empirical observations, a numerical equation governing the relationships between $J$ and $\ell$ were estimated in equation \ref{eq_J_l_periodic}, which show linear proportionality between $J$ and $\ell$:
 %
 \begin{align}\label{eq_J_l_periodic}
-&J \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{J},
+&J \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{J}.
 \end{align}
 
 \begin{figure*}
@@ -1285,14 +1285,14 @@ The function values of a GP model with this low-rank representation of the perio
 the covariance $k(\tau)$ in eq.~(\ref{eq_cov_periodic_taylor_approx}) can be written as
 %
 \begin{align} \label{eq_cov_periodic_taylor_approx_2}
-k(x,x')\approx \; & \alpha \left( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') \right. \nonumber\\
-& \left. + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \right).
+k(x,x')\approx \; & \alpha \bigg( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x')  \nonumber\\
+& + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \bigg).
 \end{align}
 With this approximation for the periodic squared exponential covariance function $k(x,x')$, the approximate GP model $f(x) \sim \GP\left(0,k(x,x')\right)$ equivalently leads to a linear representation of $f(\cdot)$ via
 %
 \begin{align} \label{eq_f_period}
-f(x) \approx \; & \alpha^{1/2} \left( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j \right. \nonumber\\
-& \left.+  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \right),
+f(x) \approx \; & \alpha^{1/2} \bigg( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j \nonumber\\
+& +  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \bigg),
 \end{align}
 where $\beta_j \sim \Normal(0,1)$, with $j=1,\dots,2J+1$. The cosine $\cos(j\omega_0 x)$ and sinus $\sin(j\omega_0 x)$ terms do not depend on the covariance hyperparameters $\ell$. The only dependence on the hyperparameter $\ell$ is through the coefficients $\tilde{q}_j$, which are $J$-dimensional. The computational cost of this approximation scales as $O\big(n(2J+1) + (2J+1)\big)$, where $n$ is the number of observations and $J$ the number of cosine terms.
 The parameterization in eq.~(\ref{eq_f_period}) is naturally in the non-centered form with independent prior distributions on
