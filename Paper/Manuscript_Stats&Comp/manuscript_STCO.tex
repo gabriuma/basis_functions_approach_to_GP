@@ -106,7 +106,7 @@
 
 %\titlerunning{Short form of title}        % if too long for running head
 
-\author{Gabriel Riutort-Mayol \and Paul-Christian Bürkner \and Michael R.\ Andersen \and Arno Solin \and Aki Vehtari
+\author{Gabriel Riutort-Mayol \and Paul-Christian Bürkner \and Michael R.\ Andersen \and Arno~Solin \and Aki Vehtari
 }
 
 %\authorrunning{Short form of author list} % if too long for running head
@@ -394,13 +394,13 @@ where, again, $\beta_j \sim \Normal(0,1)$. The computational cost of evaluating 
 
 \subsection{Linear representation of a periodic squared exponential covariance function} \label{sec_method_periodic}
 
-A GP model with a periodic covariance function does not fit in the framework of the HSGP approximation covered in this study as a periodic covariance function has not a spectral representation, but it has also a low-rank representation. In Appendix~\ref{sec_periodic}, we briefly present the approximate linear representation of a periodic squared exponential covariance function as developed by \citet{solin2014explicit}, analyze the accuracy of this approximation and, finally, derive the GP model with this approximate periodic square exponential covariance function.
+A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study as a periodic covariance function has not a spectral representation, but it has also a low-rank representation. In Appendix~\ref{sec_periodic}, we briefly present the approximate linear representation of a periodic squared exponential covariance function as developed by \citet{solin2014explicit}, analyze the accuracy of this approximation and, finally, derive the GP model with this approximate periodic squared exponential covariance function.
 
 \section{The accuracy of the approximation}\label{sec_accuracy}
 
 The accuracy and speed of the HSGP model depends on several interrelated factors, most notably on the number of basis functions and on the boundary condition of the Laplace eigenfunctions. Furthermore, appropriate values for these factors will depend on the degree of non-linearity of the function to be estimated, which is in turn characterized by the length-scale of the covariance function. In this section, we analyze the effects of the number of basis functions and the boundary condition on the approximation accuracy. We present recommendations on how they should be chosen and diagnostics to check the accuracy of the obtained approximation. 
 
-Ultimately, these recommendations are based on the relationships among the number of basis functions $m$, the boundary condition $L$, and the length-scale $\ell$, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the square exponential and the Mat{\'e}rn ($\nu=3/2$ and $\nu=5/2$) covariance functions in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{sec_periodic}. For other kernels, the relationships will be slightly different depending on the smoothness or wigglyness of the covariance function.
+Ultimately, these recommendations are based on the relationships among the number of basis functions $m$, the boundary condition $L$, and the length-scale $\ell$, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the squared exponential and the Mat{\'e}rn ($\nu=3/2$ and $\nu=5/2$) covariance functions in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{sec_periodic}. For other kernels, the relationships will be slightly different depending on the smoothness or wigglyness of the covariance function.
 
 \subsection{Dependency on the number of basis functions and the boundary condition} \label{subsec_dependency}
 
@@ -419,7 +419,7 @@ where $L$ describes the boundary condition, $j$ is the index for the eigenfuncti
 This inequality can be satisfied for arbritrary small $\epsilon$ provided that $L$ and $m$ are sufficiently large \cite[Theorem 1 and 4]{solin2018hilbert}. 
 The specific number of basis functions $m$ needed depends on the degree of non-linearity of the function to be estimated, that is on its length-scale $\ell$, which constitutes a hyperparameter of the GP. The approximation also depends on the boundary $L$ (see equations (\ref{eq_eigenvalue}), (\ref{eq_eigenfunction}), (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi})), which will affect its accuracy especially near the boundaries. As we will see later on, $L$ will also influence the number of basis functions required in the approximation.
 
-In this work, we choose $L$ such that the domain $\Omega = \left[-L, L\right]$ will include the smallest interval that contains all the inputs points $x_i$. Without loss of generality, we can assume all data points are contained in a symmetric interval around zero. Let $S = \max_{i}|x_i|$, then it follows that $x_i \in \left[-S, S\right]$ for all $i$. We now define $L$ as
+In this work, we choose $L$ such that the domain $\Omega = \left[-L, L\right]$ contains all the inputs points $x_i$. Without loss of generality, we can assume all data points are contained in a symmetric interval around zero. Let $S = \max_{i}|x_i|$, then it follows that $x_i \in \left[-S, S\right]$ for all $i$. We now define $L$ as
 \begin{equation}\label{eq_boundary}
 L=c \cdot S,
 \end{equation} 
@@ -505,14 +505,14 @@ c = 2.5 &
   \label{fig5_lscale_vs_J}
 \end{figure*}
 
-Next, we analyze how the interaction between $m$ and $c$ affects the quality of the approximation. The length-scale and marginal variance of the covariance function will no longer be fixed but instead we compute the joint posterior distribution of the function values and the hyperparameters using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021} for both the exact GP and the HSGP models. Figure~\ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the model for varying $m$ and $c$. Figure \ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the exact GP model. Figure \ref{fig5_lscale_vs_J} shows the estimated length-scale and marginal variance for the exact GP model and the HSGP models. Looking at the RMSEs in Figure \ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computation time for this example would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$  could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure~\ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
-
+Next, we analyze how the interaction between $m$ and $c$ affects the quality of the approximation. The length-scale and marginal variance of the covariance function will no longer be fixed but instead we compute the joint posterior distribution of the function values and the hyperparameters using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021} for both the exact GP and the HSGP models. Figure~\ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the model for varying $m$ and~$c$. Figure~\ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the exact GP model. Figure~\ref{fig5_lscale_vs_J} shows the estimated length-scale and marginal variance for the exact GP model and the HSGP models. Looking at the RMSEs in Figure~\ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computation time for this example would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$ could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure~\ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
+%
 \begin{itemize}
 \item As $c$ increases, $m$ has to increase as well (and vice versa). This is consistent with the expression for the eigenvalues in eq.~\eqref{eq_eigenvalue}, where $L$ appears in the denominator.
 \item There exists a minimum $c$ below which an accurate approximation will never be achieved regardless of the number of basis functions $m$.
 \end{itemize}
 
-\subsection{Near linear proportionality between $m$, $c$, and $\ell$} \label{subsec_theoretic_linearity}
+\subsection{Near linear proportionality between $m$, $c$ and $\ell$} \label{subsec_theoretic_linearity}
 
 A priori, the terms in the series expansion \eqref{eq_approxf_multi} with very small spectral density are unlikely to contribute to the approximation. Given the boundary factor $c$ and the length-scale $\ell$, we can compute the cumulative sum of the spectral densities and find out how many basis functions are, a priori, explaining almost 100\% of the variation. Thus, given $c$ and $\ell$, we can estimate a good choice for the number of basis functions $m$ for any covariance function.
 
@@ -522,7 +522,7 @@ This is natural as with decreasing $\ell$, more higher frequency basis functions
 %
 When $c$ is below our recommendations given $\ell$, the effect of $\ell$ and $c$ to the recommended $m$ is more non-linear, but as long as we stay in the recommended range the linearity assumption is useful thumb rule for how to change $m$, if $\ell$ or $c$ are changed.
 
-% There is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the length-scale $\ell$ of the approximated function. In this section we discuss about the existing theoretical evidence that the minimum number of basis functions $m$ needed for an accurate approximation is linearly proportional to the the boundary factor $c$ and inversely proportional to the lengthscale $l$.
+% There is a clear relation between the number of basis functions $m$ and the boundary factor $c$ with the length-scale $\ell$ of the approximated function. In this section we discuss about the existing theoretical evidence that the minimum number of basis functions $m$ needed for an accurate approximation is linearly proportional to the the boundary factor $c$ and inversely proportional to the length-scale $l$.
 % In the next Section \ref{subsec_empiric_relations} we conduct an empirical analysis through simulations to prove this expected linear proportionality between $m$, $c$ and $l$ and compute the specific coefficients of proportionality for every kernel.
 
 % {\color{blue}Aki: We can also look at the mean zero-level upcrossings, which for QE is
@@ -534,7 +534,7 @@ When $c$ is below our recommendations given $\ell$, the effect of $\ell$ and $c$
 % look how the plot of 6 basis functions change when you set c=1, c=1.5, c=2.25
 % (ie $1.5^2$). Instead of looking at mean zero-level crossings, we can look at the
 % spectral densities and when they go to zero. This is illustrated in the same
-% notebook after that figure. E.g. with lengthscale l=1,l=1/2, l=1/4, l=1/8 to
+% notebook after that figure. E.g. with length-scale l=1,l=1/2, l=1/4, l=1/8 to
 % explain 99\% of the prior variance we need 4, 8, 16, and 32 basis functions
 % (linear in l) and to explain 80\% of the prior variance we need 2, 4, 8, 16
 % basis functions. These spectral densities don't depend on c. When c increaes
@@ -549,7 +549,7 @@ When $c$ is below our recommendations given $\ell$, the effect of $\ell$ and $c$
 \begin{figure*}
 \centering
 \subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig6_relationships.png}}
-\caption{Relation among the minimum number of basis functions $m$, the boundary factor $c$ \hspace{0.1mm} ($c = \frac{L}{S}$) \hspace{0.1mm} and the length-scale normalized by the half-range of the data ($\frac{\ell}{S}$), for the square exponential, Mat\'ern ($\nu$=3/2) and Mat\'ern ($\nu$=5/2) covariance functions.}
+\caption{Relation among the minimum number of basis functions $m$, the boundary factor $c$ \hspace{0.1mm} ($c = \frac{L}{S}$) \hspace{0.1mm} and the length-scale normalized by the half-range of the data ($\frac{\ell}{S}$), for the squared exponential, Mat\'ern ($\nu$=3/2) and Mat\'ern ($\nu$=5/2) covariance functions.}
   \label{fig6_relationships}
 \end{figure*}
 
@@ -560,7 +560,7 @@ Empirical simulations are carried out to analyze the relationships between $m$, 
 \end{equation}
 %
 where $\tilde{k}_m$ is the approximate covariance function with $m$ basis functions. Alternatively, these figures can be understood as providing the minimum $c$ that we should use for given $\ell$ and $m$. Of course, we may also read it as providing the minimum $\ell$ that can be approximated with high accuracy given $m$ and $c$. We obtain the following main conclusions:
-
+%
 \begin{itemize}
 \item As $\ell$ increases, $m$ required for an accurate approximation decrease.
 \item The lower $c$, the smaller $m$ can and $\ell$ must be to achieve an accurate approximation.
@@ -598,21 +598,21 @@ As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enou
 &c \, \geq \, 4.5 \, \nicefrac{\ell}{S} \;\; \& \;\, c \geq \, 1.2 \label{eq_c_vs_l_mat32}
 \end{align}
 %
-These constants vary monotonically with respect to $\nu$ (squared exponential corresponding to Mat\'ern with $\nu \rightarrow \infty$). Using the formula for Mat\'ern ($\nu$=3/2) provides the largest $m$ and $c$, and thus this formula alone could be used as a conservative choice for all Mat\'ern covariance functions with $\nu \geq 3/2$ and likely as a good initial guess for many other covariance functions. If the aim is to find minimal $m$ to speedup the computation, a further refined formula can be obtained for new covariance functions.
+These constants vary monotonically with respect to $\nu$ (squared exponential corresponding to Mat\'ern with $\nu \to \infty$). Using the formula for Mat\'ern ($\nu$=3/2) provides the largest $m$ and $c$, and thus this formula alone could be used as a conservative choice for all Mat\'ern covariance functions with $\nu \geq 3/2$ and likely as a good initial guess for many other covariance functions. If the aim is to find minimal $m$ to speedup the computation, a further refined formula can be obtained for new covariance functions.
 
-Figure~\ref{fig6_relationships} and previous equations (\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) were obtained for a GP with a unidimensional covariance function, which result in a surfaces depending on three variables, $m$, $c$ and $\ell$. Equivalent results for a GP model with a two-dimensional covariance function would result in a surface depending on four variables, $m$, $c$, $\ell_1$ and $\ell_2$. More precisely, in the multi-dimensional case, whether the approximation is close enough might depend only on the ratio between wigglyness in every dimensions. For instance, in the two-dimensional case, it would depend on the ratio between $\ell_1$ and $\ell_2$. Future research will focus on building useful graphs or analytical models that provide these relations in multi-dimensional cases. However, as an approximation, we can use the unidimensional GP conclusions in Figure \ref{fig6_relationships} or equations (\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) to check the accuracy by analyzing individually the different dimensions of a multidimensional GP model.
+Figure~\ref{fig6_relationships} and previous equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) were obtained for a GP with a unidimensional covariance function, which result in a surfaces depending on three variables, $m$, $c$ and $\ell$. Equivalent results for a GP model with a two-dimensional covariance function would result in a surface depending on four variables, $m$, $c$, $\ell_1$ and $\ell_2$. More precisely, in the multi-dimensional case, whether the approximation is close enough might depend only on the ratio between wigglyness in every dimensions. For instance, in the two-dimensional case, it would depend on the ratio between $\ell_1$ and $\ell_2$. Future research will focus on building useful graphs or analytical models that provide these relations in multi-dimensional cases. However, as an approximation, we can use the unidimensional GP conclusions in Figure~\ref{fig6_relationships} or equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) to check the accuracy by analyzing individually the different dimensions of a multidimensional GP model.
 
 \subsection{Relationships between $m$ and $\ell$ for a periodic squared exponential covariance function} \label{subsec_empiric_relations_periodic}
 
 As commented in Section~\ref{sec_method_periodic}, in Appendix~\ref{sec_periodic} we present an approximate linear representation of a periodic squared exponential covariance function. In Appendix~\ref{sec_periodic}, we also analyze the accuracy of this linear representation and derive the minimum number of terms $m$ in the approximation required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the length-scale $\ell$ of the kernel. Since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition. This relationship between $m$ and $\ell$ for a periodic squared exponential covariance function is gathered in Figure~\ref{figB1_m_lscale_periodic} and the numerical equation was estimated in eq.~\eqref{eq_J_l_periodic} which is depicted next:
 %
 \begin{align*}
-&m \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{m}
+&m \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{m} .
 \end{align*}
 
 \subsection{Diagnostics of the approximation} \label{subsec_diagnostics}
 
-As stated above, equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used) provide the minimum length-scale that can be closely approximated given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of obtaining accurate inference about the function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
+As stated above, equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used) provide the minimum length-scale that can be closely accurately given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of estimating the latent function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
 
 Having obtained an estimate $\hat{\ell}$ of a given $\ell$ from the HSGP model based on prespecified $m$ and $c$, we can check whether or not $\hat{\ell}$ exceeds the minimum length-scale provided as a function of $m$ and $c$ by equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used). If $\hat{\ell}$ exceeds this recommended minimum length-scale, the approximation is assumed to be good, or at least close to. If, however, $\hat{\ell}$ does not exceed the recommended minimum length-scale, the approximation may be inaccurate and $m$ and/or $c$ need to be updated. If we look back to the conclusions drawn from Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, where $m = 10$ basis functions and a boundary factor of $c = 1.5$ were sufficient to obtain an accurate approximation of a function with $\ell = 0.3$, we can recognize that these conclusions also match those obtained from equations \eqref{eq_m_l_QE} and \eqref{eq_c_vs_l_QE}.
 
@@ -639,26 +639,26 @@ The iterative procedure, briefly commented above and detailed in next Section~\r
 
 \subsubsection{A step-by-step user-guide to apply the diagnostics} \label{sec_user_guide}
 
-Based on the above proposed diagnostics, we obtain a simple, iterative step-by-step procedure that users can follow in order to obtain an accurate HSGP approximation. The procedure is split into two phases, Phase A and B, which have to be completed consecutively.
+Based on the above proposed diagnostics, we obtain a simple, iterative step-by-step procedure that users can follow in order to obtain an accurate HSGP approximation. The procedure is split into two phases, Phase~A and B, which have to be completed consecutively.
 %In the following, we will refer to the Equations from Section XXX for the double-exponential kernel, but the same procedure works for other kernels by using the corresponding Equations provided in the same Section.
 
 \paragraph*{Phase A:}
 
 \begin{enumerate}
 
-\item[A1.] Make an initial guess on the lengthscale $\ell_1$. If there is no useful information available, we recommend to start with a large lengthscale, about $\ell_1 \in [0.5, 1]$. Set the iteration index to $i=1$.
+\item[A1.] Make an initial guess on the length-scale $\ell_1$. If there is no useful information available, we recommend to start with a large length-scale, about $\ell_1 \in [0.5, 1]$. Set the iteration index to $i=1$.
 
-\item[A2.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \ell_i$ for the given kernel as per Section \ref{sec_num_equations}.
+\item[A2.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \ell_i$ for the given kernel as per Section~\ref{sec_num_equations}.
 
-\item[A3.] Obtain the mimimum valid number of basis functions $m_i$ determined by $\ell = \ell_i$ and $c = c_i$ for the given kernel as per Section \ref{sec_num_equations}. 
+\item[A3.] Obtain the mimimum valid number of basis functions $m_i$ determined by $\ell = \ell_i$ and $c = c_i$ for the given kernel as per Section~\ref{sec_num_equations}. 
 
 \item[A4.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
 
-\item[A5.] Perform the lengthscale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
+\item[A5.] Perform the length-scale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
 
 If the diagnostic is FALSE, the HSGP approximation is not yet sufficiently accurate. Set $\ell_{i+1} = \hat{\ell}_{i}$, increase the iteration index $i = i + 1$, and go back to A2.
 
-If the diagnostic is TRUE, the HSGP approximation is close to be sufficiently accurate. Continue with Phase B.
+If the diagnostic is TRUE, the HSGP approximation is close to be sufficiently accurate. Continue with Phase~B.
 
 \end{enumerate}
 
@@ -672,15 +672,15 @@ If the diagnostic is TRUE, the HSGP approximation is close to be sufficiently ac
 
 \item[B3.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \hat{\ell}_{i-1}$ for the given kernel as per Section \ref{sec_num_equations}.
 
-\item[B4.] Obtain the mimimum valid lengthscale $\ell_i$ that can be accurately estimated by $m = m_i$ and $c = c_i$ for the given kernel as per Section \ref{sec_num_equations}.
+\item[B4.] Obtain the minimum valid length-scale $\ell_i$ that can be accurately estimated by $m = m_i$ and $c = c_i$ for the given kernel as per Section~\ref{sec_num_equations}.
 
 \item[B5.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
 
-\item[B6.] Perform the lengthscale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
+\item[B6.] Perform the length-scale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
 
 Check the stability of both $\hat{\ell}_i$ and the measures of predictive accuracy relative to the previous iteration.
 
-If all the stability checks succeeed, the HSGP approximation of the latest model should be sufficiently accurate and the procedure ends here.
+If all the stability checks succeed, the HSGP approximation of the latest model should be sufficiently accurate and the procedure ends here.
 
 Otherwise, go back to B1.
 \end{enumerate}
@@ -703,12 +703,12 @@ For that reason, to ultimately diagnose whether the approximation is accurate, i
 \begin{figure*}
 \centering
 \subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig7_lscale_comparison.png}}
-\caption{Exact GP length-scale ($\ell_{GP}$) and approximate HSGP lengthscale ($\hat{\ell}$) for various datasets with varying smoothness (left) and their corresponding root mean squared errors (RMSE) computed with the exact GP model as the reference.}
+\caption{Exact GP length-scale ($\ell_{GP}$) and approximate HSGP length-scale ($\hat{\ell}$) for various datasets with varying smoothness (left) and their corresponding root mean squared errors (RMSE) computed with the exact GP model as the reference.}
   \label{fig7_lscale_comparison}
 \end{figure*}
 
 In this section, we first illustrate that accurate estimates of the length-scale implies accurate approximations via HSGPs. Figure~\ref{fig7_lscale_comparison} left shows a comparison of the length-scale estimates
-obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq. (\ref{eq_c_vs_l_QE}). Figure \ref{fig7_lscale_comparison} right shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
+obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq.~(\ref{eq_c_vs_l_QE}). Figure~\ref{fig7_lscale_comparison} (right) shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
 
 Furthermore, from Figure~\ref{fig7_lscale_comparison} left it can be seen that using large number of basis functions relative to the wigglyness of the function to be learned (i.e., true length-scale) causes overestimating the underlying functions (see Figure~\ref{fig8_overestimated_posterios} as an illustration of the overestimating effect as a function of $m$ in a moderate smooth dataset) and, consequently, on the length-scale estimate too (Figure \ref{fig7_lscale_comparison} left). 
 
@@ -1157,7 +1157,7 @@ where $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(\bm{x})\}_{j=1}^{\infty}$ are
 Because $-\nabla^2$ is a positive definite Hermitian operator, the set of eigenfunctions $\phi_j(\cdot)$ are orthonormal with respect to the inner product
 %
 \begin{align*}
-<f,g>=\int_\Omega f(\bm{x}) g(\bm{x}) \,\mathrm{d}(\bm{x})
+\langle f,g \rangle=\int_\Omega f(\bm{x}) g(\bm{x}) \,\mathrm{d}(\bm{x})
 \end{align*} 
 that is,
 %
@@ -1203,7 +1203,7 @@ where $S(\cdot)$ is the spectral density of the covariance function, $\lambda_j$
 
 \section{Low-rank Gaussian process with a periodic covariance function}\label{sec_periodic}
 
-A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study, but it has also a low-rank representation. In this section, we first give a brief presentation of the results by \citet{solin2014explicit}, who obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic square exponential covariance function.
+A GP model with a periodic covariance function does no fit in the framework of the HSGP approximation covered in this study, but it has also a low-rank representation. In this section, we first give a brief presentation of the results by \citet{solin2014explicit}, who obtain an approximate linear representation of a periodic squared exponential covariance function based on expanding the periodic covariance function into a series of stochastic resonators. Secondly, we analyze the accuracy of this approximation and, finally, we derive the GP model with this approximate periodic squared exponential covariance function.
 
 The periodic squared exponential covariance function takes the form
 %
@@ -1222,7 +1222,7 @@ which comes basically from a Taylor series representation of the periodic covari
 \begin{equation} \label{eq_q}
 \tilde{q}_j^2= \frac{2}{\exp(\frac{1}{\ell^2})} \sum_{j=0}^{\lfloor \frac{J-j}{2} \rfloor} \frac{(2\ell^2)^{-j-2}}{(j+i)!i!},
 \end{equation}
-where $j=1,2,\cdots,J$, and $\lfloor \cdot \rfloor$ denotes the floor round-off operator. For the index $j=0$, the coefficient is 
+where $j=1,2,\ldots,J$, and $\lfloor \cdot \rfloor$ denotes the floor round-off operator. For the index $j=0$, the coefficient is 
 %
 \begin{equation} \label{eq_q0}
 \tilde{q}_0^2= \frac{1}{2} \frac{2}{\exp(\frac{1}{\ell^2})} \sum_{j=0}^{\lfloor \frac{J-j}{2} \rfloor} \frac{(2\ell^2)^{-j-2}}{(j+i)!i!}.
@@ -1237,14 +1237,14 @@ An upper bounded approximation to the coefficients $\tilde{q}_j^2$ and $\tilde{q
 \tilde{q}_0^2=& \frac{\mathrm{I}_0(\ell^{-2})}{\exp(\frac{1}{\ell^2})},
 \end{split}
 \end{equation} 
-for $j=1,2,\cdots,J$, and where the $\mathrm{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
+for $j=1,2,\ldots,J$, and where the $\mathrm{I}_{j}(z)$ is the modified Bessel function \citep{handbook1970m} of the first kind. This approximation implies that the requirement of a valid covariance function is relaxed and only an optimal series approximation is required. A more detailed explanation and mathematical proofs of this approximation of a periodic covariance function are provided by \citet{solin2014explicit}. 
 
 In order to assess the accuracy of this representation as a function of the number of cosine terms $J$ considered in the approximation, an empirical evaluation is carried out in a similar way than that in Section \ref{sec_accuracy} of this work. Thus, Figure \ref{figB1_m_lscale_periodic} shows the minimum number of terms $J$ required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the length-scale of the kernel. We have considered an approximation to be close enough in terms of satisfying eq.~(\ref{eq_diff_covs}) with $\varepsilon=0.005 \int k(\tau) \,\mathrm{d}\tau$ (0.5$\%$ of the total area under the curve of the exact covariance function $k$). Since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition.
 
-From the empirical observations, a numerical equation governing the relationships between $J$ and $\ell$ were estimated in equation \ref{eq_J_l_periodic}, which show linear proportionality between $J$ and $\ell$.
+From the empirical observations, a numerical equation governing the relationships between $J$ and $\ell$ were estimated in equation \ref{eq_J_l_periodic}, which show linear proportionality between $J$ and $\ell$:
 %
 \begin{align}\label{eq_J_l_periodic}
-&J \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{J},
+&J \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{J}.
 \end{align}
 
 \begin{figure*}
@@ -1265,14 +1265,14 @@ The function values of a GP model with this low-rank representation of the perio
 the covariance $k(\tau)$ in eq.~(\ref{eq_cov_periodic_taylor_approx}) can be written as
 %
 \begin{align} \label{eq_cov_periodic_taylor_approx_2}
-k(x,x')\approx \; & \alpha \left( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x') \right. \nonumber\\
-& \left. + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \right).
+k(x,x')\approx \; & \alpha \bigg( \sum_{j=0}^{J} \tilde{q}_j^2 \cos(j\omega_0 x)  \cos(j\omega_0 x')  \nonumber\\
+& + \sum_{j=1}^{J} \tilde{q}_j^2 \sin(j\omega_0 x) \sin(j\omega_0 x') \bigg).
 \end{align}
 With this approximation for the periodic squared exponential covariance function $k(x,x')$, the approximate GP model $f(x) \sim \GP\left(0,k(x,x')\right)$ equivalently leads to a linear representation of $f(\cdot)$ via
 %
 \begin{align} \label{eq_f_period}
-f(x) \approx \; & \alpha^{1/2} \left( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j \right. \nonumber\\
-& \left.+  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \right),
+f(x) \approx \; & \alpha^{1/2} \bigg( \sum_{j=0}^J  \tilde{q}_j \cos(j\omega_0 x) \beta_j \nonumber\\
+& +  \sum_{j=1}^J \tilde{q}_j \sin(j\omega_0 x) \beta_{J+1+j} \bigg),
 \end{align}
 where $\beta_j \sim \Normal(0,1)$, with $j=1,\dots,2J+1$. The cosine $\cos(j\omega_0 x)$ and sinus $\sin(j\omega_0 x)$ terms do not depend on the covariance hyperparameters $\ell$. The only dependence on the hyperparameter $\ell$ is through the coefficients $\tilde{q}_j$, which are $J$-dimensional. The computational cost of this approximation scales as $O\big(n(2J+1) + (2J+1)\big)$, where $n$ is the number of observations and $J$ the number of cosine terms.
 The parameterization in eq.~(\ref{eq_f_period}) is naturally in the non-centered form with independent prior distributions on

@@ -1,0 +1,27 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Gaussian process as a prior}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Covariance functions and spectral density}{section.2}% 3
+\BOOKMARK [1][-]{section.3}{Hilbert space approximate Gaussian process model}{}% 4
+\BOOKMARK [2][-]{subsection.3.1}{Unidimensional GPs}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.2}{Generalization to multidimensional GPs}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.3}{Linear representation of a periodic squared exponential covariance function}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{The accuracy of the approximation}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{Dependency on the number of basis functions and the boundary condition}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{Near linear proportionality between m, c and }{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.3}{Empirical discovering of the functional form of the relationships between m, c and }{section.4}% 11
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Numerical equations}{subsection.4.3}% 12
+\BOOKMARK [2][-]{subsection.4.4}{Relationships between m and \040for a periodic squared exponential covariance function}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.5}{Diagnostics of the approximation}{section.4}% 14
+\BOOKMARK [3][-]{subsubsection.4.5.1}{A step-by-step user-guide to apply the diagnostics}{subsection.4.5}% 15
+\BOOKMARK [3][-]{subsubsection.4.5.2}{"Criticism" of the diagnostic}{subsection.4.5}% 16
+\BOOKMARK [2][-]{subsection.4.6}{Performance analysis of the diagnostics}{section.4}% 17
+\BOOKMARK [2][-]{subsection.4.7}{Other covariance functions}{section.4}% 18
+\BOOKMARK [2][-]{subsection.4.8}{On computational requirements in multi-dimensional cases}{section.4}% 19
+\BOOKMARK [1][-]{section.5}{Case studies}{}% 20
+\BOOKMARK [2][-]{subsection.5.1}{Simulated data for a univariate function}{section.5}% 21
+\BOOKMARK [2][-]{subsection.5.2}{Birthday data}{section.5}% 22
+\BOOKMARK [2][-]{subsection.5.3}{Leukemia data}{section.5}% 23
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 24
+\BOOKMARK [1][-]{appendix.A}{Approximation of the covariance function using Hilbert space methods}{}% 25
+\BOOKMARK [1][-]{appendix.B}{Low-rank Gaussian process with a periodic covariance function}{}% 26
+\BOOKMARK [1][-]{appendix.C}{Description of the iterative steps applied to perform diagnostic on two of the data sets in Figure 1}{}% 27
