@@ -612,30 +612,31 @@ As commented in Section~\ref{sec_method_periodic}, in Appendix~\ref{sec_periodic
 
 \subsection{Diagnostics of the approximation} \label{subsec_diagnostics}
 
-As stated above, equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used) provide the minimum length-scale that can be closely accurately given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of estimating the latent function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
+Equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used) provide the minimum length-scale that can be accurately inferred given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of estimating the latent function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
 
-Having obtained an estimate $\hat{\ell}$ of a given $\ell$ from the HSGP model based on prespecified $m$ and $c$, we can check whether or not $\hat{\ell}$ exceeds the minimum length-scale provided as a function of $m$ and $c$ by equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used). If $\hat{\ell}$ exceeds this recommended minimum length-scale, the approximation is assumed to be good, or at least close to. If, however, $\hat{\ell}$ does not exceed the recommended minimum length-scale, the approximation may be inaccurate and $m$ and/or $c$ need to be updated. If we look back to the conclusions drawn from Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, where $m = 10$ basis functions and a boundary factor of $c = 1.5$ were sufficient to obtain an accurate approximation of a function with $\ell = 0.3$, we can recognize that these conclusions also match those obtained from equations \eqref{eq_m_l_QE} and \eqref{eq_c_vs_l_QE}.
+Having obtained an estimate $\hat{\ell}$ for a HSGP model with prespecified $m$ and $c$, we can check whether $\hat{\ell}$ exceeds the smallest length-scale, that can be accurately inferred, provided as a function of $m$ and $c$ by equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used). If $\hat{\ell}$ exceeds this value, the approximation is assumed to be good. If $\hat{\ell}$ does not exceed this value, the approximation may be inaccurate, and $m$ and/or $c$ need to be increased. In Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, $m = 10$ and $c = 1.5$ were sufficient for an accurate modeling of function with $\ell = 0.3$, which matches the diagnostic based on equations \eqref{eq_m_l_QE} and \eqref{eq_c_vs_l_QE}.
 
 Equations in Section~\ref{sec_num_equations} to update $m$ and $c$ imply:
 % 
 \begin{itemize}
-	\item $c$ must be big enough for the given length-scale $\ell$ of the function to be learned and,
-	\item $m$ must be big enough for the given $\ell$ and $c$. 
+	\item $c$ must be big enough for a given $\ell$, and
+	\item $m$ must be big enough for given $\ell$ and $c$. 
 \end{itemize}
 %
-If larger than minimal $c$ and $m$ for the given length-scale $\ell$ are used in the initial HSGP model, it is likely that the initial results are already sufficiently accurate. However, as the given length-scale $\ell$ of the function to be learned is unknown, we recommend using this diagnostic in an iterative procedure by starting from some initial guess of $\ell$ and obtain the optimum valid values for $c$ and $m$ as a function of this initial guess of $\ell$ by using the equations in Section~\ref{sec_num_equations}; and if the estimated $\hat{\ell}$ is below the minimum length-scale determined by $c$ and $m$, which indicates a potential problem with the approximation, update $\ell$ with $\hat{\ell}$ and repeat the process until both:
+If larger than minimal $c$ and $m$ (for a given $\ell$) are used in the initial HSGP model, it is likely that the results are already sufficiently accurate. As $\ell$ is initially unknown, we recommend using this diagnostic in an iterative procedure by starting with $c$ and $m$ based on some initial guess about $\ell$, and if the estimated $\hat{\ell}$ is below the diagnostic threshold, select new $c$ and $m$ using $\hat{\ell}$. This can be repeated until
 %
 \begin{itemize}
-\item the estimated $\hat{\ell}$ is larger than the minimum lengthscale determined by $c$ and $m$, which indicates the approximation must be sufficiently accurate, and
-\item the measures of predictive accuracy, for example, root mean square error (RMSE), coefficient of determination ($R^2$), or expected log predicitve density (ELPD) reach a stabilization.
+\item the estimated $\hat{\ell}$ is larger than the diagnostic threshold given $c$ and $m$, and
+\item the predictive accuracy measures, for example, root mean square error (RMSE), coefficient of determination ($R^2$), or expected log predicitve density (ELPD) don't improve.
 \end{itemize}
 
-As commented in next Section~\ref{sec_diagnostic_criticism}, the estimated $\hat{\ell}$ being larger than the minimum lengthscale determined by $c$ and $m$ is not a definite certain that the approximate is sufficiently accurate, although it is for most of the practical cases. Therefore, we recommend to look at the residual error of the fit until it stabilizes.
+As commented in next Section~\ref{sec_diagnostic_criticism}, the estimated $\hat{\ell}$ being larger than diagnostic threshold doesn't guarantee that the approximate is sufficiently accurate, and thus we recommend to look at the predicitve accuracy measures, too.
 
-Apart from providing a powerful diagnostic tool in determining if the approxiamtion is sufficiently accurate, the equations in the previous Section~\ref{sec_num_equations} also give the optimal values for $m$ (the minimum $m$ required for an accurate approximation) and $c$ (the minimum $c$ that allows for the minimum $m$) that allow to minimizing the computational cost.
-
+Apart from providing a powerful diagnostic tool in determining if the approxiamtion is sufficiently accurate, the equations in the previous Section~\ref{sec_num_equations} also provide the optimal values for $m$ (the minimum $m$ required for an accurate approximation) and $c$ (the minimum $c$ that allows for the minimum $m$) that van be used to minimize the computational cost in repeated computations (e.g., in cross-validation and simulation based calibration)
 %If the initial lengthscale is not far from the optimal, and larger than minimal $c$ and $m$ are used in the initial HSGP model, it is likely that the initial results are already sufficiently accurate. 
-The iterative procedure, briefly commented above and detailed in next Section~\ref{sec_user_guide}, works as safety approach and also allows finding a smaller sufficient $m$ which can be useful if the user wants to optimize the computational speed. Using the optimum values for $m$ and $c$ that allow for minimum computational requirements can be essential for repeated fitting (e.g., in cross-validation or simulation based calibration), uni-dimensional functions with very large data sets, and even more essential in multi-dimensional cases ($D \leq 4$; notice from Section~\ref{sec_method_multi} that for $D > 4$ HSGPs start to be unpractical in any case) where knowing the optimum values for $m$ and $c$ for each individual dimension can significantly reduce the computational requirements in these multi-dimensional cases; otherwise fitting HSGPs would be unfeasible here.
+%The iterative procedure, briefly commented above and detailed in next Section~\ref{sec_user_guide}, works as safety approach and also allows finding a smaller sufficient $m$ which can be useful if the user wants to optimize the computational speed.
+%Using the optimum values for $m$ and $c$ that allow for minimum computational requirements can be essential for repeated fitting (e.g., in cross-validation or simulation based calibration), uni-dimensional functions with very large data sets, and
+This even more useful in multi-dimensional cases ($2 \leq D \leq 4$), where knowing the smallest useful value of $m$ for each dimension has even bigger effect on the total computational cost.
 
 \subsubsection{A step-by-step user-guide to apply the diagnostics} \label{sec_user_guide}
 
@@ -685,18 +686,18 @@ If all the stability checks succeed, the HSGP approximation of the latest model 
 Otherwise, go back to B1.
 \end{enumerate}
 
-\subsubsection{"Criticism" of the diagnostic} \label{sec_diagnostic_criticism}
+% \subsubsection{Criticism of the diagnostic} \label{sec_diagnostic_criticism}
 
-The basis of our diagnostic tool are the following:
-% 
-\begin{enumerate}
-\item observing a length-scale estimate $\hat{\ell}$ smaller than recommended minimum length-scale determined by $m$ and $c$ indicates a potential problem with the approximation,
-\item observing a $\hat{\ell}$ larger than the recommended minimum length scale implies that the approximation is accurate.
-\end{enumerate}
+% The basis of our diagnostic tool are the following:
+% % 
+% \begin{enumerate}
+% \item observing a length-scale estimate $\hat{\ell}$ smaller than recommended minimum length-scale determined by $m$ and $c$ indicates a potential problem with the approximation,
+% \item observing a $\hat{\ell}$ larger than the recommended minimum length scale implies that the approximation is accurate.
+% \end{enumerate}
 
-The later statement, however, cannot be assumed to be true in general, that is, cannot be generalized to all possible cases. ({\color{red} TODO: A major revision from a reviewer was related to that, i.e. to be critical with the diagnostic and discuss about possible cases where it could fail. I don't know if we could discuss a bit about this. I remember Michael commented an example of a potential case where that diagnostic statement could not be true.}) 
+% The later statement, however, cannot be assumed to be true in general, that is, cannot be generalized to all possible cases. ({\color{red} TODO: A major revision from a reviewer was related to that, i.e. to be critical with the diagnostic and discuss about possible cases where it could fail. I don't know if we could discuss a bit about this. I remember Michael commented an example of a potential case where that diagnostic statement could not be true.}) 
 
-For that reason, to ultimately diagnose whether the approximation is accurate, in addition to observe whether $\hat{\ell}$ exceeds the recommended minimum length scale, we recommend ensuring the measures of predictive accuracy reach an stabilization too.
+% For that reason, to ultimately diagnose whether the approximation is accurate, in addition to observe whether $\hat{\ell}$ exceeds the recommended minimum length scale, we recommend ensuring the measures of predictive accuracy reach an stabilization too.
 
 \subsection{Performance analysis of the diagnostics}
 
@@ -803,12 +804,14 @@ Above, we thoroughly studied the relationship between the number of basis functi
 
 To select $c$ for many other covariance functions, users can be guided by equations~\eqref{eq_c_vs_l_QE}, \eqref{eq_c_vs_l_mat52} and \eqref{eq_c_vs_l_mat32}, as pointed in Section~\ref{sec_num_equations}.
 
-\subsection{On computational requirements in multi-dimensional cases}
+\subsection{On computational cost in multi-dimensional cases}
 
 %In the online supplemental material, additional case studies are presented. From those examples, it can be seen how 
-The computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})). Even though, the computation time increases significantly with $D$ in bivariate input spaces, the HSGP model works significantly faster than the exact GP for most of the non-linear $2D$ functions (even highly wiggly functions; see Figures B.3-right and C.3 in the online material). For moderate sized datasets, HSGPs tend to be slower than exact GPs for $D>3$ with a relatively low number of basis functions ($m \gtrsim 5$), as well as even for $D=3$ with a moderate high number of basis functions ($m \gtrsim 20$; see Figure~C.3 in the online material). However, the HSGP method will be computationally faster than the exact GP for larger datasets due the cubic scaling of the exact GP. In all of the investigated cases, choosing the optimal boundary factor in the HSGP approximation reduces the number of required basis functions noticeably (see Figures~A.3, B.3-left and C.2 in the online material) and therefore also reduces computational time drastically in particular in multivariate input spaces.
+The computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of basis functions in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})).
+In the experiments of this paper computation for HSGP model was faster than for the exact GP for most of the non-linear $2D$ functions (even highly wiggly functions; see Figures B.3-right and C.3 in the online material).
+For small and moderate sized datasets, HSGPs is likely to be slower than exact GPs already for $D=3$ and $D=4$ even with a relatively low number of basis functions ($m \gtrsim 5$ and $m \gtrsim 20$ respectively; see Figure~C.3 in the online material). The HSGP method can be computationally faster than the exact GP for larger datasets due the cubic scaling of the exact GP. In all of the investigated cases, choosing the optimal booundary factor $c$ reduces the required number of basis functions $m$ noticeably (see Figures~A.3, B.3-left and C.2 in the online material) and therefore  reduces computational time drastically in particular in multidimensional cases. When HSGP or exact GP is faster depend also on the implementation details that can have big effect on the constants, and thus any more detailed recommendations can only be made in the context of the specific software implementation.
 
-Roughly similar or even worse behavior was found for splines where serious difficulties with computation time were encountered in building spline models for $D=3$ and with more than 10 knots, or even for $D=2$ and more than 40 knots (see Figures~B.3-right and C.3 in the online material).
+Roughly similar or even worse behavior was found for thin plate regression splines used in the experiments, with serious challenges with computation time when doing inference for spline models for $D=3$ and with more than 10 basis functions, or even for $D=2$ and more than 40 basis functions (see Figures~B.3-right and C.3 in the online material).
 
 \section{Case studies}\label{sec_cases}
 
