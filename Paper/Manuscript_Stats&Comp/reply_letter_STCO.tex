@@ -53,9 +53,11 @@
 \begin{document}
 
 
-We would like to thank the reviewers for their thorough comments and valuable feedback. First, a summary with the improvements, changes and new insights achieved from the review are outlined. Then, all comments are addressed and there is a separate reply to each reviewer.
+We would like to thank the reviewers for their thorough comments and valuable feedback, which has helped us a lot in improving the paper. First, a summary of the improvements, changes, and new insights achieved during the revision are outlined. Then, all comments are addressed in a point-by-point manner, with separate replies to each reviewer. 
+Throughout, comments or the reviewers are hightlighted in bold.
 
-Authors would like the summary of the updates and insights presented above to be sent to all of the reviewers.
+%Paul: all responses will be send to all reviewers anyway
+%Authors would like the summary of the updates and insights presented above to be sent to all of the reviewers.
 
 \noindent \hdashrule{12.5cm}{0.2pt}{2mm 1pt}
 
@@ -63,9 +65,11 @@ Authors would like the summary of the updates and insights presented above to be
 
 \begin{itemize}
 
+%Paul: This list is way too long and detailed and appears to be redundant at times. I recommend focusing on between 4 and 7 or so points but more will be too much.
+
 \item We have improved the paper significantly, including new insights from new experiments and analysis. The readability of Sections 4 and 5 have also been improved.
 
-\item A brief discussion about the theoretical evidence of the near linear proportionality between the setting parameters of the model has been added (Section 4.2). 
+\item A discussion about the theoretical evidence of the near linear proportionality between the setting parameters of the model has been added (Section 4.2). 
 
 \item In the first submission of the paper, the relationships between the setting parameters of the model were analyzed by simulation experiments and presented in form of graphs. 
 
@@ -119,18 +123,23 @@ We have included in this new case study a brief discussion and presentation of a
 
 \subsection*{Reviewer \#1}
 
+%Paul: Don't forget the thank the reviewers for their comments to show some more appreciation of their comments and time they put into the review.
+
 \subsubsection*{R\#1 Comment \#1}
 
-Reviewer \#1 comments "The authors correctly identify that for practical use in probabilistic programming environments the method has to be reliable and automatic enough, justifying the more detailed analysis of its parameters to identify when the approximation can be trusted. In addition, they provide the required implementations for one PP environment (Stan), although this is done at the level of case studies rather than integrating the approximation more tightly as part of a probabilistic programming environment."
+\textbf{The authors correctly identify that for practical use in probabilistic programming environments the method has to be reliable and automatic enough, justifying the more detailed analysis of its parameters to identify when the approximation can be trusted. In addition, they provide the required implementations for one PP environment (Stan), although this is done at the level of case studies rather than integrating the approximation more tightly as part of a probabilistic programming environment.}
 
 The Hilbert space approximation for GPs (HSGP) is presented as a general formulation for probabilistic modeling, so it can be implemented in different probabilistic programming frameworks, such as Stan, WinBugs, etc. The case study's models have also been formulated in general probabilistic language in the main manuscript, and Stan's implementations have also been provided as examples. Furthermore, HSGP model has been implemented in the \textit{brms} R-package that uses Stan to make model inference.
 
-The diagnostic tool which consists in iterative steps to fit and diagnose the model has also been implemented in the \textit{brms} R-package. 
+%Paul: The statement below is incorrect. I have not implemented the diagnostic procedure in brms.
+%The diagnostic tool which consists in iterative steps to fit and diagnose the model has also been implemented in the \textit{brms} R-package. 
 %This diagnostic iterative procedure is fundamentally based on a diagnostic rule to check whether the approximation is accurate and numerical equations allowing updating the key parameters of the method.
 
 \subsubsection*{R\#1 Comment \#2}
 
-Reviewer \#1 comments "The analysis is reasonable and provides tangible results on how the approximation scheme should be used, but does not go very deep. There are not new theoretical results but instead the analysis is purely empirical and in fact a standard study where each approximation parameter is varied at a time to identify the limits when the approximation starts to fail. The analysis is properly carried out and results in a practical diagnostic, but did not require notable scientific insight."
+%Paul: I recommend highlighting either the reviewers comments or our responses in bold to clearly differentiate what the reviewers wrote and what we wrote. Example below.
+
+\textbf{The analysis is reasonable and provides tangible results on how the approximation scheme should be used, but does not go very deep. There are not new theoretical results but instead the analysis is purely empirical and in fact a standard study where each approximation parameter is varied at a time to identify the limits when the approximation starts to fail. The analysis is properly carried out and results in a practical diagnostic, but did not require notable scientific insight.}
 
 The performance of the HSGP model drastically depends on some setting parameters. The study pursues accurately measuring the sensitivity of the HSGP model to the values of these parameters, detecting when the approximation fails and when the parameter values are optimal in accuracy and computation cost. Ultimately, the aim of the study is to provide a diagnostic to check whether the approximation is sufficiently accurate, provide numerical equations to update the setting parameters if the approximation is not sufficiently accurate, and finally provide a safety and general procedure based on iterative steps to successfully fit the model, finding out optimal values for the setting parameters which allow for minimum computational requirements.
 
