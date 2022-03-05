@@ -709,12 +709,14 @@ Otherwise, go back to B1.
 In this section, we first illustrate that accurate estimates of the length-scale implies accurate approximations via HSGPs. Figure~\ref{fig7_lscale_comparison} left shows a comparison of the length-scale estimates
 obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq.~(\ref{eq_c_vs_l_QE}). Figure~\ref{fig7_lscale_comparison} (right) shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
 
-Furthermore, from Figure~\ref{fig7_lscale_comparison} left it can be seen that using large number of basis functions relative to the wigglyness of the function to be learned (i.e., true length-scale) causes overestimating the underlying functions (see Figure~\ref{fig8_overestimated_posterios} as an illustration of the overestimating effect as a function of $m$ in a moderate smooth dataset) and, consequently, on the length-scale estimate too (Figure \ref{fig7_lscale_comparison} left). 
+If much bigger $m$ than necessary is used (i.e., too much large $m$ relative to the wigglyness of the function to be learned), there can be computational challenges. In Figure~\ref{fig7_lscale_comparison}, we see that increasing $m$ much beyond what is needed, is leading to underestimating the lengthscale. Examining the convergence diagnostics revealed problems in exploring larger length-scales, which is likely due to the posterior having a difficult funnel shape \citep[see, e.g.,][]{Betancourt+Girolami:2019}. A largely underestimation of the length-scale leads to overestimating the underlying functions (see Figure~\ref{fig8_overestimated_posterios} as an illustration of the overestimating effect as a function of $m$ in a moderate smooth dataset). Increasing the boundary factor $c$ (more than that recommended in equations~\eqref{sec_num_equations}) reduces the funnellness of the posterior and the sampling problems in exploring larger length-scales mostly disappear and so underestimating the length-scale.
+
+Following our recommended diagnostic tool is a safety procedure to avoid using too much large $m$ that needed, as it allows us to select optimal values for $m$ and $c$ in each iteration.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig8_overestimated_posterios.png}
-\caption{Overestimating effect on posterior functions when using too many number of basis functions relative to the wigglyness of the function to be learned. The dashed red line represents the true function.}
+\caption{Overestimation of the data points when using too many number of basis functions relative to the wigglyness of the data points. The dashed red line represents the true underlying function.}
   \label{fig8_overestimated_posterios}
 \end{figure}
 
