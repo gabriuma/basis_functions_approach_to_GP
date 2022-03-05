@@ -709,18 +709,19 @@ Otherwise, go back to B1.
 In this section, we first illustrate that accurate estimates of the length-scale implies accurate approximations via HSGPs. Figure~\ref{fig7_lscale_comparison} left shows a comparison of the length-scale estimates
 obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq.~(\ref{eq_c_vs_l_QE}). Figure~\ref{fig7_lscale_comparison} (right) shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
 
-If much bigger $m$ than necessary is used (i.e., too much large $m$ relative to the wigglyness of the function to be learned), there can be computational challenges. In Figure~\ref{fig7_lscale_comparison}, we see that increasing $m$ much beyond what is needed, is leading to underestimating the lengthscale. Examining the convergence diagnostics revealed problems in exploring larger length-scales, which is likely due to the posterior having a difficult funnel shape \citep[see, e.g.,][]{Betancourt+Girolami:2019}. A largely underestimation of the length-scale leads to overestimating the underlying functions (see Figure~\ref{fig8_overestimated_posterios} as an illustration of the overestimating effect as a function of $m$ in a moderate smooth dataset). Increasing the boundary factor $c$ (more than that recommended in equations~\eqref{sec_num_equations}) reduces the funnellness of the posterior and the sampling problems in exploring larger length-scales mostly disappear and so underestimating the length-scale.
+%If much bigger $m$ than necessary is used (i.e., too much large $m$ relative to the wigglyness of the function to be learned), there can be computational challenges. In Figure~\ref{fig7_lscale_comparison}, we see that increasing $m$ much beyond what is needed, is leading to underestimating the lengthscale. Examining the convergence diagnostics revealed problems in exploring larger length-scales, which is likely due to the posterior having a difficult funnel shape \citep[see, e.g.,][]{Betancourt+Girolami:2019}. A largely underestimation of the length-scale leads to overestimating the underlying functions (see Figure~\ref{fig8_overestimated_posterios} as an illustration of the overestimating effect as a function of $m$ in a moderate smooth dataset). Increasing the boundary factor $c$ (more than that recommended in equations~\eqref{sec_num_equations}) reduces the funnellness of the posterior and the sampling problems in exploring larger length-scales mostly disappear and so underestimating the length-scale.
+%
+%Following our recommended diagnostic tool is a safety procedure to avoid using too much large $m$ that needed, as it allows us to select optimal values for $m$ and $c$ in each iteration.
+%
+%\begin{figure}
+%\centering
+%\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig8_overestimated_posterios.png}
+%\caption{Overestimation of the data points when using too many number of basis functions relative to the wigglyness of the data points. The dashed red line represents the true underlying function.}
+%  \label{fig8_overestimated_posterios}
+%\end{figure}
 
-Following our recommended diagnostic tool is a safety procedure to avoid using too much large $m$ that needed, as it allows us to select optimal values for $m$ and $c$ in each iteration.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig8_overestimated_posterios.png}
-\caption{Overestimation of the data points when using too many number of basis functions relative to the wigglyness of the data points. The dashed red line represents the true underlying function.}
-  \label{fig8_overestimated_posterios}
-\end{figure}
-
-Table~\ref{tab1_diagnostic} shows the iterative steps of applying the diagnostic procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig7_lscale_comparison} left. It is clearly visible that by following our recommendations, an optimum solution with minimum computational requirements is achieved in these cases. Figure~\ref{fig10_diagnostic_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between two and four iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length scale and the true length scale, are sufficient to reach the optimal values of $m$ and $c$. Furthermore, as can be seen in Figure~\ref{fig10_diagnostic_lscale_comparison}, following our diagnostic recommendations avoids the use of a too large number of basis functions relative to the true length scale that would cause overestimating the underlying function and bias the posterior towards smaller length scale values.
+Table~\ref{tab1_diagnostic} shows the iterative steps of applying the diagnostic procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig7_lscale_comparison} left. It is clearly visible that by following our recommendations, an optimum solution with minimum computational requirements is achieved in these cases. Figure~\ref{fig10_diagnostic_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between two and four iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length scale and the true length scale, are sufficient to reach the optimal values of $m$ and $c$. 
+%Furthermore, as can be seen in Figure~\ref{fig10_diagnostic_lscale_comparison}, following our diagnostic recommendations avoids the use of a too large number of basis functions relative to the true length scale that would cause overestimating the underlying function and bias the posterior towards smaller length scale values.
 
 As concrete examples, the iterative steps applied to perform diagnostic on two of the data sets in Table~\ref{tab1_diagnostic} are described in Appendix~\ref{sec_ex_iterative_steps}.
 
@@ -850,6 +851,7 @@ The HSGP model is fitted following the recommended iterative steps as in Section
 
 \begin{table}
 \centering
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{cccccccc}
 \arrayrulecolor{gray}\hline \\[-3mm]
 iter. & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0.01 \geq \ell$ & RMSE & RMSE* \\ 
@@ -1059,20 +1061,17 @@ Figure \ref{ch5_fig15_Posteriors_exII} shows the data-generating GP function, fr
 Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the data-generating function and the GP, HSGP and spline-based models, respectively.
 
 \begin{figure*}
-\begin{center}
-\begin{tabular}{ c c c c}
-\includegraphics[scale=0.40, trim = 0mm 18mm 35mm 20mm, clip]{ch5_fig15_gpfun_exII.pdf} &
-\includegraphics[scale=0.40, trim = 19mm 18mm 35mm 20mm, clip]{ch5_fig15_bffun_exII.pdf}  & 
-\includegraphics[scale=0.40, trim = 19mm 18mm 35mm 20mm, clip]{ch5_fig15_spfun_exII.pdf} & 
-\includegraphics[scale=0.35, trim = 150mm 10mm 0mm 0mm, clip]{ch5_fig15_colorbar_vertical_exII.pdf}
-\end{tabular}
-\end{center}
+\centering
+\includegraphics[scale=0.36, trim = 1mm 18mm 39.2mm 20mm, clip]{ch5_fig15_gpfun_exII.pdf}
+\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig15_bffun_exII.pdf}
+\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig15_spfun_exII.pdf}
+\includegraphics[scale=0.30, trim = 150mm 5mm 0mm 20mm, clip]{ch5_fig15_colorbar_vertical_exII.pdf}
 \caption{Data-generating function (a) and posterior predictive mean functions of the GP (b), HSGP (c) and spline-based (d) models. Sample points are plotted as circles}
   \label{ch5_fig15_Posteriors_exII}
 \end{figure*}
 
 
-\begin{figure}
+\begin{figure*}
 \centering
 \subfigure{\includegraphics[scale=0.36, trim = 1mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorGP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorHSGP_exII.pdf}}
@@ -1080,7 +1079,7 @@ Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the da
 \subfigure{\includegraphics[scale=0.30, trim = 150mm 5mm 0mm 20mm, clip]{ch5_fig16_error_colorbar_exII.pdf}}
 \caption{Error between the data-generating function and posterior mean functions of the GP (a), HSGP (b) and spline-based (c) models. Sample points are plotted as circles.}
   \label{ch5_fig16_errors_exII}
-\end{figure}
+\end{figure*}
 
 In order to assess performance of the models as a function of the number of basis functions, boundary factor and knots, different models with different number of basis functions, for the HSGP, and different number of knots, for the spline-based model, have been fitted. In each of these models, the same boundary factor, number of basis functions and knots per dimension were used. Figure \ref{ch5_fig17_RMSE_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP, and knots, for the spline-based model. From Figures \ref{ch5_fig16_errors_exII} and \ref{ch5_fig17_RMSE_exII}-left, it can be seen an accurate approximation of the HSGP to the exact GP. However, the performance of the spline-based model is significantly worse. 
 
@@ -1091,9 +1090,9 @@ The Stan model codes for the exact GP, the HSGP and the spline-based models of t
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig17_RMSE_exII.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig17_time_exII.pdf}}
-\subfigure{\includegraphics[scale=0.40, trim = 28mm 35mm 112mm 0mm, clip]{ch5_fig17_legend_exII.pdf}}
+\subfigure{\includegraphics[scale=0.2, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig17_RMSE_exII.pdf}}
+\subfigure{\includegraphics[scale=0.2, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig17_time_exII.pdf}}
+\subfigure{\includegraphics[scale=0.35, trim = 28mm 70mm 112mm 0mm, clip]{ch5_fig17_legend_exII.pdf}}
 \caption{Root mean square error (RMSE) (left) and computational time (right) in seconds per iteration (iteration of the HMC sampling method) of the different methods, and plotted as a function of the boundary factor $c$, number of basis functions $m$ and knots.}
   \label{ch5_fig17_RMSE_exII}
 \end{figure}
