@@ -1040,7 +1040,65 @@ The Stan model code for the approximate GP model of this case study can be found
   \label{fig17_posteriors_onemonth_birthday}
 \end{figure}
 
- 
+\subsection{Case study of simulated data for a bivariate function}
+
+This example consists of a synthetic dataset with $n=120$ ($i=1,\dots,n$) single draws from a GP prior as a function of input values $\bm{x}_i \in \{[-1,1],[-1,1]\} \subset {\rm I\!R}^2$ in a bivariate input space ($D=2$). A squared exponential covariance function, with hyperparameters marginal variance $\alpha=1$ and length-scales $\ell_1=0.10$, for the first input dimension, and $\ell_2=0.35$, for the second input dimension, is used for the GP prior. Gaussian noise standard deviation $\sigma=0.2$ was added to the GP draws to form the final noisy set of observations $\bm{y} \in {\rm I\!R}^{120}$.
+
+In the HSGP model with $2$ input dimensions, the latent function $f(\bm{x})$ is approximated as in equation (13)% (\ref{eq_approxf_multi})
+, with the $2$D squared exponential spectral density $S$ as in eq. \eqref{eq_specdens_inf}, and the $2$-vector of eigenvalues $\bm{\lambda}_j$ and the multivariate eigenfunctions $\phi_j$ as in equations \eqref{eq_eigenfunction_multi} and \eqref{eq_eigenvalue_multi}, respectively.
+
+The joint posterior parameter distributions are estimated by sampling using the dynamic HMC algorithm implemented in Stan \citep{carpenter2017stan,betancourt2017conceptual}. $\mathrm{Normal}(0,1)$, $\mathrm{Normal}(0,3)$ and $\mathrm{Gamma}(1.2,0.2)$ prior distributions has been used for the observation noise $\sigma$, covariance function marginal variance $\alpha$, and length-scale $\ell$, respectively. We use the same prior distributions to fit the exact GP model as the HSGP models.
+
+The HSGP model is fitted following the recommended iterative steps as in Section~\ref{sec_user_guide}, where in each iteration the diagnosis is applied on both dimensions, where for each one the parameters $c$, $m$, minimum $\ell$, estimated $\hat{\ell}$ and diagnostic $\hat{\ell} + 0.01 \geq \ell$ are updated by equations in Section~\ref{sec_num_equations}. The initial values $0.5$ and $1$ are set for the minimum lengthscales $\ell_1$ and $\ell_2$, for first and second dimensions respectively. 
+
+
+In order to do model comparison, in addition to the exact GP and HSGP models, a $2$D splines-based model is also fitted using a cubic spline basis, penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}.
+
+Figure \ref{ch5_fig15_Posteriors_exII} shows the data-generating GP function, from where the dataset was drawn, and the mean posterior predictive functions of the three models, exact GP, HSGP, and splines, fitted over the dataset. Sample observations are also plotted as circles. For the HSGP, $m_1=40$ and $m_2=40$ basis functions for each dimension, respectively, were used, which lead to a total of 1600 multivariate basis functions. A boundary factor for each dimension, $c_1=1.5$ and $c_2=1.5$, were used. For the spline-based model, 40 knots in each dimension were used.
+
+Figure \ref{ch5_fig16_errors_exII} shows the difference functions between the data-generating function and the GP, HSGP and spline-based models, respectively.
+
+\begin{figure*}
+\begin{center}
+\begin{tabular}{ c c c c}
+\includegraphics[scale=0.40, trim = 0mm 18mm 35mm 20mm, clip]{ch5_fig15_gpfun_exII.pdf} &
+\includegraphics[scale=0.40, trim = 19mm 18mm 35mm 20mm, clip]{ch5_fig15_bffun_exII.pdf}  & 
+\includegraphics[scale=0.40, trim = 19mm 18mm 35mm 20mm, clip]{ch5_fig15_spfun_exII.pdf} & 
+\includegraphics[scale=0.35, trim = 150mm 10mm 0mm 0mm, clip]{ch5_fig15_colorbar_vertical_exII.pdf}
+\end{tabular}
+\end{center}
+\caption{Data-generating function (a) and posterior predictive mean functions of the GP (b), HSGP (c) and spline-based (d) models. Sample points are plotted as circles}
+  \label{ch5_fig15_Posteriors_exII}
+\end{figure*}
+
+
+\begin{figure}
+\centering
+\subfigure{\includegraphics[scale=0.36, trim = 1mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorGP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorHSGP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.36, trim = 19mm 18mm 39.2mm 20mm, clip]{ch5_fig16_errorSP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.30, trim = 150mm 5mm 0mm 20mm, clip]{ch5_fig16_error_colorbar_exII.pdf}}
+\caption{Error between the data-generating function and posterior mean functions of the GP (a), HSGP (b) and spline-based (c) models. Sample points are plotted as circles.}
+  \label{ch5_fig16_errors_exII}
+\end{figure}
+
+In order to assess performance of the models as a function of the number of basis functions, boundary factor and knots, different models with different number of basis functions, for the HSGP, and different number of knots, for the spline-based model, have been fitted. In each of these models, the same boundary factor, number of basis functions and knots per dimension were used. Figure \ref{ch5_fig17_RMSE_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP, and knots, for the spline-based model. From Figures \ref{ch5_fig16_errors_exII} and \ref{ch5_fig17_RMSE_exII}-left, it can be seen an accurate approximation of the HSGP to the exact GP. However, the performance of the spline-based model is significantly worse. 
+
+Figure \ref{ch5_fig17_RMSE_exII}-right shows the computation times of the different models as a function of the boundary factor, number of basis functions and knots. Figure \ref{ch5_fig17_RMSE_exII} reveals that choosing the optimal boundary factor allows for less number of basis functions and less computation time. Even though in a bivariate input space the computational demands increase significantly with the number of dimensions or knots, either the HSGP or spline-based models work significantly better than exact GP, even for highly wiggly functions that require a high number of basis functions or knots for an accurate approximation. It is interesting to be noticed that just the computation of the input data for the spline model in a 2D input space and considering more than 50 knots per dimension is computationally very expensive.
+
+The Stan model codes for the exact GP, the HSGP and the spline-based models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_2D-Simulated-data}}\,.
+
+
+\begin{figure}
+\centering
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 5mm 0mm, clip]{ch5_fig17_RMSE_exII.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 0mm 10mm 0mm, clip]{ch5_fig17_time_exII.pdf}}
+\subfigure{\includegraphics[scale=0.40, trim = 28mm 35mm 112mm 0mm, clip]{ch5_fig17_legend_exII.pdf}}
+\caption{Root mean square error (RMSE) (left) and computational time (right) in seconds per iteration (iteration of the HMC sampling method) of the different methods, and plotted as a function of the boundary factor $c$, number of basis functions $m$ and knots.}
+  \label{ch5_fig17_RMSE_exII}
+\end{figure}
+
+
 \subsection{Leukemia data}\label{sec_bf_caseVI}
 
 The next example presents a survival analysis in acute myeloid leukemia (AML) in adults, with data recorded between 1982 and 1998 in the North West Leukemia Register in the United Kingdom. The data set consists of survival and censoring times $t_i$ and censoring indicator $z_i$ (0 for observed and 1 for censored) for $n=1043$ cases ($i=1,\dots,n$). About 16\% of cases were censored. Predictors are \textit{age} ($x_1$), \textit{sex} ($x_2$), \textit{white blood cell} (WBC) ($x_3$) count at diagnostic with 1 unit = $50\times109/L$, and the \textit{Townsend deprivation index} (TDI) ($x_4$) which is a measure of deprivation for district of residence. We denote $\bm{x}_i=(x_{i1},x_{i2},x_{i3},x_{i4}) \in {\rm I\!R}^{4}$ as the vector of predictor values for observation $i$.
