@@ -285,15 +285,26 @@ Yes. Please see our response to your comment \#1.1 above.
 
 \textbf{The process involves checking Figure 6 (or 7) for verifying whether the approximation is valid. This feels cumbersome in practice, and for better PP integration I would expect proper software support for this. It would be nice to at least outline how this could work, but even better to provide an actual tool. Both a visual tool plotting the current estimate as in Fig 13 and a textual feedback like "$\hat l$ is too small, you should either increase m or decrease c a bit -- we recommend the former" could work. One could also make this completely automatic, a loop that keeps on modifying the parameters until the threshold is reached. I would like you to discuss which of these options you would prefer and why.}
 
-In response, we have developed and presented a diagnostic procedure that consists of iterative steps to fit and diagnose the model. Numerical equations are used to set initial values and update the key parameters in each iterative step. The recommended diagnostic procedure allows to automatize the application of the method. In the revised manuscript, please see Section 4.5 and examples in Section 4.6, Case studies, and Appendix C, for more details.
+
+We completely agree and consequently, we have developed and described an automatic iterative diagnostic procedure for fitting and diagnosing the model. Numerical equations are used to set initial values and update the key parameters in each iterative step.
+% The recommended diagnostic procedure allows to automatize the application of the method. 
+In the revised manuscript, please see Section 4.5 and examples in Section 4.6, Case studies, and Appendix C, for more details.
 
 \subsubsection*{R\#1 Major revisions \#3}
 
 \textbf{The paper is in general well written, but the structure could be improved. I think the specific diagnostic is now lost in the middle of the story in Sections 4 and 5 and would benefit from clear presentation in dedicated section (that would also be a good place to discuss the software support; see comment 2 above). The writing of both Sections 4 and 5 is also quite verbose and text-heavy, which makes reading the paper somewhat tedious. Section 4.1 is 200+ lines of text with no structure and as mentioned above both 5.1 and 5.2 are somewhat long compared to their value. Since you anyway provide exact code and re-use models from previous papers, you could compress the general discussion of the models and focus more on the process of determining the approximation parameters.}
 
-Section 4 has been re-structured and updated by adding new subsections. In particular this includes, a subsection on the theoretical evidence of near linear proportionality among the key hyperparameters of the model, a subsection with the experimentation and resulting numerical diagnostic equations, a subsection supporting, detailing, and discussing on the diagnostic rules, and a subsection analyzing the performance of the diagnostic tool. Additionally, new subsections regarding how to proceed with other different kernels from those implemented in this study and some insights on how the method performs in multi-dimensional cases have been added.
+Section 4 has been re-structured and updated by adding new subsections:
+\begin{itemize}
+	\item a subsection on the theoretical evidence of near linear proportionality among the key hyperparameters of the model
+	\item a subsection with the experimentation and resulting numerical diagnostic equations
+	\item a subsection supporting, detailing, and discussing on the diagnostic rules
+	\item a subsection analyzing the performance of the diagnostic tool
+\end{itemize}
 
-We have simplified and significantly improved the writing in Section 5. We have also focused the case studies more on the main goals of the paper, which are: 1) to facilitate the implementation of the method for practical users providing clear a formulation of the method, and 2) and to provide an easy and general diagnostic tool to achieve good approximations via HSGPs.
+%Additionally, new subsections regarding how to use other kernels from those implemented in this study and some insights on how the method performs in multi-dimensional cases have been added.
+
+We have simplified and significantly improved the writing in Section 5. We have also adapted the case studies to be more aligned with the main goals of the paper, which are: 1) to facilitate the implementation of the method for practical users providing clear a formulation of the method, and 2) and to provide an easy and general diagnostic tool to achieve good approximations via HSGPs.
  
 
 \subsubsection*{R\#1 Major revisions \#4}
