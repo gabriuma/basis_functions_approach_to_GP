@@ -337,9 +337,9 @@ Indeed, the main limitation of the HSGP approach is its bad scaling with increas
 
 The HSGP model is definitely highly useful in 1D and 2D, even for very wiggly functions, unless the number of data points is very small ($n \lesssim 300$) where the regular formulation of a GP is already reasonably fast. It is difficult to give clear guidelines of when the application of the HSGP model becomes impractical in multidimensional cases, because it also depends on the wigglyness of the function to be learned which is, in most of the cases, unknown. For that reason, the use of our diagnostic tool is highly beneficial to minimize computational requirements in order to achieve a good approximation. Observing how the requirements change in each iteration can be useful for the user to be able to recognize when the approximation is unfeasible to be applied. For $D>5$, even for very smooth functions, HSGPs indeed seem to be impractical and we now state this explicitely.
 
-In the Leukemia data set case study, we present a 4D HSGP model. We have applied the diagnostic tool and have been able to easily discover the optimal values for $c$ and $m$ that allows for a significantly faster performance than using the exact GP. Without the guidance of the diagnostic tool, a user would have to go through several more trials until finding a sufficiently accurate solution, which would result in substantially increased human and computer time requirements.
+In the Leukemia data set case study, we present a 4D HSGP model. We have applied the diagnostic tool and have been able to easily discover the optimal values for $c$ and $m$ that allows for a significantly faster performance than using the exact GP. Without the guidance of the diagnostic tool, a user would have to go through several trials until finding a sufficiently accurate solution, which would result in substantially increased human and computer time requirements.
 
-We have also added a new case study to Section 5 which consists of wiggly 2D and 3D simulated data sets, where have applied the diagnostic procedure too. Even though the diagnostic was built for unidimensional kernels, we demonstrate its applicability and usefulness in multidimensional cases by diagnosing the different dimensions in each iteration individually. 
+We have also added a new case study to Section 5 which consists of wiggly 2D and 3D simulated data sets, where have applied the diagnostic procedure too. Even though the diagnostic was designed for unidimensional kernels, we demonstrate its applicability and usefulness in multidimensional cases by diagnosing the different dimensions in each iteration individually. 
 %It allows us to find the optimal solution with the minimum requirements that can be essential to use the HSGP model in multidimensional cases.
 In this new case study, we have also included a brief discussion and presentation of additional results concerning computational cost in 2D, 3D, and 4D.
 
@@ -349,13 +349,18 @@ In this new case study, we have also included a brief discussion and presentatio
 
 \textbf{There is no comparison with other techniques (except a spline method) ! Please compare with, e.g. "MCMC for Variationally Sparse Gaussian Processes" ; although this is SVI, it appears directly applicable for the problems considered here. Please also compare with non MCMC variational methods - while not directly applicable to generic MCMC methods, these are the standard and it would be nice to see how they compare in runtime.}
 
-The main comparison that we focus on is the Hilbert space basis function approximation (our HSGP method) against the exact GP model. In all comparisons, the inference conditional on the model is assumed to be accurate. In other words, we compare the exact to an approximate model, using asymptotically correct inference. For this purpose, we have used efficient dynamic HMC, the MCMC convergence diagnostics did not reveal problems, and thus the accuracy of the inference itself can be considered good. 
+In the paper, we focus on the comparison between the Hilbert space basis function approximation (HSGP method) against an exact GP inference. 
+%In all comparisons, the inference conditional on the model is assumed to be accurate. In other words, we compare the exact to an approximate model, using asymptotically correct inference.
+For this purpose, we have used the efficient dynamic HMC algorithm with careful monitoring of the relevant MCMC convergence diagnostics to ensure that the Markov chains have mixed properly, and thus the accuracy of the inference itself can be considered good. 
 
-While we agree that other comparisons could interesting as well, for example MCMC vs. variational inference, they would blow up the already extensive scope of the paper. Some comparisons of MCMC and variational inference for basis function GPs can be found in
+While we agree that other comparisons could interesting as well, for example MCMC vs. variational inference, they would blow up the already extensive scope of the paper. However, we want to emphasize that several comparisons of MCMC and variational inference for basis function GPs can be found in
 
 Lu Zhang, Bob Carpenter, Andrew Gelman, and Aki Vehtari (2021). Pathfinder: Parallel quasi-Newton variational inference. arXiv preprint arXiv:2108.03782.
 
-Further comparisons of the Hilbert space basis function approximations against other GP approximations are provided by Solin and Särkkä (2020), which is cited prominently in our paper.
+Furthermore, Solin and Särkkä (2020) compare the HSGP approximation to a range of difficult low-rank Gaussian process approximation methods based on inducing points. The results show that the HSGP approximation yields superior accuracy and therefore, our study is focused on the comparison against the exact model.
+
+
+ %of the Hilbert space basis function approximations against other GP approximations are provided by , 
 
 % Aki: R2 is not happy that we compare only to splines and suggests we should compare to SVI and other variational methods like splines and VI would belong to the same category. We can use Stan's ADVI to run variational inference results. We should include a model for which usual variational inducing point approaches are not directly applicable due to non-exponential family model or combination of different components so that we can argue that we we stick to comparing to black box VI. We have recently run ADVI and improved robust ADVI results for birthday and motorcycle examples (the latter has latent GP for both location and log sigma)
 % and VI is not that good (it's annoying how common belief it is that black box
