@@ -806,21 +806,19 @@ Above, we thoroughly studied the relationship between the number of basis functi
 
 To select $c$ for many other covariance functions, users can be guided by equations~\eqref{eq_c_vs_l_QE}, \eqref{eq_c_vs_l_mat52} and \eqref{eq_c_vs_l_mat32}, as pointed in Section~\ref{sec_num_equations}.
 
-\subsection{On computational cost in multi-dimensional cases}
+\subsection{The computational cost in the multi-dimensional setting}
 
-The computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})). The HSGP method can be computationally faster than the exact GP for larger datasets due the cubic scaling of the exact GP. 
+The HSGP model is computationally superior $1$D and $2$D, even for highly wiggly functions, except when the number of data points so small ($n \lesssim 300$) that regular formulation of the GP is already reasonably fast itself. However, the computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})). Yet, the HSGP method can still be computationally faster than the exact GP for larger datasets due the cubic scaling of the exact GP. 
 
-The HSGP model is definitely useful in $1$D and $2$D, even for highly wiggly functions, unless in $2$D the number of data points is very small ($n \lesssim 300$) where the regular formulation of a GP is already reasonably fast itself.
-
-In the experiments of this paper for multivariate cases, mostly reported in Section~\ref{sec_computation_nD}, computation for HSGP model was faster than for the exact GP for most of the non-linear $2D$ functions or moderated-large sized ($n>1000$) $3$D datasets (even highly wiggly functions with large $m^* \approx 10000$); see Figure~\ref{fig_time_nD_log}).
+In our experiments with for multivariate problems (see Section~\ref{sec_computation_nD}), the computation time for the HSGP model was faster than for the exact GP for most of the non-linear $2D$ functions or moderated-large sized ($n>1000$) $3$D datasets (even highly wiggly functions with large $m^* \approx 10000$); see Figure~\ref{fig_time_nD_log}).
 
 For small sized ($n<1000$) datasets, HSGPs is likely to be slower than exact GPs already for $D=3$ and $D=4$, with a relatively large number of multivariate basis functions ($m^* > 3000$) in $3$D, and with a relatively low number of multivariate basis functions ($m^* \gtrsim 3000$) in $4$D (see Figure~\ref{fig_time_nD_log}). 
 
 %In all of the investigated cases, choosing the optimal booundary factor $c$ reduces the required number of basis functions $m$ noticeably (see Figures~A.3, B.3-left and C.2 in the online material) and therefore  reduces computational time drastically in particular in multidimensional cases.
 
-As it has been shown in case study III (Section~\ref{sec_caseIII}), the iterative diagnostic tool proposed in this study can be very useful for the multivariate cases as it allows to reduce $m^*$ to the minimum, reducing computational time drastically, and still getting an accurate approximation. Otherwise, user might be struggling in these multivariate cases.
+As it has been shown in case study III (Section~\ref{sec_caseIII}), the proposed diagnostic tool can be very useful for multivariate problems as it allows one to reduce $m^*$ to the minimum, reducing computational time drastically, and still getting an accurate approximation.% Otherwise, the user might be struggling in these multivariate cases.
 
-When HSGP or exact GP is faster depend also on the implementation details that can have big effect on the constants, and thus any more detailed recommendations can only be made in the context of the specific software implementation.
+Whether HSGP or exact GP is faster will also depend on the specific implementation details, which can have big effect on the constants, and thus further detailed recommendations may depend on the specific software implementation.
 
 Roughly similar or even worse behavior was found for thin plate regression splines used in the experiments, with serious challenges with computation time when doing inference for spline models for $D=3$ and with more than 10 basis functions, or even for $D=2$ and more than 40 basis functions (see Figures~B.3-right and C.3 in the online material).
 
