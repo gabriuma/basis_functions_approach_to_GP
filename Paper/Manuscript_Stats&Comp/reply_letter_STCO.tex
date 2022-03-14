@@ -74,9 +74,6 @@ Throughout, comments of the reviewers are hightlighted in bold.
 
 \item A discussion of the performance of the model and the applicability of the diagnostic tool in multidimensional cases have been included in Section 4.8 and Case study III.
 
-%Paul: I don't see how this is an update of the paper
-%\item We expect this paper having a high impact on users as it is highly recommended to make the method usable in practice and in broad scenarios.
-
 \end{itemize}
 
 \noindent \textit{Specific updates:}
@@ -109,13 +106,6 @@ We are grateful for your valuable comments and suggestions, which have been very
 
 The Hilbert space approximation for GPs (HSGP) is presented as a general formulation for probabilistic modeling, so it can be implemented in different probabilistic programming frameworks, such as Stan, PyMC, Pyro, Beanmachine, etc. The case study's models have also been formulated in general probabilistic language in the main manuscript, and Stan's implementations have also been provided as examples. Furthermore, the HSGP model framework has been fully implemented in the \textit{brms} R-package that uses Stan as backend to make model inference.
 
-% and we are planning to implement the diagnostic tool which consists in iterative steps to fit and diagnose the model also in the \textit{brms} R-package. 
-
-%Paul: Not in the near future; highly unlikely before the paper is accepted
-%{\color{blue}(Gabriel: Paul, do we intend to implement the diagnostic procedure in brms?)}
- 
-%This diagnostic iterative procedure is fundamentally based on a diagnostic rule to check whether the approximation is accurate and numerical equations allowing updating the key parameters of the method.
-
 \subsubsection*{R\#1 Comment \#2}
 
 \textbf{The analysis is reasonable and provides tangible results on how the approximation scheme should be used, but does not go very deep. There are not new theoretical results but instead the analysis is purely empirical and in fact a standard study where each approximation parameter is varied at a time to identify the limits when the approximation starts to fail. The analysis is properly carried out and results in a practical diagnostic, but did not require notable scientific insight.}
@@ -125,8 +115,6 @@ The performance of the HSGP model drastically depends on some hyperparameters. T
 While we agree that a theoretical approach has a lot of merit, we do not see how such a theoretical approach to the diagnostic equations and rules would have been feasible. Thus we have approached these challenges empirically via numerical experiments, instead. By means of this empirical analysis, we got a thorough understanding of the behavior of the approximation as a function of the hyperparameters, derive numerical equations that capture the relationships between these parameters, which allow for an iterative procedure to ensure sufficient accuracy of the approximation.
 
 Furthermore, by following our recommended diagnostic procedure, an optimum solution with minimum computational requirements is achieved. This can be essential especially in cases where computation time is prohibitive, for example, when having to fit the model repeatedly (e.g., in cross-validation or simulation based calibration), uni-dimensional cases with very large data sets, or multi(low)-dimensional cases, even with small data sets. 
-
-%since knowing the optimum values for the hyperparameters for each individual dimension can significantly reduce the computational requirements, otherwise fitting HSGPs would be unfeasible here.
 
 \subsubsection*{R\#1 Comment \#3}
 
@@ -150,29 +138,20 @@ In Section 3, we describe the formulation and implementation of the HSGP model i
 Our experience tells us that the range of expertise in users of probabilistics programming languages such as Stan and their higher level interfaces such a brms is quite wide. We don't want to speculate on the percentage of users that would be able to come up with comparable solutions themselves. To study this empirically, one had to conduct extensive user studies and their are not in scope of this paper.
 We want to highlight, though, that rerunning models iteratively for estimating reasonable hyperparameter values often takes a lot of human and compute time. We substantially reduce that time by reducing the number of model iterations, the computational requirements for each iteration, as well as eliminating the time an educated practioners would have had to spend to come up with some sensible rule themselves.
 
-%Not all practitioners may be educated enough to come up with and adjust procedures themselves. So clear, justified guidelines (that we provide) will be helpful and even required for the method to be used for many users.
-
-%Apart from the number of basis function, the boundary factor $c$ plays a crucial role here and has to be set carefully as a function of the wigglyness (true length-scale) of the function to be learned, which is unknown a prior. By following our diagnostic rules and equations, both $m$ and $c$ can be set and properly updated with minimal effort.
-
-%An optimum solution with minimum computational requirements can be achieved following our recommended diagnostic procedure, otherwise it would be difficult. As discussed in the paper and above in this letter, using optimal values for the key parameters that allow for minimum computational requirements can be essential for very large data sets, multi-dimensional cases, or other problems that require repeated fitting.
-
 \subsubsection*{R\#1 Comment \#6}
 
 \textbf{The case studies are interesting and demonstrate the approximation scheme works in practice for simple statistical models while providing clear example codes, but they could be more focused towards the main goal of the paper.}
 
 The developed diagnostic tool and iterative steps to fit and perform diagnostics on the HSGP model have been made more prominent in the case studies, to better link them our main goals and the rest of the paper. In particular:
 
-%The HSGP model is a new and computationally efficient representation of a GP. Improving the computational efficiency of a GP favors its implementation as modular components in flexible and complex modeling. In this sense, case study II and IV are examples of the use of the model in these flexible and complex modeling scenarios.
 
 \begin{itemize}
-%\item Case study I involves a wiggly function with a Mat\'ern-3/2 kernel.
 
 \item Case study II involves a function that is composed of three additive GP components with different kernels, squared exponential and periodic kernels. Additionally this case study has a large data set of more than 7000 observations which would be unfeasible to be fitted using a regular formulation of the GP model.
 
 \item Case study III involves 2D and 3D functions on which the diagnostic tool is used to fit and diagnose the model. We show that, although the diagnostic tool was built for unidimensional covariance functions, it can be successfully used for multi-dimensional cases by diagnosing individually the different dimensions in each iteration. It allows gradually finding the optimal solution with the minimum requirements that can be essential to use the HSGP model in multidimensional cases. We have included in this new case study a brief discussion and presentation of additional results concerning computational cost in 2D, 3D and 4D cases.
 
 \item Case study IV (Leukemia data set) is a 4D function with a multilevel GP structure. This case study is also a good example that by using our diagnostic tool you can easily get an optimal solution in 4D which makes it significantly faster than regular GPs.
-% Otherwise, the user would had probably been struggling searching for useful values for the hyperparameters without any guidance.
 \end{itemize}
 
 The only main limitation of the HSGP method is the expoential scaling of the computation with increasing number of input dimensions (assuming wigglines stays the same and the amount of data is sufficient to get sufficient information about that wiggliness). 
@@ -199,13 +178,9 @@ It is difficult to give specific guidelines for when the HSGP model will be impr
 
 We disagree with the reviewer that the HSGP performs worse than the exact GP on this Leukemia data set. In fact, using the diagnostic tool the user will easily discover the optimal values for $c$ and $m$ that implies significantly faster computation than using the exact GP. Without the guide of the diagnostic tool, the user could easily end up using several trials until finding an accurate and practical solution, consuming a lot of computation requirements in this highly demanding 4D case. Insofar, the understanding that "its applicability to multidimensional cases is mostly negative" is not fully accurate, as it ultimately depends on the wigglyness of the function. We now better discuss this point in various places in the paper. Specifically, in Section 4.8, we provide details on the performance of the model in multi-dimensional cases. 
 
-%the method is limited in practice to the number of dimensions and the wigglyness of the function across the different dimensions. We have observed that it can be useful for $D<5$ depending on the wigglyness of the function. .
-
-%In this sense, the use of our recommended diagnostic allows to find the optimal values for $c$ and $m$ which allows for minimum computational requirements which can be essential on these multidimensional cases.
 
 We have also added a new case study to Section 5 which consists of wiggly 2D and 3D simulated data sets, where have applied the diagnostic procedure too. Even though the diagnostic was built for unidimensional kernels, we demonstrate its applicability and usefulness in multidimensional cases by diagnosing the different dimensions in each iteration individually. 
-%It allows us to find the optimal solution with the minimum requirements that can be essential to use the HSGP model in multidimensional cases.
-In this new case study, we have also included a brief discussion and presentation of additional results concerning computational cost in 2D, 3D, and 4D.
+In this new case study we have also included a brief discussion and presentation of additional results concerning computational cost in 2D, 3D, and 4D. 
 
 \subsubsection*{R\#1 Comment \#10}
 
@@ -217,8 +192,6 @@ Solin and Sarka (2020) fundamentally focus on the mathematical development of th
 
 We expect this paper to have a strong impact on how widely basis function GPs are used. Our contribution makes these approximate GPs more practically applicable for both uni-dimensional and multi-dimensional functions, even in combination with additional challenges that require repeated fitting such as cross-validation or simulation based calibration.
 
-%We do not see a problem in a purely simulative approach. It simply has different advantages and disadvantages over analytic approaches. In fact, as mentioned above, this study can only be approached from an empirical point of view. We would disagree on the scientific novelty (not all scientific novelty is mathematical in this regard). And we agree with the reviewer about the practical usefulness, which was our goal.
-
 \subsubsection*{R\#1 Major revisions \#1}
 
 \textbf{\#1.1 - The diagnostic involves comparing the estimated length-scale $\hat l$ against a minimum $l^*$ determined by m and c. I have trouble understanding the full validity of this process. I agree with your statement on page 8 about $\hat l$ being accurate if the approximation is accurate, but you do not state anything definite about the quality of $\hat l$ when the approximation is inaccurate. However, the process seems to implicitly assume we can still rely on $\hat l$ even then, with very relaxed justification ("If $\hat l$ does not exceed ... the approximation *may* be inaccurate"). Am I correct that your method would fail to diagnose a bad approximation if $\hat l$ was overestimated? I would like to see this discussion extended, at least by explicitly mentioning possible failure modes.}
@@ -227,24 +200,11 @@ We have substantially extended the discussion around our proposed diagnostic. In
 
 As demonstrated in Section 4.6 and our case studies, our developed diagnostic rules leads to a reliable, useful, and fast iterative procedure to fit the models with minimum computational requirements. More arguments supporting this notion have been included in the paper in Section 4.5. 
 
-%We cannot state anything definitive about the estimated lengthscale $\hat{\ell}$ when the approximation is inaccurate, basically because it might ultimately depend on the specific frequency patterns of the signal/function to be learned, and also because $c$ must be properly set. Although, we can state that for most of the cases, if $c$ is large enough, $\hat{\ell}$ will be below that minimum supported length-scale ($\ell^*$) determined by $m$ and $c$. But, as said before, it cannot be generalized to all case studies because it might depend on the particular frequency patterns of a signal. Future research will be focused on investigating potential signals with particular frequency patterns that could escape from this rule.
-
-%What we can say more definitely is the following:
-
-%\begin{enumerate}
-%\item Observing an $\hat{\ell}$ smaller than $\ell^*$, for $c$ large enough given $\ell^*$, indicates a potential problem with the approximation. This happens because in such scenarios the true length-scale is smaller than $\ell^*$, so $\hat{\ell}$ will tend to take on values smaller than $\ell^*$.
-
-%\item The other way around, that is, observing $\hat{\ell}$ larger than $\ell^*$, the approximation is assumed to be accurate because when the true length-scale is larger than $\ell^*$, $\hat{\ell}$ will tend to be larger than $\ell^*$. However, we do not still have full evidence that this can be generalized to all possible cases as explained above (but, we can state that this rule can be apply for most of the the practical cases). For that reason, in order to make the diagnostic fully safety we recommend re-running the model, updating parameters, until seeing predictive accuracy measures, such as RMSE, $R^2$ and ELPD, do not improve.
-
-%\end{enumerate} 
-
 \textbf{\#1.2 - To me it seems Fig 5 (left) already hints that you tend to underestimate l when using bad approximation and the procedure may be valid in practice, but this is not transparent in the paper.}
 
 We agree and have made this observation and corresponding assumptions more explicit in the paper. Below, we detail some results corresponding to Figure 5 for your convenience.
 
 For all cases showing inaccurate approximation in Fig. 5 (left), $\hat{\ell}$ is below $\ell^*$, as long as $c$ is large enough given $\ell^*$. It can be checked by computing $\ell^*$ for each case in Fig. 5 (left) by using equation (18). 
-
-%Following we show a few of these inaccurate cases in Fig. 5 (left), showing diagnostic $\hat{\ell} < \ell^*$ can be trusted to diagnose a bad approximation, as long as $c$ is large enough given $\ell^*$:
 
 \begin{table}[h]
 \centering
@@ -287,7 +247,7 @@ Yes. Please see our response to your comment \#1.1 above.
 
 
 We completely agree and consequently, we have developed and described an automatic iterative diagnostic procedure for fitting and diagnosing the model. Numerical equations are used to set initial values and update the key parameters in each iterative step.
-% The recommended diagnostic procedure allows to automatize the application of the method. 
+ 
 In the revised manuscript, please see Section 4.5 and examples in Section 4.6, Case studies, and Appendix C, for more details.
 
 \subsubsection*{R\#1 Major revisions \#3}
@@ -301,8 +261,6 @@ Section 4 has been re-structured and updated by adding new subsections:
 	\item a subsection supporting, detailing, and discussing on the diagnostic rules
 	\item a subsection analyzing the performance of the diagnostic tool
 \end{itemize}
-
-%Additionally, new subsections regarding how to use other kernels from those implemented in this study and some insights on how the method performs in multi-dimensional cases have been added.
 
 We have simplified and significantly improved the writing in Section 5. We have also adapted the case studies to be more aligned with the main goals of the paper, which are: 1) to facilitate the implementation of the method for practical users providing clear a formulation of the method, and 2) and to provide an easy and general diagnostic tool to achieve good approximations via HSGPs.
  
@@ -325,9 +283,6 @@ We are grateful for your valuable comments and suggestions, which have been very
 
 In the revised version of the paper, we have substantially extended the experiments. On that basis, we have derived equations that characterize the relationships between the key hyperparameters of the HSGP model and  the goodness of the corresponding exact GP approximation. We have developed a procedure to diagnose the appropriateness of the hyperparameters and to update them based on iterative steps until an accurate approximation has been achieved. Furthermore, this diagnostic tool provides optimal values for those hyperparameters with respect to minimizing the computational cost subject to sufficient accuracy of the approximation. Minimizing computation cost is particularily important for very large data sets, multi-dimensional cases, or other problems that require repeated fitting, such as cross-validation and simulated based calibration. All of this new content is discussed in detail in Section 4 of the paper.
 
-%The diagnostic rules, the numerical functions that allow updating the parameters and the recommended iterative steps to fit and diagnose the model are extensive to the community and essential to make the model usable for practitioners.
-
-
 
 \subsubsection*{R\#2 Comment \#2}
 
@@ -340,17 +295,14 @@ The HSGP model is definitely highly useful in 1D and 2D, even for very wiggly fu
 In the Leukemia data set case study, we present a 4D HSGP model. We have applied the diagnostic tool and have been able to easily discover the optimal values for $c$ and $m$ that allows for a significantly faster performance than using the exact GP. Without the guidance of the diagnostic tool, a user would have to go through several trials until finding a sufficiently accurate solution, which would result in substantially increased human and computer time requirements.
 
 We have also added a new case study to Section 5 which consists of wiggly 2D and 3D simulated data sets, where have applied the diagnostic procedure too. Even though the diagnostic was designed for unidimensional kernels, we demonstrate its applicability and usefulness in multidimensional cases by diagnosing the different dimensions in each iteration individually. 
-%It allows us to find the optimal solution with the minimum requirements that can be essential to use the HSGP model in multidimensional cases.
 In this new case study, we have also included a brief discussion and presentation of additional results concerning computational cost in 2D, 3D, and 4D.
 
-%As commented across the paper and in particular in Section 4.8, the method is limited in practice to the number of dimensions and the wigglyness of the function across the different dimensions. We have observed that it can be useful for $D<5$ conditioned to the wigglyness of the function. However, for $D=2$ it is still useful and significantly faster than the exact GP even for very wiggly functions. In Section 4.8 we give brief details on the performance of the model in multi-D cases. In this sense, the use of our recommended diagnostic allows to find the optimal values for $c$ and $m$ which allows for minimum computational requirements which can be essential on these multidimensional cases.
 
 \subsubsection*{R\#2 Comment \#3}
 
 \textbf{There is no comparison with other techniques (except a spline method) ! Please compare with, e.g. "MCMC for Variationally Sparse Gaussian Processes" ; although this is SVI, it appears directly applicable for the problems considered here. Please also compare with non MCMC variational methods - while not directly applicable to generic MCMC methods, these are the standard and it would be nice to see how they compare in runtime.}
 
 In the paper, we focus on the comparison between the Hilbert space basis function approximation (HSGP method) against an exact GP inference. 
-%In all comparisons, the inference conditional on the model is assumed to be accurate. In other words, we compare the exact to an approximate model, using asymptotically correct inference.
 For this purpose, we have used the efficient dynamic HMC algorithm with careful monitoring of the relevant MCMC convergence diagnostics to ensure that the Markov chains have mixed properly, and thus the accuracy of the inference itself can be considered good. 
 
 While we agree that other comparisons could interesting as well, for example MCMC vs. variational inference, they would blow up the already extensive scope of the paper. However, we want to emphasize that several comparisons of MCMC and variational inference for basis function GPs can be found in
@@ -360,20 +312,12 @@ Lu Zhang, Bob Carpenter, Andrew Gelman, and Aki Vehtari (2021). Pathfinder: Para
 Furthermore, Solin and Särkkä (2020) compare the HSGP approximation to a range of difficult low-rank Gaussian process approximation methods based on inducing points. The results show that the HSGP approximation yields superior accuracy and therefore, our study is focused on the comparison against the exact model.
 
 
- %of the Hilbert space basis function approximations against other GP approximations are provided by , 
-
-% Aki: R2 is not happy that we compare only to splines and suggests we should compare to SVI and other variational methods like splines and VI would belong to the same category. We can use Stan's ADVI to run variational inference results. We should include a model for which usual variational inducing point approaches are not directly applicable due to non-exponential family model or combination of different components so that we can argue that we we stick to comparing to black box VI. We have recently run ADVI and improved robust ADVI results for birthday and motorcycle examples (the latter has latent GP for both location and log sigma)
-% and VI is not that good (it's annoying how common belief it is that black box
-% VI would be great).
-
 \subsubsection*{R\#2 Comment \#4}
 
 \textbf{On the eigenfunction expansion: 1) note that this is very similar to the Mercer expansion of e.g. Walder et al, "Fast Bayesian Intensity Estimation for the Permanental Process". 2) the Nystrom method also yields an approximate eigen expansion which has pros and cons to the method of the submission. For example, the Nystrom applies to any kernel (not just stationary) and yields a linear GP approximation, but requires some overhead for the setup. Given this submission is purely experimental, it would be nice to see comparisons.} 
 
 Comparisons of the Hilbert space basis function approximations against other GP approximations, including the Nyström method, are provided by Solin and Särkkä (2020), which is cited prominently in our paper.
 
-% Aki: R2 asks comparisons to Nystrom, but that comparison was
-% already made by Solin and Särkkä so I don't think we should add that.
 
 
 %\noindent \hdashrule{12.5cm}{0.2pt}{2mm 1pt}
