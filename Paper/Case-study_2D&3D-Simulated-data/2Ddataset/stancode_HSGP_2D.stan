@@ -10,28 +10,27 @@ functions {
 		return lam;
 	}
 	
-	//Spectral densitiy function (for a squared exponential kernel)
-	real spd_1D(real gpscale, real lscale, real w) {
+	//Square root of spectral densitiy function (for a squared exponential kernel)
+	real sqrt_spd_1D(real gpscale, real lscale, real w) {
 		return gpscale * sqrt(sqrt(2*pi()) * lscale) * exp(-.25*(lscale^2)*(w^2));
 	}
-	real spd_2D(real gpscale, real lscale1, real lscale2, real w1, real w2) {
+	real sqrt_spd_2D(real gpscale, real lscale1, real lscale2, real w1, real w2) {
 		return gpscale * sqrt(sqrt(2*pi())^2 * lscale1*lscale2) * exp(-.25*(lscale1^2*w1^2 + lscale2^2*w2^2));
 	}
-	real spd_nD(real gpscale, vector lscale, vector w, int D) {
+	real sqrt_spd_nD(real gpscale, vector lscale, vector w, int D) {
 		return gpscale * sqrt(sqrt(2*pi())^D * prod(lscale)) * exp(-.25*((to_row_vector(lscale) .* to_row_vector(lscale)) * (w .* w)));
 	}
 
-  //Vector of spectral densities
-  vector diagSPD_1D(real gpscale, real lscale, real L, int M) {
+  //Square root vector of spectral densities (for a squared exponential kernel)
+  vector sqrt_diagSPD_1D(real gpscale, real lscale, real L, int M) {
     return gpscale * sqrt(sqrt(2*pi()) * lscale) * exp(-.25*(lscale*pi()/2/L)^2 * linspaced_vector(M, 1, M)^2);
   }
-  vector diagSPD_nD(real gpscale, vector lscale, vector L, matrix indices, int D) {
+  vector sqrt_diagSPD_nD(real gpscale, vector lscale, vector L, matrix indices, int D) {
     return gpscale *  sqrt(sqrt(2*pi())^D * prod(lscale)) * exp(-.25 * (indices^2 * (lscale*pi() ./ (2*L))^2));
   }
   
   //Eigenfunction
 	vector phi_1D(real L, int m, vector x) {
-		vector[rows(x)] fi;
 		return 1/sqrt(L) * sin(m*pi()/(2*L) * (x+L));
 	}
 	vector phi_2D(real L1, real L2, int m1, int m2, vector x1, vector x2) {
@@ -87,7 +86,6 @@ data {
 
 transformed data {
 	matrix[N_pred,M_nD] PHI;
-
 	PHI = PHI_2D(N_pred, M[1], M[2], L[1], L[2], x_pred[,1], x_pred[,2]);
 }
 
@@ -103,8 +101,7 @@ transformed parameters{
 	vector[M_nD] SPD_beta;
  {
 	vector[M_nD] SPD;
-
-	SPD = diagSPD_nD(gpscale, lscale, L, indices, D);
+	SPD = sqrt_diagSPD_nD(gpscale, lscale, L, indices, D);
 	SPD_beta = SPD .* beta;
 	f= PHI[vv_sample,] * SPD_beta;
  }
@@ -121,11 +118,9 @@ model{
 generated quantities{
   vector[N_pred] f_pred;
   vector[N_sample] elpd;
-  
   f_pred= PHI * SPD_beta;
-	for(i in 1:N_sample){
+	for(i in 1:N_sample)
 		elpd[i] = normal_lpdf(y_pred[vv_sample][i] | f[i], noise);
-	}
 }
 
 

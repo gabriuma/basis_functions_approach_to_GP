@@ -445,7 +445,7 @@ check1[i] <- diagnostic(l1[i], l_hat1[i])
 check2[i] <- diagnostic(l2[i], l_hat2[i])
 ```
 
-Summary table of diagnosis
+Summary diagnosis table
 
   - `rmse_gp` refers to the root mean square error of the HSGP function with the GP function as the reference.
 
@@ -621,7 +621,7 @@ check1[i] <- diagnostic(l1[i], l_hat1[i])
 check2[i] <- diagnostic(l2[i], l_hat2[i])
 ```
 
-Summary table of diagnosis
+Summary diagnosis table
 
   - `rmse_gp` refers to the root mean square error of the HSGP function with the GP function as the reference.
 
@@ -819,7 +819,7 @@ check1[i] <- diagnostic(l1[i], l_hat1[i])
 check2[i] <- diagnostic(l2[i], l_hat2[i])
 ```
 
-Summary table of diagnosis
+Summary diagnosis table
 
   - `rmse_gp` refers to the root mean square error of the HSGP function with the GP function as the reference.
 
@@ -1017,7 +1017,7 @@ check1[i] <- diagnostic(l1[i], l_hat1[i])
 check2[i] <- diagnostic(l2[i], l_hat2[i])
 ```
 
-Summary table of diagnosis
+Summary diagnosis table
 
   - `rmse_gp` refers to the root mean square error of the HSGP function with the GP function as the reference.
 
