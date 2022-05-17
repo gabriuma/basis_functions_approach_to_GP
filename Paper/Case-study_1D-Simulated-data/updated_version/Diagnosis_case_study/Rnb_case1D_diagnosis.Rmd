@@ -1,0 +1,883 @@
+---
+title: '1D simulated case study: Diagnosis of the HSGP approximation'
+author: 'Gabriel Riutort-Mayol'
+date: "`r format(Sys.Date())`."
+output:
+  bookdown::html_document2:
+    theme: readable
+    toc: yes
+    toc_depth: 4
+    number_sections: true
+    toc_float: 
+      collapsed: true
+    code_download: yes
+    df_print: kable
+---
+
+<style type="text/css">
+body, td{ font-size: 14px; }
+code.r{ font-size: 12px; }
+pre{ font-size: 12px }
+h1.title {
+  font-size: 24px;
+  color: Black;
+}
+h1 { /* Header 1 */
+  font-size: 22px;
+  color: Black;
+}
+h2 { /* Header 2 */
+    font-size: 18px;
+  color: Black;
+}
+h3 { /* Header 3 */
+    font-size: 14px;
+  color: Black;
+}
+h4 { /* Header 4 */
+    font-size: 14px;
+  color: Black;
+}
+#TOC {
+  color: DarkBlue;
+  font-size: 16px;
+}
+</style>
+
+This notebook implements the HSGP model fit and diagnosis on the 1D dataset in case study 5.1 '*Simulated data for a 1D function*' in [Riutort-Mayol, G., Bürkner, P. C., Andersen, M. R., Solin, A., & Vehtari, A. (2020; updated in 2022). Practical Hilbert space approximate Bayesian Gaussian processes for probabilistic programming. arXiv preprint arXiv:2004.11408.](https://arxiv.org/pdf/2004.11408.pdf)
+
+```{r include=FALSE, eval=TRUE}
+knitr::opts_chunk$set(echo = TRUE, comment="")
+```
+
+# Load packages
+
+```{r message=FALSE, warn=FALSE, eval=TRUE}
+library(rstan)
+library(cmdstanr)
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = FALSE)
+library(posterior)
+library(bayesplot)
+library(RColorBrewer)
+library(ggplot2)
+```
+
+# Synthetic dataset
+
+A synthetic dataset $\boldsymbol{y}$ with a true data generating function $f(\boldsymbol{x})$, with $x_i \in {\rm I\!R}$, where $f(\boldsymbol{x})$ is a Gaussian process (GP) with a squared exponential kernel. Gaussian errors $\boldsymbol{\epsilon}$ are added to $f(\boldsymbol{x})$ to form the final synthetic noisy dataset $\boldsymbol{y}$.
+
+\begin{align*}
+\begin{split}
+\boldsymbol{y} &= \boldsymbol{f} + \boldsymbol{\epsilon} \\
+\boldsymbol{\epsilon} &\sim \text{Normal}(\boldsymbol{0}, \sigma^2 \boldsymbol{I}) \\
+f(x) &\sim \text{GP}(0, k(x, x', \theta)),
+\end{split}
+\end{align*}
+
+where $k(x, x', \theta)$ is a squared exponential kernel as a function of input values $x$ and parameters $\theta=(\alpha,\ell)$, where $\alpha$ is the marginal variance of the GP function and $\ell$ the lengthscale of the kernel.
+
+## Draw the true data generative function $f(x)$ from a GP 
+
+### Input predictive space
+
+Matrix of 1D-predictive input points `x_pred`
+
+```{r eval=TRUE}
+x_pred <- seq(-1, 1, 0.002)  
+str(x_pred)
+```
+
+Vector of indices of `x_pred` (`vv_pred`)
+
+```{r eval=TRUE}
+vv_pred <- 1:length(x_pred)
+```
+
+Length of `x_pred` (`N_pred`)
+
+```{r eval=TRUE}
+N_pred <- length(x_pred)
+N_pred
+```
+
+Number of dimensions `D`
+
+```{r eval=TRUE}
+D <- 2 
+D
+```
+
+Half range `S` of the input domain
+
+```{r eval=TRUE}
+S <- abs((max(x_pred) - min(x_pred))/2)
+S
+```
+
+### Draw $f(x)$ using Stan
+
+`param_v` identifies the order $\nu$ of the kernel
+
+```{r eval=TRUE}
+param_v <- 3
+```
+
+Marginal variance `gpscale` ($\alpha$) and lengthscale `lscale` ($\ell$)
+
+```{r eval=TRUE}
+gpscale <- 1
+lscale <- 0.2
+```
+
+Random variable `eta` to simulate from the GP
+
+```{r eval=TRUE}
+seed <- 88646
+set.seed(seed)
+eta <- rnorm(N_pred, 0, 1)
+```
+
+Data to be passed to Stan
+
+```{r eval=TRUE}
+standata <- list(x= x_pred, 
+                  N= N_pred, 
+                  param_v= param_v, 
+                  gpscale= gpscale, 
+                  lscale= lscale, 
+                  eta= eta)
+```
+
+Model sampling
+
+```{r eval=TRUE, results=FALSE, message=FALSE, warn=FALSE}
+simuGP_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_SIMU_1D.stan")
+fit_SIMU <- simuGP_mod$sample(data= standata,
+                                iter_warmup=100,
+                                iter_sampling=100,
+                                chains=1, thin=1, init=0.5,
+                                fixed_param=TRUE)
+fit_SIMU <- read_stan_csv(fit_SIMU$output_files())
+```
+
+Drawn $f(x)$
+
+```{r eval=TRUE, fig.height=2, fig.width=5}
+f_true <- summary(fit_SIMU, pars = "f", probs = c(0.025, 0.5, 0.975))$summary[,1]
+ggplot(data.frame(f=f_true, x=x_pred), aes(x=x, y=f))  +
+  geom_line(color = 'black', size=1) +
+  theme_classic()
+```
+
+### Adding noise to $f(x)$
+
+Five different noisy datasets $\boldsymbol{y}$ over true data generative function $f(x)$
+
+```{r eval=TRUE, fig.height=2, fig.width=5}
+seed <- 10453
+set.seed(seed)
+sd <- 0.2
+y <- f_true + rnorm(N_pred, 0, sd)
+ggplot(data.frame(f=f_true, x=x_pred), aes(x=x, y=f))  +
+    geom_line(color = 'black', size=1) +
+    geom_point(y= y, size=0.7, color='black') +
+    theme_classic()
+```
+
+## Data
+
+A random sample `x_sample` of size n=250 from the input predicting points `x_pred`
+
+```{r eval=TRUE, fig.height=2, fig.width=5}
+set.seed(seed)
+vv_sample <- sort(sample(vv_pred, 250))
+x_sample <- x_pred[vv_sample]
+N_sample <- length(x_sample)
+ggplot(data.frame(f=f_true[vv_sample], x=x_sample), aes(x=x, y=f))  +
+    geom_line(color = 'black', size=1) +
+    geom_point(y= y[vv_sample], size=0.9, color='black') +
+    theme_classic()
+```
+
+### Interpolation predicting data
+
+Select samples from `x_sample` for interpolation
+
+```{r eval=TRUE}
+set.seed(seed)
+vv_inter <- vv_sample[which((x_sample>(-0.50)&x_sample<(-0.35))|(x_sample>(0.13)&x_sample<0.30))]
+N_inter <- length(vv_inter)
+x_inter <- x_pred[vv_inter]
+```
+
+### Extrapolation predicting data
+
+Select samples from `x_sample` for extrapolation
+
+```{r eval=TRUE}
+vv_extra <- vv_sample[which(x_sample<(-0.8)|x_sample>0.82)]
+N_extra <- length(vv_extra)
+x_extra <- x_pred[vv_extra]
+```
+
+### Training data
+
+Select samples from `x_sample` for training
+
+```{r eval=TRUE}
+vv_train <- setdiff(vv_sample, c(vv_extra, vv_inter))
+N_train <- length(vv_train)
+x_train <- x_pred[vv_train]
+```
+
+### Plot of training (black), interpolation (red) and extrapolation (red) points
+
+```{r eval=TRUE, fig.height=2, fig.width=5, echo=FALSE}
+ggplot(data.frame(f=f_true[vv_sample], x=x_sample), aes(x=x, y=f), size=0.7, color='black')  +
+  geom_line() +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= as.vector(y[vv_train]), x=x_train), size=0.7, color='black') +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= as.vector(y[vv_inter]), x=x_inter), size=0.7, color='red') +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= as.vector(y[vv_extra]), x=x_extra), size=0.7, color='red') +
+  theme_classic()
+```
+
+# GP model fitting
+
+Initialization of programming objects
+
+```{r eval=TRUE, eval=TRUE}
+fit_GP <- list()
+```
+
+## Data
+
+Data to Stan
+
+```{r eval=TRUE}
+standata_GP <- list(x_pred= x_pred, 
+                     y= y, 
+                     vv_train= vv_train, 
+                     N_pred= N_pred, 
+                     N_train= N_train, 
+                     param_v= param_v,
+                     f_true= f_true) 
+```
+
+## Model fitting
+
+Model fitting
+
+```{r eval=TRUE, results=FALSE, message=FALSE, warn=FALSE}
+GP_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_GP_marginalized_1D.stan")
+fit_GP <- GP_mod$sample(data= standata_GP,
+                          iter_warmup=50,
+                          iter_sampling=50,
+                          chains=4, thin=1, init=0.5)
+fit_GP <- read_stan_csv(fit_GP$output_files())
+```
+
+Summaries and simulation chains for the variable estimates after warmup
+
+```{r eval=TRUE, fig.height=3, fig.width=10}
+param = c("lscale","gpscale","sigma")
+print(summary(fit_GP, pars = param, probs = c(0.025, 0.5, 0.975))$summary)
+traceplot(fit_GP, pars = param, include = TRUE, unconstrain = FALSE, inc_warmup = FALSE, window = NULL, nrow = NULL, ncol = NULL)
+```
+
+## Posterior predictive distributions
+
+```{r eval=TRUE, include=TRUE, echo=TRUE, echo=FALSE}
+f_pred_gp <- summary(fit_GP, pars = c("f_pred"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+time_GP <- sum(get_elapsed_time(fit_GP)[2])/(fit_GP@sim$iter - fit_GP@sim$warmup)
+```
+
+```{r eval=TRUE, fig.height=4, fig.width=10}
+df_pred_gp <- data.frame(as.data.frame(f_pred_gp), x=x_pred)
+ggplot(df_pred_gp, aes(x=x, y=mean))  +
+  geom_line(size=1.3, color='red') +
+  geom_ribbon(aes(ymin=X2.5., ymax=X97.5., color=NA), fill='red', size=0.7, linetype=2, alpha=0.1) +
+  # geom_line(mapping=aes(x=x, y=f), data=data.frame(f=f_true[vv_sample], x=x_sample), size=0.7, color='black') +  //true function
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_train], x=x_train), size=1, color='black') +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_inter], x=x_inter), size=1, color='red') +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_extra], x=x_extra), size=1, color='red') +
+  scale_color_brewer(palette="Set1") +
+  labs(y="y", x="x") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5, size=12))
+```
+
+# Functional relationships among $m$, $\ell$ and $c$ parameters in the HSGP approach
+
+Relationship among the number of basis functions $m$, the lengthscale $\ell$ and the boundary factor $c$ for a **Mattern-3/2 kernel** in the HSGP approach:
+
+$$\begin{align*}
+m= 3.42 \, \frac{c}{\frac{\ell}{S}} \;\; \Leftrightarrow \;\; \frac{\ell}{S}= 3.42 \, \frac{c}{m}        (\#eq:m-l-Mattern)
+\end{align*}$$
+
+```{r eval=TRUE}
+m_Mattern32 <- function(c,l,S) ceiling(3.42 * c / (l/S))  
+l_Mattern32 <- function(c,m,S) round(S * 3.42 * c / m, 3)  
+```
+
+with 
+
+$$\begin{align*}
+c \, \geq \, 4.5 \, \frac{\ell}{S}\;\; \& \;\; c \, \geq \frac{1}{2}  (\#eq:c-Mattern)
+\end{align*}$$
+
+as a function of $\ell$ and $S$, where $S$ is the half range of the input domain
+
+```{r eval=TRUE}
+c_vs_l_Mattern32 <- function(l,S){
+    c =  4.5*l/S
+    if(c < 1.2)
+      c = 1.2
+  c
+}
+```
+
+# Lengthscale diagnostic
+
+The HSGP lengthscale diagnostic is defined as:
+
+$$\begin{align*}
+\hat{\ell} + 0.01 \geq \ell  (\#eq:diagnostic)
+\end{align*}$$
+
+where $\hat{\ell}$ is the lengthscale estimate in the HSGP approximation and $\ell$ is the minimum lengthscale determined by the $m$ and $c$ used in the HSGP approximation by using equation \@ref(eq:m-l-Mattern)
+
+```{r eval=TRUE}
+diagnostic <- function(l,l_hat) l_hat + 0.01 >= l
+```
+
+# HSGP model fit and diagnosis
+
+Initializing programming objects.
+
+```{r eval=TRUE}
+standata <- list()
+fit <- list()
+diagnosis <- list()
+
+l <- vector()
+c <- vector()
+m <- vector()
+l_hat <- vector()
+l_hat_min <- vector()
+l_hat_max <- vector()
+sd_hat <- vector()
+check <- vector()
+rmse <- vector()
+rmse_gp <- vector()
+eR <- vector()
+elpd <- vector()
+f <- vector()
+```
+
+## Iteration 1
+
+```{r eval=TRUE}
+i <- 1
+print(paste("Iteration i =", i), quote = FALSE)
+```
+
+### Setting $m$, $\ell$ and $c$
+
+If iteration $i=1$:
+
+1. Making a first guess for lengthscale $\ell_i$
+
+2. The boundary factor $c_i$ has to fulfill equation \@ref(eq:c-Mattern)
+
+3. The number of basis functions $m_i$ has to fulfill equation \@ref(eq:m-l-Mattern)
+
+```{r eval=TRUE}
+if(i==1){
+  l[i] <- 0.5
+  c[i] <- c_vs_l_Mattern32(l=l[i], S=S)
+  m[i] <- m_Mattern32(c=c[i], l=l[i], S=S)
+}
+```
+
+### Data to be passed to Stan
+
+```{r eval=TRUE}
+standata[[i]] <- list(y= y, 
+                       f_true= f_true, 
+                       x_pred= x_pred, 
+                       vv_train= vv_train, 
+                       N_pred= N_pred, 
+                       N_train= N_train, 
+                       param_v= param_v, 
+                       c= c[i], 
+                       L= c[i]*S, 
+                       M= m[i])
+str(standata[[i]])
+```
+
+### Model fitting
+
+Model fitting
+
+```{r eval=TRUE, results=FALSE, message=FALSE, warn=FALSE}
+hsgp_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_HSGP_1D.stan")
+fit[[i]] <- hsgp_mod$sample(data= standata[[i]],
+                                iter_warmup=100,
+                                iter_sampling=100,
+                                chains=4, thin=2, init=0.5,
+                                save_warmup=TRUE)
+fit[[i]] <- rstan::read_stan_csv(fit[[i]]$output_files())
+```
+
+Summaries and simulation chains of variable estimates
+
+```{r eval=TRUE, fig.height=3, fig.width=10}
+param = c("lscale","gpscale","noise")
+summary(fit[[i]], pars = param, probs = c(0.025, 0.5, 0.975))$summary
+traceplot(fit[[i]], pars = param, include = TRUE, unconstrain = FALSE, inc_warmup = FALSE, window = NULL, nrow = NULL, ncol = NULL)
+```
+
+Plot of the posterior mean functions.
+
+```{r eval=TRUE, fig.height=4, fig.width=10}
+f_pred_hsgp <- summary(fit[[i]], pars = c("f_pred"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+
+df_f_GP <- data.frame(as.data.frame(f_pred_gp), x=x_pred, model="GP")
+df_f_HSGP <- data.frame(as.data.frame(f_pred_hsgp), x=x_pred, model="HSGP")
+df_f_HSGP_GP <- rbind(df_f_GP, df_f_HSGP)
+
+ggplot(df_f_HSGP_GP, aes(x=x, y=mean, ymin=X2.5., ymax=X97.5., fill=model, color=model))  +
+  geom_line(size=1.3) +
+  geom_ribbon(alpha=0.5, color=NA) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_train], x=x_train), size=1, color='black', inherit.aes=FALSE) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_inter], x=x_inter), size=1, color='red', inherit.aes=FALSE) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_extra], x=x_extra), size=1, color='red', inherit.aes=FALSE) +
+  labs(y="y", x="x") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5, size=12)) 
+```
+
+### Model evaluation
+
+Root mean square error `rmse`, Bayesian $R^2$ (Coefficient of determination) `eR`, and expected log predictive density `elpd`.
+
+```{r eval=TRUE}
+f_hsgp <- summary(fit[[i]], pars = c("f"))$summary[,1]
+
+# rmse against data
+residual <- standata[[i]]$y[vv_train] - f_hsgp
+rmse[i] <- round(sqrt(mean(residual^2)), 2)
+
+# rmse against gp
+residual_gp <- f_pred_gp[vv_train] -f_hsgp
+rmse_gp[i] <- round(sqrt(mean(residual_gp^2)), 2)
+
+# Coefficient of determination R^2
+noise <- as.matrix(fit[[i]], pars = c("noise"))
+sd_f <- apply(as.matrix(fit[[i]], pars = c("f")), 1, sd)
+eR[i] <- round(median(sd_f^2/(sd_f^2 + noise^2)), 2)
+
+# elpd
+elpd[i] <- round(median(summary(fit[[i]], pars = c("elpd"))$summary[,1]), 2)
+```
+
+### Diagnosis
+
+Lengthscale estimate $\hat{\ell}_i$ in the HSGP approximation
+
+```{r eval=TRUE}
+l_hat[i] <- round(summary(fit[[i]], pars = "lscale", probs = c(0.05, 0.95))$summary[,1], 2)
+```
+
+Check the diagnostic of whether $\, \hat{\ell}_i + 0.01 \geq \ell_i$ \@ref(eq:diagnostic)
+
+```{r eval=TRUE}
+check[i] <- diagnostic(l[i], l_hat[i])
+```
+
+Summary diagnosis table
+
+  - `rmse_gp` refers to the root mean square error of the HSGP function with the GP function as the reference.
+
+  - `rmse` refers to the root mean square error of the HSGP function with the true function as the reference.
+
+```{r eval=TRUE}
+diagnosis[[i]] <- data.frame(iter= i,
+                              l= l[i],
+                              c= c[i],
+                              m= m[i],
+                              l_hat= l_hat[i],
+                              'l_hat > l' = check[i],
+                              rsme_gp = rmse_gp[i],
+                              rsme = rmse[i],
+                              R2 = eR[i],
+                              elpd = elpd[i])
+names(diagnosis[[i]]) <- c("iter", "l", "c", "m", "l_hat", "l_hat + 0.01 > l", "rmse_gp", "rmse", "R^2", "elpd") 
+
+if(i==1){ 
+  diagnosis[[i]]
+}else{
+  diagnosis[[i]] <- rbind(diagnosis[[i-1]],diagnosis[[i]])
+  diagnosis[[i]]
+}
+```
+
+## Iteration 2
+
+```{r eval=TRUE}
+i <- 2
+print(paste("Iteration i =", i), quote = FALSE)
+```
+
+### Setting $m$, $\ell$ and $c$
+
+If the diagnostic $\hat{\ell}_{i-1} + 0.01 \geq \ell_{i-1}$ \@ref(eq:diagnostic) is TRUE:
+
+1. Update $m_i = m_{i-1} + 5$
+    
+2. The boundary factor $c_i$ has to fulfill \@ref(eq:c-Mattern) where $c(\cdot)$ is evaluated as a function of $\hat{\ell}_{i-1}$
+    
+3. The lengthscale $\ell_i$ has to fulfill \@ref(eq:m-l-Mattern)
+    
+```{r eval=TRUE}
+if(diagnostic(l[i-1], l_hat[i-1])){
+  m[i] <- m[i-1] + 5
+  c[i] <- c_vs_l_Mattern32(l=l_hat[i-1], S=S)
+  l[i] <- l_Mattern32(c=c[i], m=m[i], S=S)
+}
+```
+
+If the diagnostic $\hat{\ell}_{i-1} + 0.01 \geq \ell_{i-1}$ \@ref(eq:diagnostic) is FALSE: 
+
+1. Update $\ell_i = \hat{\ell}_{i-1}$
+    
+2. The boundary factor $c_i$ has to fulfill \@ref(eq:c-Mattern)
+    
+3. The number of basis functions $m_i$ as a function of $\ell_i$ and $c_i$ by using \@ref(eq:m-l-Mattern)
+
+```{r eval=TRUE}
+if(!diagnostic(l[i-1], l_hat[i-1])){
+  l[i] <- l_hat[i-1]
+  c[i] <- c_vs_l_Mattern32(l=l[i], S=S)
+  m[i] <- m_Mattern32(c=c[i], l=l[i], S=S)
+}
+```
+
+### Data to be passed to Stan
+
+```{r eval=TRUE, message=FALSE, warn=FALSE}
+standata[[i]] <- list(y= y, 
+                       f_true= f_true, 
+                       x_pred= x_pred, 
+                       vv_train= vv_train, 
+                       N_pred= N_pred, 
+                       N_train= N_train, 
+                       param_v= param_v, 
+                       c= c[i], 
+                       L= c[i]*S, 
+                       M= m[i])
+str(standata[[i]])
+```
+
+### Model fitting
+
+Model fitting.
+
+```{r eval=TRUE, results=FALSE, message=FALSE, warn=FALSE}
+hsgp_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_HSGP_1D.stan")
+fit[[i]] <- hsgp_mod$sample(data= standata[[i]],
+                                iter_warmup=100,
+                                iter_sampling=100,
+                                chains=4, thin=2, init=0.5,
+                                save_warmup=TRUE)
+fit[[i]] <- rstan::read_stan_csv(fit[[i]]$output_files())
+```
+
+Summaries and simulation chains of variable estimates
+
+```{r eval=TRUE, fig.height=3, fig.width=10}
+param = c("lscale","gpscale","noise")
+summary(fit[[i]], pars = param, probs = c(0.025, 0.5, 0.975))$summary
+traceplot(fit[[i]], pars = param, include = TRUE, unconstrain = FALSE, inc_warmup = FALSE, window = NULL, nrow = NULL, ncol = NULL)
+```
+
+Plot of the posterior mean functions.
+
+```{r eval=TRUE, fig.height=4, fig.width=10}
+f_pred_hsgp <- summary(fit[[i]], pars = c("f_pred"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+
+df_f_GP <- data.frame(as.data.frame(f_pred_gp), x=x_pred, model="GP")
+df_f_HSGP <- data.frame(as.data.frame(f_pred_hsgp), x=x_pred, model="HSGP")
+df_f_HSGP_GP <- rbind(df_f_GP, df_f_HSGP)
+
+ggplot(df_f_HSGP_GP, aes(x=x, y=mean, ymin=X2.5., ymax=X97.5., fill=model, color=model))  +
+  geom_line(size=1.3) +
+  geom_ribbon(alpha=0.5, color=NA) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_train], x=x_train), size=1, color='black', inherit.aes=FALSE) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_inter], x=x_inter), size=1, color='red', inherit.aes=FALSE) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_extra], x=x_extra), size=1, color='red', inherit.aes=FALSE) +
+  labs(y="y", x="x") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5, size=12)) 
+```
+
+### Model evaluation
+
+Root mean square error `rmse`, Bayesian $R^2$ (Coefficient of determination) `eR`, and expected log predictive density `elpd`.
+
+```{r eval=TRUE}
+f_hsgp <- summary(fit[[i]], pars = c("f"))$summary[,1]
+
+# rmse against data
+residual <- standata[[i]]$y[vv_train] - f_hsgp
+rmse[i] <- round(sqrt(mean(residual^2)), 2)
+
+# rmse against gp
+residual_gp <- f_pred_gp[vv_train] -f_hsgp
+rmse_gp[i] <- round(sqrt(mean(residual_gp^2)), 2)
+
+# Coefficient of determination R^2
+noise <- as.matrix(fit[[i]], pars = c("noise"))
+sd_f <- apply(as.matrix(fit[[i]], pars = c("f")), 1, sd)
+eR[i] <- round(median(sd_f^2/(sd_f^2 + noise^2)), 2)
+
+# elpd
+elpd[i] <- round(median(summary(fit[[i]], pars = c("elpd"))$summary[,1]), 2)
+```
+
+### Diagnosis
+
+Lengthscale estimate $\hat{\ell}_i$ in the HSGP approximation
+
+```{r eval=TRUE}
+l_hat[i] <- round(summary(fit[[i]], pars = "lscale", probs = c(0.05, 0.95))$summary[,1], 2)
+```
+
+Check the diagnostic of whether $\, \hat{\ell}_i + 0.01 \geq \ell_i$ \@ref(eq:diagnostic)
+
+```{r eval=TRUE}
+check[i] <- diagnostic(l[i], l_hat[i])
+```
+
+Summary diagnosis table
+
+  - `rmse_gp` refers to the root mean square error of the HSGP function with the GP function as the reference.
+
+  - `rmse` refers to the root mean square error of the HSGP function with the true function as the reference.
+
+```{r eval=TRUE}
+diagnosis[[i]] <- data.frame(iter= i,
+                              l= l[i],
+                              c= c[i],
+                              m= m[i],
+                              l_hat= l_hat[i],
+                              'l_hat > l' = check[i],
+                              rsme_gp = rmse_gp[i],
+                              rsme = rmse[i],
+                              R2 = eR[i],
+                              elpd = elpd[i])
+names(diagnosis[[i]]) <- c("iter", "l", "c", "m", "l_hat", "l_hat + 0.01 > l", "rmse_gp", "rmse", "R^2", "elpd") 
+
+if(i==1){ 
+  diagnosis[[i]]
+}else{
+  diagnosis[[i]] <- rbind(diagnosis[[i-1]],diagnosis[[i]])
+  diagnosis[[i]]
+}
+```
+
+## Iteration 3
+
+```{r eval=TRUE}
+i <- 3
+print(paste("Iteration i =", i), quote = FALSE)
+```
+
+### Setting $m$, $\ell$ and $c$
+
+If the diagnostic $\hat{\ell}_{i-1} + 0.01 \geq \ell_{i-1}$ \@ref(eq:diagnostic) is TRUE:
+
+1. Update $m_i = m_{i-1} + 5$
+    
+2. The boundary factor $c_i$ has to fulfill \@ref(eq:c-Mattern) where $c(\cdot)$ is evaluated as a function of $\hat{\ell}_{i-1}$
+    
+3. The lengthscale $\ell_i$ has to fulfill \@ref(eq:m-l-Mattern)
+    
+```{r eval=TRUE}
+if(diagnostic(l[i-1], l_hat[i-1])){
+  m[i] <- m[i-1] + 5
+  c[i] <- c_vs_l_Mattern32(l=l_hat[i-1], S=S)
+  l[i] <- l_Mattern32(c=c[i], m=m[i], S=S)
+}
+```
+
+If the diagnostic $\hat{\ell}_{i-1} + 0.01 \geq \ell_{i-1}$ \@ref(eq:diagnostic) is FALSE: 
+
+1. Update $\ell_i = \hat{\ell}_{i-1}$
+    
+2. The boundary factor $c_i$ has to fulfill \@ref(eq:c-Mattern)
+    
+3. The number of basis functions $m_i$ as a function of $\ell_i$ and $c_i$ by using \@ref(eq:m-l-Mattern)
+
+```{r eval=TRUE}
+if(!diagnostic(l[i-1], l_hat[i-1])){
+  l[i] <- l_hat[i-1]
+  c[i] <- c_vs_l_Mattern32(l=l[i], S=S)
+  m[i] <- m_Mattern32(c=c[i], l=l[i], S=S)
+}
+```
+
+### Data to be passed to Stan
+
+```{r eval=TRUE, message=FALSE, warn=FALSE}
+standata[[i]] <- list(y= y, 
+                       f_true= f_true, 
+                       x_pred= x_pred, 
+                       vv_train= vv_train, 
+                       N_pred= N_pred, 
+                       N_train= N_train, 
+                       param_v= param_v, 
+                       c= c[i], 
+                       L= c[i]*S, 
+                       M= m[i])
+str(standata[[i]])
+```
+
+### Model fitting
+
+Model fitting.
+
+```{r eval=TRUE, results=FALSE, message=FALSE, warn=FALSE}
+hsgp_mod <- cmdstanr::cmdstan_model(stan_file = "stancode_HSGP_1D.stan")
+fit[[i]] <- hsgp_mod$sample(data= standata[[i]],
+                                iter_warmup=100,
+                                iter_sampling=100,
+                                chains=4, thin=2, init=0.5,
+                                save_warmup=TRUE)
+fit[[i]] <- rstan::read_stan_csv(fit[[i]]$output_files())
+```
+
+Summaries and simulation chains of variable estimates
+
+```{r eval=TRUE, fig.height=3, fig.width=10}
+param = c("lscale","gpscale","noise")
+summary(fit[[i]], pars = param, probs = c(0.025, 0.5, 0.975))$summary
+traceplot(fit[[i]], pars = param, include = TRUE, unconstrain = FALSE, inc_warmup = FALSE, window = NULL, nrow = NULL, ncol = NULL)
+```
+
+Plot of the posterior mean functions.
+
+```{r eval=TRUE, fig.height=4, fig.width=10}
+f_pred_hsgp <- summary(fit[[i]], pars = c("f_pred"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]
+
+df_f_GP <- data.frame(as.data.frame(f_pred_gp), x=x_pred, model="GP")
+df_f_HSGP <- data.frame(as.data.frame(f_pred_hsgp), x=x_pred, model="HSGP")
+df_f_HSGP_GP <- rbind(df_f_GP, df_f_HSGP)
+
+ggplot(df_f_HSGP_GP, aes(x=x, y=mean, ymin=X2.5., ymax=X97.5., fill=model, color=model))  +
+  geom_line(size=1.3) +
+  geom_ribbon(alpha=0.5, color=NA) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_train], x=x_train), size=1, color='black', inherit.aes=FALSE) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_inter], x=x_inter), size=1, color='red', inherit.aes=FALSE) +
+  geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y[vv_extra], x=x_extra), size=1, color='red', inherit.aes=FALSE) +
+  labs(y="y", x="x") +
+  theme_classic() +
+  theme(axis.title.y=element_text(angle=0, vjust=0.5, size=12)) 
+```
+
+### Model evaluation
+
+Root mean square error `rmse`, Bayesian $R^2$ (Coefficient of determination) `eR`, and expected log predictive density `elpd`.
+
+```{r eval=TRUE}
+f_hsgp <- summary(fit[[i]], pars = c("f"))$summary[,1]
+
+# rmse against data
+residual <- standata[[i]]$y[vv_train] - f_hsgp
+rmse[i] <- round(sqrt(mean(residual^2)), 2)
+
+# rmse against gp
+residual_gp <- f_pred_gp[vv_train] -f_hsgp
+rmse_gp[i] <- round(sqrt(mean(residual_gp^2)), 2)
+
+# Coefficient of determination R^2
+noise <- as.matrix(fit[[i]], pars = c("noise"))
+sd_f <- apply(as.matrix(fit[[i]], pars = c("f")), 1, sd)
+eR[i] <- round(median(sd_f^2/(sd_f^2 + noise^2)), 2)
+
+# elpd
+elpd[i] <- round(median(summary(fit[[i]], pars = c("elpd"))$summary[,1]), 2)
+```
+
+### Diagnosis
+
+Lengthscale estimate $\hat{\ell}_i$ in the HSGP approximation
+
+```{r eval=TRUE}
+l_hat[i] <- round(summary(fit[[i]], pars = "lscale", probs = c(0.05, 0.95))$summary[,1], 2)
+```
+
+Check the diagnostic of whether $\, \hat{\ell}_i + 0.01 \geq \ell_i$ \@ref(eq:diagnostic)
+
+```{r eval=TRUE}
+check[i] <- diagnostic(l[i], l_hat[i])
+```
+
+Summary diagnosis table
+
+  - `rmse_gp` refers to the root mean square error of the HSGP function with the GP function as the reference.
+
+  - `rmse` refers to the root mean square error of the HSGP function with the true function as the reference.
+
+```{r eval=TRUE}
+diagnosis[[i]] <- data.frame(iter= i,
+                              l= l[i],
+                              c= c[i],
+                              m= m[i],
+                              l_hat= l_hat[i],
+                              'l_hat > l' = check[i],
+                              rsme_gp = rmse_gp[i],
+                              rsme = rmse[i],
+                              R2 = eR[i],
+                              elpd = elpd[i])
+names(diagnosis[[i]]) <- c("iter", "l", "c", "m", "l_hat", "l_hat + 0.01 > l", "rmse_gp", "rmse", "R^2", "elpd") 
+
+if(i==1){ 
+  diagnosis[[i]]
+}else{
+  diagnosis[[i]] <- rbind(diagnosis[[i-1]],diagnosis[[i]])
+  diagnosis[[i]]
+}
+```
+
+# Plot of GP and HSGP posterior mean functions.
+
+```{r fig.height=4, fig.width=10, eval=TRUE, message=FALSE, warning=FALSE}
+df_f_HSGP <- list()
+df_f_HSGP_GP <- list()
+
+for(iter in 1:i){
+  df_f_GP_diag <- data.frame(as.data.frame(summary(fit_GP, pars = c("f_pred"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]), x=x_pred, type="GP", iteration=iter)
+  df_f_HSGP[[iter]] <- data.frame(as.data.frame(summary(fit[[iter]], pars = c("f_pred"), probs = c(0.025, 0.5, 0.975))$summary[,c(1,4,6)]), x=x_pred, type="HSGP", iteration=iter)
+  df_f_HSGP_GP[[iter]] <- rbind(df_f_GP_diag, df_f_HSGP[[iter]])
+  df_f_HSGP_GP[[iter]]$iteration <- as.factor(df_f_HSGP_GP[[iter]]$iteration)
+}
+for(s in 1:i) 
+  if(s==1){ 
+    df_f_HSGP_GP[[s]] <- df_f_HSGP_GP[[s]]
+  }else{
+    df_f_HSGP_GP[[s]] <- rbind(df_f_HSGP_GP[[s-1]], df_f_HSGP_GP[[s]])}
+
+ggplot(df_f_HSGP_GP[[i]][df_f_HSGP_GP[[i]]$type=="HSGP",], aes(x=x, y=mean, ymin=X2.5., ymax=X97.5., fill=iteration, color=iteration))  +
+  geom_line(size=2) +
+  geom_ribbon(alpha=0.1, color=NA) +
+  geom_line(mapping=aes(x=x, y=mean), data=df_f_GP_diag, size=2, colour="#e41a1c", linetype=2.5, inherit.aes=FALSE) +
+  # geom_ribbon(mapping=aes(x=x, y=mean, ymin=X2.5, ymax=X97.5), data=df_f_GP_diag, alpha=0.2, color=NA, fill="#e41a1c", inherit.aes=FALSE) +
+  # geom_point(mapping=aes(x=x, y=y), data=data.frame(y= y, x=x_pred), size=2, color='black', inherit.aes=FALSE) +
+  labs(y="", x="x") +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(i, "Blues")) +
+  scale_color_manual(values = RColorBrewer::brewer.pal(i, "Blues")) +
+  theme_classic() +
+  theme(legend.position="right", axis.title.y=element_text(angle=0, vjust=0.5), axis.title=element_text(size=20), axis.text=element_text(size=18), legend.title = element_text(size=20), legend.text = element_text(size=18), legend.key.size = unit(1, 'cm'), legend.key.height = unit(0.8, 'cm'), legend.key.width = unit(1, 'cm'))
+```
