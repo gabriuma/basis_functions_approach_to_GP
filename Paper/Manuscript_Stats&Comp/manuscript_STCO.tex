@@ -65,7 +65,7 @@
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{soul}
-\usepackage{xcolor}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{amssymb}
 \usepackage{amsmath}	
 \usepackage{mathtools}
@@ -112,8 +112,9 @@
 %\authorrunning{Short form of author list} % if too long for running head
 
 \institute{Gabriel Riutort-Mayol \at
-              Department of Cartographic Engineering, Geodesy, and Photogrammetry, Universitat Polit\`ecnica de Val\`encia, Spain\\
-              \email{gabriuma@gmail.com}           %  \\
+              Foundation for the Promotion of Health and Biomedical Research of Valencia Region (FISABIO), Spain\\
+              \emph{Corresponding Author} \\
+              \email{gabriuma@gmail.com; riutort\_gab@gva.es}       %  \\
 %             \emph{Present address:} of F. Author  %  if needed
            \and
            Paul-Christian Bürkner \at
@@ -127,7 +128,8 @@
               Department of Computer Science, Aalto University, Finland
            \and
            Aki Vehtari \at
-              Department of Computer Science, Aalto University, Finland
+              Department of Computer Science, Aalto University, Finland\\
+              \email{aki.vehtari@aalto.fi}
 }
 
 \date{Received: date / Accepted: date}
@@ -396,9 +398,9 @@ A GP model with a periodic covariance function does no fit in the framework of t
 
 \section{The accuracy of the approximation}\label{sec_accuracy}
 
-The accuracy and speed of the HSGP model depends on several interrelated factors, most notably on the number of basis functions and on the boundary condition of the Laplace eigenfunctions. Furthermore, appropriate values for these factors will depend on the degree of non-linearity of the function to be estimated, which is in turn characterized by the length-scale of the covariance function. In this section, we analyze the effects of the number of basis functions and the boundary condition on the approximation accuracy. We present recommendations on how they should be chosen and diagnostics to check the accuracy of the obtained approximation. 
+The accuracy and speed of the HSGP model depends on several interrelated factors, most notably on the number of basis functions and on the boundary condition of the Laplace eigenfunctions. Furthermore, appropriate values for these factors will depend on the degree of non-linearity ({\color{blue}wigglyness/smoothness}) of the function to be estimated, which is in turn characterized by the length-scale of the covariance function. In this section, we analyze the effects of the number of basis functions and the boundary condition on the approximation accuracy. We present recommendations on how they should be chosen and diagnostics to check the accuracy of the obtained approximation. 
 
-Ultimately, these recommendations are based on the relationships among the number of basis functions $m$, the boundary condition $L$, and the length-scale $\ell$, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the squared exponential and the Mat{\'e}rn ($\nu=3/2$ and $\nu=5/2$) covariance functions in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{sec_periodic}. For other kernels, the relationships will be slightly different depending on the smoothness or wigglyness of the covariance function.
+Ultimately, these recommendations are based on the relationships among the number of basis functions $m$, the boundary condition $L$, and the length-scale $\ell$, which depend on the particular choice of the kernel function. In this work we investigate these relationships for the squared exponential and the Mat{\'e}rn ($\nu=3/2$ and $\nu=5/2$) covariance functions in the present section, and for the periodic squared exponential covariance function in Appendix~\ref{sec_periodic}. For other kernels, the relationships will be slightly different depending on the {\color{blue}smoothness or wigglyness of the non-linear effects generated from the covariance function}.
 
 \subsection{Dependency on the number of basis functions and the boundary condition} \label{subsec_dependency}
 
@@ -424,91 +426,45 @@ L=c \cdot S,
 %
 where $S > 0$ represents the half-range of the input space, and $c \geq 1$ is the proportional extension factor. In the following, we will refer to $c$ as the boundary factor of the approximation. The boundary factor can also be regarded as the boundary $L$ normalized by the half-range $S$ of the input space.
 
-\begin{figure*} %[!t]
-\centering
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{fig1_Post_J.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 0mm 5mm 3mm 0mm, clip]{fig1_Sigma_J.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{fig1_Cov_J.pdf}}
+\begin{figure}
+%\centering
+\includegraphics[width=0.485\textwidth, trim = 2mm 0mm 0mm 0mm, clip]{fig1_Post_J_L.png}
 \vspace{-1mm}
-\caption{Mean posterior predictive functions (left), posterior standard deviations (center), and covariance functions (right) of both the exact GP model (dashed red line) and the HSGP model for different number of basis functions $m$, with the boundary factor fixed to a large enough value.}
-  \label{fig1_Post_J}
-\end{figure*}
+\caption{Mean posterior predictive functions (top), posterior standard deviations (center), and covariance functions (bottom) of both the exact GP model (red line) and the HSGP model for 1) different number of basis functions $m$, with the boundary factor fixed to a large enough value (left column) and 2) different values of the boundary factor $c$, with a large enough fixed number of basis functions (right column).}
+  \label{fig1_Post_J_L}
+\end{figure}
 
 \begin{figure*}
 \centering
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{fig2_Post_L.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 0mm 5mm 3mm 0mm, clip]{fig2_Sigma_L.pdf}}
-\subfigure{\includegraphics[scale=0.29, trim = 1mm 5mm 3mm 0mm, clip]{fig2_Cov_L.pdf}}
+\subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig2_Post.png}}
 \vspace{-1mm}
-\caption{Mean posterior predictive functions (left), posterior standard deviations (center), and covariance functions (right) of both the exact GP model (dashed red line) and the HSGP model for different values of the boundary factor $c$, with a large enough fixed number of basis functions.}
-  \label{fig2_Post_L}
+\caption{Posterior mean predictive functions (top), posterior standard deviations (center) and  covariance functions (bottom) of both the exact GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$ (columns).}
+  \label{fig2_Post}
 \end{figure*}
 
 We start by illustrating how the number of basis functions $m$ and boundary factor $c$ influence the accuracy of the HSGP approximations individually. For this purpose, a set of noisy observations are drawn from an exact GP model with a squared exponential covariance function of length-scale $\ell=0.3$ and marginal variance $\alpha=1$, using input values from the zero-mean input domain with half-range $S=1$. Several HSGP models with varying $m$ and $c$ are fitted to this data. In this example, the length-scale and marginal variance parameters used in the HSGPs are fixed to the true values of the data-generating model. 
-Figures~\ref{fig1_Post_J} and \ref{fig2_Post_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function as well as on the covariance function itself. For a sufficiently large fixed value of $c$, Figure \ref{fig1_Post_J} shows clearly how $m$ affects the accuracy on the approximation for both the posterior mean or uncertainty. It is seen that if the number of basis functions $m$ is too small, the estimated function tend to be overly smooth because the necessary high frequency components are missing. In general, the higher the degree of wigglyness of the function to be estimated, the larger number of  basis functions will be required. If $m$ is fixed to a sufficiently large value, Figure~\ref{fig2_Post_L} shows that $c$ affects the approximation of the mean mainly near the boundaries, while the approximation of the standard deviation is affected across the whole domain. The approximation error tends to be bigger for the standard deviation than for the mean.
+Figures~\ref{fig1_Post_J_L} and \ref{fig1_Post_J_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function as well as on the covariance function itself. For a sufficiently large fixed value of $c$, Figure \ref{fig1_Post_J_L} shows clearly how $m$ affects the accuracy on the approximation for both the posterior mean or uncertainty. It is seen that if the number of basis functions $m$ is too small, the estimated function tend to be overly smooth because the necessary high frequency components are missing. In general, the higher the degree of wigglyness of the function to be estimated, the larger number of  basis functions will be required. If $m$ is fixed to a sufficiently large value, Figure~\ref{fig1_Post_J_L} shows that $c$ affects the approximation of the mean mainly near the boundaries, while the approximation of the standard deviation is affected across the whole domain. The approximation error tends to be bigger for the standard deviation than for the mean.
 
-\begin{figure*}
-\centering
-\begin{tabular}{ c c c }
-\arrayrulecolor{darkgray}\hline
-c = 1.05 &
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Post_part1.pdf}
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Sigma_part1.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{fig3_Cov_part1.pdf} & 
-\multirow{43}{*}{ \includegraphics[scale=0.35, trim = 28mm 30mm 100mm 30mm, clip]{fig3_legend.pdf}}\\ 
-\arrayrulecolor{lightgray}\cline{1-2}
-c = 1.1 &
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Post_part2.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Sigma_part2.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{fig3_Cov_part2.pdf} &\\
-\cline{1-2}
-c = 1.2 &
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Post_part3.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Sigma_part3.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{fig3_Cov_part3.pdf} &\\
-\cline{1-2}
-c = 1.5 &
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Post_part4.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Sigma_part4.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{fig3_Cov_part4.pdf} & \\
-\cline{1-2}
-c = 2 &
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Post_part5.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 0mm 14mm, clip]{fig3_Sigma_part5.pdf} 
-\includegraphics[scale=0.215, trim = 0mm 14mm 5mm 14mm, clip]{fig3_Cov_part5.pdf} & \\
-\cline{1-2}
-c = 2.5 &
-\includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{fig3_Post_part6.pdf}
-\includegraphics[scale=0.215, trim = 0mm 4mm 0mm 14mm, clip]{fig3_Sigma_part6.pdf}
-\includegraphics[scale=0.215, trim = 0mm 4mm 5mm 14mm, clip]{fig3_Cov_part6.pdf} &\\
-\arrayrulecolor{darkgray}\hline
-\end{tabular}
-\caption{Posterior mean predictive functions (left), posterior standard deviations (center) and  covariance functions (right) of both the exact GP model and the HSGP model for different number of basis functions $m$ and for different values of the boundary factor $c$.}
-  \label{fig3_Post_part1}
-\end{figure*}
-
-\begin{figure*} %[!t]
-\centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig4_MSE_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig4_MSE_vs_c.pdf}}
-\caption{Root mean square error (RMSE) of the proposed HSGP models computed against the exact GP model. RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$ (left). RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$ (right). }
-  \label{fig4_MSE_vs_J}
-\end{figure*}
-
-\begin{figure*} %[!h]
-\centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig5_lscale_vs_J.pdf}}
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig5_magnitud_vs_J.pdf}}
-\caption{Estimated length-scale (left) and marginal variance (right) parameters of both exact GP and HSGP models, plotted versus the number of basis functions $m$ and for different values of the boundary factor $c$.}
-  \label{fig5_lscale_vs_J}
-\end{figure*}
-
-Next, we analyze how the interaction between $m$ and $c$ affects the quality of the approximation. The length-scale and marginal variance of the covariance function will no longer be fixed but instead we compute the joint posterior distribution of the function values and the hyperparameters using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021} for both the exact GP and the HSGP models. Figure~\ref{fig3_Post_part1} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the model for varying $m$ and~$c$. Figure~\ref{fig4_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the exact GP model. Figure~\ref{fig5_lscale_vs_J} shows the estimated length-scale and marginal variance for the exact GP model and the HSGP models. Looking at the RMSEs in Figure~\ref{fig4_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computation time for this example would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$ could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure~\ref{fig3_Post_part1}. From these results, some general conclusions may be drawn:
+Next, we analyze how the interaction between $m$ and $c$ affects the quality of the approximation. The length-scale and marginal variance of the covariance function will no longer be fixed but instead we compute the joint posterior distribution of the function values and the hyperparameters using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021} for both the exact GP and the HSGP models. Figure~\ref{fig2_Post} shows the posterior predictive mean and standard deviation of the function as well as the covariance function obtained after fitting the model for varying $m$ and~$c$. Figure~\ref{fig3_MSE_vs_J} shows the root mean square error (RMSE) of the HSGP models computed against the exact GP model. Figure~\ref{fig4_lscale_vs_J} shows the estimated length-scale and marginal variance for the exact GP model and the HSGP models. Looking at the RMSEs in Figure~\ref{fig3_MSE_vs_J}, we can conclude that the optimal choice in terms of precision and computation time for this example would be $m = 15$ basis functions and a boundary factor between $c = 1.5$ and $c = 2.5$. Further, the less conservative choice of $m = 10$ and $c = 1.5$ could also produce a sufficiently accurately approximation depending on the application. We may also come to the same conclusion by looking at the posterior predictions and covariance function plots in Figure~\ref{fig2_Post}. From these results, some general conclusions may be drawn:
 %
 \begin{itemize}
 \item As $c$ increases, $m$ has to increase as well (and vice versa). This is consistent with the expression for the eigenvalues in eq.~\eqref{eq_eigenvalue}, where $L$ appears in the denominator.
 \item There exists a minimum $c$ below which an accurate approximation will never be achieved regardless of the number of basis functions $m$.
 \end{itemize}
+
+\begin{figure} %[!t]
+\centering
+\subfigure{\includegraphics[width=0.49\textwidth, trim = 2mm 0mm 3mm 0mm, clip]{fig3_MSE_vs_J.png}}
+\caption{Root mean square error (RMSE) of the proposed HSGP models computed against the exact GP model. RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$ (left). RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$ (right). }
+\label{fig3_MSE_vs_J}
+\end{figure}
+
+\begin{figure} %[!t]
+\centering
+\subfigure{\includegraphics[width=0.49\textwidth, trim = 2mm 0mm 2mm 0mm, clip]{fig4_lscale_vs_J.png}}
+\caption{Estimated length-scale (left) and marginal variance (right) parameters of both exact GP and HSGP models, plotted versus the number of basis functions $m$ and for different values of the boundary factor $c$.}
+\label{fig4_lscale_vs_J}
+\end{figure}
 
 \subsection{Near linear proportionality between $m$, $c$ and $\ell$} \label{subsec_theoretic_linearity}
 
@@ -518,18 +474,18 @@ When considering squared exponential and Mat{\'e}rn covariance functions, we can
 %
 This is natural as with decreasing $\ell$, more higher frequency basis functions are needed. With increasing $c$, as a smaller range of the basis functions are used in the approximation, the expected number of zero up-crossings goes down linearly with $c$, and thus more higher frequency basis functions are needed to compensate this.
 %
-When $c$ is below our recommendations given $\ell$, the effect of $\ell$ and $c$ to the recommended $m$ is more non-linear, but as long as we stay in the recommended range the linearity assumption is useful thumb rule for how to change $m$, if $\ell$ or $c$ are changed.
+When $c$ is below our recommendations given $\ell$ ({\color{blue}recommendations that we give later throughout the paper and specifically in the next Sections \ref{subsec_empiric_relations} and \ref{sec_num_equations}}), the effect of $\ell$ and $c$ to the recommended $m$ is more non-linear, but as long as we stay in the recommended range the linearity assumption is useful thumb rule for how to change $m$, if $\ell$ or $c$ are changed.
 
 \subsection{Empirical discovering of the functional form of the relationships between $m$, $c$ and $\ell$} \label{subsec_empiric_relations}
 
 \begin{figure*}
 \centering
-\subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig6_relationships.png}}
+\subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig5_relationships.png}}
 \caption{Relation among the minimum number of basis functions $m$, the boundary factor $c$ \hspace{0.1mm} ($c = \frac{L}{S}$) \hspace{0.1mm} and the length-scale normalized by the half-range of the data ($\frac{\ell}{S}$), for the squared exponential, Mat\'ern ($\nu$=3/2) and Mat\'ern ($\nu$=5/2) covariance functions.}
-  \label{fig6_relationships}
+  \label{fig5_relationships}
 \end{figure*}
 
-Empirical simulations are carried out to analyze the relationships between $m$, $c$ and $\frac{\ell}{S}$ (lengthscale $\ell$ relative to the half-range $S$ of the input domain). Figure \ref{fig6_relationships} depicts how these three factors interact and affect the accuracy of the HSGP approximation for a GP with squared exponential, Mat\'ern ($\nu$=3/2), and Mat\'ern ($\nu$=5/2) covariance functions and a single input dimension. More precisely, for a given GP model (with a particular covariance function) with length-scale $\frac{\ell}{S}$ (From now to later on we will refer to $\frac{\ell}{S}$ by just $\ell$) and given a boundary factor $c$, Figure \ref{fig6_relationships} shows the minimum number of basis functions $m$ required to obtain an accurate approximation in the sense of satisfying eq. (\ref{eq_diff_covs}). We considered an approximation to be a sufficiently accurate when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in eq. (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$ such that
+Empirical simulations are carried out to analyze the relationships between $m$, $c$ and $\frac{\ell}{S}$ (lengthscale $\ell$ relative to the half-range $S$ of the input domain). Figure \ref{fig5_relationships} depicts how these three factors interact and affect the accuracy of the HSGP approximation for a GP with squared exponential, Mat\'ern ($\nu$=3/2), and Mat\'ern ($\nu$=5/2) covariance functions and a single input dimension. More precisely, for a given GP model (with a particular covariance function) with {\color{blue}normalized} length-scale $\frac{\ell}{S}$ (From now to later on we will refer to $\frac{\ell}{S}$ by just $\ell$) and given a boundary factor $c$, Figure \ref{fig5_relationships} shows the minimum number of basis functions $m$ required to obtain an accurate approximation in the sense of satisfying eq. (\ref{eq_diff_covs}). We considered an approximation to be a sufficiently accurate when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in eq. (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$ such that
 %
 \begin{equation} \label{eq:rel_total_distance}
  \int | k(\tau) - \tilde{k}_m(\tau)|  \,\mathrm{d}\tau  < 0.01 \int k(\tau) \,\mathrm{d}\tau,
@@ -538,15 +494,15 @@ Empirical simulations are carried out to analyze the relationships between $m$, 
 where $\tilde{k}_m$ is the approximate covariance function with $m$ basis functions. Alternatively, these figures can be understood as providing the minimum $c$ that we should use for given $\ell$ and $m$. Of course, we may also read it as providing the minimum $\ell$ that can be approximated with high accuracy given $m$ and $c$. We obtain the following main conclusions:
 %
 \begin{itemize}
-\item As $\ell$ increases, $m$ required for an accurate approximation decrease.
+\item As $\ell$ increases, $m$ required for an accurate approximation decreases. ({\color{blue}Notice that the larger $\ell$ the smoother the functions generated from a covariance function, and vice versa; see covariance functions equations in Section \ref{ch4_sec_cov}.})
 \item The lower $c$, the smaller $m$ can and $\ell$ must be to achieve an accurate approximation.
-\item For a given $\ell$ there exist a minimum $c$ under which an accurate approximation is never going to be achieved regardless of $m$. This fact can be seen in Figure~\ref{fig6_relationships} as the contour lines which represent $c$ have an end in function of $\ell$ (Valid $c$ are restricted in function of $\ell$). As $\ell$ increases, the minimum valid $c$ also increases.
+\item For a given $\ell$ there exist a minimum $c$ under which an accurate approximation is never going to be achieved regardless of $m$. This fact can be seen in Figure~\ref{fig5_relationships} as the contour lines which represent $c$ have an end in function of $\ell$ (Valid $c$ are restricted in function of $\ell$). As $\ell$ increases, the minimum valid $c$ also increases.
 \end{itemize}
 
 \subsubsection{Numerical equations}
 \label{sec_num_equations}
 
-As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enough, there is a near linear proportionality between $m$, $\ell$ and $c$. To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically derived the practically useful constant terms. We require a lower bound for $c$ of $c \geq 1.2$ such that the equations below are precise enough for practical application.
+As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enough, there is a near linear proportionality between $m$, $\ell$ and $c$. To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically ({\color{blue}checked this linear relationship and} derived the practically useful constant terms. We require a lower bound for $c$ of $c \geq 1.2$ such that the equations below are precise enough for practical application.
 
 \paragraph*{Squared exponential}:
 %
@@ -574,11 +530,13 @@ As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enou
 %
 These constants vary monotonically with respect to $\nu$ (squared exponential corresponding to Mat\'ern with $\nu \to \infty$). Using the formula for Mat\'ern ($\nu$=3/2) provides the largest $m$ and $c$, and thus this formula alone could be used as a conservative choice for all Mat\'ern covariance functions with $\nu \geq 3/2$ and likely as a good initial guess for many other covariance functions. If the aim is to find minimal $m$ to speedup the computation, a further refined formula can be obtained for new covariance functions.
 
-Figure~\ref{fig6_relationships} and previous equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) were obtained for a GP with a unidimensional covariance function, which result in a surfaces depending on three variables, $m$, $c$ and $\ell$. Equivalent results for a GP model with a two-dimensional covariance function would result in a surface depending on four variables, $m$, $c$, $\ell_1$ and $\ell_2$. More precisely, in the multi-dimensional case, whether the approximation is close enough might depend only on the ratio between wigglyness in every dimensions. For instance, in the two-dimensional case, it would depend on the ratio between $\ell_1$ and $\ell_2$. Future research will focus on building useful graphs or analytical models that provide these relations in multi-dimensional cases. However, as an approximation, we can use the unidimensional GP conclusions in Figure~\ref{fig6_relationships} or equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) to check the accuracy by analyzing individually the different dimensions of a multidimensional GP model.
+{\color{blue}Note that in the above equations we have made explicit the use of the normalized length-scale by the half-range of the input space ($\frac{\ell}{S}$) (From now to later on we will refer to $\frac{\ell}{S}$ by just $\ell$). By using the normalized length-scale, the equations, figures, and conclusions made throughout the paper can easily be referred to any specific scale of the input space.}
+
+Figure~\ref{fig5_relationships} and previous equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) were obtained for a GP with a unidimensional covariance function, which result in a surfaces depending on three variables, $m$, $c$ and $\ell$. Equivalent results for a GP model with a two-dimensional covariance function would result in a surface depending on four variables, $m$, $c$, $\ell_1$ and $\ell_2$. More precisely, in the multi-dimensional case, whether the approximation is close enough might depend only on the ratio between wigglyness in every dimensions. For instance, in the two-dimensional case, it would depend on the ratio between $\ell_1$ and $\ell_2$. Future research will focus on building useful graphs or analytical models that provide these relations in multi-dimensional cases. However, as an approximation, we can use the unidimensional GP conclusions in Figure~\ref{fig5_relationships} or equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) to check the accuracy by analyzing individually the different dimensions of a multidimensional GP model.
 
 \subsection{Relationships between $m$ and $\ell$ for a periodic squared exponential covariance function} \label{subsec_empiric_relations_periodic}
 
-As commented in Section~\ref{sec_method_periodic}, in Appendix~\ref{sec_periodic} we present an approximate linear representation of a periodic squared exponential covariance function. In Appendix~\ref{sec_periodic}, we also analyze the accuracy of this linear representation and derive the minimum number of terms $m$ in the approximation required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the length-scale $\ell$ of the kernel. Since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition. This relationship between $m$ and $\ell$ for a periodic squared exponential covariance function is gathered in Figure~\ref{figB1_m_lscale_periodic} and the numerical equation was estimated in eq.~\eqref{eq_J_l_periodic} which is depicted next:
+As commented in Section~\ref{sec_method_periodic}, in Appendix~\ref{sec_periodic} we present an approximate linear representation of a periodic squared exponential covariance function. In Appendix~\ref{sec_periodic}, we also analyze the accuracy of this linear representation and derive the minimum number of terms $m$ in the approximation required to achieve a close approximation to the exact periodic squared exponential kernel as a function of the length-scale $\ell$ of the kernel. Since this is a series expansion of sinusoidal functions, the approximation does not depend on any boundary condition{\color{blue}, nor is there a need for a normalized length scale, since the length-scale refers to the period of a sinusoidal function}. This relationship between $m$ and $\ell$ for a periodic squared exponential covariance function is gathered in Figure~\ref{figB1_m_lscale_periodic} and the numerical equation was estimated in eq.~\eqref{eq_J_l_periodic} which is depicted next:
 %
 \begin{align*}
 &m \geq \frac{3.72}{\ell} \;\; \Leftrightarrow \;\; \ell \geq \frac{3.72}{m} .
@@ -588,7 +546,7 @@ As commented in Section~\ref{sec_method_periodic}, in Appendix~\ref{sec_periodic
 
 Equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used) provide the minimum length-scale that can be accurately inferred given $m$ and $c$. This information serves as a powerful diagnostic tool in determining if the obtained accuracy is acceptable. As the length-scale $\ell$ controls the wigglyness of the function, it strongly influences the difficulty of estimating the latent function from the data. Basically, if the length-scale estimate is accurate, we can expect the HSGP approximation to be accurate as well.
 
-Having obtained an estimate $\hat{\ell}$ for a HSGP model with prespecified $m$ and $c$, we can check whether $\hat{\ell}$ exceeds the smallest length-scale, that can be accurately inferred, provided as a function of $m$ and $c$ by equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used). If $\hat{\ell}$ exceeds this value, the approximation is assumed to be good. If $\hat{\ell}$ does not exceed this value, the approximation may be inaccurate, and $m$ and/or $c$ need to be increased. In Figures~\ref{fig4_MSE_vs_J} and \ref{fig5_lscale_vs_J}, $m = 10$ and $c = 1.5$ were sufficient for an accurate modeling of function with $\ell = 0.3$, which matches the diagnostic based on equations \eqref{eq_m_l_QE} and \eqref{eq_c_vs_l_QE}.
+Having obtained an estimate $\hat{\ell}$ for a HSGP model with prespecified $m$ and $c$, we can check whether $\hat{\ell}$ exceeds the smallest length-scale, that can be accurately inferred, provided as a function of $m$ and $c$ by equations \eqref{eq_m_l_QE}, \eqref{eq_m_l_mat52}, \eqref{eq_m_l_mat32} and \eqref{eq_J_l_periodic} (depending on which kernel is used). If $\hat{\ell}$ exceeds this value, the approximation is assumed to be good. If $\hat{\ell}$ does not exceed this value, the approximation may be inaccurate, and $m$ and/or $c$ need to be increased. In Figures~\ref{fig3_MSE_vs_J} and \ref{fig4_lscale_vs_J}, $m = 10$ and $c = 1.5$ were sufficient for an accurate modeling of function with $\ell = 0.3$, which matches the diagnostic based on equations \eqref{eq_m_l_QE} and \eqref{eq_c_vs_l_QE}.
 
 Equations in Section~\ref{sec_num_equations} to update $m$ and $c$ imply:
 % 
@@ -606,7 +564,7 @@ If larger than minimal $c$ and $m$ (for a given $\ell$) are used in the initial 
 
 As commented above, the estimated $\hat{\ell}$ being larger than diagnostic threshold does not guarantee that the approximate is sufficiently accurate, and thus we recommend to look at the predicitve accuracy measures, too.
 
-Apart from providing a powerful diagnostic tool in determining if the approxiamtion is sufficiently accurate, the equations in the previous Section~\ref{sec_num_equations} also provide the optimal values for $m$ (the minimum $m$ required for an accurate approximation) and $c$ (the minimum $c$ that allows for the minimum $m$) that van be used to minimize the computational cost in repeated computations (e.g., in cross-validation and simulation based calibration).
+Apart from providing a powerful diagnostic tool in determining if the approxiamtion is sufficiently accurate, the equations in the previous Section~\ref{sec_num_equations} also provide the optimal values for $m$ (the minimum $m$ required for an accurate approximation) and $c$ (the minimum $c$ that allows for the minimum $m$) that can be used to minimize the computational cost in repeated computations (e.g., in cross-validation and simulation based calibration).
 This is even more useful in multi-dimensional cases ($2 \leq D \leq 4$), where knowing the smallest useful value of $m$ for each dimension has even bigger effect on the total computational cost.
 
 \subsubsection{A step-by-step user-guide to apply the diagnostics} \label{sec_user_guide}
@@ -617,17 +575,17 @@ Based on the above proposed diagnostics, we obtain a simple, iterative step-by-s
 
 \begin{enumerate}
 
-\item[A1.] Make an initial guess on the length-scale $\ell_1$. If there is no useful information available, we recommend to start with a large length-scale, about $\ell_1 \in [0.5, 1]$. Set the iteration index to $i=1$.
+\item[A1.] Set the iteration index to $i=1$. Make an initial guess on the length-scale $\ell^{(i)}$. If there is no useful information available, we recommend to start with a large length-scale, about $\ell^{(i)} \in [0.5, 1]$. ({\color{blue}Remember that $\ell$ refers to the normalized length-scale $\frac{\ell}{S}$.})
 
-\item[A2.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \ell_i$ for the given kernel as per Section~\ref{sec_num_equations}.
+\item[A2.] Obtain the minimum valid boundary factor $c^{(i)}$ determined by $\ell = \ell^{(i)}$ for the given kernel as per Section~\ref{sec_num_equations}.
 
-\item[A3.] Obtain the mimimum valid number of basis functions $m_i$ determined by $\ell = \ell_i$ and $c = c_i$ for the given kernel as per Section~\ref{sec_num_equations}. 
+\item[A3.] Obtain the mimimum valid number of basis functions $m^{(i)}$ determined by $\ell = \ell^{(i)}$ and $c = c^{(i)}$ for the given kernel as per Section~\ref{sec_num_equations}. 
 
-\item[A4.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
+\item[A4.] Fit an HSGP model using $m^{(i)}$ and $c^{(i)}$ and ensure convergence of the MCMC chains.
 
-\item[A5.] Perform the length-scale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
+\item[A5.] Perform the length-scale diagnostic by checking if $\hat{\ell}^{(i)} - 0.01 \geq \ell^{(i)}$. 
 
-If the diagnostic is FALSE, the HSGP approximation is not yet sufficiently accurate. Set $\ell_{i+1} = \hat{\ell}_{i}$, increase the iteration index $i = i + 1$, and go back to A2.
+If the diagnostic is FALSE, the HSGP approximation is not yet sufficiently accurate. Set $\ell^{(i+1)} = \hat{\ell}^{(i)}$, increase the iteration index $i = i + 1$, and go back to A2.
 
 If the diagnostic is TRUE, the HSGP approximation is close to be sufficiently accurate. Continue with Phase~B.
 
@@ -639,91 +597,114 @@ If the diagnostic is TRUE, the HSGP approximation is close to be sufficiently ac
 
 \item[B1.] For the current HSGP model, compute measures of predictive accuracy, for example, RMSE, $R^2$, or ELPD.
 
-\item[B2.] Set $m_{i+1} = m_{i} + 5$ and increase the iteration index $i = i + 1$.
+\item[B2.] Set $m^{(i+1)} = m^{(i)} + 5$ and increase the iteration index $i = i + 1$.
 
-\item[B3.] Obtain the minimum valid boundary factor $c_i$ determined by $\ell = \hat{\ell}_{i-1}$ for the given kernel as per Section \ref{sec_num_equations}.
+\item[B3.] Obtain the minimum valid boundary factor $c^{(i)}$ determined by $\ell = \hat{\ell}^{(i-1)}$ for the given kernel as per Section \ref{sec_num_equations}.
 
-\item[B4.] Obtain the minimum valid length-scale $\ell_i$ that can be accurately estimated by $m = m_i$ and $c = c_i$ for the given kernel as per Section~\ref{sec_num_equations}.
+\item[B4.] Obtain the minimum valid length-scale $\ell^{(i)}$ that can be accurately estimated by $m = m^{(i)}$ and $c = c^{(i)}$ for the given kernel as per Section~\ref{sec_num_equations}.
 
-\item[B5.] Fit an HSGP model using $m_i$ and $c_i$ and ensure convergence of the MCMC chains.
+\item[B5.] Fit an HSGP model using $m^{(i)}$ and $c^{(i)}$ and ensure convergence of the MCMC chains.
 
-\item[B6.] Perform the length-scale diagnostic by checking if $\hat{\ell}_i - 0.01 \geq \ell_i$. 
+\item[B6.] Perform the length-scale diagnostic by checking if $\hat{\ell}^{(i)} - 0.01 \geq \ell^{(i)}$. 
 
-Check the stability of both $\hat{\ell}_i$ and the measures of predictive accuracy relative to the previous iteration.
+Check the stability of both $\hat{\ell}^{(i)}$ and the measures of predictive accuracy relative to the previous iteration.
 
 If all the stability checks succeed, the HSGP approximation of the latest model should be sufficiently accurate and the procedure ends here.
 
 Otherwise, go back to B1.
 \end{enumerate}
 
+({\color{blue}In Section \ref{sec_requirements_diagnosis} readers can find a brief remark on the iterations requirements in the diagnosis procedure.})
+
 \subsection{Performance analysis of the diagnostics}
 
-\begin{figure*}
-\centering
-\subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig7_lscale_comparison.png}}
-\caption{Exact GP length-scale ($\ell_{GP}$) and approximate HSGP length-scale ($\hat{\ell}$) for various datasets with varying smoothness (left) and their corresponding root mean squared errors (RMSE) computed with the exact GP model as the reference.}
-  \label{fig7_lscale_comparison}
-\end{figure*}
+In this section, we first illustrate that accurate estimates of the length-scale implies accurate approximations via HSGPs. Figure~\ref{fig6_lscale_comparison} left shows a comparison of the length-scale estimates
+obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq.~(\ref{eq_c_vs_l_QE}). Figure~\ref{fig6_lscale_comparison} (right) shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
 
-In this section, we first illustrate that accurate estimates of the length-scale implies accurate approximations via HSGPs. Figure~\ref{fig7_lscale_comparison} left shows a comparison of the length-scale estimates
-obtained from the exact GP and HSGP models with a squared exponential kernel, from various noisy datasets drawn from underlying functions with varying smoothness. Different values for the number of basis functions $m$ are used when estimating the HSGP models, and the boundary factor $c$ is set to a valid and optimum value in every case by using eq.~(\ref{eq_c_vs_l_QE}). Figure~\ref{fig7_lscale_comparison} (right) shows the RMSE of the HSGP models with the exact GP model as the reference. It can be seen that accurate estimates of the length-scale imply small RMSEs.
-
-Table~\ref{tab1_diagnostic} shows the iterative steps of applying the diagnostic procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig7_lscale_comparison} left. It is clearly visible that by following our recommendations, an optimum solution with minimum computational requirements is achieved in these cases. Figure~\ref{fig8_diagnostic_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between two and four iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length scale and the true length scale, are sufficient to reach the optimal values of $m$ and $c$. 
+Table~\ref{tab1_diagnostic} shows the iterative steps of applying the diagnostic procedure explained in Section~\ref{sec_user_guide} over some of the data sets also used in the analysis in Figure~\ref{fig6_lscale_comparison}. It is clearly visible that by following our recommendations, an optimum solution with minimum computational requirements is achieved in these cases. Figure~\ref{fig7_diagnostic_lscale_comparison} graphically compares the exact GP length-scale and the estimated HSGP length-scale in every iteration and data set. Between two and four iterations, depending on wigglyness of the function to be learned and the distance between the initial guess of the length scale and the true length scale, are sufficient to reach the optimal values of $m$ and $c$. 
 
 As concrete examples, the iterative steps applied to perform diagnostic on two of the data sets in Table~\ref{tab1_diagnostic} are described in Appendix~\ref{sec_ex_iterative_steps}.
 
+\begin{figure}[t]
+\centering
+\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig6_lscale_comparison_2.png}}
+\caption{Exact GP length-scale ($\ell_{GP}$) and approximate HSGP length-scale ($\hat{\ell}$) for various datasets with varying smoothness (left) and their corresponding root mean squared errors (RMSE) computed with the exact GP model as the reference.}
+  \label{fig6_lscale_comparison}
+\end{figure}
+
+\begin{figure}
+\centering
+\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig7_diagnostic_lscale_comparison.png}}
+\caption{Comparison of the true and estimated length-scales in every iteration for the different data sets varying the length-scale.}
+  \label{fig7_diagnostic_lscale_comparison}
+\end{figure}
+
+
+\subsection{Other covariance functions}
+
+Above, we thoroughly studied the relationship between the number of basis functions in the approximation and the approximation accuracy across different configurations. We specifically focused on the Matérn and squared exponential families of covariance functions, yet there exists other families of stationary covariance functions. The basis function approximation can easily be implemented for any stationary covariance function, where the spectral density function is available. The assess the accuracy of a basis function approximation for a kernel, where the diagnostic plots like Figure \ref{fig5_relationships} or equations (\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) are not available, we suggest to use the relative total variational distance between the true covariance function and the approximate covariance function as given in eq. \eqref{eq:rel_total_distance}. Ensuring that the relative distance is bounded by a small constant for the relevant lengthscale implies a high quality approximation. Another possibility to asses the accuracy of the approximation is to look at the cumulative sum of the spectral densities terms used in the series expansion and find out how much of the total variation they are actually explaining{\color{blue}, as already mentioned in Section \ref{subsec_theoretic_linearity}}. 
+
+To select $c$ for many other covariance functions, users can be guided by equations~\eqref{eq_c_vs_l_QE}, \eqref{eq_c_vs_l_mat52} and \eqref{eq_c_vs_l_mat32}, as pointed in Section~\ref{sec_num_equations}.
+
 \begin{table*}
 \centering
-\setlength{\tabcolsep}{5pt}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{ c c c c c c c c c c | c c}
 \arrayrulecolor{gray}\hline \\[-3mm]
 $\ell_{\text{GP}}$ & iter. & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0.01 \geq \ell$ & RMSE & $R^2$ & ELPD & RMSE* & \\ 
 \arrayrulecolor{lightgray}\hline \\[-1mm]
-\multirow{5}{*}{ 0.08} 
- & 1 & 0.50 & 1.60 & 6 & 0.17 & FALSE & 0.45 & 0.61 & -0.40 & 0.36 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{tab1_diagnostic_2.png}}\\
+\multirow{4}{*}{ 0.08} 
+ & 1 & 0.50 & 1.60 & 6 & 0.17 & FALSE & 0.45 & 0.61 & -0.40 & 0.36 & \multirow{6}{*}{ \includegraphics[scale=0.25, trim = 0mm 10mm 0mm 5mm, clip]{tab1_diagnostic_2.png}}\\
  & 2 & 0.17 & 1.20 & 13 & 0.07 & FALSE & 0.36 & 0.74 & -0.18 & 0.24 & \\
  & 3 & 0.07 & 1.20 & 31 & 0.08 & TRUE & 0.24 & 0.87 & 0.20 & 0.01 & \\
  & 4 & 0.06 & 1.20 & 36 & 0.08 & TRUE & 0.24 & 0.87 & 0.21 & 0.01 & \\
+ \\
  \\[1mm]
  \arrayrulecolor{lightgray}\hline \\[-1mm]
-\multirow{3}{*}{ 0.13} 
- & 1 & 0.50 & 1.60 & 6 & 0.25 & FALSE & 0.46 & 0.63 & -0.49 & 0.33 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{tab1_diagnostic_3.png}}\\
+\multirow{4}{*}{ 0.13} 
+ & 1 & 0.50 & 1.60 & 6 & 0.25 & FALSE & 0.46 & 0.63 & -0.49 & 0.33 & \multirow{6}{*}{ \includegraphics[scale=0.25, trim = 0mm 10mm 0mm 5mm, clip]{tab1_diagnostic_3.png}}\\
  & 2 & 0.25 & 1.20 & 9 & 0.15 & FALSE & 0.35 & 0.78 & -0.14 & 0.15 & \\
  & 3 & 0.15 & 1.20 & 15 & 0.15 & TRUE & 0.32 & 0.81 & -0.07 & 0.08 & \\
  & 4 & 0.11 & 1.20 & 20 & 0.12 & TRUE & 0.30 & 0.83 & -0.01 & 0.01 & \\
+ \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{3}{*}{ 0.25} 
- & 1 & 0.50 & 1.60 & 6 & 0.24 & FALSE & 0.37 & 0.40 & -0.15 & 0.21 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 5mm, clip]{tab1_diagnostic_4.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 0.24 & FALSE & 0.37 & 0.40 & -0.15 & 0.21 & \multirow{6}{*}{ \includegraphics[scale=0.25, trim = 0mm 10mm 0mm 5mm, clip]{tab1_diagnostic_4.png}}\\
  & 2 & 0.24 & 1.20 & 9 & 0.26 & TRUE & 0.30 & 0.60 & -0.09 & 0.02 & \\
  & 3 & 0.25 & 1.20 & 14 & 0.26 & TRUE & 0.29 & 0.62 & -0.05 & 0.01 & \\
+ \\
  \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{3}{*}{ 0.54} 
- & 1 & 0.50 & 1.60 & 6 & 0.38 & FALSE & 0.27 & 0.86 & 0.03 & 0.01 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_5.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 0.38 & FALSE & 0.27 & 0.86 & 0.03 & 0.01 & \multirow{6}{*}{ \includegraphics[scale=0.25, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_5.png}}\\
  & 2 & 0.38 & 1.20 & 6 & 0.47 & TRUE & 0.28 & 0.86 & 0.03 & 0.05 & \\
  & 3 & 0.24 & 1.50 & 11 & 0.53 & TRUE & 0.27 & 0.86 & 0.04 & 0.01 & \\
+ \\
  \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{3}{*}{ 0.80} 
- & 1 & 1.00 & 3.20 & 6 & 0.52 & FALSE & 0.29 & 0.92 & 0.13 & 0.03 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_6.png}}\\
+ & 1 & 1.00 & 3.20 & 6 & 0.52 & FALSE & 0.29 & 0.92 & 0.13 & 0.03 & \multirow{6}{*}{ \includegraphics[scale=0.25, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_6.png}}\\
  & 2 & 0.52 & 1.65 & 6 & 0.98 & TRUE & 0.29 & 0.92 & 0.11 & 0.03 & \\
  & 3 & 0.50 & 3.12 & 11 & 0.77 & TRUE & 0.28 & 0.92 & 0.11 & 0.01 & \\
+ \\
  \\
  \\[1mm]
 \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{2}{*}{ 1.40} 
- & 1 & 1.00 & 3.20 & 6 & 1.02 & TRUE & 0.28 & 0.56 & 0.14 & 0.01 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_7.png}}\\
+ & 1 & 1.00 & 3.20 & 6 & 1.02 & TRUE & 0.28 & 0.56 & 0.14 & 0.01 & \multirow{6}{*}{ \includegraphics[scale=0.25, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_7.png}}\\
  & 2 & 0.52 & 3.27 & 11 & 1.23 & TRUE & 0.28 & 0.57 & 0.14 & 0.00 & \\
+ \\
  \\
  \\
  \\[1mm]
  \arrayrulecolor{lightgray}\hline \\[-1mm]
 \multirow{2}{*}{ 2.94} 
- & 1 & 0.50 & 1.60 & 6 & 1.19 & TRUE & 0.34 & 0.45 & -0.10 & 0.06 & \multirow{5}{*}{ \includegraphics[scale=0.20, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_8.png}}\\
+ & 1 & 0.50 & 1.60 & 6 & 1.19 & TRUE & 0.34 & 0.45 & -0.10 & 0.06 & \multirow{6}{*}{ \includegraphics[scale=0.25, trim = 0mm 10mm 0mm 3mm, clip]{tab1_diagnostic_8.png}}\\
  & 2 & 0.61 & 3.81 & 11 & 2.58 & TRUE & 0.34 & 0.45 & -0.07 & 0.01 & \\
+ \\
  \\
  \\
  \\[1mm]
@@ -733,32 +714,25 @@ $\ell_{\text{GP}}$ & iter. & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0
   \label{tab1_diagnostic}
 \end{table*}
 
-\begin{figure}
-\centering
-\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig8_diagnostic_lscale_comparison.png}}
-\caption{Comparison of the true and estimated length-scales in every iteration for the different data sets varying the length-scale.}
-  \label{fig8_diagnostic_lscale_comparison}
-\end{figure}
 
-\subsection{Other covariance functions}
+\subsection{The computational cost in the multi-dimensional setting}\label{sec_cost_multi}
 
-Above, we thoroughly studied the relationship between the number of basis functions in the approximation and the approximation accuracy across different configurations. We specifically focused on the Matérn and squared exponential families of covariance functions, yet there exists other families of stationary covariance functions. The basis function approximation can easily be implemented for any stationary covariance function, where the spectral density function is available. The assess the accuracy of a basis function approximation for a kernel, where the diagnostic plots like Figure \ref{fig6_relationships} or equations (\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) are not available, we suggest to use the relative total variational distance between the true covariance function and the approximate covariance function as given in eq. \eqref{eq:rel_total_distance}. Ensuring that the relative distance is bounded by a small constant for the relevant lengthscale implies a high quality approximation. Another possibility to asses the accuracy of the approximation is to look at the cumulative sum of the spectral densities terms used in the series expansion and find out how much of the total variation they are actually explaining. 
-
-To select $c$ for many other covariance functions, users can be guided by equations~\eqref{eq_c_vs_l_QE}, \eqref{eq_c_vs_l_mat52} and \eqref{eq_c_vs_l_mat32}, as pointed in Section~\ref{sec_num_equations}.
-
-\subsection{The computational cost in the multi-dimensional setting}
-
-The HSGP model is computationally superior in $1$D and $2$D even for highly wiggly functions, except when the number of data points is so small ($n \lesssim 300$, i.e., $n$ smaller than some value around 300) that exact GPs are already reasonably fast themselves. However, the computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})). Yet, the HSGP method can still be computationally faster than the exact GP for larger datasets due the latter's cubic scaling in $n$. 
+The HSGP model is computationally superior {\color{blue} to the exact GP} in $1$D and $2$D even for highly wiggly functions, except when the number of data points is so small ($n \lesssim 300$, i.e., $n$ smaller than some value around 300) that exact GPs are already reasonably fast themselves. However, the computation time of the HSGP model increases rapidly with the number of input dimensions ($D$) since the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ in the approximation increases exponentially with $D$ (see eq.~(\ref{eq_m_multi})). Yet, the HSGP method can still be computationally faster than the exact GP for larger datasets due the latter's cubic scaling in $n$. 
 
 In our experiments of multivariate problems (see Section~\ref{sec_computation_nD}), the computation time for the HSGP model was faster than for the exact GP for most of the non-linear $2D$ functions or moderate-to-large sized $3$D datasets ($n \gtrsim 1000$, i.e., $n$ greater than some value around 1000), even for highly wiggly 3D functions (e.g., $\ell_1, \ell_2, \ell_3 \approx 0.1$).
 
 For small sized datasets ($n\lesssim 1000$), HSGPs are likely to be slower than exact GPs already for highly to moderated wiggly $3$D functions (e.g., $\ell_1 \lesssim 0.1$, and $\ell_2, \ell_3 \gtrsim 0.3$) and for overall smooth $4$D functions (e.g., $\ell_1 \lesssim 0.1$, and $\ell_2, \ell_3, \ell_4 \gtrsim 0.4$).
 
-As it has been shown in case study III (Section~\ref{sec_caseIII}), the proposed diagnostic tool can be very useful for multivariate problems as it allows one to reduce $m^*$ to the minimum sufficient value, reducing computational time drastically, and still getting an accurate approximation. For example, assuming a squared exponential covariance function, choosing the optimal value for $c$ allows one to use few basis functions in every single dimension (i.e., $m \lesssim 10$ for $\ell \gtrsim 0.3$; $20 \gtrsim m \gtrsim 10$ for $0.3 \gtrsim \ell \gtrsim 0.1$; and $m \gtrsim 20$ for $\ell \lesssim 0.1$), which, from results presented in Figure~\ref{fig15_time_nD_log}, implies that the HSGP model can be, in general terms, useful for highly wiggly $3$D functions and smooth $4$D functions.
+As it has been shown in case study III (Section~\ref{sec_caseIII}), the proposed diagnostic tool can be very useful for multivariate problems as it allows one to reduce $m^*$ to the minimum sufficient value, reducing computational time drastically, and still getting an accurate approximation. For example, assuming a squared exponential covariance function, choosing the optimal value for $c$ allows one to use few basis functions in every single dimension (i.e., $m \lesssim 10$ for $\ell \gtrsim 0.3$; $20 \gtrsim m \gtrsim 10$ for $0.3 \gtrsim \ell \gtrsim 0.1$; and $m \gtrsim 20$ for $\ell \lesssim 0.1$), which, from results presented in Figure~\ref{fig14_time_nD_log}, implies that the HSGP model can be, in general terms, useful for highly wiggly $3$D functions and smooth $4$D functions.
 
 Whether HSGP or exact GP is faster will also depend on the specific implementation details, which can have big effects on the scaling constants. Thus, more detailed recommendations would depend on the specific software implementation.
 
 In our experiments, we observed roughly similar or even worse scaling behavior for the thin plate splines in comparison to HSGPs, with serious challenges with computation time when doing inference with spline models for $D=3$ and more than 10 basis functions per dimension, or even for $D=2$ and more than 40 basis functions per dimension (see Figures~B.3 right and C.3 in the online supplement).
+
+\subsubsection{Remark on the iterations requirements in the diagnosis procedure}\label{sec_requirements_diagnosis}
+
+{\color{blue}The limitation of the approach that can cause too long computation time does not come from the iterative diagnosis procedure, but from the computational cost of the HMC sampling method to fit the HSGP model at each diagnosis iteration. As said extensively throughout the paper, the computational cost of a single model fit depends ultimately on the non-linearity (wigglyness) of the function to be estimated and the number of dimensions, which affects the HMC sampling of a model fit, but not the number of iterations required to complete the diagnosis procedure. Then, the user has to care about the computational cost of fitting a model, but not about the number of iterations needed to complete the diagnosis procedure, which are few in any case. Few iterations in the diagnosis procedure are sufficient to obtain an accurate model approximation even in multi(low)-dimensional cases (that need a large number of basis functions), as can be seen in Table 1 and Tables 2-4 in the following sections.}
+
 
 \section{Case studies}\label{sec_cases}
 
@@ -790,25 +764,25 @@ iter. & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0.01 \geq \ell$ & RMSE
   \label{tab_caseI}
 \end{table}
 
-Figure~\ref{fig9_Posteriors_exI} shows the posteriors predictive distributions of the exact GP and the HSGP models, the later using the parameter values as the third iterative step, $c=1.2$ ($L=c\cdot 1= 1.2$; see eq.~\eqref{eq_boundary}) and $m=40$ basis functions. In order to do model comparison a spline-based model with 60 knots is also fitted and plotted jointly with the GP and HSGP models. The spline-based model is fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}. The sample observations are plotted as circles and the out-of-sample or test data are plotted as crosses. The posteriors of the three models, exact GP, HSGP and spline, are similar in the interpolation regions of the input space. However, when extrapolating the spline model solution clearly differs from the exact GP and HSGP models as well as the actual observations. 
+Figure~\ref{fig8_Posteriors_exI} shows the posteriors predictive distributions of the exact GP and the HSGP models, the later using the parameter values as the third iterative step, $c=1.2$ ($L=c\cdot 1= 1.2$; see eq.~\eqref{eq_boundary}) and $m=40$ basis functions. In order to do model comparison a spline-based model with 60 knots is also fitted and plotted jointly with the GP and HSGP models. The spline-based model is fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}. The sample observations are plotted as circles and the out-of-sample or test data are plotted as crosses. The posteriors of the three models, exact GP, HSGP and spline, are similar in the interpolation regions of the input space. However, when extrapolating the spline model solution clearly differs from the exact GP and HSGP models as well as the actual observations. 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{fig9_Posteriors_exI.png}
+\includegraphics[width=0.485\textwidth]{fig8_Posteriors_exI.png}
 \caption{Posterior predictive means of the proposed HSGP model, the exact GP model, and the spline model. 95\% credible intervals are plotted as dashed lines.}
-  \label{fig9_Posteriors_exI}
+  \label{fig8_Posteriors_exI}
 \end{figure}
 
-Figure~\ref{fig10_time_exI} shows both the standardized root mean squared error (SRMSE) of the models for the sample data and the computational times in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. Both the HSGP and splines models show roughly similar performance at sample data. The HSGP method yields a good approximation of the exact GP model for both interpolation and extrapolation. However, the spline model does not extrapolate data properly (Figure~\ref{fig9_Posteriors_exI}). The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model for this particular model and data. Also, it is seen that the computation time increases slowly as a function of the number of basis functions.
+Figure~\ref{fig9_rmse_time_exI} shows both the standardized root mean squared error (SRMSE) of the models for the sample data and the computational times in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. Both the HSGP and splines models show roughly similar performance at sample data. The HSGP method yields a good approximation of the exact GP model for both interpolation and extrapolation. However, the spline model does not extrapolate data properly (Figure~\ref{fig8_Posteriors_exI}). The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model for this particular model and data. Also, it is seen that the computation time increases slowly as a function of the number of basis functions.
 
 \begin{figure}[!h]
 \centering
-\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig10_rmse_time_exI.png}}
+\subfigure{\includegraphics[width=0.485\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig9_rmse_time_exI.png}}
 \caption{Computational time (y-axis), in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The y-axis is on a logarithmic scale. The standard deviation of the computational time is plotted as dashed lines.}
-  \label{fig10_time_exI}
+  \label{fig9_rmse_time_exI}
 \end{figure}
 
-The Stan model code for the exact GP, the approximate GP and the spline models of this case study can be found online at {\small \url{ https://github.com/gabriuma/}} \linebreak {\small \url{ basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}\,.
+The Stan model code for the exact GP model, the HSGP model, the spline model, and R-code to reproduce this case study can be found online at {\small \url{ https://github.com/gabriuma/}} \linebreak {\small \url{ basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}\,.
 
 
 \subsection{Birthday data}\label{sec_birthday}
@@ -892,29 +866,29 @@ iter. & f & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0.01 \geq \ell$ & 
   \label{tab_caseII}
 \end{table}
 
-Figure~\ref{fig11_posteriors_birthday} shows the posterior means of the long-term trend $f_1$ and yearly pattern $f_2$ for the whole period, jointly with the observed data. Figure \ref{fig12_posteriors_oneyear_birthday} shows the model for one year (1972) only. In this figure, the special days effects $f_4$ in the year can be clearly represented. The posterior means of the the function $\mu$ and the components $f_1$ (long-term trend) and $f_2$ (year pattern) are also plotted in this Figure \ref{fig12_posteriors_oneyear_birthday}. Figure \ref{fig13_posteriors_onemonth_birthday} show the process in the month of January of 1972 only, where the week pattern $f_3$ can be clearly represented. The mean of the the function $\mu$ and components $f_1$ (long-term trend), $f_2$ (year pattern) and $f_4$ (special-days effects) are also plotted in this Figure \ref{fig13_posteriors_onemonth_birthday}. 
+Figure~\ref{fig10_posteriors_birthday} shows the posterior means of the long-term trend $f_1$ and yearly pattern $f_2$ for the whole period, jointly with the observed data. Figure \ref{fig11_posteriors_oneyear_birthday} shows the model for one year (1972) only. In this figure, the special days effects $f_4$ in the year can be clearly represented. The posterior means of the the function $\mu$ and the components $f_1$ (long-term trend) and $f_2$ (year pattern) are also plotted in this Figure \ref{fig11_posteriors_oneyear_birthday}. Figure \ref{fig12_posteriors_onemonth_birthday} show the process in the month of January of 1972 only, where the week pattern $f_3$ can be clearly represented. The mean of the the function $\mu$ and components $f_1$ (long-term trend), $f_2$ (year pattern) and $f_4$ (special-days effects) are also plotted in this Figure \ref{fig12_posteriors_onemonth_birthday}. 
 
-The Stan model code for the approximate GP model of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/}} \linebreak {\small \url{master/Paper/Case-study_Birthday-data}}\,.
+The Stan model code for the HSGP model and R-code to reproduce this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Birthday-data}}\,.
 
 \begin{figure}
 \centering
-\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig11_posteriors_birthday.png}}
+\subfigure{\includegraphics[width=0.49\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig10_posteriors_birthday.png}}
 \caption{Posterior means of the long-term trend $f_1$ and year effects pattern ($f_2$) for the whole series. }
-  \label{fig11_posteriors_birthday}
+  \label{fig10_posteriors_birthday}
 \end{figure}
 
 \begin{figure}%[!t]
 \centering
-\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig12_posteriors_oneyear_birthday.png}}
+\subfigure{\includegraphics[width=0.49\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig11_posteriors_oneyear_birthday.png}}
 \caption{Posterior means of the function $\mu$ for the year 1972 of the series. The special days effects pattern $f_4$ in the year is also represented, as well as the long-term trend $f_1$ and year effects pattern $f_2$. }
-  \label{fig12_posteriors_oneyear_birthday}
+  \label{fig11_posteriors_oneyear_birthday}
 \end{figure}
 
 \begin{figure}%[!h]
 \centering
-\subfigure{\includegraphics[width=0.5\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig13_posteriors_onemonth_birthday.png}}
+\subfigure{\includegraphics[width=0.49\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig12_posteriors_onemonth_birthday.png}}
 \caption{Posterior means of the function $\mu$ for the month of January of 1972. The week effects pattern $f_3$ in the month is also represented, as well as the long-term trend $f_1$, year effects pattern $f_2$ and special days effects pattern $f_4$. }
-  \label{fig13_posteriors_onemonth_birthday}
+  \label{fig12_posteriors_onemonth_birthday}
 \end{figure}
 
 \subsection{Case study: Simulated data for $2$D and $3$D functions}\label{sec_caseIII}
@@ -936,14 +910,14 @@ The minimum requirements to fit the models were easily achieved by performing 4 
 
 \begin{figure*}[h]
 \centering
-\subfigure{\includegraphics[scale=0.315, trim = 1mm 18mm 39.2mm 20mm, clip]{fig14_errorGP_exII.pdf}}
-\subfigure{\includegraphics[scale=0.315, trim = 19mm 18mm 39.2mm 20mm, clip]{fig14_errorHSGP_exII.pdf}}
-\subfigure{\includegraphics[scale=0.315, trim = 19mm 18mm 39.2mm 20mm, clip]{fig14_errorSP_exII.pdf}}
-\subfigure{\includegraphics[scale=0.30, trim = 151mm 14mm 2mm 20mm, clip]{fig14_error_colorbar_exII.pdf}}
-\hspace{1pt}\subfigure{\includegraphics[scale=0.27, trim =0mm 5mm 10mm 0mm, clip]{fig14_RMSE_exII.pdf}}
-\hspace{-1.4cm} \subfigure{\raisebox{1.65cm}{\includegraphics[scale=0.30, trim = 28mm 70mm 112mm 20mm, clip]{fig14_legend_exII.pdf}}}
+\subfigure{\includegraphics[scale=0.315, trim = 1mm 18mm 39.2mm 20mm, clip]{fig13_errorGP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.315, trim = 19mm 18mm 39.2mm 20mm, clip]{fig13_errorHSGP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.315, trim = 19mm 18mm 39.2mm 20mm, clip]{fig13_errorSP_exII.pdf}}
+\subfigure{\includegraphics[scale=0.30, trim = 151mm 14mm 2mm 20mm, clip]{fig13_error_colorbar_exII.pdf}}
+\hspace{1pt}\subfigure{\includegraphics[scale=0.27, trim =0mm 5mm 10mm 0mm, clip]{fig13_RMSE_exII.pdf}}
+\hspace{-1.4cm} \subfigure{\raisebox{1.65cm}{\includegraphics[scale=0.30, trim = 28mm 70mm 112mm 20mm, clip]{fig13_legend_exII.pdf}}}
 \caption{Error between the $2$D data-generating function and posterior mean functions of the GP (a), HSGP (b) and spline-based (c) models. Sample points are plotted as circles. The right side plot shows the root mean square error (RMSE) of the different methods, and plotted as a function of the boundary factor $c$, number of univariate basis functions $m$ and knots (the same number of basis functions $m$ and knots per dimension are used, resulting in $m^D$ total number of multivariate basis functions).}
-  \label{fig14_errors_exII}
+  \label{fig13_errors_exII}
 \end{figure*}
 
 \begin{table}
@@ -1000,27 +974,29 @@ The minimum requirements to fit the models were easily achieved by performing 4 
   \label{tab_caseIII_3D}
 \end{table}
 
-Figure \ref{fig14_errors_exII} shows the difference  between the true underlying data-generating function and the posterior mean for GP, HSGP and spline-based model solutions for the $2$D data set. For the $3$D data set plots with the posterior functions are not shown because it is difficult to plot functions in a $3$D input space. The splines-based model was fitted using a cubic spline basis, penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}. For the spline-based model, $40$ knots in each dimension were used. Figure \ref{fig14_errors_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP, and knots, for the $2$D spline-based model. It can be seen that the posterior mean for HSGP and exact GP accurately represents the true data-generating function. In contrast, the accuracy of the spline-based model is significantly worse. 
+Figure \ref{fig13_errors_exII} shows the difference  between the true underlying data-generating function and the posterior mean for GP, HSGP and spline-based model solutions for the $2$D data set. For the $3$D data set plots with the posterior functions are not shown because it is difficult to plot functions in a $3$D input space. The splines-based model was fitted using a cubic spline basis, penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}. For the spline-based model, $40$ knots in each dimension were used. Figure \ref{fig13_errors_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP, and knots, for the $2$D spline-based model. It can be seen that the posterior mean for HSGP and exact GP accurately represents the true data-generating function. In contrast, the accuracy of the spline-based model is significantly worse. 
+
+The Stan model codes for the exact GP model, the HSGP model, and the spline-based model, and R-code to reproduce this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_2D&3D-Simulated-data}}\,.
 
 \subsubsection{Computation requirements in 2D, 3D, and 4D input spaces}\label{sec_computation_nD}
 
-Figure~\ref{fig15_time_nD_log} shows the computation time for dynamic HMC (in seconds per iteration) in $2$D, $3$D and $4$D input spaces and different sized data sets, $n=300, n=500, n=1000$, and $n=3000$, as a function of the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ used in the approximation.
+Figure~\ref{fig14_time_nD_log} shows the computation time for dynamic HMC (in seconds per iteration) in $2$D, $3$D and $4$D input spaces and different sized data sets, $n=300, n=500, n=1000$, and $n=3000$, as a function of the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ used in the approximation.
 Both the time of computation and $m^*$ are plotted in the logarithmic scale. 
 
-Looking back at Figure~\ref{fig6_relationships}, or equations~\eqref{eq_m_l_QE}, \eqref{eq_m_l_mat32}, and \eqref{eq_m_l_mat52}, and assuming squared exponential covariance function, any univariate function (or single dimensions of a multivariate function) with true lengthscales bigger than $0.3$ can be accurately fitted using only $10--12$ basis functions. For lengthscales between $0.1$ and $0.3$, $10--22$ basis functions are sufficient.
+Looking back at Figure~\ref{fig5_relationships}, or equations~\eqref{eq_m_l_QE}, \eqref{eq_m_l_mat32}, and \eqref{eq_m_l_mat52}, and assuming squared exponential covariance function, any univariate function (or single dimensions of a multivariate function) with true lengthscales bigger than $0.3$ can be accurately fitted using only $10-12$ basis functions. For lengthscales between $0.1$ and $0.3$, $10-22$ basis functions are sufficient.
 
-For a very wiggly $2$D function (say, with $\ell_1=0.1$ and $\ell_2=0.1$), the approximate number of multivariate basis functions needed is $m^*=22\times 22= 484$, which results in significantly faster computation than the exact GP, even with small data sets (i.e., $n \lesssim 300$) (see Figure~\ref{fig15_time_nD_log}). For a very wiggly $3$D function (say, with $\ell_1=0.1$, $\ell_2=0.1$ and $\ell_3=0.1$), the approximate number of multivariate basis functions needed is $m^*=22\times 22\times 22= 10648$, which, unless for small data sets (i.e., $n \lesssim 1000$), the method is still significantly faster than the regular GP. A $3$D function where each dimension has a lengthscale around $0.1$ is not that common in statistical analysis, and thus in many cases the approximation will be significantly faster than excat GP. For $4$D data sets, the method can still be more efficient than the exact GP for moderate-to-large data sets (i.e., $n \lesssim 1000$). 
+For a very wiggly $2$D function (say, with $\ell_1=0.1$ and $\ell_2=0.1$), the approximate number of multivariate basis functions needed is $m^*=22\times 22= 484$, which results in significantly faster computation than the exact GP, even with small data sets (i.e., $n \lesssim 300$) (see Figure~\ref{fig14_time_nD_log}). For a very wiggly $3$D function (say, with $\ell_1=0.1$, $\ell_2=0.1$ and $\ell_3=0.1$), the approximate number of multivariate basis functions needed is $m^*=22\times 22\times 22= 10648$, which, unless for small data sets (i.e., $n \lesssim 1000$), the method is still significantly faster than the regular GP. A $3$D function where each dimension has a lengthscale around $0.1$ is not that common in statistical analysis, and thus in many cases the approximation will be significantly faster than excat GP. For $4$D data sets, the method can still be more efficient than the exact GP for moderate-to-large data sets (i.e., $n \lesssim 1000$). 
 
-Finally, for $D>5$ the method starts to be impractical even for smooth univariate functions. However, in these cases, the method may still be used for lower dimensional componenets in an additive modeling scheme.
+Finally, for $D>5$ the method starts to be impractical even for smooth univariate functions. However, in these cases, the method may still be used for lower dimensional components in an additive modeling scheme.
+
+The Stan model codes for the exact GP model and the HSGP model for these 2D, 3D, and 4D cases can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Stan_code_2D_3D_4D}}\,.
 
 \begin{figure*}
 \centering
-\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig15_time_nD_log.png}
+\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig14_time_nD_log.png}
 \caption{Computational time in seconds per iteration (iteration of the HMC sampling method) for different datasets with different dimensionalties and data points, and plotted as a function of the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$.}
-  \label{fig15_time_nD_log}
+  \label{fig14_time_nD_log}
 \end{figure*}
-
-The Stan model codes for the exact GP, the HSGP and the spline-based models of this case study can be found online at {\small \url{https://github.com/gabriuma/}} \linebreak {\small \url{basis_functions_approach_to_GP/tree/master/Paper/Case-study_2D-Simulated-data}}\,.
 
 \subsection{Leukemia data}\label{sec_bf_caseVI}
 
@@ -1055,25 +1031,25 @@ where $\mathbb{I}\left[\cdot\right]$ is an indicator function. Above, $c$ and $\
 %
 \begin{figure*}
 \centering
-\includegraphics[scale=0.70, trim = 0mm 5mm 0mm 0mm, clip]{fig16_posteriors_leukemia.pdf}
+\includegraphics[scale=0.70, trim = 0mm 5mm 0mm 0mm, clip]{fig15_posteriors_leukemia.pdf}
 \caption{Expected lifetime conditional comparison for each predictor with other predictors fixed to their mean values. The thick line in each graph is the posterior mean estimated using a HSGP model, and the thin lines represent pointwise 95\% credible intervals.}
-  \label{fig16_posteriors_leukemia}
+  \label{fig15_posteriors_leukemia}
 \end{figure*}
 
 Using the HSGP approximation, the functions $h(\bm{x})$ and $g(\bm{x})$ are approximated as in eq.~(\ref{eq_approxf_multi}), with the $D$-dimensional (with a scalar length-scale) squared exponential spectral density $S$ as in eq.~(\ref{eq_specdens_inf}), and the multivariate eigenfunctions $\phi_j$ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ as in equations (\ref{eq_eigenfunction_multi}) and  (\ref{eq_eigenvalue_multi}), respectively.
 
-Figure \ref{fig16_posteriors_leukemia} shows estimated conditional functions of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. There are clear  non-linear patterns and the right bottom subplot also shows that the conditional function associated with WBC has an interaction with TDI.
-Figure~\ref{fig17_elpd_leukemia} shows the expected log predictive density \citep[ELPD; ][]{vehtari_2012,Vehtari+Gelman+Gabry:2017_practical} and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in eq.~(\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{fig17_elpd_leukemia}-left); Small boundary factors are not appropriate for models for large length-scales, as can be seen in Figure \ref{fig6_relationships}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{fig17_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
+Figure \ref{fig15_posteriors_leukemia} shows estimated conditional functions of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. There are clear  non-linear patterns and the right bottom subplot also shows that the conditional function associated with WBC has an interaction with TDI.
+Figure~\ref{fig16_elpd_leukemia} shows the expected log predictive density \citep[ELPD; ][]{vehtari_2012,Vehtari+Gelman+Gabry:2017_practical} and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in eq.~(\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{fig16_elpd_leukemia}-left); Small boundary factors are not appropriate for models for large length-scales, as can be seen in Figure \ref{fig5_relationships}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{fig16_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
 %
 \begin{figure*}
 \centering
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig17_elpd_leukemia.pdf}} 
-\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig17_time_leukemia.pdf}}
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig16_elpd_leukemia.pdf}} 
+\subfigure{\includegraphics[scale=0.38, trim = 0mm 8mm 0mm 0mm, clip]{fig16_time_leukemia.pdf}}
 \caption{Expected log predictive density (ELPD; left) and time of computation in seconds per iteration (iteration of the HMC sampling method; right) as a function of the number of basis functions $m$ and boundary factor $c$.}
-  \label{fig17_elpd_leukemia}
+  \label{fig16_elpd_leukemia}
 \end{figure*}
 
-The Stan model code for the exact GP and the approximate GP models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Leukemia-data}}\,.
+The Stan model code for the exact GP and the HSGP models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Leukemia-data}}\,.
 %
 
 \section{Conclusion}\label{sec_conclusion}
@@ -1082,7 +1058,7 @@ Modeling unknown functions using exact GPs is computationally intractable in man
 
 As one of the main contributions of this paper, we provided an in-depth analysis of the approximation's performance and accuracy in relation to the key factors of the method, that is, the number of basis functions, the boundary condition of the Laplace eigenfunctions, and the non-linearity of the function to be learned. On that basis, as our second main contribution, we developed practical diagnostics to assess the approximation's performance as well as an iterative procedure to obtain an accurate approximation with minimal computational costs. 
 
-The developed approximate GPs can be easily applied as modular components in probabilistic programming frameworks such as Stan in both Gaussian and non-Gaussian observation models. Using several simulated and real datasets, we have demonstrated the practical applicability and improved sampling efficiency, as compared to exact GPs, of the developed method. The main drawback of the approach is that its computational complexity scales exponentially with the number of input dimensions. Hence, choosing optimal values for the number of basis functions and the boundary factor, using the recommendations and diagnostics provided in Figure~\ref{fig6_relationships}, is essential to avoid a excessive computational time especially in multivariate input spaces. However, in practice, input dimensionalities larger than three start to be computationally demanding even for moderately wiggly functions and few basis functions per input dimension. In these high dimensional cases, the proposed approximate GP methods may still be used for low-dimensional components in an additive modeling scheme but without modeling very high dimensional interactions, as complexity is linear with the number of additive components.
+The developed approximate GPs can be easily applied as modular components in probabilistic programming frameworks such as Stan in both Gaussian and non-Gaussian observation models. Using several simulated and real datasets, we have demonstrated the practical applicability and improved sampling efficiency, as compared to exact GPs, of the developed method. The main drawback of the approach is that its computational complexity scales exponentially with the number of input dimensions. Hence, choosing optimal values for the number of basis functions and the boundary factor, using the recommendations and diagnostics provided in Figure~\ref{fig5_relationships}, is essential to avoid a excessive computational time especially in multivariate input spaces. However, in practice, input dimensionalities larger than three start to be computationally demanding even for moderately wiggly functions and few basis functions per input dimension. In these high dimensional cases, the proposed approximate GP methods may still be used for low-dimensional components in an additive modeling scheme but without modeling very high dimensional interactions, as complexity is linear with the number of additive components.
 
 In this paper, the obtained functional relationships between the key factors influencing the approximation and corresponding diagnostics were studied primarily for univariate inputs. Accordingly, investigating the functional relationships more thoroughly for multivariate inputs remains a topic for future research. 
 
