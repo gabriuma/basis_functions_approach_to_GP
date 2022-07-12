@@ -62,7 +62,7 @@ Throughout, comments of the reviewers are hightlighted in bold.
 
 \begin{itemize}
 
-\item We have updated the appearance of Figures 1, 2, 3, 4 and 5 (old numbering) in order to make them more compact and thus the overall appearance of the paper more pleasing. The new numbering corresponding to those figures is Fig. 1, 2, 3 and 4.
+\item We have updated the appearance of Figures 1, 2, 3, 4, and 5 (old numbering) in order to make them more compact and thus the overall appearance of the paper more pleasing. The new numbering corresponding to those figures is now Fig. 1, 2, 3, and 4.
 
 \item We have revised the entire manuscript making some minor edits, such as rewriting a few sentences and adding minor little additional information.
 
@@ -72,7 +72,9 @@ Throughout, comments of the reviewers are hightlighted in bold.
 
 \subsection*{Reviewer \#1}
 
-We are grateful for your valuable comments and suggestions, which have been very helpful to improve the paper, and more generally for your time you have dedicated to reviewing it.
+Thank you again for your valuable comments and suggestions.
+
+%We are grateful for your valuable comments and suggestions, which have been very helpful to improve the paper, and more generally for your time you have dedicated to reviewing it. We would also like to thank you for the additional feedback on some of our responses.
 
 %\subsubsection*{R\#1 General comment and feedback for the authors}
 %
@@ -94,52 +96,64 @@ We are grateful for your valuable comments and suggestions, which have been very
 %
 %\textbf{Finally, a quick comment related to R\#2 Comment \#3: I agree here with the authors that empirical comparison against alternative inference techniques is not necessary and would not really make the paper stronger either.}
 
-We would also like to thank you for the additional feedback on some of our responses.
+
 
 \subsubsection*{R\#1 Minor comment \#1}
 
 \textbf{The new Figure 6 is, for some reason, very blurry. The same holds for the small images in Table 1 (btw, I like this presentation style where the numbers are put next to the figures in a clear manner) and some other figures as well. Maybe check all of them for resolution/vectorization.}
 
-Figure 6 may look a bit fuzzy, but it is actually a visual effect because the curves were constructed for discrete values of the number of basis functions $m$ (Y-axis), which makes them look like stair-shaped curves when plotted, and its appearance can be confused with a blurred image.
+Figure 6 may look a bit fuzzy, but it is actually a visual effect because the curves were constructed for discrete values of the number of basis functions $m$ (Y-axis), which makes them look like stair-shaped curves when plotted, and its appearance can be confused with a blurred image. We think the resolution of the figure itself is sufficient. We have increased the size of the figures in Table 1 and have checked and updated the other figures as we saw fit.
 
-We have increased the size of the figures in Table 1.
-
-The authors think that the rest of the figures look good in their current form.
+%The authors think that the rest of the figures look good in their current form.
 
 
 \subsubsection*{R\#1 Minor comment \#2}
 
 \textbf{The algorithms in Section 4.5.1 do not have clear stopping conditions for failure cases.  For problematic cases (e.g. clearly too high dimensionality) the result would be a loop of  extremely many iterations, right? In Section 4.6 you explain how a few iterations were enough in your example cases, but maybe you could already in 4.5.1 give some suggestion on when the user should give up, with something like "in case you do not find a satisfactory solution in N iterations, you might want to reconsider using HSGP or perhaps need to change X or Y".}
 
-The limitation of the approach that can cause too long computation time does not come from the iterative diagnosis procedure, but from the computational cost of the HMC sampling method to fit the HSGP model at each diagnosis iteration, that is, the more input dimensions ($D$) the more multivariate basis functions ($m^*=nm^D$, with $n$=number of points and $m$=number of univariate basis functions), which affects the HMC sampling of a model fit, but not the number of iterations required to complete the diagnosis procedure.
+Based on the evidence that we have at this point, we can unfortunately not give evidence-based suggestions as to when to stop pre-convergence and try something else because we have seen only very few iterations to be required in all the investigated cases. With regard to high-dimensional cases, the main problem would not be more iterations (as far as we have seen) but the computational cost of each iteration. More concretely, as we discuss in detail in the paper, the more input dimensions ($D$) we have, the more multivariate basis functions we get ($m^*=nm^D$, with $n$=number of points and $m$=number of univariate basis functions), which affects the HMC sampling of a model fit (per iteration), but not (in a relevant manner) the number of iterations required to complete the diagnostic procedure. We have now clarified these points at the end of Section 4.5.1.
 
-In fact, the diagnosis procedure converges quickly (with few iterations) to an accurate approximation even in multi(low)-dimensional cases (that need a large number of basis functions), as can be seen in Tables 1-5. It is true that more input dimensions may lead to the need for a few more iterations in the diagnosis procedure due to the fact that the diagnostic check is performed individually on each dimension and an accurate approximation of the model will be reached when the diagnostic check passes for all dimensions together. But this fact should only lead to the need for only a couple of additional iterations, since the approach is only suitable for dimensionalities $<= 5$ (Remember that, as stated throughout the paper, the HSGP approach is only suitable for $D<=3$, with (very) wiggly functions, and for $D<=5$, with (very) smooth functions). For larger dimensionalities, the approach can still be used in an additive modeling framework. 
+%The limitation of the approach that can cause too long computation time does not come from the iterative diagnostic procedure, but from the computational cost of the HMC sampling method to fit the HSGP model at each diagnostic iteration, that is, the more input dimensions ($D$) the more multivariate basis functions ($m^*=nm^D$, with $n$=number of points and $m$=number of univariate basis functions), which affects the HMC sampling of a model fit, but not the number of iterations required to complete the diagnostic procedure.
 
-As an example, Table 5 summarizes the iterative diagnosis for a 3D function formed by very/moderate wiggly functions in each of its dimensions. For the 4D and 5D cases we do not expect a significant increase in the number of diagnosis iterations, even more so since for the 4D and 5D cases the HSGP model can only fit smooth (or very smooth in 5D) functions.
+%In fact, the diagnostic procedure converges quickly (with few iterations) to an accurate approximation even in multi(low)-dimensional cases (that need a large number of basis functions), as can be seen in Tables 1-5. It is true that more input dimensions may lead to the need for a few more iterations in the diagnostic procedure due to the fact that the diagnostic check is performed individually on each dimension and an accurate approximation of the model will be reached when the diagnostic check passes for all dimensions together. But this fact should only lead to the need for only a couple of additional iterations, since the approach is only suitable for dimensionalities $<= 5$ (Remember that, as stated throughout the paper, the HSGP approach is only suitable for $D<=3$, with (very) wiggly functions, and for $D<=5$, with (very) smooth functions). For larger dimensionalities, the approach can still be used in an additive modeling framework. 
 
-Therefore, the user should be concerned about the computational cost of fitting a model in a single iteration of the diagnosis procedure, but not about the number of iterations required to complete the diagnosis procedure, which should be few in any case. The computational cost of fitting a single model ultimately depends on the wigglyness of the function and the number of dimensions. We have provided extensive information throughout the paper on the computational requirements for model fitting as a function of wigglyness and number of dimensions, information that is also summarized in Figure 15.
+%As an example, Table 5 summarizes the iterative diagnostic for a 3D function formed by very/moderate wiggly functions in each of its dimensions. For the 4D and 5D cases we do not expect a significant increase in the number of diagnostic iterations, even more so since for the 4D and 5D cases the HSGP model can only fit smooth (or very smooth in 5D) functions.
 
-Although that has been said extensively throughout the paper, we have added a remark in Section 4.8.1 and a note at the end of Section 4.5.1, as suggested by the reviewer, which we also think can help to make it more clear.
+%Therefore, the user should be concerned about the computational cost of fitting a model in a single iteration of the diagnostic procedure, but not about the number of iterations required to complete the diagnostic procedure, which should be few in any case. The computational cost of fitting a single model ultimately depends on the wigglyness of the function and the number of dimensions. We have provided extensive information throughout the paper on the computational requirements for model fitting as a function of wigglyness and number of dimensions, information that is also summarized in Figure 15.
+
+%Although that has been said extensively throughout the paper, we have added a remark in Section 4.8.1 and a note at the end of Section 4.5.1, as suggested by the reviewer, which we also think can help to make it more clear.
 
 \subsection*{Reviewer \#2}
 
-We are grateful for your valuable comments and suggestions, which have been very helpful to improve the paper, and more generally for your time you have dedicated to reviewing it.
+%We are grateful for your valuable comments and suggestions, which have been very helpful to improve the paper, and more generally for your time you have dedicated to reviewing it.
+
+Thank you again for your valuable comments and suggestions.
 
 
 \subsubsection*{R\#2 Comment \#1}
 
 \textbf{the suggestion that, as a purely empirical work, more alternative methods should be compared with was rejected by the authors because it would "would blow up the already extensive scope of the paper". however, much of the paper includes extensive material from earlier work which need not be duplicated. also, the author comment that "focus on the comparison between the Hilbert space basis function approximation (HSGP method) against an exact GP inference", but this is misleading as they actually include a specific baseline of spline regression, which seems like a rather arbitrary and weak one (the authors had a chance to change my mind here, but did not attempt to do so).}
 
-We included the solution of a spline model (a model related to the GP/HSGP model) only in case study I, with no other intention than to show, beside the GP and HSGP solutions, the solution of a spline model, which has similar (of the same order) computational cost and limitations in multidimensional cases. It can be seen that a basic formulation of a spline model causes significantly worse extrapolation accuracy.
+We apologize for not making a stronger case in terms of performed (and not performed) comparisons earlier. We are aware that this paper could be extended in various different valuable directions, as is probably the case with most papers. One of such directions is of course to add more comparisons with other methods. 
+
+In this paper, we have focussed on the empirical accuracy of the HSGP approximation of exact GPs as you are aware. Including the spline in one of the case studies was to show that excessively applied methods that are similar in some ways (here: reduced-rank thin-plate splines, a method whose corresponding papers have been cited thousands of times already), does not perform better out of the box than our HSGPs. But we understand and agree that including this particular spline here in this particular case study is not a strong case in terms of comparison with other methods. Accordingly, we decided to remove it to not invoke a false impression of our focus or claims. 
+
+We are not sure whether we can convince you of the sensibility and sufficiency of the focus of our paper that we have chosen. But what we can say is that based on the informal feedback from the community we have recieved so far, the other reviewers' and also the editor's comments, as well as over 20 citation of the corresponding preprint already, a lot of people see value in our work and its existing focus. There is certainly a lot of value in comparing HSGPs with competing methods other than exact GPs, but we do not see a way to make this part of the current paper, not only in terms of paper space, but also in terms of time, personnel, and monetary resources we currently have available to work on this topic.
+
+
+
+%We included the solution of a spline model (a model related to the GP/HSGP model) only in case study I, with no other intention than to show, beside the GP and HSGP solutions, the solution of a spline model, which has similar (of the same order) computational cost and limitations in multidimensional cases. It can be seen that a basic formulation of a spline model causes significantly worse extrapolation accuracy.
 
 
 \subsubsection*{R\#2 Comment \#2}
 
 \textbf{a major item of new content is "A diagnostic procedure based on iterative steps to fit and diagnose the approximation has been proposed (Section 4.5.1 and Section 4.6)". however, the very first step A1 in section 4.5.1 looks odd. the choice of $\ell_1$ surely depends on the scale of the input data. if the data scale is large, won't the method fail ? it could be that i misunderstood this, e.g. that there is some preprocessing step required, but given that there is a confusing collision of notation with the $\ell_1$ of line 50, i expect other readers to interpret it as i did (or worse, to assume they are referring to the $\ell_1$ of line 50).}
 
-As said in the paper, we work with a normalized lengthscale, i.e., a lengthscale $\ell$ relative to the half-range ($S$) of the input domain ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. We have added an additional paragraph to make it more clear in the second-to-last paragraph in Section 4.3.1.
+We apologize for creating confusion with our notation here. We work with a normalized lengthscale, i.e., a lengthscale $\ell$ relative to the half-range ($S$) of the input domain ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. We have now clarified the notation by using different symbols for lengthscale and normalized lengthscale throughout the paper. 
 
-We agree with the reviewer that the $\ell_i$ notation in Section 4.5.1, where $i$ is the subscript for the diagnosis iteration, may conflict with the $\ell_i$ notation used in the article where $i$ is the subscript for dimensions. Therefore, we have changed the notation in Section 4.5.1 from $\ell_i$ to $\ell^{(i)}$ to differentiate it from the notation in the rest of the article where subscripts refer to dimensions.
+%added an additional paragraph to make it more clear in the second-to-last paragraph in Section 4.3.1.
+
+Thank you for also your comment about the $\ell_i$ notation in Section 4.5.1, where $i$ is the subscript for the diagnostic iteration, conflicting with the $\ell_i$ notation used in the article where $i$ is the subscript for dimensions. Therefore, we have changed the notation in Section 4.5.1 from $\ell_i$ to $\ell^{(k)}$ to clearly differentiate it from the notation in the rest of the article where subscripts refer to dimensions.
 
 
 
