@@ -149,14 +149,11 @@ We are not sure whether we can convince you of the sensibility and sufficiency o
 
 \textbf{a major item of new content is "A diagnostic procedure based on iterative steps to fit and diagnose the approximation has been proposed (Section 4.5.1 and Section 4.6)". however, the very first step A1 in section 4.5.1 looks odd. the choice of $\ell_1$ surely depends on the scale of the input data. if the data scale is large, won't the method fail ? it could be that i misunderstood this, e.g. that there is some preprocessing step required, but given that there is a confusing collision of notation with the $\ell_1$ of line 50, i expect other readers to interpret it as i did (or worse, to assume they are referring to the $\ell_1$ of line 50).}
 
-We apologize for creating confusion with our notation here. We work with a normalized lengthscale, i.e., a lengthscale $\ell$ relative to the half-range ($S$) of the input domain ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. We have now clarified the notation by using different symbols for lengthscale and normalized lengthscale throughout the paper. 
+We apologize for creating confusion with our notation here. {\color{blue}The diagnostic Figure 5 and equations (19-24) work with a normalized lengthscale, i.e., a lengthscale $\ell$ normalized by the zero-mean, symmetric interval $S$ which contains the inpus values $x_i$ ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. In concrete in step A.1 in Section 4.5.1 we recommend values for a first guess of the lengthscale based on the normalized lengthscale. We have now clarified the role and use of the normalized lengthscale relative to $S$ throughout the paper.}
 
-%added an additional paragraph to make it more clear in the second-to-last paragraph in Section 4.3.1.
+%We work with a normalized lengthscale, i.e., a lengthscale $\ell$ relative to the half-range ($S$) of the input domain ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. We have now clarified the notation by using different symbols for lengthscale and normalized lengthscale throughout the paper. 
 
 Thank you for also your comment about the $\ell_i$ notation in Section 4.5.1, where $i$ is the subscript for the diagnostic iteration, conflicting with the $\ell_i$ notation used in the article where $i$ is the subscript for dimensions. Therefore, we have changed the notation in Section 4.5.1 from $\ell_i$ to $\ell^{(k)}$ to clearly differentiate it from the notation in the rest of the article where subscripts refer to dimensions.
-
-
-
 
 
 %\noindent \hdashrule{12.5cm}{0.2pt}{2mm 1pt}
