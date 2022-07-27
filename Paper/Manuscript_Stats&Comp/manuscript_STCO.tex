@@ -444,7 +444,7 @@ where $S > 0$ represents
 and $c \geq 1$ is the proportional extension factor. In the following, we will refer to $c$ as the boundary factor of the approximation. The boundary factor can also be regarded as the boundary $L$ normalized by 
 %the half-range $S$ of the input space.
 {\color{blue}the boundary $S$}. 
-{\color{blue}Notice that $\bm{x}$ need not be symmetric around zero (although it is recommended that $\bm{x}$ fits exactly the interval $\left[-S, S\right]$ to optimize computation and the iterative diagnostic presented in Section~\ref{subsec_diagnostics}), but contained in $\left[-S, S\right]$}.
+{\color{blue}Notice that $\bm{x}$ need not be symmetric around zero, but need to be contained in $\left[-S, S\right]$} (although it is recommended that $\bm{x}$ fits tightly the interval $\left[-S, S\right]$ to optimize computation and the iterative diagnostic presented in Section~\ref{subsec_diagnostics}).
 
 \begin{figure}
 %\centering
@@ -464,7 +464,7 @@ and $c \geq 1$ is the proportional extension factor. In the following, we will r
 
 We start by illustrating how the number of basis functions $m$ and boundary factor $c$ influence the accuracy of the HSGP approximations individually. For this purpose, a set of noisy observations are drawn from an exact GP model with a squared exponential covariance function of length-scale $\ell=0.3$ and marginal variance $\alpha=1$, using input values 
 %from the zero-mean input domain with half-range $S=1$
-{\color{blue}within the interval $[-1,1]$ that leads to a boundary $S$ of $S=1$ as per eq.~\eqref{eq_boundary_S}. Notice that in this case the domain of input points $x_i$ matches exactly the interval $\left[-S, S\right]$}. 
+{\color{blue}within the interval $[-1,1]$ that leads to a boundary $S$ of $S=1$ as per eq.~\eqref{eq_boundary_S}. In this case the domain of input points $x_i$ matches exactly the interval $\left[-S, S\right]$}. 
 Several HSGP models with varying $m$ and $c$ are fitted to this data. In this example, the length-scale and marginal variance parameters used in the HSGPs are fixed to the true values of the data-generating model. 
 Figures~\ref{fig1_Post_J_L} and \ref{fig1_Post_J_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function as well as on the covariance function itself. For a sufficiently large fixed value of $c$, Figure \ref{fig1_Post_J_L} shows clearly how $m$ affects the accuracy on the approximation for both the posterior mean or uncertainty. It is seen that if the number of basis functions $m$ is too small, the estimated function tend to be overly smooth because the necessary high frequency components are missing. In general, the higher the degree of wigglyness of the function to be estimated, the larger number of  basis functions will be required. If $m$ is fixed to a sufficiently large value, Figure~\ref{fig1_Post_J_L} shows that $c$ affects the approximation of the mean mainly near the boundaries, while the approximation of the standard deviation is affected across the whole domain. The approximation error tends to be bigger for the standard deviation than for the mean.
 
@@ -644,7 +644,7 @@ If all the stability checks succeed, the HSGP approximation of the latest model 
 Otherwise, go back to B1.
 \end{enumerate}
 
-{\color{blue} We have seen this procedure do converge quickly after only few iterations in all the investigated cases (see Figure~\ref{fig7_diagnostic_lscale_comparison}, Table~\ref{tab1_diagnostic}, and Section~\ref{sec_cases}). That said, we cannot rule out that there may be cases where convergence is much slower (in terms of number of required diagnostic iterations) to a degree where HSGPs become impractical and an early stopping of the procedure would be advisable.
+{\color{blue} In our experiments this procedure converges quickly after only few iterations in all the cases (see Figure~\ref{fig7_diagnostic_lscale_comparison}, Table~\ref{tab1_diagnostic}, and Section~\ref{sec_cases}). That said, we cannot rule out that there may be cases where convergence is much slower (in terms of number of required diagnostic iterations) to a degree where HSGPs become impractical and an early stopping of the procedure would be advisable.
 Importantly though, this scenario should not be confused with the scaling of computational cost due to higher dimensional input spaces, an issue discussed in detail in Section~\ref{sec_cost_multi}. In a nutshell, according to our experiments, increasing the dimensionality of the input space does not increase the number of required diagnostic iterations to a relevant degree but only the computational cost per iteration.}
 
 \subsection{Performance analysis of the diagnostics}
