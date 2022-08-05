@@ -52,23 +52,24 @@
 
 \begin{document}
 
+\section*{\normalsize Reply to reviewer comments for \\ \Large`Practical Hilbert space approximate Bayesian Gaussian processes \\ for probabilistic programming'}
 
 We would like to thank the reviewers for their thorough comments and valuable feedback, which has helped us a lot in improving the paper. First, the updates to the manuscript that come from the authors' own initiative are outlined. Then, all reviewers' comments are addressed in a point-by-point manner, with separate replies to each reviewer. 
 Throughout, comments of the reviewers are hightlighted in bold.
 
-\noindent \hdashrule{12.5cm}{0.2pt}{2mm 1pt}
+\noindent \hdashrule{\textwidth}{0.2pt}{2mm 1pt}
 
 \subsection*{Authors' own updates}
 
 \begin{itemize}
 
-\item We have updated the appearance of Figures 1, 2, 3, 4, and 5 (old numbering) in order to make them more compact and thus the overall appearance of the paper more pleasing. The new numbering corresponding to those figures is now Fig. 1, 2, 3, and 4.
+\item We have updated the appearance of Figures~1, 2, 3, 4, and 5 (old numbering) in order to make them more compact and thus the overall appearance of the paper more pleasing. The new numbering corresponding to those figures is now Fig.~1, 2, 3, and 4.
 
 \item We have revised the entire manuscript making several minor edits, such as rewriting a few sentences and adding minor additional information.
 
 \end{itemize}
 
-\noindent \hdashrule{12.5cm}{0.2pt}{2mm 1pt}
+\noindent \hdashrule{\textwidth}{0.2pt}{2mm 1pt}
 
 \subsection*{Reviewer \#1}
 
@@ -102,7 +103,7 @@ Thank you again for your valuable comments and suggestions.
 
 \textbf{The new Figure 6 is, for some reason, very blurry. The same holds for the small images in Table 1 (btw, I like this presentation style where the numbers are put next to the figures in a clear manner) and some other figures as well. Maybe check all of them for resolution/vectorization.}
 
-Figure 6 may look a bit fuzzy, but it is actually a visual effect because the curves were constructed for discrete values of the number of basis functions $m$ (Y-axis), which makes them look like stair-shaped curves when plotted, and its appearance can be confused with a blurred image. We think the resolution of the figure itself is sufficient. We have increased the size of the figures in Table 1 and have checked and updated the other figures as we saw fit.
+Figure 6 may look a bit fuzzy, but it is actually a visual effect because the curves were constructed for discrete values of the number of basis functions $m$ ($y$-axis), which makes them look like stair-shaped curves when plotted, and its appearance can be confused with a blurred image. We think the resolution of the figure itself is sufficient. We have increased the size of the figures in Table 1 and have checked and updated the other figures as we saw fit.
 
 %The authors think that the rest of the figures look good in their current form.
 
@@ -111,7 +112,7 @@ Figure 6 may look a bit fuzzy, but it is actually a visual effect because the cu
 
 \textbf{The algorithms in Section 4.5.1 do not have clear stopping conditions for failure cases.  For problematic cases (e.g. clearly too high dimensionality) the result would be a loop of  extremely many iterations, right? In Section 4.6 you explain how a few iterations were enough in your example cases, but maybe you could already in 4.5.1 give some suggestion on when the user should give up, with something like "in case you do not find a satisfactory solution in N iterations, you might want to reconsider using HSGP or perhaps need to change X or Y".}
 
-Based on the evidence that we have at this point, we can unfortunately not give evidence-based suggestions as to when to stop pre-convergence and try something else because we have seen only very few iterations to be required in all the investigated cases. With regard to high-dimensional cases, the main problem would not be more iterations (as far as we have seen) but the computational cost of each iteration. More concretely, as we discuss in detail in the paper, the more input dimensions ($D$) we have, the number of required multivariate basis functions increases ($m^*=nm^D$, with $n$=number of points and $m$=number of univariate basis functions), which affects the HMC sampling of a model fit (per iteration), but not (in a relevant manner) the number of iterations required to complete the diagnostic procedure. We have now clarified these points at the end of Section 4.5.1.
+Based on the evidence that we have at this point, we can unfortunately not give evidence-based suggestions as to when to stop pre-convergence and try something else because we have seen only very few iterations to be required in all the investigated cases. With regard to high-dimensional cases, the main problem would not be more iterations (as far as we have seen) but the computational cost of each iteration. More concretely, as we discuss in detail in the paper, the more input dimensions ($D$) we have, the number of required multivariate basis functions increases ($m^*=nm^D$, with $n$ = number of points and $m$ = number of univariate basis functions), which affects the HMC sampling of a model fit (per iteration), but not (in a relevant manner) the number of iterations required to complete the diagnostic procedure. We have now clarified these points at the end of Section~4.5.1.
 
 %The limitation of the approach that can cause too long computation time does not come from the iterative diagnostic procedure, but from the computational cost of the HMC sampling method to fit the HSGP model at each diagnostic iteration, that is, the more input dimensions ($D$) the more multivariate basis functions ($m^*=nm^D$, with $n$=number of points and $m$=number of univariate basis functions), which affects the HMC sampling of a model fit, but not the number of iterations required to complete the diagnostic procedure.
 
@@ -138,7 +139,7 @@ We apologize for not making a stronger case in terms of performed (and not perfo
 
 In this paper, we have focussed on the empirical accuracy of the HSGP approximation of exact GPs as you are aware. Including the spline in one of the case studies was to show that excessively applied methods that are similar in some ways (here: reduced-rank thin-plate splines, a method whose corresponding papers have been cited thousands of times already), does not perform better out of the box than our HSGPs. But we understand and agree that including this particular spline here in this particular case study is not a strong case in terms of comparison with other methods. Accordingly, we decided to remove it to not invoke a false impression of our focus or claims. 
 
-We are not sure whether we can convince you of the sensibility and sufficiency of the focus of our paper that we have chosen. But what we can say is that based on the informal feedback from the community we have recieved so far, the other reviewers' and also the editor's comments, as well as over 20 citation of the corresponding preprint already, a lot of people see value in our work and its existing focus. There is certainly a lot of value in comparing HSGPs with competing methods other than exact GPs, but we do not see a way to make this part of the current paper, not only in terms of paper space, but also in terms of time, personnel, and monetary resources we currently have available to work on this topic.
+We are not sure whether we can convince you of the sensibility and sufficiency of the focus of our paper that we have chosen. But what we can say is that based on the informal feedback from the community we have received so far, the other reviewers' and also the editor's comments, as well as over 20 citation of the corresponding preprint already, a lot of people see value in our work and its existing focus. There is certainly a lot of value in comparing HSGPs with competing methods other than exact GPs, but we do not see a way to make this part of the current paper, not only in terms of paper space, but also in terms of time, personnel, and monetary resources we currently have available to work on this topic.
 
 
 
@@ -149,11 +150,11 @@ We are not sure whether we can convince you of the sensibility and sufficiency o
 
 \textbf{a major item of new content is "A diagnostic procedure based on iterative steps to fit and diagnose the approximation has been proposed (Section 4.5.1 and Section 4.6)". however, the very first step A1 in section 4.5.1 looks odd. the choice of $\ell_1$ surely depends on the scale of the input data. if the data scale is large, won't the method fail ? it could be that i misunderstood this, e.g. that there is some preprocessing step required, but given that there is a confusing collision of notation with the $\ell_1$ of line 50, i expect other readers to interpret it as i did (or worse, to assume they are referring to the $\ell_1$ of line 50).}
 
-We apologize for creating confusion with our notation here. {\color{blue}The diagnostic Figure 5 and equations (19-24) work with a normalized lengthscale, i.e., a lengthscale $\ell$ normalized by the zero-mean, symmetric interval $S$ which contains the inpus values $x_i$ ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. In concrete in step A.1 in Section 4.5.1 we recommend values for a first guess of the lengthscale based on the normalized lengthscale. We have now clarified the role and use of the normalized lengthscale relative to $S$ throughout the paper.}
+We apologize for creating confusion with our notation here. {\color{blue}The diagnostic Figure~5 and equations (19--24) work with a normalized lengthscale, i.e., a lengthscale $\ell$ normalized by the zero-mean, symmetric interval $S$ which contains the inpus values $x_i$ ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. In concrete in step A.1 in Section 4.5.1 we recommend values for a first guess of the lengthscale based on the normalized lengthscale. We have now clarified the role and use of the normalized lengthscale relative to $S$ throughout the paper.}
 
 %We work with a normalized lengthscale, i.e., a lengthscale $\ell$ relative to the half-range ($S$) of the input domain ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. We have now clarified the notation by using different symbols for lengthscale and normalized lengthscale throughout the paper. 
 
-Thank you for also your comment about the $\ell_i$ notation in Section 4.5.1, where $i$ is the subscript for the diagnostic iteration, conflicting with the $\ell_i$ notation used in the article where $i$ is the subscript for dimensions. Therefore, we have changed the notation in Section 4.5.1 from $\ell_i$ to $\ell^{(k)}$ to clearly differentiate it from the notation in the rest of the article where subscripts refer to dimensions.
+Thank you for also your comment about the $\ell_i$ notation in Section~4.5.1, where $i$ is the subscript for the diagnostic iteration, conflicting with the $\ell_i$ notation used in the article where $i$ is the subscript for dimensions. Therefore, we have changed the notation in Section~4.5.1 from $\ell_i$ to $\ell^{(k)}$ to clearly differentiate it from the notation in the rest of the article where subscripts refer to dimensions.
 
 
 %\noindent \hdashrule{12.5cm}{0.2pt}{2mm 1pt}
