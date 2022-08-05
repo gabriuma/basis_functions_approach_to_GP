@@ -424,7 +424,7 @@ The specific number of basis functions $m$ needed depends on the degree of non-l
 
 In this work, we choose $L$ such that the domain $\Omega = \left[-L, L\right]$ contains all the inputs points $x_i$
 \st{. Without loss of generality, we can assume all data points are contained in a symmetric interval around zero.}
-{\color{blue}, and the set of input points $\{x_i\}_{i=1}^n$ has some kind of centering around zero.}
+{\color{blue}, and the set of input points $\{x_i\}_{i=1}^n$ is centered around zero.}
 Let 
 %
 \begin{align}\label{eq_boundary_S}
@@ -604,7 +604,7 @@ Based on the above proposed diagnostics, we obtain a simple, iterative step-by-s
 
 \item[A0.] {\color{blue}Compute the boundary $S$ of the input values by using eq.~\eqref{eq_boundary_S}}.
 
-\item[A1.] Set the iteration index to $k=1$. Make an initial guess on the length-scale $\ell^{(k)}$. If there is no useful information available, we recommend to start with a large length-scale, {\color{blue}such as the normalized length-scale being about $\frac{\ell^{(k)}}{S} \in [0.5, 1]$}. 
+\item[A1.] Set the iteration index to $k=1$. Make an initial guess on the length-scale $\ell^{(k)}$. If there is no useful information available, we recommend to start with a large length-scale, {\color{blue}such as the normalized length-scale being in the interval $\frac{\ell^{(k)}}{S} \in [0.5, 1]$}. 
 %({\color{blue}Remember that $\ell$ here refers to the normalized length-scale $\frac{\ell}{S}$.})
 
 \item[A2.] Obtain the minimum valid boundary factor $c^{(k)}$ determined by $\ell=\ell^{(k)}$ for the given kernel and boundary $S$ as per Section~\ref{sec_num_equations}.
@@ -922,7 +922,7 @@ The Stan model code for the HSGP model and R-code to reproduce this case study c
 
 In this case study, we apply the diagnostic tool to fit and diagnose two different data sets, one data set simulated from a bivariate ($D=2$) function and another data set simulated from a $3$-dimensinal ($D=3$) function. Furthermore, in Section~\ref{sec_computation_nD} we present results of the computational time required to fit the HSGP model in $2D$, $3D$ and $4D$ input spaces, with different sized data sets and as a function of the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ used in the approximation.
 
-$2D$ and $3D$ synthetic functions were drawn from $2D$ and $3D$ GP priors, with input values $\bm{x}_i \in [-1,1]^2$ and $\bm{x}_i \in [-1,1]^3$, respectively, {\color{blue}and then it follows a input space boundary $S=1$ for both the $2D$ and $3D$ functions}. Squared exponential covariance functions with marginal variance $\alpha=1$ and length-scales $\ell_1=0.10$, $\ell_2=0.3$, and $\ell_3=0.4$, where $\ell_i$ is the length scale for the $i$'th dimension, were used in the GP priors. $200$ and $1000$ data points were sampled from the $2D$ and $3D$ drawn functions, respectively, and independent Gaussian noise with standard deviation $\sigma=0.2$ was added to the data points to form the final noisy sets of observations.
+$2D$ and $3D$ synthetic functions were drawn from $2D$ and $3D$ GP priors, with input values $\bm{x}_i \in [-1,1]^2$ and $\bm{x}_i \in [-1,1]^3$, respectively, {\color{blue}and the input space boundary is $S=1$ for both the $2D$ and $3D$ functions}. Squared exponential covariance functions with marginal variance $\alpha=1$ and length-scales $\ell_1=0.10$, $\ell_2=0.3$, and $\ell_3=0.4$, where $\ell_i$ is the length scale for the $i$'th dimension, were used in the GP priors. $200$ and $1000$ data points were sampled from the $2D$ and $3D$ drawn functions, respectively, and independent Gaussian noise with standard deviation $\sigma=0.2$ was added to the data points to form the final noisy sets of observations.
 
 In the HSGP models with $2$ and $3$ input dimensions, the underlying functions $f(\bm{x})$ are approximated as in eq. (13)% (\ref{eq_approxf_multi})
 , with the $D$-dimensional squared exponential spectral densities $S$ as in eq. \eqref{eq_specdens_inf}, and the $D$-vectors of eigenvalues $\bm{\lambda}_j$ and the multivariate eigenfunctions $\phi_j$ as in equations \eqref{eq_eigenfunction_multi} and \eqref{eq_eigenvalue_multi}, respectively.
