@@ -1040,10 +1040,10 @@ We do not have a full observation model, as we do not have a model for the censo
 %
 \begin{align*}
 p(y_i > t_i \mid f) &= \int_{t_i}^{\infty} \LogNormal(y_i \mid f(\bm{x}_i),\sigma^2) \,\mathrm{d}y_i \\
-&=  1 - \Phi\! \left( \frac{\log(y_i)-f(\bm{x}_i)}{\sigma} \right),
+&=  1 - \Phi\! \left( \frac{\log(t_i)-f(\bm{x}_i)}{\sigma} \right),
 \end{align*}
 %
-where $y_i>t_i$ denotes the unobserved survival time.
+where $y_i>t_i$ denotes the unobserved survival time and $\Phi$ is the standard normal cumulative distribution function.
 The latent function $f(\cdot)$ is modeled as a Gaussian process, centered around a linear model of the predictors $\bm{x}$, and with a squared exponential covariance function $k$. Due to the predictor \textit{sex} ($x_2$) being a categorical variable (`1' for female and `2' for male), we apply indicator variable coding for the GP functions, in a similar way such coding is applied in linear models \citep{Gelman+Hill+Vehtari:2020:ROS}. The latent function $f(\bm{x})$, besides of being centered around a linear model, is composed of a general mean GP function, $h(\bm{x})$, defined for all observations, plus a second GP function, $g(\bm{x})$, that only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise:
 %
 \begin{align*}
