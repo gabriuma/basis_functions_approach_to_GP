@@ -75,38 +75,11 @@ Throughout, comments of the reviewers are hightlighted in bold.
 
 Thank you again for your valuable comments and suggestions.
 
-%We are grateful for your valuable comments and suggestions, which have been very helpful to improve the paper, and more generally for your time you have dedicated to reviewing it. We would also like to thank you for the additional feedback on some of our responses.
-
-%\subsubsection*{R\#1 General comment and feedback for the authors}
-%
-%\textbf{Overall, the paper has clearly improved from the original submission and the revision addresses all of my major revision requests adequately. I still think the paper is a bit borderline in terms of the technical contribution itself, but the revised version reads better, is more clear on the limitations, clarifies a few open issues, and the experimental section has been improved. In particular, the experimental section is now very extensive and provides rich information about the practical use and limitations of the approach. The paper certainly has potential for impact as a practical guide and tools for using HSGP and now is clearly more suitable for publication. I do not have any major comments for the paper and would be happy to see it accepted in current form.}
-%
-%\textbf{Quick feedback on (some of) the author responses:}
-%
-%\textbf{1. Apologies for skipping the statement on brms integration. I agree it is valuable as it makes the contribution more accessible for a broad audience that might not be interested in the technical details.}
-%
-%\textbf{3. This resolves by remark well. Good addition that will help practitioners and can be implemented directly for the software as default criteria.}
-%
-%\textbf{4. I appreciate the effort of extending the treatment. I still have a bit of an issue of how this needs to be done separately for each possible kernel and the implications that has on general probabilistic programming environments where part of the value of the tool is in providing extreme flexibility, but I do agree that for practical uses e.g. with brms the set of kernels you now provided is useful and likely to cover most user needs.}
-%
-%\textbf{5. Fair enough; I certainly agree some (if not many) practitioners would fail to do this properly.}
-%
-%\textbf{6-8. I think the experimental section indeed reads better now and is overall very extensive and detailed.}
-%
-%\textbf{9. By mostly negative results I meant that the value of the approach is not obvious and hence a practitioner would get the impression that investigating the value of HSGP for higher-dimensional cases would not be worthwhile since the gain would likely be small compared to the effort. Apologies for the slightly confusing statement, since I agree you do show some advantage on the Leukemia data. The new experiments on simulated data make this aspect more clear.}
-%
-%\textbf{Finally, a quick comment related to R\#2 Comment \#3: I agree here with the authors that empirical comparison against alternative inference techniques is not necessary and would not really make the paper stronger either.}
-
-
-
 \subsubsection*{R\#1 Minor comment \#1}
 
 \textbf{The new Figure 6 is, for some reason, very blurry. The same holds for the small images in Table 1 (btw, I like this presentation style where the numbers are put next to the figures in a clear manner) and some other figures as well. Maybe check all of them for resolution/vectorization.}
 
 Figure 6 may look a bit fuzzy, but it is actually a visual effect because the curves were constructed for discrete values of the number of basis functions $m$ ($y$-axis), which makes them look like stair-shaped curves when plotted, and its appearance can be confused with a blurred image. We think the resolution of the figure itself is sufficient. We have increased the size of the figures in Table 1 and have checked and updated the other figures as we saw fit.
-
-%The authors think that the rest of the figures look good in their current form.
-
 
 \subsubsection*{R\#1 Minor comment \#2}
 
@@ -122,14 +95,9 @@ Based on the evidence that we have at this point, we can unfortunately not give 
 
 %Therefore, the user should be concerned about the computational cost of fitting a model in a single iteration of the diagnostic procedure, but not about the number of iterations required to complete the diagnostic procedure, which should be few in any case. The computational cost of fitting a single model ultimately depends on the wigglyness of the function and the number of dimensions. We have provided extensive information throughout the paper on the computational requirements for model fitting as a function of wigglyness and number of dimensions, information that is also summarized in Figure 15.
 
-%Although that has been said extensively throughout the paper, we have added a remark in Section 4.8.1 and a note at the end of Section 4.5.1, as suggested by the reviewer, which we also think can help to make it more clear.
-
 \subsection*{Reviewer \#2}
 
-%We are grateful for your valuable comments and suggestions, which have been very helpful to improve the paper, and more generally for your time you have dedicated to reviewing it.
-
 Thank you again for your valuable comments and suggestions.
-
 
 \subsubsection*{R\#2 Comment \#1}
 
@@ -141,25 +109,13 @@ In this paper, we have focussed on the empirical accuracy of the HSGP approximat
 
 We are not sure whether we can convince you of the sensibility and sufficiency of the focus of our paper that we have chosen. But what we can say is that based on the informal feedback from the community we have received so far, the other reviewers' and also the editor's comments, as well as over 20 citation of the corresponding preprint already, a lot of people see value in our work and its existing focus. There is certainly a lot of value in comparing HSGPs with competing methods other than exact GPs, but we do not see a way to make this part of the current paper, not only in terms of paper space, but also in terms of time, personnel, and monetary resources we currently have available to work on this topic.
 
-
-
-%We included the solution of a spline model (a model related to the GP/HSGP model) only in case study I, with no other intention than to show, beside the GP and HSGP solutions, the solution of a spline model, which has similar (of the same order) computational cost and limitations in multidimensional cases. It can be seen that a basic formulation of a spline model causes significantly worse extrapolation accuracy.
-
-
 \subsubsection*{R\#2 Comment \#2}
 
 \textbf{a major item of new content is "A diagnostic procedure based on iterative steps to fit and diagnose the approximation has been proposed (Section 4.5.1 and Section 4.6)". however, the very first step A1 in section 4.5.1 looks odd. the choice of $\ell_1$ surely depends on the scale of the input data. if the data scale is large, won't the method fail ? it could be that i misunderstood this, e.g. that there is some preprocessing step required, but given that there is a confusing collision of notation with the $\ell_1$ of line 50, i expect other readers to interpret it as i did (or worse, to assume they are referring to the $\ell_1$ of line 50).}
 
-We apologize for creating confusion with our notation here. {\color{blue}The diagnostic Figure~5 and equations (19--24) work with a normalized lengthscale, i.e., a lengthscale $\ell$ normalized by the zero-mean, symmetric interval $S$ which contains the inpus values $x_i$ ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. In concrete in step A.1 in Section 4.5.1 we recommend values for a first guess of the lengthscale based on the normalized lengthscale. We have now clarified the role and use of the normalized lengthscale relative to $S$ throughout the paper.}
-
-%We work with a normalized lengthscale, i.e., a lengthscale $\ell$ relative to the half-range ($S$) of the input domain ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. We have now clarified the notation by using different symbols for lengthscale and normalized lengthscale throughout the paper. 
+We apologize for creating confusion with our notation here. The diagnostic Figure~5 and equations (19--24) work with a normalized lengthscale, i.e., a lengthscale $\ell$ normalized by the zero-mean, symmetric interval $S$ which contains the inpus values $x_i$ ($\ell/S$), so the conclusions can be easily referred to any specific scale of the input domain. In concrete in step A.1 in Section 4.5.1 we recommend values for a first guess of the lengthscale based on the normalized lengthscale. We have now clarified the role and use of the normalized lengthscale relative to $S$ throughout the paper.
 
 Thank you for also your comment about the $\ell_i$ notation in Section~4.5.1, where $i$ is the subscript for the diagnostic iteration, conflicting with the $\ell_i$ notation used in the article where $i$ is the subscript for dimensions. Therefore, we have changed the notation in Section~4.5.1 from $\ell_i$ to $\ell^{(k)}$ to clearly differentiate it from the notation in the rest of the article where subscripts refer to dimensions.
-
-
-%\noindent \hdashrule{12.5cm}{0.2pt}{2mm 1pt}
-
-%\nobibliography{references}
 
 
 \end{document}
