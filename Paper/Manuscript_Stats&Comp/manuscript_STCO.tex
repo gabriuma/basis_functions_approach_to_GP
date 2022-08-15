@@ -115,7 +115,7 @@
 \institute{Gabriel Riutort-Mayol \at
               Foundation for the Promotion of Health and Biomedical Research of Valencia Region (FISABIO), Spain\\
               \emph{Corresponding Author} \\
-              \email{gabriuma@gmail.com; riutort\_gab@gva.es}       %  \\
+              \email{riutort\_gab@gva.es; gabriuma@gmail.com}       %  \\
 %             \emph{Present address:} of F. Author  %  if needed
            \and
            Paul-Christian Bürkner \at
@@ -215,7 +215,7 @@ k_{\frac{3}{2}}(r)&=\alpha\left(1+\frac{\sqrt{3}r}{\ell}\right) \exp\! \left( -\
 k_{\frac{5}{2}}(r)&=\alpha\left(1+\frac{\sqrt{5}r}{\ell} + \frac{5r^2}{3\ell^2}\right) \exp\! \left( -\frac{\sqrt{5}r}{\ell}\right). 
 \end{align*}
 %
-The former is commonly known as the squared exponential or exponentiated quadratic covariance function. As an example, assuming the Euclidean distance between observations, $r=|\bm{x}-\bm{x}'|_{L2}=\sqrt{\sum_{i=1}^{D}(x_i-x_i')^2}$, the kernel $K_{\nu}$ written above takes the form
+The former is commonly known as the squared exponential or exponentiated quadratic covariance function. As an example, assuming the Euclidean distance between observations, $r=|\bm{x}-\bm{x}'|_{L2}=\sqrt{\sum_{i=1}^{D}(x_i-x_i')^2}$, the kernel $k_{\infty}$ written above takes the form
 %
 \begin{align*}
 k_{\infty}(r) = \alpha & \exp \left( -\frac{1}{2} \sum_{i=1}^{D}\frac{(x_i-x_i')^2}{\ell_i^2}\right).
@@ -231,25 +231,25 @@ Notice that the previous expressions $k_{\infty}(r)$ has been easily generalized
 Stationary covariance functions can be represented in terms of their spectral densities \citep[see, e.g.,][]{rasmussen2006gaussian}. In this sense, the covariance function of a stationary process can be represented as the Fourier transform of a positive finite measure \citep[\textit{Bochner's theorem}; see, e.g., ][]{akhiezer1993theory}. If this measure has a density, it is known as the spectral density of the covariance function, and the covariance function and the spectral density are Fourier duals, known as the \textit{Wiener-Khintchine theorem} \citep{rasmussen2006gaussian}. The spectral density functions associated with the Mat\'ern class of covariance functions are given by
 %
 \begin{align*}
-S_{\nu}(\bm{\omega})&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\, \ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+4\pi^2\bm{\omega}^\intercal \bm{\omega} \right)^{-(\nu+D/2)}
+s_{\nu}(\bm{\omega})&= \alpha \, \frac{2^D\pi^{D/2}\Gamma(\nu+D/2)(2\nu)^{\nu}}{\Gamma(\nu)\, \ell^{2\nu}}\left(\frac{2\nu}{\ell^2}+4\pi^2\bm{\omega}^\intercal \bm{\omega} \right)^{-(\nu+D/2)}
 \end{align*}
 %
 in $D$ dimensions, where vector $\bm{\omega}\in {\rm I\!R^D}$ is in the frequency domain, and $\ell$ and $\alpha$ are the length-scale and magnitude (marginal variance), respectively, of the kernel. The particular cases, where $\nu=\infty$, $\nu=1/2$, $\nu=3/2$ and $\nu=5/2$, take the form
 %
 \begin{align}
-S_{\infty}(\bm{\omega})&= \alpha\,(\sqrt{2\pi})^D  \ell^D \exp(-\frac{1}{2}\ell^2 \bm{\omega}^\intercal \bm{\omega}), \label{eq_specdens_inf}  \\
-%S_{\frac{1}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+1}{2})}{\sqrt{\pi}\ell}\left(\frac{1}{\ell^2}+\bm{\omega}^\intercal \bm{\omega} \right)^{-\frac{D+1}{2}} \label{eq_specdens_12},     \\
-S_{\frac{3}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2}){3}^{3/2}}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\bm{\omega}^\intercal \bm{\omega} \right)^{-\frac{D+3}{2}} \label{eq_specdens_32},     \\
-S_{\frac{5}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+5}{2}){5}^{5/2}}{\frac{3}{4}\sqrt{\pi}\ell^5}\left(\frac{5}{\ell^2}+\bm{\omega}^\intercal \bm{\omega} \right)^{-\frac{D+5}{2}}. \label{eq_specdens_52}   
+s_{\infty}(\bm{\omega})&= \alpha\,(\sqrt{2\pi})^D  \ell^D \exp(-\frac{1}{2}\ell^2 \bm{\omega}^\intercal \bm{\omega}), \label{eq_specdens_inf}  \\
+%s_{\frac{1}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+1}{2})}{\sqrt{\pi}\ell}\left(\frac{1}{\ell^2}+\bm{\omega}^\intercal \bm{\omega} \right)^{-\frac{D+1}{2}} \label{eq_specdens_12},     \\
+s_{\frac{3}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+3}{2}){3}^{3/2}}{\frac{1}{2}\sqrt{\pi}\ell^3}\left(\frac{3}{\ell^2}+\bm{\omega}^\intercal \bm{\omega} \right)^{-\frac{D+3}{2}} \label{eq_specdens_32},     \\
+s_{\frac{5}{2}}(\bm{\omega})&= \alpha\,\frac{2^D\pi^{D/2}\Gamma(\frac{D+5}{2}){5}^{5/2}}{\frac{3}{4}\sqrt{\pi}\ell^5}\left(\frac{5}{\ell^2}+\bm{\omega}^\intercal \bm{\omega} \right)^{-\frac{D+5}{2}}. \label{eq_specdens_52}   
 \end{align}
 %
 For instance, with input dimensionality $D=3$ and $\bm{\omega}=(\omega_1,\omega_2,\omega_3)^\intercal$, the spectral densities written above take the form
 %
 \begin{align*}
-S_{\infty}(\bm{\omega})&= \alpha \, (2\pi)^{3/2}  \prod_{i=1}^{3} \ell_i  \exp\!\left(-\frac{1}{2} \sum_{i=1}^{3} \ell_i^2 \omega_i^2 \right),   \\
-%S_{\frac{1}{2}}(\bm{\omega})&= \alpha \, 8\,\pi \prod_{i=1}^{3}\ell_i\left(1+\sum_{i=1}^{3}\ell_i^2 \omega_i^2 \right)^{-2},    \\
-S_{\frac{3}{2}}(\bm{\omega})&= \alpha \, 32\,\pi {3}^{3/2}\prod_{i=1}^{3}\ell_i\left(3+\sum_{i=1}^{3}\ell_i^2 \omega_i^2 \right)^{-3},   \\
-S_{\frac{5}{2}}(\bm{\omega})&= \alpha \, \frac{64}{3}\,\pi {5}^{5/2}\prod_{i=1}^{3}\ell_i\left(5+\sum_{i=1}^{3}\ell_i^2 \omega_i^2 \right)^{-4}.
+s_{\infty}(\bm{\omega})&= \alpha \, (2\pi)^{3/2}  \prod_{i=1}^{3} \ell_i  \exp\!\left(-\frac{1}{2} \sum_{i=1}^{3} \ell_i^2 \omega_i^2 \right),   \\
+%s_{\frac{1}{2}}(\bm{\omega})&= \alpha \, 8\,\pi \prod_{i=1}^{3}\ell_i\left(1+\sum_{i=1}^{3}\ell_i^2 \omega_i^2 \right)^{-2},    \\
+s_{\frac{3}{2}}(\bm{\omega})&= \alpha \, 32\,\pi {3}^{3/2}\prod_{i=1}^{3}\ell_i\left(3+\sum_{i=1}^{3}\ell_i^2 \omega_i^2 \right)^{-3},   \\
+s_{\frac{5}{2}}(\bm{\omega})&= \alpha \, \frac{64}{3}\,\pi {5}^{5/2}\prod_{i=1}^{3}\ell_i\left(5+\sum_{i=1}^{3}\ell_i^2 \omega_i^2 \right)^{-4}.
 \end{align*}
 %
 where individual length-scales $\ell_i$ for each frequency dimension $\omega_i$ have been used.
@@ -265,10 +265,10 @@ We begin by focusing on the case of a unidimensional input space (i.e., on GPs w
 Within $\Omega$, we can write any stationary covariance function with input values $x,x' \in \Omega$ as
 %
 \begin{equation}\label{eq_approxcov}
-k(x,x') = \sum_{j=1}^\infty S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
+k(x,x') = \sum_{j=1}^\infty s_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x'),
 \end{equation} 
 %
-where $S_{\theta}$ is the spectral density of the stationary covariance function $k$ (see Section \ref{ch4_sec_cov}) and $\theta$ is the set of hyperparameters of $k$ \citep{rasmussen2006gaussian}. The terms $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the sets of eigenvalues and eigenvectors, respectively, of the Laplacian operator in the given domain $\Omega$. Namely, they satisfy the following eigenvalue problem in $\Omega$ when applying the Dirichlet boundary condition (other boundary conditions could be used as well)
+where $s_{\theta}$ is the spectral density of the stationary covariance function $k$ (see Section \ref{ch4_sec_cov}) and $\theta$ is the set of hyperparameters of $k$ \citep{rasmussen2006gaussian}. The terms $\{\lambda_j\}_{j=1}^{\infty}$ and $\{\phi_j(x)\}_{j=1}^{\infty}$ are the sets of eigenvalues and eigenvectors, respectively, of the Laplacian operator in the given domain $\Omega$. Namely, they satisfy the following eigenvalue problem in $\Omega$ when applying the Dirichlet boundary condition (other boundary conditions could be used as well)
 %
 \begin{align}\label{eq_eigenproblem}
 \begin{split}
@@ -287,16 +287,16 @@ The eigenvalues $\lambda_j>0$ are real and positive because the Laplacian is a p
 If we truncate the sum in eq.~\eqref{eq_approxcov} to the first $m$ terms, the approximate covariance function becomes
 %
 \begin{equation}
-k(x,x') \approx \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x') = \bm{\phi}(x)^\intercal \Delta \bm{\phi}(x'), \nonumber
+k(x,x') \approx \sum_{j=1}^m s_{\theta}(\sqrt{\lambda_j}) \phi_j(x) \phi_j(x') = \bm{\phi}(x)^\intercal \Delta \bm{\phi}(x'), \nonumber
 \end{equation}
 %
-where $\bm{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{m\times m}$ is a diagonal matrix of the spectral density evaluated at the square root of the eigenvalues, that is, $S_{\theta}(\sqrt{\lambda_j})$,
+where $\bm{\phi}(x)=\{\phi_j(x)\}_{j=1}^{m} \in {\rm I\!R}^{m}$ is the column vector of basis functions, and $\Delta  \in {\rm I\!R}^{m\times m}$ is a diagonal matrix of the spectral density evaluated at the square root of the eigenvalues, that is, $s_{\theta}(\sqrt{\lambda_j})$,
 %
 \begin{align}
 \Delta =  \begin{bmatrix}
-    S_{\theta}(\sqrt{\lambda_1}) & & \\
+    s_{\theta}(\sqrt{\lambda_1}) & & \\
     & \ddots & \nonumber \\
-    & & S_{\theta}(\sqrt{\lambda_m}) \\
+    & & s_{\theta}(\sqrt{\lambda_m}) \\
   \end{bmatrix}.
 \end{align}
 
@@ -323,10 +323,10 @@ As a result, the model for $f$ can be written as
 This equivalently leads to a linear representation of $f$ via
 %
 \begin{equation}\label{eq_approxf}
-f(x) \approx \sum_{j=1}^m \left( S_{\theta}(\sqrt{\lambda_j})\right)^{\frac{1}{2}} \phi_j(x) \beta_j,
+f(x) \approx \sum_{j=1}^m \left( s_{\theta}(\sqrt{\lambda_j})\right)^{\frac{1}{2}} \phi_j(x) \beta_j,
 \end{equation}
 %
-where $\beta_j \sim \Normal(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the hyperparameters of the covariance function $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $S_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $S_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, eq.~\eqref{eq_approxf} can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of evaluating the log posterior density of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
+where $\beta_j \sim \Normal(0,1)$. Thus, the function $f$ is approximated with a finite basis function expansion (using the eigenfunctions $\phi_j$ of the Laplace operator), scaled by the square root of spectral density values. A key property of this approximation is that the eigenfunctions $\phi_j$ do not depend on the hyperparameters of the covariance function $\theta$. Instead, the only dependence of the model on $\theta$ is through the spectral density $s_{\theta}$. The eigenvalues $\lambda_j$ are monotonically increasing with $j$ and $s_{\theta}$ goes rapidly to zero for bounded covariance functions. Therefore, eq.~\eqref{eq_approxf} can be expected to be a good approximation for a finite number of $m$ terms in the series as long as the inputs values $x_i$ are not too close to the boundaries $-L$ and $L$ of $\Omega$. The computational cost of evaluating the log posterior density of univariate HSGPs scales as $O(nm + m)$, where $n$ is the number of observations and $m$ the number of basis functions.
 
 The parameterization in eq.~\eqref{eq_approxf} is naturally in the non-centered parameterization form with independent prior distribution on $\beta_j$, which can make the posterior inference easier \citep[see, e.g., ][]{Betancourt+Girolami:2019}. Furthermore, all dependencies on the covariance function and the hyperparameters is through the prior distribution of the regression weights $\beta_j$. The posterior distribution of the parameters $p(\bm{\beta}|\bm{y})$ is a distribution over a $m$-dimensional space, where $m$ is much smaller than the number of observations $n$. Therefore, the parameter space is greatly reduced and this makes inference faster, especially when sampling methods are used.
 
@@ -340,24 +340,6 @@ m^{\ast} = \prod_{d=1}^{D} m_d,
 \end{align}
 %
 where $m_d$ is the number of basis function for the dimension $d$. Let $\mathbb{S}\in {\rm I\!N}^{m^{\ast} \times D}$ be the matrix of all those $D$-tuples. For example, suppose we have $D=3$ dimensions and use $m_{1}=2$, $m_{2}=2$ and $m_{3}=3$ eigenfunctions and eigenvalues for the first, second and third dimension, respectively. Then, the number of multivariate eigenfunctions and eigenvalues is $m^{\ast} = m_{1} \cdot m_{2} \cdot m_{3} = 12$ and the matrix $\mathbb{S}\in {\rm I\!N}^{12 \times 3}$ is given by
-%
-%\begin{align}\small
-%\mathbb{S}=
-%\left[ {\begin{array}{ccc}
-%1 & 1 & 1 \nonumber \\
-%1 & 1 & 2 \\
-%1 & 1 & 3 \\
-%1 & 2 & 1 \\
-%1 & 2 & 2 \\
-%1 & 2 & 3 \\
-%2 & 1 & 1 \\
-%2 & 1 & 2 \\
-%2 & 1 & 3 \\
-%2 & 2 & 1 \\
-%2 & 2 & 2 \\
-%2 & 2 & 3 
-%\end{array} } \right].
-%\end{align} 
 %
 \begin{align}\small
 \mathbb{S}=
@@ -380,15 +362,15 @@ The approximate covariance function is then represented as
 %
 \begin{equation}\label{eq_approxcov_multi}
 k(\bm{x},\bm{x}') \approx \sum_{j=1}^{m^{\ast}} 
-S^{\ast}_{\theta}\left(\sqrt{\bm{\lambda}^{\ast}_j}\right)
+s^{\ast}_{\theta}\left(\sqrt{\bm{\lambda}^{\ast}_j}\right)
 \phi^{\ast}_j(\bm{x}) \phi^{\ast}_j(\bm{x}'),
 \end{equation}
 %
-where $S^{\ast}_{\theta}$ is the spectral density of the $D$-dimensional covariance function (see Section \ref{ch4_sec_cov}) as a function of $\sqrt{\bm{\lambda}^{\ast}_j}$ that denotes the element-wise square root of the vector $\bm{\lambda}^{\ast}_j$. We can now write the approximate series expansion of the multivariate function $f$ as
+where $s^{\ast}_{\theta}$ is the spectral density of the $D$-dimensional covariance function (see Section \ref{ch4_sec_cov}) as a function of $\sqrt{\bm{\lambda}^{\ast}_j}$ that denotes the element-wise square root of the vector $\bm{\lambda}^{\ast}_j$. We can now write the approximate series expansion of the multivariate function $f$ as
 %
 \begin{equation}\label{eq_approxf_multi}
 f(\bm{x}) \approx \sum_{j=1}^{m^{\ast}} 
-\left( S^{\ast}_{\theta} \left(\sqrt{\bm{\lambda}^{\ast}_j} \right)\right)^{\! \frac{1}{2}} \phi^{\ast}_j(\bm{x}) \beta_j, 
+\left( s^{\ast}_{\theta} \left(\sqrt{\bm{\lambda}^{\ast}_j} \right)\right)^{\! \frac{1}{2}} \phi^{\ast}_j(\bm{x}) \beta_j, 
 \end{equation}
 %
 where, again, $\beta_j \sim \Normal(0,1)$. The computational cost of evaluating the log posterior density of multivariate HSGPs scales as $O(n m^{\ast} + m^{\ast})$, where $n$ is the number of observations and $m^{\ast}$ is the number of multivariate basis functions. Although this still implies linear scaling in $n$, the approximation is more costly than in the univariate case, as $m^{\ast}$ is the product of the number of univariate basis functions over the input dimensions and grows exponentially with respect to the number of  dimensions.
@@ -408,13 +390,13 @@ Ultimately, these recommendations are based on the relationships among the numbe
 As explained in Section~\ref{sec_method}, the approximation of the covariance function is a series expansion of eigenfunctions and eigenvalues of the Laplace operator in a given domain $\Omega$, for instance in a one-dimensional input space $\Omega=[-L,L]\subset {\rm I\!R}$
 %
 \begin{equation*}
-k(\tau) = \sum_{j=1}^{\infty} S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0), 
+k(\tau) = \sum_{j=1}^{\infty} s_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0), 
 \end{equation*}
 %
 where $L$ describes the boundary condition, $j$ is the index for the eigenfunctions and eigenvalues, and $\tau=x-x'$ is the difference between two covariate values $x$ and $x'$ in $\Omega$. The eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ are given in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}) for the unidimensional case and in equations (\ref{eq_eigenvalue_multi}) and (\ref{eq_eigenfunction_multi}) for the multidimensional case. The number of basis functions can be truncated at some finite positive value $m$ such that the total variation difference between the exact and approximate covariance functions is less than a predefined threshold $\varepsilon > 0$:
 %
 \begin{equation}\label{eq_diff_covs}
- \int | k(\tau) - \sum_{j=1}^m S_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0)|  \,\mathrm{d}\tau  < \varepsilon.
+ \int | k(\tau) - \sum_{j=1}^m s_{\theta}(\sqrt{\lambda_j}) \phi_j(\tau) \phi_j(0)|  \,\mathrm{d}\tau  < \varepsilon.
 \end{equation}
 
 This inequality can be satisfied for arbritrary small $\epsilon$ provided that $L$ and $m$ are sufficiently large \cite[Theorem 1 and 4]{solin2018hilbert}. 
@@ -422,9 +404,7 @@ The specific number of basis functions $m$ needed depends on the degree of non-l
 
 \setstcolor{blue}
 
-In this work, we choose $L$ such that the domain $\Omega = \left[-L, L\right]$ contains all the inputs points $x_i$
-\st{. Without loss of generality, we can assume all data points are contained in a symmetric interval around zero.}
-{\color{blue}, and the set of input points $\{x_i\}_{i=1}^n$ is centered around zero.}
+In this work, we choose $L$ such that the domain $\Omega = \left[-L, L\right]$ contains all the inputs points $x_i$, and the set $\{x_i\}_{i=1}^n$ of input points is centered around zero.
 Let 
 %
 \begin{align}\label{eq_boundary_S}
@@ -437,19 +417,13 @@ then it follows that $x_i \in \left[-S, S\right]$ for all $i$. We now define $L$
 L=c \cdot S,
 \end{align} 
 %
-where $S > 0$ represents  
-%the half-range of the input space
-%{\color{blue}the boundary of the zero-mean minimum symmetric domain $\Psi=[-S,S]$ containing the input values $\bm{x}$}
-{\color{blue}the maximum absolute value of the input space}, 
-and $c \geq 1$ is the proportional extension factor. In the following, we will refer to $c$ as the boundary factor of the approximation. The boundary factor can also be regarded as the boundary $L$ normalized by 
-%the half-range $S$ of the input space.
-{\color{blue}the boundary $S$}. 
-{\color{blue}Notice that $\bm{x}$ need not be symmetric around zero, but need to be contained in $\left[-S, S\right]$} (although it is recommended that $\bm{x}$ fits tightly the interval $\left[-S, S\right]$ to optimize computation and the iterative diagnostic presented in Section~\ref{subsec_diagnostics}).
+where $S > 0$ represents the maximum absolute value of the input space, 
+and $c \geq 1$ is the proportional extension factor. In the following, we will refer to $c$ as the boundary factor of the approximation. The boundary factor can also be regarded as the boundary $L$ normalized by the boundary $S$. 
+Notice that $\bm{x}$ need not be symmetric around zero, but need to be contained in $\left[-S, S\right]$ (although it is recommended that $\bm{x}$ fits tightly the interval $\left[-S, S\right]$ to optimize computation and the iterative diagnostic presented in Section~\ref{subsec_diagnostics}).
 
 \begin{figure}
-%\centering
+\centering
 \includegraphics[width=0.485\textwidth, trim = 2mm 0mm 0mm 0mm, clip]{fig1_Post_J_L.png}
-\vspace{-1mm}
 \caption{Mean posterior predictive functions (top), posterior standard deviations (center), and covariance functions (bottom) of both the exact GP model (red line) and the HSGP model for 1) different number of basis functions $m$, with the boundary factor fixed to a large enough value (left column) and 2) different values of the boundary factor $c$, with a large enough fixed number of basis functions (right column).}
   \label{fig1_Post_J_L}
 \end{figure}
@@ -462,9 +436,7 @@ and $c \geq 1$ is the proportional extension factor. In the following, we will r
   \label{fig2_Post}
 \end{figure*}
 
-We start by illustrating how the number of basis functions $m$ and boundary factor $c$ influence the accuracy of the HSGP approximations individually. For this purpose, a set of noisy observations are drawn from an exact GP model with a squared exponential covariance function of length-scale $\ell=0.3$ and marginal variance $\alpha=1$, using input values 
-%from the zero-mean input domain with half-range $S=1$
-{\color{blue}within the interval $[-1,1]$ that leads to a boundary $S$ of $S=1$ as per eq.~\eqref{eq_boundary_S}. In this case the domain of input points $x_i$ matches exactly the interval $\left[-S, S\right]$}. 
+We start by illustrating how the number of basis functions $m$ and boundary factor $c$ influence the accuracy of the HSGP approximations individually. For this purpose, a set of noisy observations are drawn from an exact GP model with a squared exponential covariance function of length-scale $\ell=0.3$ and marginal variance $\alpha=1$, using input values within the interval $[-1,1]$ that leads to a boundary $S$ of $S=1$ as per eq.~\eqref{eq_boundary_S}. In this case the domain of input points $x_i$ matches exactly the interval $\left[-S, S\right]$. 
 Several HSGP models with varying $m$ and $c$ are fitted to this data. In this example, the length-scale and marginal variance parameters used in the HSGPs are fixed to the true values of the data-generating model. 
 Figures~\ref{fig1_Post_J_L} and \ref{fig1_Post_J_L} illustrate the individual effects of $m$ and $c$, respectively, on the posterior predictive mean and standard deviation of the estimated function as well as on the covariance function itself. For a sufficiently large fixed value of $c$, Figure \ref{fig1_Post_J_L} shows clearly how $m$ affects the accuracy on the approximation for both the posterior mean or uncertainty. It is seen that if the number of basis functions $m$ is too small, the estimated function tend to be overly smooth because the necessary high frequency components are missing. In general, the higher the degree of wigglyness of the function to be estimated, the larger number of  basis functions will be required. If $m$ is fixed to a sufficiently large value, Figure~\ref{fig1_Post_J_L} shows that $c$ affects the approximation of the mean mainly near the boundaries, while the approximation of the standard deviation is affected across the whole domain. The approximation error tends to be bigger for the standard deviation than for the mean.
 
@@ -475,14 +447,14 @@ Next, we analyze how the interaction between $m$ and $c$ affects the quality of 
 \item There exists a minimum $c$ below which an accurate approximation will never be achieved regardless of the number of basis functions $m$.
 \end{itemize}
 
-\begin{figure} %[!t]
+\begin{figure}
 \centering
 \subfigure{\includegraphics[width=0.49\textwidth, trim = 2mm 0mm 3mm 0mm, clip]{fig3_MSE_vs_J.png}}
 \caption{Root mean square error (RMSE) of the proposed HSGP models computed against the exact GP model. RMSE versus the number of basis functions $m$ and for different values of the boundary factor $c$ (left). RMSE versus the boundary factor $c$ and for different values of the number of basis functions $m$ (right). }
 \label{fig3_MSE_vs_J}
 \end{figure}
 
-\begin{figure} %[!t]
+\begin{figure}
 \centering
 \subfigure{\includegraphics[width=0.49\textwidth, trim = 2mm 0mm 2mm 0mm, clip]{fig4_lscale_vs_J.png}}
 \caption{Estimated length-scale (left) and marginal variance (right) parameters of both exact GP and HSGP models, plotted versus the number of basis functions $m$ and for different values of the boundary factor $c$.}
@@ -504,13 +476,11 @@ When $c$ is below our recommendations given $\ell$ (recommendations that we give
 \begin{figure*}
 \centering
 \subfigure{\includegraphics[width=\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig5_relationships.png}}
-\caption{Relation among the minimum number of basis functions $m$, the boundary factor $c$ \hspace{0.1mm} ($c = \frac{L}{S}$) \hspace{0.1mm} and the length-scale $\ell$ normalized by {\color{blue}the input space boundary $S$} ($\frac{\ell}{S}$), for the squared exponential, Mat\'ern ($\nu$=3/2) and Mat\'ern ($\nu$=5/2) covariance functions.}
+\caption{Relation among the minimum number of basis functions $m$, the boundary factor $c$ \hspace{0.1mm} ($c = \frac{L}{S}$) \hspace{0.1mm} and the length-scale $\ell$ normalized by the input space boundary $S$ ($\frac{\ell}{S}$), for the squared exponential, Mat\'ern ($\nu$=3/2) and Mat\'ern ($\nu$=5/2) covariance functions.}
   \label{fig5_relationships}
 \end{figure*}
 
-Empirical simulations are carried out to analyze the relationships between $m$, $c$ and $\ell$. Figure \ref{fig5_relationships} depicts how $m$, $c$ and $\frac{\ell}{S}$ (lengthscale $\ell$ normalized {\color{blue}by the input space boundary $S$}) interact and affect the accuracy of the HSGP approximation for a GP with squared exponential, Mat\'ern ($\nu$=3/2), and Mat\'ern ($\nu$=5/2) covariance functions and a single input dimension. More precisely, for a given GP model (with a particular covariance function) {\color{blue}with length-scale $\ell$ 
-%(from now to later on we will refer to $\frac{\ell}{S}$ by just $\ell$)
- and given a input space boundary $S$ and a boundary factor $c$}, Figure \ref{fig5_relationships} shows the minimum number of basis functions $m$ required to obtain an accurate approximation in the sense of satisfying eq. (\ref{eq_diff_covs}). We considered an approximation to be a sufficiently accurate when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in eq. (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$ such that
+Empirical simulations are carried out to analyze the relationships between $m$, $c$ and $\ell$. Figure \ref{fig5_relationships} depicts how $m$, $c$ and $\frac{\ell}{S}$ (lengthscale $\ell$ normalized by the input space boundary $S$) interact and affect the accuracy of the HSGP approximation for a GP with squared exponential, Mat\'ern ($\nu$=3/2), and Mat\'ern ($\nu$=5/2) covariance functions and a single input dimension. More precisely, for a given GP model (with a particular covariance function) with length-scale $\ell$ and given a input space boundary $S$ and a boundary factor $c$, Figure \ref{fig5_relationships} shows the minimum number of basis functions $m$ required to obtain an accurate approximation in the sense of satisfying eq. (\ref{eq_diff_covs}). We considered an approximation to be a sufficiently accurate when the total variation difference between the approximate and exact covariance functions, $\varepsilon$ in eq. (\ref{eq_diff_covs}), is below 1$\%$ of the total area under the curve of the exact covariance function $k$ such that
 %
 \begin{equation} \label{eq:rel_total_distance}
  \int | k(\tau) - \tilde{k}_m(\tau)|  \,\mathrm{d}\tau  < 0.01 \int k(\tau) \,\mathrm{d}\tau,
@@ -527,7 +497,7 @@ where $\tilde{k}_m$ is the approximate covariance function with $m$ basis functi
 \subsubsection{Numerical equations}
 \label{sec_num_equations}
 
-As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enough, there is a near linear proportionality between $m$, $\ell$ and $c$. To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically {\color{blue}checked this linear relationship and} derived the practically useful constant terms. We require a lower bound for $c$ of $c \geq 1.2$ such that the equations below are precise enough for practical application.
+As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enough, there is a near linear proportionality between $m$, $\ell$ and $c$. To obtain practical numerical functions that can be used to guide the selection of these parameters, we have empirically checked this linear relationship and derived the practically useful constant terms. We require a lower bound for $c$ of $c \geq 1.2$ such that the equations below are precise enough for practical application.
 
 \paragraph*{Squared exponential}:
 %
@@ -554,10 +524,6 @@ As explained in Section~\ref{subsec_theoretic_linearity}, when $c$ is large enou
 \end{align}
 %
 These constants vary monotonically with respect to $\nu$ (squared exponential corresponding to Mat\'ern with $\nu \to \infty$). Using the formula for Mat\'ern ($\nu$=3/2) provides the largest $m$ and $c$, and thus this formula alone could be used as a conservative choice for all Mat\'ern covariance functions with $\nu \geq 3/2$ and likely as a good initial guess for many other covariance functions. If the aim is to find minimal $m$ to speedup the computation, a further refined formula can be obtained for new covariance functions.
-
-{\color{blue}
-%By using the normalized length-scale $\frac{\ell}{S}$, the equations, figures, and conclusions made throughout the paper regarding the diagnostic of the method can easily be referred to any specific scale of the input space.
-}
 
 Figure~\ref{fig5_relationships} and previous equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) were obtained for a GP with a unidimensional covariance function, which result in a surfaces depending on three variables, $m$, $c$ and $\frac{\ell}{S}$. Equivalent results for a GP model with a two-dimensional covariance function would result in a surface depending on four variables, $m$, $c$, $\frac{\ell_1}{S}$ and $\frac{\ell_2}{S}$. More precisely, in the multi-dimensional case, whether the approximation is close enough might depend only on the ratio between wigglyness in every dimensions. For instance, in the two-dimensional case, it would depend on the ratio between $\frac{\ell_1}{S}$ and $\frac{\ell_2}{S}$. Future research will focus on building useful graphs or analytical models that provide these relations in multi-dimensional cases. However, as an approximation, we can use the unidimensional GP conclusions in Figure~\ref{fig5_relationships} or equations~(\ref{eq_m_l_QE})-(\ref{eq_c_vs_l_mat52}) to check the accuracy by analyzing individually the different dimensions of a multidimensional GP model.
 
@@ -602,10 +568,9 @@ Based on the above proposed diagnostics, we obtain a simple, iterative step-by-s
 
 \begin{enumerate}
 
-\item[A0.] {\color{blue}Compute the boundary $S$ of the input values by using eq.~\eqref{eq_boundary_S}}.
+\item[A0.] Compute the boundary $S$ of the input values by using eq.~\eqref{eq_boundary_S}.
 
-\item[A1.] Set the iteration index to $k=1$. Make an initial guess on the length-scale $\ell^{(k)}$. If there is no useful information available, we recommend to start with a large length-scale, {\color{blue}such as the normalized length-scale being in the interval $\frac{\ell^{(k)}}{S} \in [0.5, 1]$}. 
-%({\color{blue}Remember that $\ell$ here refers to the normalized length-scale $\frac{\ell}{S}$.})
+\item[A1.] Set the iteration index to $k=1$. Make an initial guess on the length-scale $\ell^{(k)}$. If there is no useful information available, we recommend to start with a large length-scale, such as the normalized length-scale being in the interval $\frac{\ell^{(k)}}{S} \in [0.5, 1]$. 
 
 \item[A2.] Obtain the minimum valid boundary factor $c^{(k)}$ determined by $\ell=\ell^{(k)}$ for the given kernel and boundary $S$ as per Section~\ref{sec_num_equations}.
 
@@ -644,8 +609,8 @@ If all the stability checks succeed, the HSGP approximation of the latest model 
 Otherwise, go back to B1.
 \end{enumerate}
 
-{\color{blue} In our experiments this procedure converges quickly after only few iterations in all the cases (see Figure~\ref{fig7_diagnostic_lscale_comparison}, Table~\ref{tab1_diagnostic}, and Section~\ref{sec_cases}). That said, we cannot rule out that there may be cases where convergence is much slower (in terms of number of required diagnostic iterations) to a degree where HSGPs become impractical and an early stopping of the procedure would be advisable.
-Importantly though, this scenario should not be confused with the scaling of computational cost due to higher dimensional input spaces, an issue discussed in detail in Section~\ref{sec_cost_multi}. In a nutshell, according to our experiments, increasing the dimensionality of the input space does not increase the number of required diagnostic iterations to a relevant degree but only the computational cost per iteration.}
+In our experiments this procedure converges quickly after only few iterations in all the cases (see Figure~\ref{fig7_diagnostic_lscale_comparison}, Table~\ref{tab1_diagnostic}, and Section~\ref{sec_cases}). That said, we cannot rule out that there may be cases where convergence is much slower (in terms of number of required diagnostic iterations) to a degree where HSGPs become impractical and an early stopping of the procedure would be advisable.
+Importantly though, this scenario should not be confused with the scaling of computational cost due to higher dimensional input spaces, an issue discussed in detail in Section~\ref{sec_cost_multi}. In a nutshell, according to our experiments, increasing the dimensionality of the input space does not increase the number of required diagnostic iterations to a relevant degree but only the computational cost per iteration.
 
 \subsection{Performance analysis of the diagnostics}
 
@@ -758,18 +723,15 @@ As it has been shown in case study III (Section~\ref{sec_caseIII}), the proposed
 
 Whether HSGP or exact GP is faster will also depend on the specific implementation details, which can have big effects on the scaling constants. Thus, more detailed recommendations would depend on the specific software implementation.
 
-In our experiments, we observed roughly similar or even worse scaling behavior for the thin plate splines in comparison to HSGPs, with serious challenges with computation time when doing inference with spline models for $D=3$ and more than 10 basis functions per dimension, or even for $D=2$ and more than 40 basis functions per dimension (see Figures~B.3 right and C.3 in the online supplement).
-
-
 \section{Case studies}\label{sec_cases}
 
 In this section, we will present several simulated and real case studies in which we apply the developed HSGP models and the recommended steps to fit them. More case studies are presented in the online supplemental materials.
 
 \subsection{Simulated data for a univariate function}\label{sec_univariate_simu}
 
-In this experiment, we analyze a synthetic dataset with $n = 250$ observations, where the true data generating process is a Gaussian process with additive noise. The data points are simulated from the model $y_i = f(x_i) + \epsilon_i$, where $f$ is a sample from a Gaussian process $f(x) \sim \GP(0, k(x, x', \theta))$ with a Mat{\'e}rn ($\nu$=3/2) covariance function $k$ with marginal variance $\alpha=1$ and length-scale $\ell=0.2$ at inputs values $\bm{x}=(x_1,x_2,\dots,x_n)$ with $x_i \in [-1,1]$ {\color{blue} that lead to an input space boundary $S$ of $S=1$ as per eq.~\eqref{eq_boundary_S}}. $\epsilon_i$ is additive Gaussian noise with standard deviation $\sigma=0.2$. 
+In this experiment, we analyze a synthetic dataset with $n = 250$ observations, where the true data generating process is a Gaussian process with additive noise. The data points are simulated from the model $y_i = f(x_i) + \epsilon_i$, where $f$ is a sample from a Gaussian process $f(x) \sim \GP(0, k(x, x', \theta))$ with a Mat{\'e}rn ($\nu$=3/2) covariance function $k$ with marginal variance $\alpha=1$ and length-scale $\ell=0.2$ at inputs values $\bm{x}=(x_1,x_2,\dots,x_n)$ with $x_i \in [-1,1]$ that lead to an input space boundary $S$ of $S=1$ as per eq.~\eqref{eq_boundary_S}. $\epsilon_i$ is additive Gaussian noise with standard deviation $\sigma=0.2$. 
 
-In the HSGP model, the latent function values $f(x)$ are approximated as in eq.~(\ref{eq_approxf}), with the Mat{\'e}rn ($\nu$=3/2) spectral density $S$ as in eq.~(\ref{eq_specdens_32}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}), respectively.  
+In the HSGP model, the latent function values $f(x)$ are approximated as in eq.~(\ref{eq_approxf}), with the Mat{\'e}rn ($\nu$=3/2) spectral density $s$ as in eq.~(\ref{eq_specdens_32}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}), respectively.  
 
 The joint posterior parameter distributions are estimated by sampling using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021}. $\mathrm{Normal}(0,1)$, \linebreak $\mathrm{Normal}(0,3)$ and $\mathrm{Gamma}(1.2,0.2)$ prior distributions has been used for the observation noise $\sigma$, covariance function marginal variance $\alpha$, and length-scale $\ell$, respectively. We use the same prior distributions to fit the exact GP model.
 
@@ -791,25 +753,25 @@ iter. & $\ell$ & $c$ & $m$ & $\hat{\ell}$ & $\hat{\ell} + 0.01 \geq \ell$ & RMSE
   \label{tab_caseI}
 \end{table}
 
-Figure~\ref{fig8_Posteriors_exI} shows the posteriors predictive distributions of the exact GP and the HSGP models, the later using the parameter values as the third iterative step, $c=1.2$ ($L=c\cdot S= 1.2$; see eq.~\eqref{eq_boundary}) and $m=40$ basis functions. In order to do model comparison a spline-based model with 60 knots is also fitted and plotted jointly with the GP and HSGP models. The spline-based model is fitted using the thin plate regression spline approach by \citet{wood2003thin} and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline model using the R-package \textit{brms} \citep{burkner2017brms}. The sample observations are plotted as circles and the out-of-sample or test data are plotted as crosses. The posteriors of the three models, exact GP, HSGP and spline, are similar in the interpolation regions of the input space. However, when extrapolating the spline model solution clearly differs from the exact GP and HSGP models as well as the actual observations. 
+Figure~\ref{fig8_Posteriors_exI} shows the posteriors predictive distributions of the exact GP and the HSGP models, the later using the parameter values as the third iterative step, $c=1.2$ ($L=c\cdot S= 1.2$; see eq.~\eqref{eq_boundary}) and $m=40$ basis functions. 
 
 \begin{figure}
 \centering
 \includegraphics[width=0.485\textwidth]{fig8_Posteriors_exI.png}
-\caption{Posterior predictive means of the proposed HSGP model, the exact GP model, and the spline model. 95\% credible intervals are plotted as dashed lines.}
+\caption{Posterior predictive means of the proposed HSGP model and the exact GP model. 95\% credible intervals are plotted as dashed lines.}
   \label{fig8_Posteriors_exI}
 \end{figure}
 
-Figure~\ref{fig9_rmse_time_exI} shows both the standardized root mean squared error (SRMSE) of the models for the sample data and the computational times in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. Both the HSGP and splines models show roughly similar performance at sample data. The HSGP method yields a good approximation of the exact GP model for both interpolation and extrapolation. However, the spline model does not extrapolate data properly (Figure~\ref{fig8_Posteriors_exI}). The HSGP model is on average roughly 400 times faster than the exact GP and 10 times faster than the spline model for this particular model and data. Also, it is seen that the computation time increases slowly as a function of the number of basis functions.
+Figure~\ref{fig9_rmse_time_exI} shows both the standardized root mean squared error (SRMSE) of the models for the sample data and the computational times in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$. The HSGP model is on average roughly 400 times faster than the exact GP for this particular model and data. Also, it is seen that the computation time increases slowly as a function of $m$.
 
 \begin{figure}[!h]
 \centering
 \subfigure{\includegraphics[width=0.485\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig9_rmse_time_exI.png}}
-\caption{Computational time (y-axis), in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$, for the HSGP model, and knots, for the spline model. The y-axis is on a logarithmic scale. The standard deviation of the computational time is plotted as dashed lines.}
+\caption{Computational time (y-axis), in seconds per iteration (iteration of the HMC sampling method), as a function of the number of basis functions $m$. The y-axis is on a logarithmic scale. The standard deviation of the computational time is plotted as dashed lines.}
   \label{fig9_rmse_time_exI}
 \end{figure}
 
-The Stan model code for the exact GP model, the HSGP model, the spline model, and R-code to reproduce this case study can be found online at {\small \url{ https://github.com/gabriuma/}} \linebreak {\small \url{ basis_functions_approach_to_GP/tree/master/Paper/Case-study_1D-Simulated-data}}\,.
+The Stan model code for the exact GP model and the HSGP model, and R-code to reproduce this case study can be found online at {\small \url{ https://github.com/gabriuma/basis_}} \linebreak {\small \url{functions_approach_to_GP/tree/master/Paper/}} \linebreak {\small \url{Case-study_1D-Simulated-data}}\,.
 
 
 \subsection{Birthday data}\label{sec_birthday}
@@ -855,11 +817,11 @@ The component $f_4(t)$ represents the special days effects, modeled as a Student
 f_4(t) \sim t(1,0,\tau^2).
 \end{equation*}
 %
-The component $f_1$ will be approximated using the HSGP model and the function values $f_1$ are approximated as in eq.~(\ref{eq_approxf}), with the squared exponential spectral density $S$ as in eq.~(\ref{eq_specdens_inf}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}). The year effects $f_2$ and week effects $f_3$ use a periodic covariance function  and thus do no fit under the main framework of the HSGP approximation covered in this paper. However, they do have a representation based on expanding periodic covariance functions into a series of stochastic resonators (Appendix~\ref{sec_periodic}). Thus, the functions $f_2$ and $f_3$ are approximated as in eq.~(\ref{eq_f_period}), with variance coefficients $\tilde{q}_j^2$ as in eq.~(\ref{eq_q_2}). {\color{blue}The input variable $\bm{t}=\{1,2,\dots,7305\}$ is previously standardized to have zero mean and unit variance $\left(\frac{\bm{t}-\text{mean}(\bm{t})}{\text{sd}(\bm{t})}\right)$, and then it follows a input space boundary $S=1.732$}.
+The component $f_1$ will be approximated using the HSGP model and the function values $f_1$ are approximated as in eq.~(\ref{eq_approxf}), with the squared exponential spectral density $s$ as in eq.~(\ref{eq_specdens_inf}), and eigenvalues $\lambda_j$ and eigenfunctions $\phi_j$ as in equations (\ref{eq_eigenvalue}) and (\ref{eq_eigenfunction}). The year effects $f_2$ and week effects $f_3$ use a periodic covariance function  and thus do no fit under the main framework of the HSGP approximation covered in this paper. However, they do have a representation based on expanding periodic covariance functions into a series of stochastic resonators (Appendix~\ref{sec_periodic}). Thus, the functions $f_2$ and $f_3$ are approximated as in eq.~(\ref{eq_f_period}), with variance coefficients $\tilde{q}_j^2$ as in eq.~(\ref{eq_q_2}). The input variable $\bm{t}=\{1,2,\dots,7305\}$ is previously standardized to have zero mean and unit variance $\left(\frac{\bm{t}-\text{mean}(\bm{t})}{\text{sd}(\bm{t})}\right)$, and then it follows a input space boundary $S=1.732$.
 
 The joint posterior parameter distributions are estimated by sampling using the dynamic HMC algorithm implemented in Stan \citep{StanTeam:2021}. $\mathrm{Normal}(0,1)$, \linebreak $\mathrm{Normal}(0,10)$ and $\mathrm{Normal}(0,2)$ prior distributions has been used for the observation noise $\sigma$, covariance function marginal variances $\bm{\alpha}=\{\alpha_1, \alpha_2, \alpha_3\}$, and length-scales $\bm{\ell}=\{\ell_1, \ell_2, \ell_3\}$, respectively. A $\mathrm{Normal}(0,0.1)$ prior distribution has been used for the standard deviation $\tau$ of the Student's $t$ distribution with 1 degree of freedom used to model $f_4$ (i.e., the special days effects).
 
-The HSGP model is fitted following the recommended iterative steps as in Section~\ref{sec_user_guide}, where in each iteration the diagnosis is applied on $f_1$, $f_2$ and $f_3$, where for each one these functions the parameters $c$, $m$, minimum $\ell$, estimated $\hat{\ell}$ and diagnostic $\hat{\ell} + 0.01 \geq \ell$ are updated. For functions $f_2$ and $f_3$ there are not boundary factor $c$ as they use periodic covariance functions, and $m$ and minimum $\ell$ are updated by eq.~\eqref{eq_J_l_periodic}. A initial value for the minimum lengthscale $\ell_1$ of $f_1$ is guessed to correspond to around 3 years (i.e., $\ell_1=3$ years $= 3\cdot 365=1095$ days) {\color{blue}in the original scale or around $0.52$ (i.e., $\ell_1=\nicefrac{1095}{\text{sd}(\bm{t})}=0.52$) in the standardized scale used as input in the model}. Initial values for the minimum lengthscales $\ell_2$ and $\ell_3$ of $f_2$ and $f_3$, respectively, are guessed to correspond to half of the period (i.e., $\ell_2=\ell_3=0.5$). After the diagnostic generated the first \textit{true}, $m$ is updated by increasing the $m$ of the previous iteration by 5 additional basis functions and $c$ and the minimum $\ell$ updated accordingly as explained in Section~\ref{sec_user_guide}. The full diagnosis process is applied until two \textit{trues} are achieved for each function. Table~\ref{tab_caseII} contains the values for the parameters $\ell$, $c$, $m$, the estimated $\hat{\ell}$, the diagnostic $\hat{\ell} + 0.01 \geq \ell$ for each function, and the RMSE compute with the data as the reference for every iterative steps of the fitting process.
+The HSGP model is fitted following the recommended iterative steps as in Section~\ref{sec_user_guide}, where in each iteration the diagnosis is applied on $f_1$, $f_2$ and $f_3$, where for each one these functions the parameters $c$, $m$, minimum $\ell$, estimated $\hat{\ell}$ and diagnostic $\hat{\ell} + 0.01 \geq \ell$ are updated. For functions $f_2$ and $f_3$ there are not boundary factor $c$ as they use periodic covariance functions, and $m$ and minimum $\ell$ are updated by eq.~\eqref{eq_J_l_periodic}. A initial value for the minimum lengthscale $\ell_1$ of $f_1$ is guessed to correspond to around 3 years (i.e., $\ell_1=3$ years $= 3\cdot 365=1095$ days) in the original scale or around $0.52$ (i.e., $\ell_1=\nicefrac{1095}{\text{sd}(\bm{t})}=0.52$) in the standardized scale used as input in the model. Initial values for the minimum lengthscales $\ell_2$ and $\ell_3$ of $f_2$ and $f_3$, respectively, are guessed to correspond to half of the period (i.e., $\ell_2=\ell_3=0.5$). After the diagnostic generated the first \textit{true}, $m$ is updated by increasing the $m$ of the previous iteration by 5 additional basis functions and $c$ and the minimum $\ell$ updated accordingly as explained in Section~\ref{sec_user_guide}. The full diagnosis process is applied until two \textit{trues} are achieved for each function. Table~\ref{tab_caseII} contains the values for the parameters $\ell$, $c$, $m$, the estimated $\hat{\ell}$, the diagnostic $\hat{\ell} + 0.01 \geq \ell$ for each function, and the RMSE compute with the data as the reference for every iterative steps of the fitting process.
 
 \begin{table}
 \centering
@@ -904,14 +866,14 @@ The Stan model code for the HSGP model and R-code to reproduce this case study c
   \label{fig10_posteriors_birthday}
 \end{figure}
 
-\begin{figure}%[!t]
+\begin{figure}
 \centering
 \subfigure{\includegraphics[width=0.49\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig11_posteriors_oneyear_birthday.png}}
 \caption{Posterior means of the function $\mu$ for the year 1972 of the series. The special days effects pattern $f_4$ in the year is also represented, as well as the long-term trend $f_1$ and year effects pattern $f_2$. }
   \label{fig11_posteriors_oneyear_birthday}
 \end{figure}
 
-\begin{figure}%[!h]
+\begin{figure}
 \centering
 \subfigure{\includegraphics[width=0.49\textwidth, trim = 0mm 0mm 0mm 0mm, clip]{fig12_posteriors_onemonth_birthday.png}}
 \caption{Posterior means of the function $\mu$ for the month of January of 1972. The week effects pattern $f_3$ in the month is also represented, as well as the long-term trend $f_1$, year effects pattern $f_2$ and special days effects pattern $f_4$. }
@@ -922,28 +884,25 @@ The Stan model code for the HSGP model and R-code to reproduce this case study c
 
 In this case study, we apply the diagnostic tool to fit and diagnose two different data sets, one data set simulated from a bivariate ($D=2$) function and another data set simulated from a $3$-dimensinal ($D=3$) function. Furthermore, in Section~\ref{sec_computation_nD} we present results of the computational time required to fit the HSGP model in $2D$, $3D$ and $4D$ input spaces, with different sized data sets and as a function of the number of multivariate basis functions $m^*=m_1\times \cdots \times m_D$ used in the approximation.
 
-$2D$ and $3D$ synthetic functions were drawn from $2D$ and $3D$ GP priors, with input values $\bm{x}_i \in [-1,1]^2$ and $\bm{x}_i \in [-1,1]^3$, respectively, {\color{blue}and the input space boundary is $S=1$ for both the $2D$ and $3D$ functions}. Squared exponential covariance functions with marginal variance $\alpha=1$ and length-scales $\ell_1=0.10$, $\ell_2=0.3$, and $\ell_3=0.4$, where $\ell_i$ is the length scale for the $i$'th dimension, were used in the GP priors. $200$ and $1000$ data points were sampled from the $2D$ and $3D$ drawn functions, respectively, and independent Gaussian noise with standard deviation $\sigma=0.2$ was added to the data points to form the final noisy sets of observations.
+$2D$ and $3D$ synthetic functions were drawn from $2D$ and $3D$ GP priors, with input values $\bm{x}_i \in [-1,1]^2$ and $\bm{x}_i \in [-1,1]^3$, respectively, and the input space boundary is $S=1$ for both the $2D$ and $3D$ functions. Squared exponential covariance functions with marginal variance $\alpha=1$ and length-scales $\ell_1=0.10$, $\ell_2=0.3$, and $\ell_3=0.4$, where $\ell_i$ is the length scale for the $i$'th dimension, were used in the GP priors. $200$ and $1000$ data points were sampled from the $2D$ and $3D$ drawn functions, respectively, and independent Gaussian noise with standard deviation $\sigma=0.2$ was added to the data points to form the final noisy sets of observations.
 
-In the HSGP models with $2$ and $3$ input dimensions, the underlying functions $f(\bm{x})$ are approximated as in eq. (13)% (\ref{eq_approxf_multi})
-, with the $D$-dimensional squared exponential spectral densities $S$ as in eq. \eqref{eq_specdens_inf}, and the $D$-vectors of eigenvalues $\bm{\lambda}_j$ and the multivariate eigenfunctions $\phi_j$ as in equations \eqref{eq_eigenfunction_multi} and \eqref{eq_eigenvalue_multi}, respectively.
+In the HSGP models with $2$ and $3$ input dimensions, the underlying functions $f(\bm{x})$ are approximated as in eq. (13), with the $D$-dimensional squared exponential spectral densities $s$ as in eq. \eqref{eq_specdens_inf}, and the $D$-vectors of eigenvalues $\bm{\lambda}_j$ and the multivariate eigenfunctions $\phi_j$ as in equations \eqref{eq_eigenfunction_multi} and \eqref{eq_eigenvalue_multi}, respectively.
 
 The joint posterior parameter distributions are estimated via the dynamic HMC sampling algorithm implemented in Stan \citep{StanTeam:2021}. $\mathrm{Normal}(0,1)$, $\mathrm{Normal}(0,3)$, and $\mathrm{InverseGamma}(2,0.5)$ priors were used for the observation noise $\sigma$, marginal variance $\alpha$, and length-scales $\ell$, respectively. We used the same priors to fit the exact GP model serving as benchmark.
 
 The HSGP models are fitted following the recommended iterative procedure detailed in Section~\ref{sec_user_guide}, where the diagnostic is applied on every dimension, separately. For each dimension, the parameters $c$, $m$, minimum $\ell$, estimated $\hat{\ell}$, and the diagnostic $\hat{\ell} + 0.01 \geq \ell$ are updated using the equations in Section~\ref{sec_num_equations}. The values $0.5$, $1$, and $1$ are set as initial values for the minimum lengthscales $\ell_1$, $\ell_2$ and $\ell_3$, respectively. In order to be as efficient as possible, after the diagnostic generated the first \textit{true} for a certain dimension, its corresponding $m$ is updated by increasing the $m$ of the previous iteration by only 2 additional basis functions and, after the second \textit{true}, $m$ is no longer increased. The full diagnostic process is applied until two \textit{trues} are achieved for each dimension. 
 
 Table~\ref{tab_caseIII_2D} and \ref{tab_caseIII_3D} contain the iterative steps to fit and diagnose the $2D$ and $3D$ data sets, respectively. 
-%These tables contain the values for the parameters $\ell$, $c$, $m$, the estimated $\hat{\ell}$, the diagnostic $\hat{\ell} + 0.01 \geq \ell$ for each dimension, and the RMSE compute with both the data and the GP as the reference for every iterative steps of the fitting process. 
 The minimum requirements to fit the models were easily achieved by performing 4 iterations: from a $1^{\text{st}}$ iteration that uses few multivariate basis functions $m^*$ ($m^*=m_1(=6) \times m_2(=6)=36$ and $m^*=m_1(=6) \times m_2(=6) \times m_3(=6)=216$ for the $2D$ and $3D$ data sets, respectively) to the $4^{\text{th}}$ iteration that uses the minimum multivariate basis functions ($m^*=m_1(=22) \times m_2(=11)=242$ and $m^*=m_1(=21) \times m_2(=10) \times m_3(=12)=2520$ for the $2D$ and $3D$ data sets, respectively) required to accurately approximate these notably wiggly functions. Without using our recommended guidelines and diagnostics, it would likely have taken the user several more trials to get the optimal solution and to spend a significant amount of time, as using a larger number of basis functions in multivariate cases increases time of computation drastically.
 
 \begin{figure*}[h]
 \centering
 \subfigure{\includegraphics[scale=0.315, trim = 1mm 18mm 39.2mm 20mm, clip]{fig13_errorGP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.315, trim = 19mm 18mm 39.2mm 20mm, clip]{fig13_errorHSGP_exII.pdf}}
-\subfigure{\includegraphics[scale=0.315, trim = 19mm 18mm 39.2mm 20mm, clip]{fig13_errorSP_exII.pdf}}
 \subfigure{\includegraphics[scale=0.30, trim = 151mm 14mm 2mm 20mm, clip]{fig13_error_colorbar_exII.pdf}}
-\hspace{1pt}\subfigure{\includegraphics[scale=0.27, trim =0mm 5mm 10mm 0mm, clip]{fig13_RMSE_exII.pdf}}
-\hspace{-1.4cm} \subfigure{\raisebox{1.65cm}{\includegraphics[scale=0.30, trim = 28mm 70mm 112mm 20mm, clip]{fig13_legend_exII.pdf}}}
-\caption{Error between the $2D$ data-generating function and posterior mean functions of the GP (a), HSGP (b) and spline-based (c) models. Sample points are plotted as circles. The right side plot shows the root mean square error (RMSE) of the different methods, and plotted as a function of the boundary factor $c$, number of univariate basis functions $m$ and knots (the same number of basis functions $m$ and knots per dimension are used, resulting in $m^D$ total number of multivariate basis functions).}
+\hspace{20pt}\subfigure{\includegraphics[scale=0.27, trim =0mm 5mm 10mm 0mm, clip]{fig13_RMSE_exII_nueva.pdf}}
+\hspace{-1.4cm} \subfigure{\raisebox{1.65cm}{\includegraphics[scale=0.30, trim = 28mm 70mm 112mm 20mm, clip]{fig13_legend_exII_nueva.pdf}}}
+\caption{Error between the $2D$ data-generating function and posterior mean functions of the GP (a) and HSGP (b) models. Sample points are plotted as circles. The right side plot shows the root mean square error (RMSE) of the different methods, and plotted as a function of the boundary factor $c$ and number of univariate basis functions $m$ (the same $m$ is used per dimension, resulting in a total number of $m^D$ multivariate basis functions).}
   \label{fig13_errors_exII}
 \end{figure*}
 
@@ -1001,9 +960,10 @@ The minimum requirements to fit the models were easily achieved by performing 4 
   \label{tab_caseIII_3D}
 \end{table}
 
-Figure \ref{fig13_errors_exII} shows the difference  between the true underlying data-generating function and the posterior mean for GP, HSGP and spline-based model solutions for the $2D$ data set. For the $3D$ data set plots with the posterior functions are not shown because it is difficult to plot functions in a $3D$ input space. The splines-based model was fitted using a cubic spline basis, penalized by the conventional integrated square second derivative cubic spline penalty \citep{wood2017generalized}, and implemented in the R-package \textit{mgcv} \citep{wood2011mgcv}. A Bayesian approach is used to fit this spline-based model using the R-package \textit{brms} \citep{burkner2017brms}. For the spline-based model, $40$ knots in each dimension were used. Figure \ref{fig13_errors_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and number of univariate basis functions $m$, for the HSGP, and knots, for the $2D$ spline-based model. It can be seen that the posterior mean for HSGP and exact GP accurately represents the true data-generating function. In contrast, the accuracy of the spline-based model is significantly worse. 
+Figure~\ref{fig13_errors_exII} shows the difference between the true underlying data-generating function and the posterior means of GP and HSGP models for the $2D$ data set. For the $3D$ data set, posterior functions are not plotted because it is difficult to plot functions in a $3D$ input space.  
+Figure \ref{fig13_errors_exII}-left shows the root mean squared error (RMSE), computed against the data-generating function, as a function of the boundary factor $c$ and number of univariate basis functions $m$. 
 
-The Stan model codes for the exact GP model, the HSGP model, and the spline-based model, and R-code to reproduce this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_2D&3D-Simulated-data}}\,.
+The Stan model codes for the exact GP model and the HSGP model, and R-code to reproduce this case study can be found online at {\small \url{https://github.com/gabriuma/basis_} \linebreak \url{functions_approach_to_GP/tree/master/Paper/} \linebreak \url{Case-study_2D&3D-Simulated-data}}\,.
 
 \subsubsection{Computation requirements in 2D, 3D, and 4D input spaces}\label{sec_computation_nD}
 
@@ -1043,7 +1003,7 @@ p(y_i > t_i \mid f) &= \int_{t_i}^{\infty} \LogNormal(y_i \mid f(\bm{x}_i),\sigm
 &=  1 - \Phi\! \left( \frac{\log(t_i)-f(\bm{x}_i)}{\sigma} \right),
 \end{align*}
 %
-where $y_i>t_i$ denotes the unobserved survival time {\color{blue} and $\Phi$ is the standard normal cumulative distribution function}.
+where $y_i>t_i$ denotes the unobserved survival time and $\Phi$ is the standard normal cumulative distribution function.
 The latent function $f(\cdot)$ is modeled as a Gaussian process, centered around a linear model of the predictors $\bm{x}$, and with a squared exponential covariance function $k$. Due to the predictor \textit{sex} ($x_2$) being a categorical variable (`1' for female and `2' for male), we apply indicator variable coding for the GP functions, in a similar way such coding is applied in linear models \citep{Gelman+Hill+Vehtari:2020:ROS}. The latent function $f(\bm{x})$, besides of being centered around a linear model, is composed of a general mean GP function, $h(\bm{x})$, defined for all observations, plus a second GP function, $g(\bm{x})$, that only applies to one of the predictor levels ('male' in this case) and is set to zero otherwise:
 %
 \begin{align*}
@@ -1063,7 +1023,7 @@ where $\mathbb{I}\left[\cdot\right]$ is an indicator function. Above, $c$ and $\
   \label{fig15_posteriors_leukemia}
 \end{figure*}
 
-Using the HSGP approximation, the functions $h(\bm{x})$ and $g(\bm{x})$ are approximated as in eq.~(\ref{eq_approxf_multi}), with the $D$-dimensional (with a scalar length-scale) squared exponential spectral density $S$ as in eq.~(\ref{eq_specdens_inf}), and the multivariate eigenfunctions $\phi_j$ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ as in equations (\ref{eq_eigenfunction_multi}) and  (\ref{eq_eigenvalue_multi}), respectively.
+Using the HSGP approximation, the functions $h(\bm{x})$ and $g(\bm{x})$ are approximated as in eq.~(\ref{eq_approxf_multi}), with the $D$-dimensional (with a scalar length-scale) squared exponential spectral density $s$ as in eq.~(\ref{eq_specdens_inf}), and the multivariate eigenfunctions $\phi_j$ and the $D$-vector of eigenvalues $\bm{\lambda}_j$ as in equations (\ref{eq_eigenfunction_multi}) and  (\ref{eq_eigenvalue_multi}), respectively.
 
 Figure \ref{fig15_posteriors_leukemia} shows estimated conditional functions of each predictor with all others fixed to their mean values. These posterior estimates correspond to the HSGP model with $m=10$ basis functions and $c=3$ boundary factor. There are clear  non-linear patterns and the right bottom subplot also shows that the conditional function associated with WBC has an interaction with TDI.
 Figure~\ref{fig16_elpd_leukemia} shows the expected log predictive density \citep[ELPD; ][]{vehtari_2012,Vehtari+Gelman+Gabry:2017_practical} and time of computation as function of the number of univariate basis functions $m$ ($m^{\ast}=m^D$ in eq.~(\ref{eq_approxf_multi})) and boundary factor $c$. As the functions are smooth, a few number of basis functions and a large boundary factor are required to obtain a good approximation (Figure \ref{fig16_elpd_leukemia}-left); Small boundary factors are not appropriate for models for large length-scales, as can be seen in Figure \ref{fig5_relationships}. Increasing the boundary factor also significantly increases the time of computation (Figure \ref{fig16_elpd_leukemia}-right). With a moderate number of univariate basis functions ($m=15$), the HSGP model becomes slower than the exact GP model, in this specific application with $3$ input variables, as the total number of multivariate basis functions becomes $15^3 = 3375$ and is therefore quite high. 
@@ -1076,8 +1036,7 @@ Figure~\ref{fig16_elpd_leukemia} shows the expected log predictive density \cite
   \label{fig16_elpd_leukemia}
 \end{figure*}
 
-The Stan model code for the exact GP and the HSGP models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/tree/master/Paper/Case-study_Leukemia-data}}\,.
-%
+The Stan model code for the exact GP and the HSGP models of this case study can be found online at {\small \url{https://github.com/gabriuma/basis_functions_approach_to_GP/} \linebreak \url{tree/master/Paper/Case-study_Leukemia-data}}\,.
 
 \section{Conclusion}\label{sec_conclusion}
 
@@ -1108,17 +1067,17 @@ Associated to each covariance function $k(\bm{x},\bm{x}')$ we can also define a 
 From the Bochner’s and Wiener-Khintchine theorems, the spectral density of a stationary covariance function $k(\bm{x},\bm{x}') = k(\bm{\tau})$, $\bm{\tau}=(\bm{x}-\bm{x}')$, is the Fourier transform of the covariance function,
 %
 \begin{equation*}
-S(\bm{w}) = \int k(\bm{\tau}) e^{-2\pi i \bm{w} \bm{\tau}} \,\mathrm{d}\bm{\tau}, \nonumber
+s(\bm{w}) = \int k(\bm{\tau}) e^{-2\pi i \bm{w} \bm{\tau}} \,\mathrm{d}\bm{\tau}, \nonumber
 \end{equation*}
 where $\bm{w}$ is in the frequency domain. The operator $\mathcal{K}$ will be translation invariant if the covariance function is stationary. This allows for a Fourier representation of the operator $\mathcal{K}$ as a transfer function which is the spectral density of the Gaussian process. 
-Thus, the spectral density $S(\bm{w})$ also gives the approximate eigenvalues of the operator $\mathcal{K}$.
+Thus, the spectral density $s(\bm{w})$ also gives the approximate eigenvalues of the operator $\mathcal{K}$.
 
-In the isotropic case $S(\bm{w}) = S(||\bm{w}||)$ and assuming that the spectral density function $S(\cdot)$ is regular enough, then it can be represented as a polynomial expansion:
+In the isotropic case $s(\bm{w}) = s(||\bm{w}||)$ and assuming that the spectral density function $s(\cdot)$ is regular enough, then it can be represented as a polynomial expansion:
 %
-\begin{equation}\label{eq_S}
-S(||\bm{w}||)=a_0+a_1||\bm{w}||^2+a_2(||\bm{w}||^2)^2+a_3(||\bm{w}||^2)^3+\cdots.
+\begin{equation}\label{eq_s}
+s(||\bm{w}||)=a_0+a_1||\bm{w}||^2+a_2(||\bm{w}||^2)^2+a_3(||\bm{w}||^2)^3+\cdots.
 \end{equation}
-The Fourier transform of the Laplace operator $\nabla^2$ is $-||\bm{w}||$, thus the Fourier transform of $S(||\bm{w}||)$ is
+The Fourier transform of the Laplace operator $\nabla^2$ is $-||\bm{w}||$, thus the Fourier transform of $s(||\bm{w}||)$ is
 %
 \begin{equation}\label{eq_K}
 \mathcal{K}=a_0+a_1(-\nabla^2)+a_2(-\nabla^2)^2+a_3(-\nabla^2)^3+\cdots,
@@ -1175,17 +1134,17 @@ Then, looking at equations (\ref{eq_K}) and (\ref{eq_formalkernel}), it can be c
 \begin{equation}\label{eq_k}
 k(\bm{x},\bm{x}')= \sum_j [a_0+a_1\lambda_j^1+a_2\lambda_j^2+\cdots] \phi_j(\bm{x}) \phi_j(\bm{x}').
 \end{equation} 
-By letting $||\bm{w}||^2=\lambda_j$ the spectral density in eq.~(\ref{eq_S}) becomes
+By letting $||\bm{w}||^2=\lambda_j$ the spectral density in eq.~(\ref{eq_s}) becomes
 %
 \begin{equation*}
-S(\sqrt{\lambda_j})=a_0+a_1\lambda_j+a_2\lambda_j^2+a_3\lambda_j^3+\cdots,
+s(\sqrt{\lambda_j})=a_0+a_1\lambda_j+a_2\lambda_j^2+a_3\lambda_j^3+\cdots,
 \end{equation*}
 and substituting in eq.~(\ref{eq_k}) then leads to the final form
 %
 \begin{equation}\label{eq_k_2}
-k(\bm{x},\bm{x}')= \sum_j S(\sqrt{\lambda_j}) \phi_j(\bm{x}) \phi_j(\bm{x}'),
+k(\bm{x},\bm{x}')= \sum_j s(\sqrt{\lambda_j}) \phi_j(\bm{x}) \phi_j(\bm{x}'),
 \end{equation} 
-where $S(\cdot)$ is the spectral density of the covariance function, $\lambda_j$ is the $j$th eigenvalue and $\phi_j(\cdot)$ the eigenfunction of the Laplace operator in a given domain.
+where $s(\cdot)$ is the spectral density of the covariance function, $\lambda_j$ is the $j$th eigenvalue and $\phi_j(\cdot)$ the eigenfunction of the Laplace operator in a given domain.
 
 
 \section{Low-rank Gaussian process with a periodic covariance function}\label{sec_periodic}
@@ -1356,7 +1315,7 @@ As concrete examples, the iterative steps applied to perform diagnostic on two o
 
 
 \begin{acknowledgements}
-We thank Academy of Finland (grants 298742, 308640, and 313122), Finnish Center for Artificial Intelligence, and Technology Industries of Finland Centennial Foundation (grant 70007503; Artificial Intelligence for Research and Development) for partial support of this research. We also acknowledge the computational resources provided by the Aalto Science-IT project.
+We thank Academy of Finland (grants 298742, 308640, and 313122), Instituto de Salud Carlos III, Spain (grant CD21/00186 - Sara Borrell Postdoctoral Fellowship), Finnish Center for Artificial Intelligence, and Technology Industries of Finland Centennial Foundation (grant 70007503; Artificial Intelligence for Research and Development), and Conselleria de Innovación, Universidades, Ciencia y Sociedad Digital, Generalitat Valenciana, Spain (grant AICO/2020/285) for partial support of this research. We also acknowledge the computational resources provided by the Aalto Science-IT project.
 \end{acknowledgements}
 
 
